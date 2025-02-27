@@ -55,6 +55,9 @@
               <td style="padding:20px;width:100%;vertical-align:middle">
                 <h2>Recent News</h2>
                 <p>
+                  [02/2025] Our paper <em>CityWalker</em> is accepted by <em>CVPR</em> 2025.
+                </p>
+                <p>
                   [01/2025] Our paper <em>FusionSense</em> is accepted by <em>ICRA</em> 2025.
                 </p>
                 <p>
@@ -129,6 +132,54 @@
         </p>
         </td>
       </tr>
+
+      <tr onmouseout="citywalker_stop()" onmouseover="citywalker_start()">
+        <td style="padding:20px;width:25%;vertical-align:middle">
+          <div class="one">
+            <div class="two" id='citywalker_image'><video  width=100% height=100% muted autoplay loop>
+            <source src="images/CityWalker.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+            </video></div>
+            <img src='images/citywalker.png' width="160">
+          </div>
+          <script type="text/javascript">
+            function citywalker_start() {
+              document.getElementById('citywalker_image').style.opacity = "1";
+            }
+          
+            function citywalker_stop() {
+              document.getElementById('citywalker_image').style.opacity = "0";
+            }
+            citywalker_stop()
+          </script>
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle">
+          <a href="https://ai4ce.github.io/CityWalker/">
+            <span class="papertitle">CityWalker: Learning Embodied Urban Navigation from Web-Scale Videos</span>
+          </a>
+          <br>
+      <a href="https://gaaaavin.github.io/">Xinhao Liu*</a>,
+      <a href="https://ai4ce.github.io/CityWalker/">Jintong Li*</a>,
+      <a href="https://ai4ce.github.io/CityWalker/">Yicheng Jiang,
+      <a href="https://ai4ce.github.io/CityWalker/">Niranjan Sujay,
+          <a href="https://ai4ce.github.io/CityWalker/">Zhicheng Yang</a>,
+          <a href="https://juexzz.github.io/">Juexiao Zhang</a>,
+          <a href="https://ai4ce.github.io/CityWalker/">John Abanes</a>,
+          <strong>Jing Zhang</strong>,
+          <a href="https://scholar.google.com/citations?user=YeG8ZM0AAAAJ">Chen Feng</a><sup>&dagger;</sup>
+          <br>
+          <em>CVPR</em>, 2025 &nbsp 
+          <br>
+          <a href="https://ai4ce.github.io/CityWalker/">project page</a>
+          /
+          <a href="https://arxiv.org/abs/2411.17820">arXiv</a>
+          /
+          <a href="https://github.com/ai4ce/CityWalker">github</a>
+          <p>
+          Train autonomous agents for robust urban navigation using Internet-scale videos.
+          </p> 
+        </td>
+      </tr>
       
       <tr onmouseout="rap_stop()" onmouseover="rap_start()">
         <td style="padding:20px;width:25%;vertical-align:middle">
@@ -176,53 +227,7 @@
       </tr>
 
 
-      <tr onmouseout="citywalker_stop()" onmouseover="citywalker_start()">
-        <td style="padding:20px;width:25%;vertical-align:middle">
-          <div class="one">
-            <div class="two" id='citywalker_image'><video  width=100% height=100% muted autoplay loop>
-            <source src="images/CityWalker.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-            </video></div>
-            <img src='images/citywalker.png' width="160">
-          </div>
-          <script type="text/javascript">
-            function citywalker_start() {
-              document.getElementById('citywalker_image').style.opacity = "1";
-            }
-          
-            function citywalker_stop() {
-              document.getElementById('citywalker_image').style.opacity = "0";
-            }
-            citywalker_stop()
-          </script>
-        </td>
-        <td style="padding:20px;width:75%;vertical-align:middle">
-          <a href="https://ai4ce.github.io/CityWalker/">
-            <span class="papertitle">CityWalker: Learning Embodied Urban Navigation from Web-Scale Videos</span>
-          </a>
-          <br>
-      <a href="https://gaaaavin.github.io/">Xinhao Liu*</a>,
-      <a href="https://ai4ce.github.io/CityWalker/">Jintong Li*</a>,
-      <a href="https://ai4ce.github.io/CityWalker/">Yicheng Jiang,
-      <a href="https://ai4ce.github.io/CityWalker/">Niranjan Sujay,
-          <a href="https://ai4ce.github.io/CityWalker/">Zhicheng Yang</a>,
-          <a href="https://juexzz.github.io/">Juexiao Zhang</a>,
-          <a href="https://ai4ce.github.io/CityWalker/">John Abanes</a>,
-          <strong>Jing Zhang</strong>,
-          <a href="https://scholar.google.com/citations?user=YeG8ZM0AAAAJ">Chen Feng</a><sup>&dagger;</sup>
-          <br>
-          <em>Under Review</em>, 2025 &nbsp 
-          <br>
-          <a href="https://ai4ce.github.io/CityWalker/">project page</a>
-          /
-          <a href="https://arxiv.org/abs/2411.17820">arXiv</a>
-          /
-          <a href="https://github.com/ai4ce/CityWalker">github</a>
-          <p>
-          Train autonomous agents for robust urban navigation using Internet-scale videos.
-          </p> 
-        </td>
-      </tr>
+      
     
       
 
