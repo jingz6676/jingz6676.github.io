@@ -137,7 +137,7 @@
                 <strong>Jing Zhang</strong><sup>&dagger;</sup>
                 
                 <br>
-                <em>Under Review</em>, 2025
+                <em>ICCV</em>, 2025
                 <br>
                 <a href="https://ai4ce.github.io/GARF/">project page</a>
                 /
@@ -150,6 +150,51 @@
                 </p>
                 </td>
         </tr>
+
+        <tr onmouseout="rap_stop()" onmouseover="rap_start()">
+        <td style="padding:20px;width:25%;vertical-align:middle">
+          <div class="one">
+            <div class="two" id='rap_image'><video  width=100% height=100% muted autoplay loop>
+            <source src="images/RAP.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+            </video></div>
+            <img src='images/rap.png' width="160">
+          </div>
+          <script type="text/javascript">
+            function rap_start() {
+              document.getElementById('rap_image').style.opacity = "1";
+            }
+          
+            function rap_stop() {
+              document.getElementById('rap_image').style.opacity = "0";
+            }
+            rap_stop()
+          </script>
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle">
+          <a href="https://ai4ce.github.io/RAP/">
+            <span class="papertitle">RAP: Unleashing the Power of Data Synthesis in Visual Localization</span>
+          </a>
+          <br>
+      <a href="https://louis-leee.github.io/">Sihang Li*</a>,
+      <a href="https://kevintsq.github.io/">Siqi Tan*</a>,
+      <a href="https://karlcbw.github.io/">Bowen Chang</a>,
+      <strong>Jing Zhang</strong>,
+      <a href="https://scholar.google.com/citations?user=YeG8ZM0AAAAJ">Chen Feng</a><sup>&dagger;</sup>,
+      <a href="https://yimingli-page.github.io/">Yiming Li</a><sup>&dagger;</sup>
+          <br>
+          <em>ICCV</em>, 2025
+          <br>
+          <a href="https://ai4ce.github.io/RAP/">project page</a>
+          /
+          <a href="https://arxiv.org/abs/2412.00138">arXiv</a>
+          /
+          <a href="https://github.com/ai4ce/RAP">github</a>
+          <p>
+            Make camera localization more generalizable by addressing the data gap via 3DGS and learning gap via a two-branch joint learning with adversarial loss.
+          </p> 
+        </td>
+      </tr>
             
     <tr onmouseout="fusionsense_stop()" onmouseover="fusionsense_start()">
       <td style="padding:20px;width:25%;vertical-align:middle">
@@ -238,7 +283,7 @@
           <strong>Jing Zhang</strong>,
           <a href="https://scholar.google.com/citations?user=YeG8ZM0AAAAJ">Chen Feng</a><sup>&dagger;</sup>
           <br>
-          <em>CVPR</em>, 2025 &nbsp 
+          <em>CVPR</em>, 2025  
           <br>
           <a href="https://ai4ce.github.io/CityWalker/">project page</a>
           /
@@ -251,50 +296,7 @@
         </td>
       </tr>
       
-      <tr onmouseout="rap_stop()" onmouseover="rap_start()">
-        <td style="padding:20px;width:25%;vertical-align:middle">
-          <div class="one">
-            <div class="two" id='rap_image'><video  width=100% height=100% muted autoplay loop>
-            <source src="images/RAP.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-            </video></div>
-            <img src='images/rap.png' width="160">
-          </div>
-          <script type="text/javascript">
-            function rap_start() {
-              document.getElementById('rap_image').style.opacity = "1";
-            }
-          
-            function rap_stop() {
-              document.getElementById('rap_image').style.opacity = "0";
-            }
-            rap_stop()
-          </script>
-        </td>
-        <td style="padding:20px;width:75%;vertical-align:middle">
-          <a href="https://ai4ce.github.io/RAP/">
-            <span class="papertitle">RAP: Unleashing the Power of Data Synthesis in Visual Localization</span>
-          </a>
-          <br>
-      <a href="https://louis-leee.github.io/">Sihang Li*</a>,
-      <a href="https://kevintsq.github.io/">Siqi Tan*</a>,
-      <a href="https://karlcbw.github.io/">Bowen Chang</a>,
-      <strong>Jing Zhang</strong>,
-      <a href="https://scholar.google.com/citations?user=YeG8ZM0AAAAJ">Chen Feng</a><sup>&dagger;</sup>,
-      <a href="https://yimingli-page.github.io/">Yiming Li</a><sup>&dagger;</sup>
-          <br>
-          <em>Under Review</em>, 2025 &nbsp 
-          <br>
-          <a href="https://ai4ce.github.io/RAP/">project page</a>
-          /
-          <a href="https://arxiv.org/abs/2412.00138">arXiv</a>
-          /
-          <a href="https://github.com/ai4ce/RAP">github</a>
-          <p>
-            Make camera localization more generalizable by addressing the data gap via 3DGS and learning gap via a two-branch joint learning with adversarial loss.
-          </p> 
-        </td>
-      </tr>
+      
 
 
       
