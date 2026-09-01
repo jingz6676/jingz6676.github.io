@@ -29,6 +29,10 @@ p{margin:0 0 10px;max-width:74ch}
  background:var(--rule);display:block}
 table{width:100%;border-collapse:collapse;font-size:15px;margin:8px 0 0}
 th,td{text-align:left;padding:8px 10px 8px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+/* the last row's rule and the next h2's top rule stacked into a double divider */
+tbody tr:last-child td{border-bottom:none}
+/* without that rule the 38px approach to the next section reads as a hole */
+.scroll+h2{margin-top:20px}
 th{font-size:13px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
 td.d{font-family:ui-monospace,Menlo,monospace;font-size:14px;width:78px}
 td.d .lk{margin-top:5px}
@@ -95,23 +99,24 @@ details.vid .lk a{display:inline-block;margin:1px 11px 1px 0;white-space:normal}
 </tbody></table></div>
 
 <h2>Materials</h2>
-<div class="scroll"><table>
-<thead><tr><th>Source</th><th>For</th><th>Licence</th></tr></thead><tbody>
-<tr><td><a href="https://www.deeplearningbook.org/" target="_blank" rel="noopener">Goodfellow, Bengio and Courville, <i>Deep Learning</i></a>, chapters 2 to 5</td><td class="dim">the default definition anchor, M1 to M9</td><td>free online · cite, do not copy</td></tr>
-<tr><td><a href="https://github.com/michiganrobotics/rob501" target="_blank" rel="noopener">ROB 501 — recordings, notes, problem sets, exams</a></td><td class="dim">much of M1 to M6, and M8</td><td>CC BY-NC 4.0 · adaptable</td></tr>
-<tr><td><a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/" target="_blank" rel="noopener">MIT 18.06</a> · <a href="https://ocw.mit.edu/courses/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/" target="_blank" rel="noopener">18.065</a> · <a href="https://www.3blue1brown.com/topics/linear-algebra" target="_blank" rel="noopener">3Blue1Brown</a></td><td class="dim">M1 to M8, per meeting</td><td>CC BY-NC-SA 4.0 · adaptable</td></tr>
-<tr><td><a href="https://diffusion.csail.mit.edu/2026/" target="_blank" rel="noopener">MIT 6.S184</a> · <a href="https://deepgenerativemodels.github.io/" target="_blank" rel="noopener">Stanford CS236</a> · <a href="https://arxiv.org/abs/2412.06264" target="_blank" rel="noopener">Flow Matching Guide</a></td><td class="dim">M11 and M12</td><td>cite, do not copy</td></tr>
-<tr><td><a href="https://people.math.wisc.edu/~chr/am205/" target="_blank" rel="noopener">Rycroft, Harvard AM205 — notes and recordings</a></td><td class="dim">the numerical methods in M3, M4 and M7</td><td>cite, do not copy</td></tr>
-<tr><td><a href="http://hades.mech.northwestern.edu/index.php/Modern_Robotics" target="_blank" rel="noopener">Lynch and Park, <i>Modern Robotics</i></a></td><td class="dim">M2, M4 and M7</td><td>cite, do not copy</td></tr>
+<div class="scroll"><table><tbody>
+<tr><td><a href="https://www.deeplearningbook.org/" target="_blank" rel="noopener">Goodfellow, Bengio and Courville, <i>Deep Learning</i></a>, chapters 2 to 5</td></tr>
+<tr><td><a href="https://github.com/michiganrobotics/rob501" target="_blank" rel="noopener">ROB 501 — recordings, notes, problem sets, exams</a></td></tr>
+<tr><td><a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/" target="_blank" rel="noopener">MIT 18.06</a> · <a href="https://ocw.mit.edu/courses/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/" target="_blank" rel="noopener">18.065</a> · <a href="https://www.3blue1brown.com/topics/linear-algebra" target="_blank" rel="noopener">3Blue1Brown</a></td></tr>
+<tr><td><a href="https://diffusion.csail.mit.edu/2026/" target="_blank" rel="noopener">MIT 6.S184</a> · <a href="https://deepgenerativemodels.github.io/" target="_blank" rel="noopener">Stanford CS236</a> · <a href="https://arxiv.org/abs/2412.06264" target="_blank" rel="noopener">Flow Matching Guide</a></td></tr>
+<tr><td><a href="https://people.math.wisc.edu/~chr/am205/" target="_blank" rel="noopener">Rycroft, Harvard AM205 — notes and recordings</a></td></tr>
+<tr><td><a href="http://hades.mech.northwestern.edu/index.php/Modern_Robotics" target="_blank" rel="noopener">Lynch and Park, <i>Modern Robotics</i></a></td></tr>
 </tbody></table></div>
 
 <h2>Policies</h2>
 <h3>Late work</h3>
-<p>Five late days for the semester, in whole days, at most three on any one set, no form and no reason required, and none once solutions are posted.</p>
+<p>Five late days for the semester, at most three on any one set, no reason needed — after that the set loses 10% a day, and closes once solutions are posted.</p>
 <h3>Collaboration</h3>
-<p>Discuss the problems with anyone, then write your solution alone and list who you worked with.</p>
+<p>Discuss the problems with anyone, then write your solution alone.</p>
 <h3>Using AI</h3>
-<p>Use any tool to understand something, but what you submit has to be something you could reproduce at a blackboard, because the exams ask for the same derivations the problem sets do. You sit them in person, in Room 909, with one sheet of paper, both sides, prepared by you, and a scientific calculator — no phone, laptop, tablet, watch or model.</p>
+<p>Use any tool to understand the material, but not to write your solutions.</p>
+<h3>Examinations</h3>
+<p>You may bring one sheet of paper, both sides, prepared by you, and a scientific calculator. No phone, laptop, tablet, or watch.</p>
 <h3>Integrity and accessibility</h3>
 <p>The <a href="https://engineering.nyu.edu/life-tandon/student-life/student-advocacy/student-code-conduct" target="_blank" rel="noopener">Tandon Student Code of Conduct</a> and the University <a href="https://www.nyu.edu/about/policies-guidelines-compliance/policies-and-guidelines/academic-integrity-for-students-at-nyu.html" target="_blank" rel="noopener">Academic Integrity policy</a> apply, and accommodations go through the <a href="https://www.nyu.edu/students/communities-and-groups/student-accessibility.html" target="_blank" rel="noopener">Moses Center</a> with no need to tell me why.</p>
 <h3>If something goes wrong</h3>
