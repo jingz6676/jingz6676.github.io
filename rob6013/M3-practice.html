@@ -625,8 +625,9 @@ summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
     <p>(a) <span class="no">False.</span> $r=0$ says one thing and only one thing:
     $b\in\mathcal C(A)$, the model could reach the data. Fit a line to two readings at two
     different times and $r=0$ comes out every time, whatever the readings — two parameters, two
-    measurements, nothing left over. A zero residual is evidence about how many columns you gave
-    yourself, not about the physics. The same trap in reverse: adding columns can never raise the
+    measurements, nothing left over. A zero residual says the observed data lie in the model's
+    column space. By itself it does not validate the physical model, and the line through two
+    readings is one way that can happen. The same trap in reverse: adding columns can never raise the
     minimum $\lVert r\rVert$, so ranking models by residual alone never prefers the smaller
     one.</p>
     <p>(b) <span class="no">False</span>, and it goes the other way. An extra reading adds one
@@ -710,12 +711,14 @@ summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
   </div></details></li>
 
   <li><div class="q">
-    <p>At every step Gram&ndash;Schmidt throws away the overlap. Show that it throws away no
+    <p>Assume $a_1,\dots,a_n$ are linearly independent, so every column keeps a $q$ of its own.
+    At every step Gram&ndash;Schmidt throws away the overlap. Show that it throws away no
     <em>span</em>: prove that
     $\operatorname{span}\{q_1,\dots,q_j\}=\operatorname{span}\{a_1,\dots,a_j\}$
     for every $j$, starting from</p>
     $$a_j=\sum_{i&lt;j}(q_i^{\mathsf T}a_j)\,q_i+\lVert u_j\rVert\,q_j .$$
-    <p>Name the one place the proof needs $\lVert u_j\rVert>0$.</p>
+    <p>Name the one place the proof needs $\lVert u_j\rVert>0$, and say what independence has to
+    do with it.</p>
   </div>
   <details><summary>Answer</summary><div class="ans">
     <p>Two inclusions, by induction on $j$.</p>
@@ -759,10 +762,11 @@ summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
       \qquad q_2=\frac{1}{\sqrt6}\begin{bmatrix}-1\\1\\2\end{bmatrix}$$
     <p>The third column supplied the <em>second</em> $q$: that is the bookkeeping the skip
     forces, and $q_1^{\mathsf T}q_2=(-1+1+0)/\sqrt{12}=0$ confirms it.</p>
-    <p>Even repaired, it is <span class="no">not basis extraction</span>: those two span a
-    plane, the span of the list you supplied. Gram&ndash;Schmidt orthonormalises what it is
-    given; it never invents a direction the list does not already contain, so it cannot extend
-    a list to a basis of $\mathbb R^3$.</p>
+    <p>After the skip, the two retained vectors are an orthonormal basis for the span of the
+    list you supplied, which here is a plane. They are <span class="no">not</span> a basis of
+    $\mathbb R^3$: Gram&ndash;Schmidt cannot add a direction outside the span of its inputs. And
+    if the task is to pick a basis out of the original columns, that is a different operation —
+    these $q$'s are new vectors, not a subset of the $a$'s.</p>
     <p>(b) It says the column lies <em>nearly</em> in the span of the earlier ones:
     near-dependence, which is a statement about sensitivity. It does <span class="no">not</span>
     prove exact dependence, and the two are different diseases — exact dependence costs you

@@ -306,7 +306,9 @@ summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 
   <li><div class="q">
     <p>Frame $b$ is turned from frame $a$ by $R_{ab}=\tfrac15\begin{bmatrix}3&-4\\4&3\end{bmatrix}$,
-    and frame $c$ from frame $b$ by $R_{bc}=\tfrac15\begin{bmatrix}4&-3\\3&4\end{bmatrix}$.</p>
+    and frame $c$ from frame $b$ by $R_{bc}=\tfrac15\begin{bmatrix}4&-3\\3&4\end{bmatrix}$.
+    All three frames share one origin, and $R_{ab}$ takes coordinates in $b$ to coordinates in
+    $a$: $x_a=R_{ab}x_b$.</p>
     <ul class="parts">
       <li>(a) Compute $R_{ac}$ and say what turn it is.</li>
       <li>(b) A point reads $(2,1)^{\mathsf T}$ in frame $c$. What does it read in frame $a$?</li>
@@ -353,8 +355,8 @@ summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
     $Q^{\mathsf T}$ is here is a left inverse and nothing more. Orthonormal columns are not
     enough on their own — that is the condition the word orthogonal quietly adds.</p>
     <p>(c) $QQ^{\mathsf T}=\begin{bmatrix}9/25&12/25&0\\12/25&16/25&0\\0&0&1\end{bmatrix}$, and
-    $y=(4,-3,0)^{\mathsf T}$ gives $\tfrac{36-36}{25}=0$ in each of the first two rows and $0$
-    in the third, so <span class="nul">$y\in\mathcal N(QQ^{\mathsf T})$</span>. A matrix with a
+    $y=(4,-3,0)^{\mathsf T}$ gives $\tfrac{36-36}{25}=0$ in the first row, $\tfrac{48-48}{25}=0$
+    in the second and $0$ in the third, so <span class="nul">$y\in\mathcal N(QQ^{\mathsf T})$</span>. A matrix with a
     nonzero null vector has no inverse, so $QQ^{\mathsf T}$ is certainly not $I_3$, and one
     counterexample settles it.</p>
     <p>What $QQ^{\mathsf T}$ does instead: it fixes <span class="out">$\mathcal C(Q)$</span>,
@@ -421,12 +423,13 @@ summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
     $$\det C=\det\begin{bmatrix}1&2\\3&4\end{bmatrix}\cdot\det\begin{bmatrix}2&1\\1&1\end{bmatrix}
       =(-2)(1)=-2$$
     <p>Two conditions, and both matter: the lower-left corner must be zero, and the two diagonal
-    corners must be square. Once the lower left is not zero, the product of the two diagonal
-    determinants is no longer the determinant — even where it happens to land on the same number.
+    corners must be square. With a zero lower-left corner the determinant <em>equals</em> the
+    product of the two corner determinants. Once the lower left is not zero, that equality is no
+    longer guaranteed — it may still hold for particular entries.
     Putting $\begin{bmatrix}-1&1\\2&2\end{bmatrix}$ in the lower left still leaves $\det C=-2$, and
-    so does $\begin{bmatrix}1&2\\-2&0\end{bmatrix}$; those are coincidences of these particular
-    entries, and almost any other choice moves the answer. The argument above is gone the moment
-    the zeros are, whichever way the number happens to fall.</p>
+    so does $\begin{bmatrix}1&2\\-2&0\end{bmatrix}$; both are accidents of these particular
+    entries, and almost any other choice moves the answer. What is gone the moment the zeros are
+    is the argument, not necessarily the number.</p>
   </div></details></li>
 
   <li><div class="q">
@@ -826,8 +829,9 @@ summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
     a growing one.</p>
     <p>From $x_0=(2,-1)^{\mathsf T}$ you have $c_1=0$, and
     $x_k=(-1)^{k}(2,-1)^{\mathsf T}$ flips between two points forever. Dividing by $2^{k}$
-    sends it to $0$, not to $c_1v_1$. <span class="no">The condition $c_1\neq0$ is doing real
-    work</span>: the limit is about states that carry some $v_1$.</p>
+    sends it to $0$, which is still $c_1v_1$: the displayed limit holds for every $x_0$.
+    <span class="no">What $c_1\neq0$ buys is a <em>nonzero</em> limit</span> — a direction the
+    scaled state settles on. With $c_1=0$ there is no dominant direction to read off.</p>
   </div></details></li>
 
   <li><div class="q">
@@ -838,7 +842,7 @@ summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
       <li>(b) Does $x_k\to0$ for every $x_0$? Name the condition and say which part of it
         fails.</li>
       <li>(c) Give a nonzero $x_0$ that never moves at all, and a nonzero $x_0$ whose
-        trajectory does reach $0$.</li>
+        trajectory converges to zero as $k\to\infty$.</li>
       <li>(d) A different diagonalizable $B$ has eigenvalues $-\tfrac{9}{10}$ and
         $\tfrac45$. Same question for $B$, and does the minus sign matter?</li>
     </ul>
