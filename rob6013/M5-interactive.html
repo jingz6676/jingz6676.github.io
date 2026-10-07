@@ -1103,7 +1103,7 @@ window.M5 = (function () {
     k.text('parameter space ℝ²', [14, 18], c.in, { size: 15, mono: true, bold: true });
     for (i = -3; i <= 3; i++) {
       var cst = 0.1 * i;
-      g.save(); g.globalAlpha = i === 0 ? 0.8 : 0.42;
+      g.save(); g.beginPath(); g.rect(12, 28, 532, 334); g.clip(); g.globalAlpha = i === 0 ? 0.8 : 0.42;
       k.seg(S([cst - 0.55, 0.275]), S([cst + 0.55, -0.275]), c.dim, i === 0 ? 2 : 1.6);
       g.restore();
     }
@@ -1111,7 +1111,7 @@ window.M5 = (function () {
     k.seg(S([-0.38, 0]), S([0.38, 0]), c.dim, 1);
     k.seg(S([0, -0.26]), S([0, 0.26]), c.dim, 1);
     k.text('x₁', [S([0.38, 0])[0], S([0, 0])[1] + 17], c.dim, { size: 15, mono: true, align: 'right' });
-    k.text('x₂', [S([0, 0])[0] + 9, S([0, 0.26])[1] - 2], c.dim, { size: 15, mono: true });
+    k.text('x₂', [S([0, 0])[0] + 9, 18], c.dim, { size: 15, mono: true });
     var V = [[0.1, 0], [0, 0.1], [-0.1, 0]], N = ['A', 'B', 'C'], off = [[16, 14], [0, -16], [-16, 14]];
     V.forEach(function (v, j) {
       /* the three candidate steps are the question: they stay at full length in every frame */
@@ -1640,7 +1640,7 @@ window.M5 = (function () {
       <canvas id="m5p12a" width="620" height="330" role="img" aria-label="Left: three elliptical level curves of a second loss, one half of x1 squared plus twice x2 squared, which is not the running loss. The two inner curves are dashed and the outer one is solid, and the marked point at two, one half lies on that outer curve. An orange arrow at that point gives the direction of its gradient, and a blue unit arrow turns steadily around the point. Right: the slope along the blue arrow plotted against its angle, a cosine curve crossing zero twice; a dot runs along the curve in step with the turning arrow, and dashed lines mark the largest and smallest values it reaches."></canvas>
     </figure>
     <div>
-      <div class="eq tight">$$D_vL=\frac{d}{dt}L(x+tv)\Big|_{t=0}=\nabla L\T v=\|\nabla L\|_2\cos\phi$$</div>
+      <div class="eq tight">$$\begin{aligned}D_vL&=\frac{d}{dt}L(x+tv)\Big|_{t=0}\\&=\nabla L\T v=\|\nabla L\|_2\cos\phi\end{aligned}$$</div>
       <dl class="gloss">
         <dt class="in">$v$</dt><dd>a direction with $\|v\|_2=1$</dd>
         <dt>$\phi$</dt><dd>angle from $v$ to $\nabla L$</dd>
@@ -1665,7 +1665,9 @@ window.M5 = (function () {
     }
     k.text('parameter space ℝ²', [12, 18], c.in, { size: 15, mono: true, bold: true });
     k.text('a different loss:  (x₁² + 2x₂²) / 2', [12, 322], c.dim, { size: 15, mono: true });
+    g.save(); g.beginPath(); g.rect(10, 30, 328, 274); g.clip();
     [1.5, 3, 4.5].forEach(function (lv) { k.conic(S, H, lv, c.dim, lv === 4.5 ? 2 : 1.4, lv === 4.5 ? null : [5, 4]); });
+    g.restore();
     k.seg(S([-0.6, 0]), S([3.3, 0]), c.dim, 1); k.seg(S([0, -1.7]), S([0, 1.7]), c.dim, 1);
     var u = M5.sc(1 / nG, G), v = [u[0] * Math.cos(phi) - u[1] * Math.sin(phi), u[0] * Math.sin(phi) + u[1] * Math.cos(phi)];
     k.arrow(S(x0), S(M5.add(x0, u)), c.res, 3.2);
@@ -1732,11 +1734,14 @@ window.M5 = (function () {
     for (i = -3; i <= 3; i++) {
       if (i === 0) continue;
       var cst = 0.6 * i;
-      g.save(); g.globalAlpha = 0.42;
+      g.save(); g.beginPath(); g.rect(12, 30, 548, 342); g.clip(); g.globalAlpha = 0.42;
       k.seg(S([cst - 2.6, 1.3]), S([cst + 2.6, -1.3]), c.dim, 1.6);
       g.restore();
     }
-    if (k.shown(1)) k.seg(S([-2.6, 1.3]), S([2.6, -1.3]), c.ans, 2.6);
+    if (k.shown(1)) {
+      g.save(); g.beginPath(); g.rect(12, 30, 548, 342); g.clip();
+      k.seg(S([-2.6, 1.3]), S([2.6, -1.3]), c.ans, 2.6); g.restore();
+    }
     k.seg(S([-1.7, 0]), S([1.7, 0]), c.dim, 1); k.seg(S([0, -1.1]), S([0, 1.1]), c.dim, 1);
     k.text('x₁', [S([1.7, 0])[0], S([0, 0])[1] + 17], c.dim, { size: 15, mono: true, align: 'right' });
     k.text('x₂', [S([0, 0])[0] + 9, S([0, 1.1])[1] + 2], c.dim, { size: 15, mono: true });
@@ -1806,7 +1811,7 @@ window.M5 = (function () {
   <p class="sub">Columns of the Jacobian Are Input Effects</p>
   <div class="cols" style="grid-template-columns:640px 1fr;gap:26px;align-items:center">
     <figure>
-      <canvas id="m5p15c" width="640" height="320" role="img" aria-label="Two panels at one scale, joined by a dim arrow labelled f. Left, input space R2 with an integer grid and a blue dot at one two. Right, output space R2 with a matching grid and a teal dot at five two. A blue increment arrow grows along the first input direction while a teal arrow grows from the output dot to six four, labelled J e one equals one two; then a second blue increment arrow grows along the other input direction and a second teal arrow grows to seven three, labelled J e two equals two one."></canvas>
+      <canvas id="m5p15c" width="640" height="340" role="img" aria-label="Two panels at one scale, joined by a dim arrow labelled f. Left, input space R2 with an integer grid and a blue dot at one two. Right, output space R2 with a matching grid and a teal dot at five two. A blue increment arrow grows along the first input direction while a teal arrow grows from the output dot to six four, labelled J e one equals one two; then a second blue increment arrow grows along the other input direction and a second teal arrow grows to seven three, labelled J e two equals two one."></canvas>
     </figure>
     <div>
       <div class="eq" style="margin:4px 0 8px">$$dy=J_f\,dx,\qquad (J_f)_{ij}=\frac{\partial f_i}{\partial x_j}$$</div>
@@ -1867,7 +1872,7 @@ window.M5 = (function () {
         var ip = Si([x0[0] + e[0], x0[1] + e[1]]), op = So([y0[0] + col[0], y0[1] + col[1]]);
         if (j === 0) tag(lab[0][0], [ip[0], ip[1] - 15], c.in, 'center');
         else tag(lab[1][0], [ip[0] + 11, ip[1] + 5], c.in);
-        tag(lab[j][1], [op[0] + 9, op[1] - 5], c.out);
+        tag(lab[j][1], [j === 1 ? 626 : op[0] + 9, op[1] - 5], c.out, j === 1 ? 'right' : 'left');
       }
       g.restore();
     });
@@ -2688,7 +2693,7 @@ window.M5 = (function () {
   <p class="sub">Differentiate a Quadratic Form</p>
   <div class="cols" style="grid-template-columns:minmax(0,1fr) 620px;gap:22px;align-items:center">
     <div>
-      <div class="eq" style="margin:2px 0 6px">$$d(x\T Ax)=(dx)\T Ax+x\T A\,dx=[(A+A\T)x]\T dx$$</div>
+      <div class="eq" style="margin:2px 0 6px">$$\begin{aligned}d(x\T Ax)&=(dx)\T Ax+x\T A\,dx\\&=[(A+A\T)x]\T dx\end{aligned}$$</div>
       <dl class="gloss">
         <dt>$A\in\R^{n\times n}$</dt><dd>constant in $x$</dd>
         <dt class="out">$(dx)\T Ax$</dt><dd>$x$ as the left factor</dd>
@@ -2828,9 +2833,9 @@ window.M5 = (function () {
     k.arrow([546, 196], [456, 196], c.res, 2.2);
     K.tx(g, k, '∂L/∂L = 1', [501, 180], c.res, { size: 14 });
     k.arrow([448, 196], [348, 196], c.res, 2.2);
-    K.tx(g, k, '∂L/∂e = e', [398, 180], c.res, { size: 14 });
+    K.tx(g, k, '∇ₑL = e', [398, 180], c.res, { size: 14 });
     k.arrow([340, 196], [116, 196], c.res, 2.2);
-    K.tx(g, k, '∂L/∂x = Aᵀe', [228, 180], c.res, { size: 14 });
+    K.tx(g, k, '∇ₓL = Aᵀe', [228, 180], c.res, { size: 14 });
     /* one perturbation forward, then one sensitivity back along the lower lane */
     if (t < 0.5) k.dot([80 + (523 - 80) * (t / 0.5), 104], 5.5, c.in);
     else k.dot([546 - (546 - 116) * ((t - 0.5) / 0.5), 196], 5.5, c.res);
@@ -2965,7 +2970,7 @@ window.M5 = (function () {
       k.poly(pts, c.out, 2.6);
       k.seg([PX(-0.3), PY(5 - 4 * (-0.3))], [PX(1.2), PY(5 - 4 * 1.2)], c.res, 3);
       k.dot([PX(0), PY(L(0))], 6, c.res);
-      K.tx(g, k, 'slope at x = 0', [398, 126], c.res, { align: 'left', size: 15 });
+      K.tx(g, k, 'slope at x = 0', [540, 126], c.res, { align: 'right', size: 15 });
     }
     if (k.shown(2)) {
       var yh = M5.sc(2, A), r = M5.sub(b, yh);
@@ -4166,16 +4171,21 @@ window.M5 = (function () {
       }
       if (k.shown(2)) {
         /* the same network, a different input: the gate opens and the row comes back */
-        var s = Math.min(1, t / 0.5), full = t >= 0.5;
+        var full = t >= 0.5;
         k.arrow([250, 150], [326, 150], c.ink, 2.2);
         k.text('new input', [288, 132], c.dim, { size: 15, mono: true, align: 'center' });
         k.text('x′ = ' + vec(xb), [486, 58], c.in, { size: 16, mono: true, align: 'center' });
         k.text('∇_W₁ L', [486, 84], c.res, { size: 16, mono: true, align: 'center' });
         if (full) grid(408, Bb.dW1, true, c.ans);
         else k.cells([408, 104], [['', ''], ['', '']], { cw: 78, ch: 48, size: 17 });
-        k.text('z₁ = ' + vec(Bb.fwd.z1), [486, 226], c.out, { size: 16, mono: true, align: 'center' });
-        k.node([408, 252], '1', { w: 42, h: 30, col: c.out, size: 15 });
-        k.node([460, 252], s < 1 ? '0' : '1', { w: 42, h: 30, col: s < 1 ? c.nul : c.out, size: 15 });
+        /* z and its gates arrive together. They used to be timed apart: the new z = (3,1) was
+           painted from the first frame while gate 2 still read 0 for half a second, which is a
+           state this network cannot be in -- both preactivations are positive, so both gates are
+           1. Key them off the same `full` the gradient grid uses. */
+        k.text('z₁ = ' + (full ? vec(Bb.fwd.z1) : '?'), [486, 226],
+               full ? c.out : c.dim, { size: 16, mono: true, align: 'center' });
+        k.node([408, 252], full ? '1' : '?', { w: 42, h: 30, col: full ? c.out : c.dim, size: 15 });
+        k.node([460, 252], full ? '1' : '?', { w: 42, h: 30, col: full ? c.out : c.dim, size: 15 });
         k.text('gates', [552, 252], c.out, { size: 16, mono: true });
         k.text('row 2 = ' + vec(Bb.dW1[1]), [486, 278], c.ans, { size: 16, mono: true, align: 'center' });
       }
@@ -4266,7 +4276,7 @@ window.M5 = (function () {
   <p class="sub">Matrix Multiplication Backward</p>
   <div class="cols" style="grid-template-columns:640px 1fr;gap:30px;align-items:center">
     <figure style="margin:0">
-      <canvas id="m5p58" width="640" height="300" role="img" aria-label="Shape cards in rows. The first row shows X times U equals Y with the inner dimension marked as the one that must match. The first click adds the row for the gradient with respect to X, the second the row for the gradient with respect to U, and each result card is checked against the shape it must have. The last click adds the bridge line that renames U as the transpose of W."></canvas>
+      <canvas id="m5p58" width="640" height="320" role="img" aria-label="Shape cards in rows. The first row shows X times U equals Y with the inner dimension marked as the one that must match. The first click adds the row for the gradient with respect to X, the second the row for the gradient with respect to U, and each result card is checked against the shape it must have. The last click adds the bridge line that renames U as the transpose of W."></canvas>
       <span class="step" data-step="1" id="m5p58r1"></span><span class="step" data-step="2" id="m5p58r2"></span>
     </figure>
     <div>
@@ -4289,10 +4299,12 @@ window.M5 = (function () {
         k.node([x, y], name, { w: 96, h: 46, col: col, sub: shape, scol: col, size: 17, ssize: 13 });
       }
       function op(s, x, y) { k.text(s, [x, y], c.dim, { size: 18, mono: true, align: 'center' }); }
-      function line(y, lead, a, b, res, col) {
+      /* `lastop` keeps a shape out of an equation. A product is not its size, so the two
+         gradient rows end with an arrow into a shape card rather than an equals sign. */
+      function line(y, lead, a, b, res, col, lastop) {
         k.text(lead, [104, y], col, { size: 16, mono: true, align: 'right' });
         card(168, y, a[0], a[1], col); op('·', 228, y);
-        card(288, y, b[0], b[1], col); op('=', 348, y);
+        card(288, y, b[0], b[1], col); op(lastop || '=', 348, y);
         card(408, y, res[0], res[1], col);
       }
       line(56, 'Y =', ['X', 'B × n'], ['U', 'n × m'], ['Y', 'B × m'], c.ink);
@@ -4300,10 +4312,12 @@ window.M5 = (function () {
       k.seg([216, 98], [240, 98], c.acc, 1.4);
       k.text('n must match', [228, 114], c.acc, { size: 14, mono: true, align: 'center' });
       if (k.shown(1)) {
-        line(150, '∇_X L =', ['G', 'B × m'], ['Uᵀ', 'm × n'], ['B × n', 'shape of X'], c.res);
+        line(150, '∇_X L =', ['G', 'B × m'], ['Uᵀ', 'm × n'],
+             ['B × n', '= shape(X)'], c.res, '→');
       }
       if (k.shown(2)) {
-        line(216, '∇_U L =', ['Xᵀ', 'n × B'], ['G', 'B × m'], ['n × m', 'shape of U'], c.res);
+        line(216, '∇_U L =', ['Xᵀ', 'n × B'], ['G', 'B × m'],
+             ['n × m', '= shape(U)'], c.res, '→');
       }
       if (k.shown(3)) {
         k.node([320, 272], null, { w: 604, h: 46, col: c.acc, round: 9, lw: 1.6 });
@@ -4347,9 +4361,9 @@ window.M5 = (function () {
       grid(240, 74, 4, 2, c.res, 'G   4 × 2');
       grid(390, 74, 2, 3, c.dim, 'W   2 × 3');
       if (k.shown(1)) {
-        k.text('A   Xᵀ G  =  (3 × 4)(4 × 2)  =  3 × 2', [280, 204], c.dim, { size: 17, mono: true, align: 'center' });
-        k.text('B   Gᵀ X  =  (2 × 4)(4 × 3)  =  2 × 3', [280, 240], c.ans, { size: 17, mono: true, align: 'center' });
-        k.text('C   G Xᵀ  =  (4 × 2)(3 × 4)  ✗', [280, 276], c.nul, { size: 17, mono: true, align: 'center' });
+        k.text('A   Xᵀ G :  (3 × 4)(4 × 2)  →  3 × 2', [280, 204], c.dim, { size: 17, mono: true, align: 'center' });
+        k.text('B   Gᵀ X :  (2 × 4)(4 × 3)  →  2 × 3', [280, 240], c.ans, { size: 17, mono: true, align: 'center' });
+        k.text('C   G Xᵀ :  (4 × 2)(3 × 4)  ✗', [280, 276], c.nul, { size: 17, mono: true, align: 'center' });
       }
     }, { seconds: 3, rest: 1 });
   })();
@@ -4424,7 +4438,7 @@ window.M5 = (function () {
       </ol>
     </div>
     <figure style="margin:0">
-      <canvas id="m5p61" width="520" height="300" role="img" aria-label="The three by two grid of upstream sensitivities, its rows labelled by sample and its columns by feature, above an empty result row of two cells. The first click sends one orange arrow down each column and fills the result row."></canvas>
+      <canvas id="m5p61" width="520" height="320" role="img" aria-label="The three by two grid of upstream sensitivities, its rows labelled by sample and its columns by feature, above an empty result row of two cells. The first click sends one orange arrow down each column and fills the result row."></canvas>
     </figure>
   </div>
   <script>
@@ -5372,7 +5386,7 @@ window.M5 = (function () {
   <script>
   (function () {
     m3anim(document.getElementById('m5p77f'), function (g, t, k) {
-      var c = k.c, J = [[1, 2], [0, 1]];
+      var c = k.c, J = [[1, 2], [0, 1]], DSC = 0.46;   /* displacement exaggeration, both panels */
       var th = 2 * Math.PI * t, dq = [0.78 * Math.cos(th), 0.78 * Math.sin(th)];
       /* --- joint space: the variable we differentiate, and one perturbation of it --- */
       var Sq = k.plane(148, 136, 46);
@@ -5380,10 +5394,15 @@ window.M5 = (function () {
       k.grid(Sq, -1.5, 1.5, -1.5, 1.5, { step: 1, labels: ['q₁', 'q₂'] });
       k.dot(Sq([0, 0]), 5.5, c.ink);
       k.text('q', [Sq([0, 0])[0] - 9, Sq([0, 0])[1] + 17], c.ink, { size: 16, mono: true, align: 'right' });
-      k.arrow(Sq([0, 0]), Sq(dq), c.in, 3);
-      k.text('dq', [Sq(dq)[0] + 9, Sq(dq)[1] - 10], c.in, { size: 16, mono: true });
+      /* Both displacements are drawn at the same exaggeration DSC and the figure says so.
+         The task-space arrow used to carry it alone: |J dq| reaches 1.88 and the grid stops
+         at 2.3, so it was scaled to fit while dq next to it was drawn true, which made the
+         two panels disagree about how long a displacement is. */
+      k.arrow(Sq([0, 0]), Sq(M5.sc(DSC, dq)), c.in, 3);
+      k.text('dq', [Sq(M5.sc(DSC, dq))[0] + 9, Sq(M5.sc(DSC, dq))[1] - 10], c.in,
+             { size: 16, mono: true });
       /* --- task space: the error, and the tip motion the same perturbation produces --- */
-      var Sp = k.plane(416, 92, 54), P = [1, -1], dp = M5.mv(J, M5.sc(0.46, dq));
+      var Sp = k.plane(416, 92, 54), P = [1, -1], dp = M5.mv(J, M5.sc(DSC, dq));
       k.text('task space ℝ²', [348, 20], c.out, { size: 15, mono: true, bold: true });
       k.grid(Sp, -1.1, 2.3, -2.1, 1.1, { step: 1 });
       k.dot(Sp([0, 0]), 7, c.dat);
@@ -5396,6 +5415,8 @@ window.M5 = (function () {
       k.arrow(Sp(P), Sp(Q), c.out, 2.6);
       k.text('J dq', [Sp(Q)[0] + 9, Sp(Q)[1] - 10], c.out, { size: 15, mono: true });
       k.text('dL = eᵀ (J dq)', [352, 228], c.res, { size: 16, mono: true });
+      k.text('displacements ×0.46', [628, 20], c.dim,
+             { size: 13, mono: true, align: 'right' });
       /* --- what we are after: one number per joint, still unknown --- */
       k.text('joint sensitivity  ∂L/∂q', [26, 252], c.res, { size: 15, mono: true, bold: true });
       var base = 342;
@@ -5479,7 +5500,7 @@ window.M5 = (function () {
         k.text(i ? '∂L/∂q₂' : '∂L/∂q₁', [x + bw / 2, base + 18], c.dim, { size: 14, mono: true, align: 'center' });
       });
       k.seg([378, base], [596, base], c.dim, 1.4);
-      if (k.shown(2)) k.text('equal: neither joint is larger', [352, 338], c.ans, { size: 15, mono: true });
+      if (k.shown(2)) k.text('equal: neither joint is larger', [338, 338], c.ans, { size: 15, mono: true });
     }, { seconds: 4, mode: 'loop', hold: 1, rest: 1 });
   })();
   </script>
@@ -5597,7 +5618,8 @@ window.M5 = (function () {
         /* the two probes, and the chord they define: exact here, the slice is a parabola */
         var lo = [a - eps, f(a - eps)], hi = [a + eps, f(a + eps)];
         var m = (hi[1] - lo[1]) / (2 * eps), r = 2.5 * eps;     /* the chord, drawn along itself */
-        k.seg(S([a - r, f(a) - r * m]), S([a + r, f(a) + r * m]), c.res, 2.6);
+        var chordMid = (lo[1] + hi[1]) / 2;
+        k.seg(S([a - r, chordMid - r * m]), S([a + r, chordMid + r * m]), c.res, 2.6);
         k.seg(S([lo[0], 0]), S([lo[0], 0.6]), c.in, 2);
         k.seg(S([hi[0], 0]), S([hi[0], 0.6]), c.in, 2);
         /* run 2ε, rise ΔL: the two panels share a scale, so the two rises are comparable by eye */
@@ -5970,7 +5992,7 @@ window.M5 = (function () {
       k.text('=', [384, 266], c.ink, { size: 20, align: 'center' });
       k.cells([412, 234], [[gr[0]], [gr[1]]], { cw: 64, ch: CH, size: 17, col: c.res, fmt: num });
       k.text('the graph route', [500, 252], c.dim, { size: 15, mono: true });
-      k.text('gave the same pair', [500, 276], c.dim, { size: 15, mono: true });
+      k.text('same pair', [500, 276], c.dim, { size: 15, mono: true });
     }, { seconds: 5, mode: 'loop', hold: 1.6, rest: 1 });
   })();
   </script>
@@ -6080,7 +6102,7 @@ window.M5 = (function () {
       k.text('L = 0.25', [S([w0, Lw(w0)])[0] + 12, S([w0, Lw(w0)])[1] - 15], c.out, { size: 15, mono: true });
       k.text('w = 1', [S([w0, Lw(w0)])[0], Y0 + 16], c.dim, { size: 14, mono: true, align: 'center' });
       /* three routes to one number */
-      var cy = [92, 162, 232], txt = [['graph', 'Σ eᵢxᵢ / B  =  −0.5'], ['matrix', 'Aᵀ(Aθ − y)/B  =  −0.5'],
+      var cy = [92, 162, 232], txt = [['graph', 'Σ eᵢxᵢ / B  =  −0.5'], ['matrix', '[Aᵀ(Aθ − y)/B]₁  =  −0.5'],
                                       ['probe', '−0.01 / 0.02  =  −0.5']];
       txt.forEach(function (q, j) {
         if (j === 2 && !k.shown(1)) return;
@@ -6232,7 +6254,7 @@ window.M5 = (function () {
       var all = k.shown(5);
       if (k.shown(1) || all) tag([128, 40], 'dy = J dx', c.in, 130);
       if (k.shown(2) || all) tag([432, 196], '∇ₓL = Jᵀ ∇yL', c.res, 184);
-      if (k.shown(3) || all) tag([452, 250], '∇W L = (∂L/∂z) xᵀ  ·  one use', c.res, 288);
+      if (k.shown(3) || all) tag([452, 250], '∇_W L = ∇_z L xᵀ  ·  one use', c.res, 288);
       if (k.shown(4) || all) tag([206, 348], 'shared: add the paths', c.res, 250);
     }, { seconds: 4, mode: 'loop', hold: 1, rest: 1 });
   })();

@@ -1329,7 +1329,7 @@ window.M6 = (function () {
   <figure>
     <canvas id="m6p07a" width="1152" height="300" role="img" aria-label="Three panels in a row, each with one output. The first panel runs the model forward and its output is a single number, the loss. The second panel runs backward and its output is a column of rates, one per parameter. The third panel takes that column and a learning rate and its output is a new parameter column. Arrows run only left to right between panels, and each panel's output type is written under it, so no panel produces two different kinds of thing."></canvas>
   </figure>
-  <div class="eq tight">$$\text{(i) evaluate }L\qquad\text{(ii) compute }g=\nabla_\theta L\qquad\text{(iii) choose }\Delta\theta$$</div>
+  <div class="eq tight">$$\text{(i) evaluate }L\qquad\text{(ii) compute }g=\nabla_\theta L\qquad\text{(iii) choose }\Delta\theta,\ \theta_{\rm new}=\theta+\Delta\theta$$</div>
   <dl class="gloss">
     <dt class="out">(i)</dt><dd>one number out</dd>
     <dt class="res">(ii)</dt><dd>one rate per parameter out, and nothing is moved yet</dd>
@@ -1551,7 +1551,7 @@ window.M6 = (function () {
 <!-- ============ 12 ============ -->
 <section class="slide" data-part="II">
   <h2>Automatic Differentiation</h2>
-  <p class="sub">Local rules become functions</p>
+  <p class="sub">Local rules become backward callbacks</p>
   <figure>
     <canvas id="m6p12a" width="1152" height="282" role="img" aria-label="On the left, the backward step of an addition node. An arrow carrying z.grad comes down from the top into a box marked plus, and two arrows leave its underside, each labelled times one, reaching a slot u.grad on the left and a slot v.grad on the right. A caption says the same number goes both ways. On the right, the same rule as three lines of code: a backward function whose two body lines each add one point zero times z.grad into a parent's grad. Dashed leader lines pick out the factor one point zero, labelled the local rule, and the term z.grad, labelled the upstream factor, so neither disappears into the formula."></canvas>
   </figure>
@@ -1561,6 +1561,7 @@ window.M6 = (function () {
     <dt class="out">$\partial z/\partial u$</dt><dd>addition's local rule: $1$</dd>
     <dt class="res">$\bar u,\bar v$</dt><dd>the two parent slots</dd>
     <dt>$\mathrel{+}=$</dt><dd>add in; a parent has other uses</dd>
+    <dt class="ans">callback</dt><dd>a function <em>called during</em> the backward pass</dd>
   </dl>
   <script>
   m3anim(document.getElementById('m6p12a'), function (g, t, k) {
@@ -1916,11 +1917,55 @@ window.M6 = (function () {
 
 <!-- ============ 20 ============ -->
 <section class="slide" data-part="II">
-  <p class="eyebrow you" data-min="2">Vote</p>
   <h2>Automatic Differentiation</h2>
   <p class="sub">Trace the backward schedule</p>
   <figure>
-    <canvas id="m6p20a" width="1152" height="168" role="img" aria-label="Three candidate backward runs, one per row, labelled A, B and C. Each row begins with a tag naming what the loss adjoint is seeded with, then three boxes giving the order in which the callbacks execute, starting with the loss node's own callback. Row A seeds with the stored loss value and runs L, e, a. Row B seeds with one and runs L, e, a. Row C seeds with one but runs L, a, e. The verdict column is empty at first and a neutral line on the right asks which run survives both rules. At the first reveal that line is replaced by the two rules: the seed is one, and a node runs only after every node it feeds. At the second reveal each row gets a tick or a cross and the resulting w gradient is printed beside it, twelve, six and zero."></canvas>
+    <canvas id="m6p20a" width="1152" height="236" role="img" aria-label="The graph w to a to e to L drawn once along the top. Underneath, four steps of the correct run appear one at a time, each naming the slot it writes: zero every slot and seed the loss adjoint to one, which writes nothing; L's callback writes e-bar equal to two; e's callback writes a-bar equal to two; a's callback writes w-bar equal to three times two, which is six. Each step highlights the one slot it changes and leaves the others as they were."></canvas>
+  </figure>
+  <div class="eq tight">$$\bar L\leftarrow 1,\qquad \text{then run } L,\ e,\ a$$</div>
+  <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
+    <dt class="res">seed</dt><dd>a number put in a slot; it runs nothing</dd>
+    <dt class="res">callback</dt><dd>what writes into the slot below it</dd>
+  </dl>
+  <p class="small" style="max-width:none;margin:6px 0 0">One step, one slot. $\bar w=6$ at the end.</p>
+  <script>
+  m3anim(document.getElementById('m6p20a'), function (g, t, k) {
+    var c = k.c, i;
+    /* the graph, once, so the steps below have something to point at */
+    var lab = ['w', 'a', 'e', 'L'], xs = [150, 400, 650, 900], nd = [];
+    for (i = 0; i < 4; i++)
+      nd.push(k.node([xs[i], 46], lab[i], { w: 86, h: 38, col: i ? c.out : c.dat, size: 18 }));
+    for (i = 0; i < 3; i++) k.link(nd[i], nd[i + 1], c.dim, {});
+    k.text('forward', [1010, 46], c.dim, { size: 14, mono: true });
+    /* the correct run, one row per step, each naming the slot it writes */
+    /* the NODE's callback runs; the barred name is the slot it writes. Saying "L-bar runs"
+       would be the very confusion this page exists to remove. */
+    var step = [['zero every slot, seed  L̄ = 1', 'writes nothing', c.dim],
+                ["L's callback", 'writes  ē = 2', c.res],
+                ["e's callback", 'writes  ā = 2', c.res],
+                ["a's callback", 'writes  w̄ = 3·2 = 6', c.ans]];
+    for (i = 0; i < 4; i++) {
+      var y = 108 + i * 32;
+      k.text(String(i), [38, y], c.dim, { size: 15, mono: true, align: 'right' });
+      k.text(step[i][0], [62, y], c.ink, { size: 16, mono: true });
+      k.text('→', [430, y], c.dim, { size: 16, mono: true });
+      k.text(step[i][1], [470, y], step[i][2], { size: 16, mono: true, bold: i === 3 });
+    }
+    k.text('a seed runs nothing: 1 into L̄ moves no slot', [640, 140], c.dim,
+           { size: 15, mono: true });
+    k.text('each callback writes one slot upstream', [640, 172], c.dim,
+           { size: 15, mono: true });
+  }, { seconds: 1, hold: 0, rest: 0 });
+  </script>
+</section>
+
+<!-- ============ 21 ============ -->
+<section class="slide" data-part="II">
+  <p class="eyebrow you" data-min="2">Vote</p>
+  <h2>Automatic Differentiation</h2>
+  <p class="sub">Now two runs that break a rule</p>
+  <figure>
+    <canvas id="m6p21a" width="1152" height="168" role="img" aria-label="Three candidate backward runs, one per row, labelled A, B and C. Each row begins with a tag naming what the loss adjoint is seeded with, then three boxes giving the order in which the callbacks execute, starting with the loss node's own callback. Row A seeds with the stored loss value and runs L, e, a. Row B seeds with one and runs L, e, a. Row C seeds with one but runs L, a, e. The verdict column is empty at first and a neutral line on the right asks which run survives both rules. At the first reveal that line is replaced by the two rules: the seed is one, and a node runs only after every node it feeds. At the second reveal each row gets a tick or a cross and the resulting w gradient is printed beside it, twelve, six and zero."></canvas>
   </figure>
   <p class="q">Zero the slots, then seed and run. Which gives the right $\bar w$?</p>
   <ol class="opts one">
@@ -1929,9 +1974,9 @@ window.M6 = (function () {
     <li><i>C</i>$\bar L=1$: $L,a,e$</li>
   </ol>
   <p class="reveal step" data-step="1">Seeding a slot is not running a node: $L$'s callback writes $\bar e$. And no node runs before every node it feeds.</p>
-  <p class="reveal step" data-step="2">C runs $a$ while $\bar e$ is $0$, so $\bar w=0$ though $\bar a$ reaches $2$ later. A's seed doubles every adjoint.</p>
+  <p class="reveal step" data-step="2">C runs $a$ while $\bar a$ is $0$, so $\bar w=0$; $\bar a$ fills too late. A's seed doubles every adjoint.</p>
   <script>
-  m3anim(document.getElementById('m6p20a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p21a'), function (g, t, k) {
     var c = k.c, rule = k.shown(1), on = k.shown(2), i;
     /* The run column names CALLBACKS, L included: setting L.grad does not write e.grad. And the
        casualty of C is w.grad, not a.grad -- a.grad is filled correctly, just too late to be
@@ -1966,12 +2011,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 21 ============ -->
+<!-- ============ 22 ============ -->
 <section class="slide" data-part="II">
   <h2>Automatic Differentiation</h2>
   <p class="sub">ReLU reuses its forward state</p>
   <figure>
-    <canvas id="m6p21a" width="1152" height="286" role="img" aria-label="On the left the graph of a equals the larger of zero and z: flat along the negative axis, then rising at forty-five degrees. A dot slides along it as the animation runs. At the origin a small hollow ring is drawn, with two lines of note beneath saying there is no ordinary derivative at zero and that the engine returns zero there by convention. On the right a three-column table with headings saved z, mask, and what leaves. The first row reads two, one, and a.grad; the second reads minus two, zero, and zero. Whichever row matches the sliding dot is in full colour and the other is greyed. A note under the table says the mask reads z and never the sign of a.grad."></canvas>
+    <canvas id="m6p22a" width="1152" height="286" role="img" aria-label="On the left the graph of a equals the larger of zero and z: flat along the negative axis, then rising at forty-five degrees. A dot slides along it as the animation runs. At the origin a small hollow ring is drawn, with two lines of note beneath saying there is no ordinary derivative at zero and that the engine returns zero there by convention. On the right a three-column table with headings saved z, mask, and what leaves. The first row reads two, one, and a.grad; the second reads minus two, zero, and zero. Whichever row matches the sliding dot is in full colour and the other is greyed. A note under the table says the mask reads z and never the sign of a.grad."></canvas>
   </figure>
   <div class="eq tight">$$a=\max(0,z),\qquad \bar z=\bar a\cdot\mathbf 1_{z>0}$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -1981,7 +2026,7 @@ window.M6 = (function () {
     <dt class="nul">at $z=0$</dt><dd>no derivative; $0$ by convention</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p21a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p22a'), function (g, t, k) {
     var c = k.c, i;
     var S = k.plane(240, 196, 50), zt = -2.3 + 4.6 * t, open = zt > 0;
     k.seg(S([-2.4, 0]), S([2.4, 0]), c.dim, 1.6);
@@ -2017,13 +2062,13 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 22 ============ -->
+<!-- ============ 23 ============ -->
 <section class="slide" data-part="II">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>Automatic Differentiation</h2>
   <p class="sub">An open gate can pass a negative gradient</p>
   <figure>
-    <canvas id="m6p22a" width="1152" height="168" role="img" aria-label="The backward direction runs right to left. On the right an orange arrow carries a.grad equals minus three into a node labelled the larger of zero and z, which also notes that z equals two was saved going forward. A second orange arrow leaves the node to the left, labelled times mask, and ends at a slot marked z.grad holding a question mark. At the first reveal a small badge appears above the node holding the mask value, joined to the node by a dashed leader and labelled as read from the saved z. At the second reveal the slot fills with a number in the answer colour."></canvas>
+    <canvas id="m6p23a" width="1152" height="168" role="img" aria-label="The backward direction runs right to left. On the right an orange arrow carries a.grad equals minus three into a node labelled the larger of zero and z, which also notes that z equals two was saved going forward. A second orange arrow leaves the node to the left, labelled times mask, and ends at a slot marked z.grad holding a question mark. At the first reveal a small badge appears above the node holding the mask value, joined to the node by a dashed leader and labelled as read from the saved z. At the second reveal the slot fills with a number in the answer colour."></canvas>
   </figure>
   <p class="q">$a=\max(0,z)$ with $z=2$ saved, and $\bar a=-3$ arrives. What is $\bar z$?</p>
   <ol class="opts one">
@@ -2034,7 +2079,7 @@ window.M6 = (function () {
   <p class="reveal step" data-step="1">The mask $\mathbf 1_{z>0}$ is a lookup on the saved $z$. Nothing in the backward pass looks at the sign of $\bar a$.</p>
   <p class="reveal step" data-step="2">$z=2>0$: the gate is open, the slope is $1$, so $\bar z=-3$. A needs a shut gate; C flips a sign nothing flips.</p>
   <script>
-  m3anim(document.getElementById('m6p22a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p23a'), function (g, t, k) {
     var c = k.c, rule = k.shown(1), on = k.shown(2), ab = -3, msk = 1, out = ab * msk;
     k.node([260, 88], on ? '−' + Math.abs(out) : '?', { w: 126, h: 50, size: 24,
             col: on ? c.ans : c.res, dash: on ? null : [4, 4], sub: 'z.grad' });
@@ -2052,12 +2097,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 23 ============ -->
+<!-- ============ 24 ============ -->
 <section class="slide" data-part="II">
   <h2>Automatic Differentiation</h2>
   <p class="sub">Checking a computed derivative</p>
   <figure>
-    <canvas id="m6p23a" width="1152" height="204" role="img" aria-label="The loss as a curve in the single parameter w, with the current w marked by a dot and the tangent there drawn as a thin dotted line. Two chords cross the curve. The first joins the two points one probe step either side of w: it sits slightly above the tangent but runs exactly parallel to it. The second joins w to the point one step to the right and tilts visibly steeper. On the right the two slopes are printed, the centred one and the one-sided one, with the gap between them, and a line noting that w is put back afterwards."></canvas>
+    <canvas id="m6p24a" width="1152" height="204" role="img" aria-label="The loss as a curve in the single parameter w, with the current w marked by a dot and the tangent there drawn as a thin dotted line. Two chords cross the curve. The first joins the two points one probe step either side of w: it sits slightly above the tangent but runs exactly parallel to it. The second joins w to the point one step to the right and tilts visibly steeper. On the right the two slopes are printed, the centred one and the one-sided one, with the gap between them, and a line noting that w is put back afterwards."></canvas>
   </figure>
   <div class="eq tight">$$\frac{L(w+\tau)-L(w-\tau)}{2\tau}\quad\text{vs}\quad\frac{L(w+\tau)-L(w)}{\tau}$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -2072,7 +2117,7 @@ window.M6 = (function () {
     <p style="margin:0;max-width:none">One-sided: $6.045$, over by $\tau x^2/2=0.045$. Agreement is evidence only.</p>
   </div>
   <script>
-  m3anim(document.getElementById('m6p23a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p24a'), function (g, t, k) {
     var c = k.c, M = window.M6, X = M.FX.graph.x, YS = M.FX.graph.ys, W = M.FX.graph.w, i;
     var L = function (v) { return 0.5 * (v * X - YS) * (v * X - YS); };
     /* The printed slopes use tau = 1/100. The DRAWN step is widened to 0.45, because at the real
@@ -2106,13 +2151,60 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 24 ============ -->
+<!-- ============ 25 ============ -->
+<section class="slide" data-part="II">
+  <h2>Automatic Differentiation</h2>
+  <p class="sub">Backward fills slots; plain SGD moves $w$</p>
+  <figure>
+    <canvas id="m6p25a" width="1152" height="276" role="img" aria-label="Three columns showing the same two boxes, the parameter w and its gradient slot w-bar, at three moments. After clearing, w is two and the slot is zero. After the backward pass, w is still two and the slot now holds six: backward changed only the slot. After the optimizer step with eta one tenth, w is one point four and the slot still holds six, because the step read the slot and did not erase it. Under the columns, the arithmetic of the step is written out, and a note says the slot is only emptied by the next clear."></canvas>
+  </figure>
+  <div class="eq tight">$$\text{backward: }\bar w\mathrel{+}=\dots,\qquad \text{plain SGD: }w\leftarrow w-\eta\,\bar w$$</div>
+  <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
+    <dt class="dat">$w$</dt><dd>the parameter; only the optimizer assigns to it</dd>
+    <dt class="res">$\bar w$</dt><dd>its slot; only backward and the clear write it</dd>
+    <dt class="in">$\eta$</dt><dd>step size, here $0.1$; chosen, not computed</dd>
+    <dt class="nul">$\bar w=6$</dt><dd>read at $w=2$; it is not the gradient at $1.4$</dd>
+  </dl>
+  <script>
+  m3anim(document.getElementById('m6p25a'), function (g, t, k) {
+    var c = k.c, i;
+    /* the running example of this section: w=2, x=3, y*=4 gives a=6, e=2, L=2, w-bar=6 */
+    var eta = 0.1, w0 = 2, gw = 6, w1 = w0 - eta * gw;
+    var col = [['after the clear', w0, 0, c.dim],
+               ['after backward', w0, gw, c.res],
+               ['after the optimizer step', w1, gw, c.ans]];
+    var x0 = [110, 470, 830];
+    for (i = 0; i < 3; i++) {
+      k.text(col[i][0], [x0[i] + 90, 32], col[i][3], { size: 16, mono: true, bold: true,
+             align: 'center' });
+      k.node([x0[i], 70], 'w', { w: 86, h: 44, col: c.dat, size: 17 });
+      k.node([x0[i] + 110, 70], String(col[i][1]), { w: 92, h: 44,
+             col: i === 2 ? c.ans : c.dat, size: 19 });
+      k.node([x0[i], 136], 'w̄', { w: 86, h: 44, col: c.res, size: 17 });
+      k.node([x0[i] + 110, 136], String(col[i][2]), { w: 92, h: 44,
+             col: i === 0 ? c.dim : c.res, size: 19 });
+      if (i) k.arrow([x0[i] - 78, 104], [x0[i] - 34, 104], c.dim, 2.2);
+    }
+    /* what each arrow changed, named under it */
+    k.text('backward writes the slot only', [392, 196], c.res, { size: 15, mono: true,
+           align: 'center' });
+    k.text('the step writes w only', [752, 196], c.ans, { size: 15, mono: true, align: 'center' });
+    k.seg([60, 216], [1092, 216], c.rule, 1);
+    k.text('plain SGD:  w ← 2 − 0.1·6 = 1.4      the slot still reads 6',
+           [60, 240], c.ink, { size: 16, mono: true });
+    k.text('but 6 is the gradient AT w = 2. Nobody has computed the one at 1.4 yet.',
+           [60, 264], c.nul, { size: 15, mono: true });
+  }, { seconds: 1, hold: 0, rest: 0 });
+  </script>
+</section>
+
+<!-- ============ 26 ============ -->
 <section class="slide" data-part="II">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>Automatic Differentiation</h2>
   <p class="sub">Why reset gradients?</p>
   <figure>
-    <canvas id="m6p24a" width="1152" height="168" role="img" aria-label="Two panels along the top, each a freshly built graph for one training step, drawn as three small boxes w, a and L joined by arrows. Arrows run down from each panel into one wide slot below, marked w.grad and labelled as the store that persists. The left panel's arrow is drawn first and the slot holds the first step's number; as the animation runs the right panel's arrow is drawn too and the slot turns into a question mark, which stays a question mark until the answer is revealed. A note beside the slot appears with the first reveal, saying nothing clears it between steps."></canvas>
+    <canvas id="m6p26a" width="1152" height="168" role="img" aria-label="Two panels along the top, each a freshly built graph for one training step, drawn as three small boxes w, a and L joined by arrows. Arrows run down from each panel into one wide slot below, marked w.grad and labelled as the store that persists. The left panel's arrow is drawn first and the slot holds the first step's number; as the animation runs the right panel's arrow is drawn too and the slot turns into a question mark, which stays a question mark until the answer is revealed. A note beside the slot appears with the first reveal, saying nothing clears it between steps."></canvas>
   </figure>
   <p class="q">Two fresh graphs over one $w$, no clearing. What is in $\bar w$?</p>
   <ol class="opts one">
@@ -2123,7 +2215,7 @@ window.M6 = (function () {
   <p class="reveal step" data-step="1">Each step builds a new graph, but the parameter and its grad slot outlive it, and the write is still $\mathrel{+}=$.</p>
   <p class="reveal step" data-step="2">The slot reads $6$, then $12$. Adding is right <i>within</i> one graph and stale <i>across</i> steps.</p>
   <script>
-  m3anim(document.getElementById('m6p24a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p26a'), function (g, t, k) {
     var c = k.c, M = window.M6, F = M.graph(M.FX.graph.w, M.FX.graph.x, M.FX.graph.ys);
     var two = t > 0.5, rule = k.shown(1), on = k.shown(2);
     [['step 1   fresh graph', 60], ['step 2   fresh graph', 520]].forEach(function (q, j) {
@@ -2149,13 +2241,13 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 25 ============ -->
+<!-- ============ 27 ============ -->
 <section class="slide" data-part="III">
   <p class="eyebrow">Recall</p>
   <h2>Gradient Descent and Step Size</h2>
   <p class="sub">Choosing a parameter change</p>
   <figure>
-    <canvas id="m6p25a" width="1152" height="280" role="img" aria-label="Left: a loss curve with the tangent line touching it at the current parameter. A finite step along the axis is marked. At the end of that step two heights are drawn, one up to the tangent and one up to the curve; a purple bracket between their tops is labelled remainder, and it grows as the step grows. Right: three stacked boxes. The first holds the current parameter and is marked given. The second holds the gradient and is marked computed. The third holds the step and is marked ours to choose, drawn with a heavier border. An arrow leads from the three to a single small box labelled predicted change in L."></canvas>
+    <canvas id="m6p27a" width="1152" height="280" role="img" aria-label="Left: a loss curve with the tangent line touching it at the current parameter. A finite step along the axis is marked. At the end of that step two heights are drawn, one up to the tangent and one up to the curve; a purple bracket between their tops is labelled remainder, and it grows as the step grows. Right: three stacked boxes. The first holds the current parameter and is marked given. The second holds the gradient and is marked computed. The third holds the step and is marked ours to choose, drawn with a heavier border. An arrow leads from the three to a single small box labelled predicted change in L."></canvas>
   </figure>
   <div class="eq tight">$$\Delta L=L(\theta+\Delta\theta)-L(\theta)\approx g\T\Delta\theta$$</div>
   <dl class="gloss">
@@ -2164,7 +2256,7 @@ window.M6 = (function () {
     <dt class="nul">$\approx$</dt><dd>the linear part only; the leftover is dropped, not zero</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p25a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p27a'), function (g, t, k) {
     var c = k.c, i;
     k.seg([620, 16], [620, 264], c.rule, 1);
     /* --- left: the finite-change model of pp4-5, with its leftover term drawn --- */
@@ -2209,12 +2301,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 26 ============ -->
+<!-- ============ 28 ============ -->
 <section class="slide" data-part="III">
   <h2>Gradient Descent and Step Size</h2>
   <p class="sub">Why the negative gradient?</p>
   <figure>
-    <canvas id="m6p26a" width="1152" height="286" role="img" aria-label="Top: a chain of boxes. A row holding the two gradient entries 3 and minus 4 leads to a row holding their squares 9 and 16, then to a single box holding the sum 25, then to a box holding minus 2.5, labelled times minus eta with eta equal to 0.1. The label under the squares says every term is a square, so the sum cannot be negative. Bottom left: a flat loss curve with the point at its minimum, where the gradient is the zero column and the predicted change is zero. Bottom right: the same curve with two steps down the gradient. A short step lands lower and is ticked; a long step lands higher than it started and is crossed out."></canvas>
+    <canvas id="m6p28a" width="1152" height="286" role="img" aria-label="Top: a chain of boxes. A row holding the two gradient entries 3 and minus 4 leads to a row holding their squares 9 and 16, then to a single box holding the sum 25, then to a box holding minus 2.5, labelled times minus eta with eta equal to 0.1. The label under the squares says every term is a square, so the sum cannot be negative. Bottom left: a flat loss curve with the point at its minimum, where the gradient is the zero column and the predicted change is zero. Bottom right: the same curve with two steps down the gradient. A short step lands lower and is ticked; a long step lands higher than it started and is crossed out."></canvas>
   </figure>
   <div class="eq tight">$$\Delta\theta=-\eta g\ \Longrightarrow\ g\T\Delta\theta=-\eta\,g\T g=-\eta\sum_{j=1}^{p}g_j^2<0$$</div>
   <dl class="gloss">
@@ -2224,7 +2316,7 @@ window.M6 = (function () {
     <dt class="dat">$\Delta L&lt;0$</dt><dd>a different claim: the loss itself also needs a short step</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p26a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p28a'), function (g, t, k) {
     var c = k.c, i;
     /* --- the arithmetic of -eta ||g||^2, from the fixtures: g = (3, -4), eta = 0.1 --- */
     var gv = [3, -4], eta = 0.1, sq = gv.map(function (x) { return x * x; });
@@ -2278,13 +2370,13 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 27 ============ -->
+<!-- ============ 29 ============ -->
 <section class="slide" data-part="III">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>Gradient Descent and Step Size</h2>
   <p class="sub">Which direction decreases the local model?</p>
   <figure>
-    <canvas id="m6p27a" width="1152" height="168" role="img" aria-label="Three panels side by side, each showing the same gradient as a long thin arrow and one candidate step as a shorter thick arrow from the same point. In the first the step runs along the gradient, in the second it runs opposite to it, in the third it runs orthogonal to it, with a right-angle mark. Under each panel a line reads g transpose delta theta equals question mark. After the answer is revealed those three lines read plus 2.5, minus 2.5 and 0, and the middle panel is outlined."></canvas>
+    <canvas id="m6p29a" width="1152" height="168" role="img" aria-label="Three panels side by side, each showing the same gradient as a long thin arrow and one candidate step as a shorter thick arrow from the same point. In the first the step runs along the gradient, in the second it runs opposite to it, in the third it runs orthogonal to it, with a right-angle mark. Under each panel a line reads g transpose delta theta equals question mark. After the answer is revealed those three lines read plus 2.5, minus 2.5 and 0, and the middle panel is outlined."></canvas>
   </figure>
   <p class="q">For $g\ne0$, $\eta>0$: which step makes the predicted $g\T\Delta\theta$ negative?</p>
   <ol class="opts one">
@@ -2295,7 +2387,7 @@ window.M6 = (function () {
   <p class="reveal step" data-step="1">Read the sign of the product, not where an arrow points.</p>
   <p class="reveal step" data-step="2">The products are $+\eta\lVert g\rVert^2$, $-\eta\lVert g\rVert^2$ and $0$. A prediction, not a certificate.</p>
   <script>
-  m3anim(document.getElementById('m6p27a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p29a'), function (g, t, k) {
     var c = k.c, i;
     /* g = (3, -4) and the orthogonal option (4, 3), both from the fixtures. g is drawn long and
        thin and the candidate short and thick, so that option A -- where the two are parallel --
@@ -2328,12 +2420,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 28 ============ -->
+<!-- ============ 30 ============ -->
 <section class="slide" data-part="III">
   <h2>Gradient Descent and Step Size</h2>
   <p class="sub">The gradient-descent update</p>
   <figure>
-    <canvas id="m6p28a" width="1152" height="312" role="img" aria-label="Four separate stores in a row. A blue column holds the current parameter 1 and 2. An orange column holds the gradient 3 and minus 4, labelled as read at that same parameter. A grey single cell holds the step size 0.1, labelled chosen, not learned. An arrow leads to a second blue column holding 0.7 and 2.4, the new parameter. Under the row the two entries are worked out line by line: one minus 0.1 times 3 is 0.7, and two minus 0.1 times minus 4 is 2.4."></canvas>
+    <canvas id="m6p30a" width="1152" height="312" role="img" aria-label="Four separate stores in a row. A blue column holds the current parameter 1 and 2. An orange column holds the gradient 3 and minus 4, labelled as read at that same parameter. A grey single cell holds the step size 0.1, labelled chosen, not learned. An arrow leads to a second blue column holding 0.7 and 2.4, the new parameter. Under the row the two entries are worked out line by line: one minus 0.1 times 3 is 0.7, and two minus 0.1 times minus 4 is 2.4."></canvas>
   </figure>
   <div class="eq tight">$$\theta_{t+1}=\theta_t-\eta_t g_t,\qquad g_t=\nabla_\theta L(\theta_t)$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -2343,7 +2435,7 @@ window.M6 = (function () {
     <dt>$\eta_t$</dt><dd>one positive number per step</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p28a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p30a'), function (g, t, k) {
     var c = k.c, M = window.M6, i;
     var th = [1, 2], gv = [3, -4], eta = 0.1;
     var nw = M.sub(th, M.sc(eta, gv));                 /* (0.7, 2.4), pinned by the fixtures */
@@ -2376,12 +2468,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 29 ============ -->
+<!-- ============ 31 ============ -->
 <section class="slide" data-part="III">
   <h2>Gradient Descent and Step Size</h2>
   <p class="sub">A scalar quadratic exposes overshoot</p>
   <figure>
-    <canvas id="m6p29a" width="1152" height="256" role="img" aria-label="Left: the parabola of a one-parameter quadratic loss, with the error measured from the minimum along the horizontal axis. A dot sits at error one. An arrow along the axis carries it past the minimum to minus zero point four, and a second arrow brings it back to zero point one six, each dot sitting on the curve. Right: the recurrence written out in three lines, the gradient lambda delta, the step delta minus eta lambda delta, and the factor one minus eta lambda, which here is minus zero point four. A line underneath reads eta lambda is 1.4, more than one, so one step passes the minimum."></canvas>
+    <canvas id="m6p31a" width="1152" height="256" role="img" aria-label="Left: the parabola of a one-parameter quadratic loss, with the error measured from the minimum along the horizontal axis. A dot sits at error one. An arrow along the axis carries it past the minimum to minus zero point four, and a second arrow brings it back to zero point one six, each dot sitting on the curve. Right: the recurrence written out in three lines, the gradient lambda delta, the step delta minus eta lambda delta, and the factor one minus eta lambda, which here is minus zero point four. A line underneath reads eta lambda is 1.4, more than one, so one step passes the minimum."></canvas>
   </figure>
   <div class="eq tight">$$L=\tfrac12\lambda\delta^2,\quad g=\lambda\delta,\quad \delta_{t+1}=\delta_t-\eta\lambda\delta_t=(1-\eta\lambda)\,\delta_t$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -2393,7 +2485,7 @@ window.M6 = (function () {
     <p style="margin:5px 0 0">$\eta\lambda=0.35\times4=1.4>1$, so $1-\eta\lambda=-0.4$.</p>
   </div>
   <script>
-  m3anim(document.getElementById('m6p29a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p31a'), function (g, t, k) {
     var c = k.c, M = window.M6, i;
     /* lam = 4 with eta = 0.35: the multiplier is -0.4, so the step is 1.4 times the distance to
        the minimiser and the error lands on the far side. Both numbers are in the fixtures. */
@@ -2438,13 +2530,13 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 30 ============ -->
+<!-- ============ 32 ============ -->
 <section class="slide" data-part="III">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>Gradient Descent and Step Size</h2>
   <p class="sub">Four step-size regimes</p>
   <figure>
-    <canvas id="m6p30a" width="1152" height="168" role="img" aria-label="Four columns, one for each step size 0.1, 0.25, 0.4 and 0.6. Each column shows a dashed zero line, two faint guides at plus and minus one, a dot at error one for step zero, and a question mark where the next error would go. The factor one minus eta lambda is a question mark too. After the answer is revealed each column fills in its factor, 0.6, 0, minus 0.6 and minus 1.4, plots the error after one step, and is named: monotone, exact in one step, oscillating, diverging. Only the last column lands outside the plus and minus one guides."></canvas>
+    <canvas id="m6p32a" width="1152" height="168" role="img" aria-label="Four columns, one for each step size 0.1, 0.25, 0.4 and 0.6. Each column shows a dashed zero line, two faint guides at plus and minus one, a dot at error one for step zero, and a question mark where the next error would go. The factor one minus eta lambda is a question mark too. After the answer is revealed each column fills in its factor, 0.6, 0, minus 0.6 and minus 1.4, plots the error after one step, and is named: monotone, exact in one step, oscillating, diverging. Only the last column lands outside the plus and minus one guides."></canvas>
   </figure>
   <p class="q">Take $\lambda=4$. Which pair is (converges while oscillating, diverges)?</p>
   <ol class="opts one">
@@ -2455,7 +2547,7 @@ window.M6 = (function () {
   <p class="reveal step" data-step="1">Each step multiplies the error by $1-\eta\lambda$: read its sign, then its size.</p>
   <p class="reveal step" data-step="2">The multipliers are $-0.6$ and $-1.4$: both flip the sign, and only the second one grows.</p>
   <script>
-  m3anim(document.getElementById('m6p30a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p32a'), function (g, t, k) {
     var c = k.c, M = window.M6, i;
     var lam = M.FX.lam, etas = M.FX.etas;              /* 4 and [0.1, 0.25, 0.4, 0.6] */
     var names = ['monotone', 'exact in one step', 'oscillating', 'diverging'];
@@ -2495,23 +2587,23 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 31 ============ -->
+<!-- ============ 33 ============ -->
 <section class="slide" data-part="III">
   <p class="eyebrow">Recall &#183; Lecture 4</p>
   <h2>Gradient Descent and Step Size</h2>
   <p class="sub">Several curvature directions</p>
   <figure>
-    <canvas id="m6p31a" width="1152" height="276" role="img" aria-label="Left: three nested ellipses around the minimiser of a two-parameter quadratic loss, wider than they are tall. Dashed lines through the centre mark the two eigenvector axes, labelled gentle curvature two across and steep curvature eight up. At the starting parameter two arrows leave the same point: a gold one straight to the minimiser, and an orange one along the negative gradient. They differ by about thirty-one degrees, and the orange one leans towards the steep axis. Right: two parabolas on shared axes, one narrow and one wide, showing that the same error costs a different loss along the two eigenvectors."></canvas>
+    <canvas id="m6p33a" width="1152" height="276" role="img" aria-label="Left: three nested ellipses around the minimiser of a two-parameter quadratic loss, wider than they are tall. Dashed lines through the centre mark the two eigenvector axes, labelled gentle curvature two across and steep curvature eight up. At the starting parameter two arrows leave the same point: a gold one straight to the minimiser, and an orange one along the negative gradient. They differ by about thirty-one degrees, and the orange one leans towards the steep axis. Right: two parabolas on shared axes, one narrow and one wide, showing that the same error costs a different loss along the two eigenvectors."></canvas>
   </figure>
   <div class="eq tight">$$L=\tfrac12\delta\T H\delta,\qquad g=H\delta,\qquad H=Q\Lambda Q\T$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
     <dt class="dat">$H$</dt><dd>symmetric, positive definite, $p\times p$</dd>
     <dt class="dat">$Q$</dt><dd>orthonormal eigenvectors $q_i$</dd>
     <dt>$\Lambda$</dt><dd>$\operatorname{diag}(\lambda_1,\dots,\lambda_p)$, each $\lambda_i>0$</dd>
-    <dt class="res">$g=H\delta$</dt><dd>parallel to $\delta$ exactly when $\delta$ is an eigenvector</dd>
+    <dt class="res">$g=H\delta$</dt><dd>for $\delta\ne0$, parallel to $\delta$ exactly when it is an eigenvector</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p31a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p33a'), function (g, t, k) {
     var c = k.c, M = window.M6, i;
     var H = M.FX.H, ts = M.FX.tstar, t0 = M.FX.t0;     /* diag(2, 8), (1, -1), (0, 0) */
     var q = M.quad(H, ts), u = 56, S = k.plane(244, 94, u);
@@ -2561,12 +2653,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 32 ============ -->
+<!-- ============ 34 ============ -->
 <section class="slide" data-part="III">
   <h2>Gradient Descent and Step Size</h2>
   <p class="sub">Each eigenmode has one multiplier</p>
   <figure>
-    <canvas id="m6p32a" width="1152" height="244" role="img" aria-label="Left: the same nested ellipses, with four steps of gradient descent drawn from the starting parameter at step size nought point two. The path crosses the gentle axis every step while creeping towards the minimiser along it. Right: the same run split into its two modes. The first track, for curvature two, shows a coordinate that keeps its sign and shrinks by six tenths each step. The second track, for curvature eight, shows a coordinate that changes sign every step and shrinks by the same six tenths in size. The two tracks never exchange anything."></canvas>
+    <canvas id="m6p34a" width="1152" height="244" role="img" aria-label="Left: the same nested ellipses, with four steps of gradient descent drawn from the starting parameter at step size nought point two. The path crosses the gentle axis every step while creeping towards the minimiser along it. Right: the same run split into its two modes. The first track, for curvature two, shows a coordinate that keeps its sign and shrinks by six tenths each step. The second track, for curvature eight, shows a coordinate that changes sign every step and shrinks by the same six tenths in size. The two tracks never exchange anything."></canvas>
   </figure>
   <div class="eq tight">$$\delta_{t+1}=(I-\eta H)\,\delta_t,\qquad \delta_t=\textstyle\sum_i c_i^{(t)}q_i\ \Rightarrow\ c_i^{(t+1)}=(1-\eta\lambda_i)\,c_i^{(t)}$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -2575,7 +2667,7 @@ window.M6 = (function () {
   </dl>
   <p class="callout" style="font-size:21px;margin:8px 0 0">If some $\lambda_i=0$, that factor is $1$: the mode keeps its error for every $\eta$.</p>
   <script>
-  m3anim(document.getElementById('m6p32a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p34a'), function (g, t, k) {
     var c = k.c, M = window.M6, i, j;
     var H = M.FX.H, ts = M.FX.tstar, t0 = M.FX.t0, eta = 0.2;
     var path = M.run(H, ts, t0, eta, 4), u = 58, S = k.plane(254, 94, u);
@@ -2613,13 +2705,71 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 33 ============ -->
+<!-- ============ 35 ============ -->
+<section class="slide" data-part="III">
+  <h2>Gradient Descent and Step Size</h2>
+  <p class="sub">When does every mode decay?</p>
+  <figure>
+    <canvas id="m6p35a" width="1152" height="268" role="img" aria-label="The absolute multiplier, the absolute value of one minus eta lambda, plotted against eta for two curvatures, lambda equal to two and lambda equal to eight. Each curve starts at one when eta is zero, falls to zero at one over its own lambda, and rises again. A horizontal line at one marks the decay threshold. The shaded band where both curves are below one runs from zero to one quarter, and is labelled as two over the largest lambda. A caption says the steep mode leaves the band first, and that the whole statement is about this one fixed positive definite matrix."></canvas>
+  </figure>
+  <div class="eq tight">$$|1-\eta\lambda_i|<1\ \text{ for every }i\iff 0<\eta<\frac{2}{\lambda_{\max}}$$</div>
+  <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
+    <dt class="out">$\lambda_i$</dt><dd>the curvatures of one fixed $H\succ0$</dd>
+    <dt class="ans">$\lambda_{\max}$</dt><dd>the largest; the steep mode binds first</dd>
+    <dt class="nul">scope</dt><dd>this quadratic only, not any loss, not a network</dd>
+  </dl>
+  <script>
+  m3anim(document.getElementById('m6p35a'), function (g, t, k) {
+    var c = k.c, i;
+    /* The y range reaches 1.6 so |1 - eta*lambda| for lambda = 8 at eta = 0.32 fits without
+       clamping. An earlier version clamped the curve at 1.35, which drew a plateau: a drawing
+       artefact that reads as a mathematical claim, since the multiplier in fact keeps rising. */
+    var lam = [2, 8], top = 0.32, vmax = 1.6;
+    var X = function (e) { return 110 + e * 2500; }, Y = function (v) { return 200 - v * 106; };
+    /* the band where BOTH multipliers are below one: 0 < eta < 2/8. k.rect does not exist in
+       this helper; a filled k.poly is the primitive, drawn first so the curves sit on top. */
+    k.poly([[X(0), Y(vmax)], [X(0.25), Y(vmax)], [X(0.25), Y(0)], [X(0), Y(0)]],
+           c.panel, 1, c.panel);
+    k.seg([X(0) - 10, Y(0)], [X(top) + 10, Y(0)], c.dim, 1.6);
+    k.seg([X(0) - 10, Y(0)], [X(0) - 10, Y(vmax)], c.dim, 1.6);
+    [[0, '0'], [1, '1']].forEach(function (q) {
+      k.text(q[1], [X(0) - 18, Y(q[0]) + 5], c.dim, { size: 14, mono: true, align: 'right' });
+    });
+    [[0, '0'], [0.125, '1/8'], [0.25, '1/4'], [0.3, '0.3']].forEach(function (q) {
+      k.text(q[1], [X(q[0]), Y(0) + 20], c.dim, { size: 14, mono: true, align: 'center' });
+    });
+    k.text('\u03b7', [X(top) + 24, Y(0) + 5], c.dim, { size: 16, mono: true });
+    k.text('|1 \u2212 \u03b7\u03bb|', [X(0) - 2, Y(vmax) - 8], c.dim, { size: 15, mono: true });
+    k.seg([X(0), Y(1)], [X(top), Y(1)], c.nul, 1.6, [6, 4]);
+    k.text('decay threshold', [X(top) + 14, Y(1) + 5], c.nul, { size: 14, mono: true });
+    var col = [c.in, c.res];
+    for (i = 0; i < 2; i++) {
+      var pts = [], e;
+      for (e = 0; e <= top + 1e-9; e += 0.004) pts.push([X(e), Y(Math.abs(1 - e * lam[i]))]);
+      k.poly(pts, col[i], 2.6);
+      k.text('\u03bb = ' + lam[i], [X(top) + 14, Y(Math.abs(1 - top * lam[i])) + 5], col[i],
+             { size: 15, mono: true });
+    }
+    k.seg([X(0.25), Y(0)], [X(0.25), Y(vmax)], c.ans, 2);
+    k.text('2/\u03bb\u2098\u2090\u2093 = 1/4', [X(0.25) + 8, Y(vmax) + 12], c.ans,
+           { size: 15, mono: true });
+    k.text('both below 1', [X(0.125), Y(vmax) + 12], c.ans,
+           { size: 15, mono: true, align: 'center', bold: true });
+    k.text('the steep mode \u03bb = 8 leaves the band first, so it sets the limit',
+           [X(0) - 10, 238], c.dim, { size: 15, mono: true });
+    k.text('all of this is about one fixed H \u227b 0, and nothing else', [X(0) - 10, 260],
+           c.nul, { size: 15, mono: true });
+  }, { seconds: 1, hold: 0, rest: 0 });
+  </script>
+</section>
+
+<!-- ============ 36 ============ -->
 <section class="slide" data-part="III">
   <p class="eyebrow you" data-min="2">Vote</p>
   <h2>Gradient Descent and Step Size</h2>
   <p class="sub">Which curvature limits the step?</p>
   <figure>
-    <canvas id="m6p33a" width="1152" height="140" role="img" aria-label="The two by two matrix H is drawn at the left with 2 and 8 on its diagonal. Beside it the two curvatures are listed. A horizontal step-size axis runs across the figure with a tick at zero. After the first reveal each curvature shows the test its factor must pass. After the answer each curvature gets a bar over the step sizes it tolerates: a long bar for curvature two and a bar four times shorter for curvature eight. The shorter bar is highlighted as the one that binds, and the point where it ends is marked as the step size whose factor is exactly minus one."></canvas>
+    <canvas id="m6p36a" width="1152" height="140" role="img" aria-label="The two by two matrix H is drawn at the left with 2 and 8 on its diagonal. Beside it the two curvatures are listed. A horizontal step-size axis runs across the figure with a tick at zero. After the first reveal each curvature shows the test its factor must pass. After the answer each curvature gets a bar over the step sizes it tolerates: a long bar for curvature two and a bar four times shorter for curvature eight. The shorter bar is highlighted as the one that binds, and the point where it ends is marked as the step size whose factor is exactly minus one."></canvas>
   </figure>
   <p class="q">$H=\mathrm{diag}(2,8)$. Which $\eta$ sends the error to zero from every start?</p>
   <ol class="opts one">
@@ -2630,7 +2780,7 @@ window.M6 = (function () {
   <p class="reveal step" data-step="1">Need $|1-2\eta|&lt;1$ and $|1-8\eta|&lt;1$ at once.</p>
   <p class="reveal step" data-step="2">The steep mode binds: at $\tfrac14$ the factor is $-1$ and never decays; A allows $\tfrac12$, giving $-3$. Proved for one fixed positive definite $H$; not a rule for a network.</p>
   <script>
-  m3anim(document.getElementById('m6p33a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p36a'), function (g, t, k) {
     var c = k.c, M = window.M6, i;
     var H = M.FX.H, x0 = 470, ux = 560;      /* eta = 0 at x0; one unit of eta is 560 px */
     k.cells([56, 32], H, { cw: 50, ch: 28, col: c.dat, size: 16 });
@@ -2669,12 +2819,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 34 ============ -->
+<!-- ============ 37 ============ -->
 <section class="slide" data-part="III">
   <h2>Gradient Descent and Step Size</h2>
   <p class="sub">A complete two-parameter step</p>
   <figure>
-    <canvas id="m6p34a" width="1152" height="226" role="img" aria-label="Left: three level curves of the two-parameter quadratic, the middle one through the starting parameter at the origin. Two arrows leave that start. The shorter one, for step size nought point one, ends inside the smallest curve. The longer one, for step size nought point three, ends outside the starting curve altogether, below the picture's centre. Right: a small table giving for each step size the new parameter and its loss: nought point one gives nought point two and minus nought point eight with loss nought point eight, and nought point three gives nought point six and minus two point four with loss eight. The starting loss of five is written above them."></canvas>
+    <canvas id="m6p37a" width="1152" height="226" role="img" aria-label="Left: three level curves of the two-parameter quadratic, the middle one through the starting parameter at the origin. Two arrows leave that start. The shorter one, for step size nought point one, ends inside the smallest curve. The longer one, for step size nought point three, ends outside the starting curve altogether, below the picture's centre. Right: a small table giving for each step size the new parameter and its loss: nought point one gives nought point two and minus nought point eight with loss nought point eight, and nought point three gives nought point six and minus two point four with loss eight. The starting loss of five is written above them."></canvas>
   </figure>
   <div class="eq tight">$$g_0=H(\theta_0-\theta^\star)=(-2,8),\qquad \theta_1=\theta_0-\eta g_0$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -2686,7 +2836,7 @@ window.M6 = (function () {
     <p style="margin:5px 0 0">$\eta=0.1$ takes $L$ from $5$ to $0.8$. $\eta=0.3$ raises it to $8$: that is <b>above</b> the bound, steep factor $-1.4$, so repeating it diverges.</p>
   </div>
   <script>
-  m3anim(document.getElementById('m6p34a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p37a'), function (g, t, k) {
     var c = k.c, M = window.M6, i;
     var H = M.FX.H, ts = M.FX.tstar, t0 = M.FX.t0, q = M.quad(H, ts);
     var u = 48, S = k.plane(282, 72, u);               /* theta_0 at (282, 72), theta* at (330, 120) */
@@ -2734,12 +2884,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 35 ============ -->
+<!-- ============ 38 ============ -->
 <section class="slide" data-part="III">
   <h2>Gradient Descent and Step Size</h2>
   <p class="sub">Scaling the loss scales the update</p>
   <figure>
-    <canvas id="m6p35a" width="1152" height="264" role="img" aria-label="Left: the level curves of the quadratic with the same minimiser marked. From the starting parameter two arrows point the same way down the negative gradient: a long one for the summed loss and one five times shorter for the mean loss. Right: two bars for the loss at that start, five and one, with a divide-by-five arrow between them, and under them two gradient columns, minus two and eight beside minus nought point four and one point six. A line states that the minimiser does not move because dividing by a positive number keeps every comparison between two losses."></canvas>
+    <canvas id="m6p38a" width="1152" height="264" role="img" aria-label="Left: the level curves of the quadratic with the same minimiser marked. From the starting parameter two arrows point the same way down the negative gradient: a long one for the summed loss and one five times shorter for the mean loss. Right: two bars for the loss at that start, five and one, with a divide-by-five arrow between them, and under them two gradient columns, minus two and eight beside minus nought point four and one point six. A line states that the minimiser does not move because dividing by a positive number keeps every comparison between two losses."></canvas>
   </figure>
   <div class="eq tight">$$L_{\mathrm{mean}}=\frac1B\,L_{\mathrm{sum}}\qquad\Longrightarrow\qquad g_{\mathrm{mean}}=\frac1B\,g_{\mathrm{sum}}$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -2749,7 +2899,7 @@ window.M6 = (function () {
     <dt class="nul">every term</dt><dd>is scaled, not just one of them</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p35a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p38a'), function (g, t, k) {
     var c = k.c, M = window.M6, i;
     var H = M.FX.H, ts = M.FX.tstar, t0 = M.FX.t0, q = M.quad(H, ts), B = 5;
     var u = 48, S = k.plane(250, 62, u), mn = function (v) { return String(v).replace('-', '−'); };
@@ -2796,24 +2946,24 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 36 ============ -->
+<!-- ============ 39 ============ -->
 <section class="slide" data-part="III">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>Gradient Descent and Step Size</h2>
-  <p class="sub">The same numerical step</p>
+  <p class="sub">Which pair reproduces the step?</p>
   <figure>
-    <canvas id="m6p36a" width="1152" height="168" role="img" aria-label="At the top the product to match is written out: step size nought point one times the summed gradient minus two and eight, which is minus nought point two and nought point eight. Below it the mean gradient minus nought point four and one point six is given, with the batch size five. Three rows follow, one per option, each naming a step size for the mean loss and leaving its product as a question mark. After the answer is revealed the three products are filled in and only the third matches, with the other two marked as five times and twenty-five times too short."></canvas>
+    <canvas id="m6p39a" width="1152" height="168" role="img" aria-label="At the top the product to match is written out: step size nought point one times the summed gradient minus two and eight, which is minus nought point two and nought point eight. Below it the mean gradient minus nought point four and one point six is given, with the batch size five. Three rows follow: A uses 0.1 with the mean gradient, B uses 0.5 with the mean gradient, and C uses 0.5 with the sum gradient. Products are hidden until the answer. B matches the amount subtracted, while A is five times too short and C five times too long. The parameter displacement is the negative of each product."></canvas>
   </figure>
-  <p class="q">Which $\eta_{\mathrm{mean}}$ gives exactly the step that $\eta_{\mathrm{sum}}$ gives?</p>
+  <p class="q">Which pair gives the same update $\theta-\eta g$ as the sum loss?</p>
   <ol class="opts one">
-    <li><i>A</i>the same $\eta$</li>
-    <li><i>B</i>$\eta_{\mathrm{sum}}/B$</li>
-    <li><i>C</i>$B\,\eta_{\mathrm{sum}}$<b class="ok step" data-step="2">&#10003;</b></li>
+    <li><i>A</i>$0.1$ with $g_{\mathrm{mean}}$</li>
+    <li><i>B</i>$0.5$ with $g_{\mathrm{mean}}$<b class="ok step" data-step="2">&#10003;</b></li>
+    <li><i>C</i>$0.5$ with $g_{\mathrm{sum}}$</li>
   </ol>
-  <p class="reveal step" data-step="1">Put $g_{\mathrm{mean}}=g_{\mathrm{sum}}/B$ into $\theta-\eta g$ and match.</p>
-  <p class="reveal step" data-step="2">$(B\eta)(g/B)=\eta g$. A is $B$ times short, B is $B^2=25$ times. True when every term is scaled.</p>
+  <p class="reveal step" data-step="1">$g_{\mathrm{mean}}=g_{\mathrm{sum}}/5=(-0.4,1.6)$; match the amount subtracted, $\eta g=(-0.2,0.8)$.</p>
+  <p class="reveal step" data-step="2">B: $0.5(-0.4,1.6)=(-0.2,0.8)$. A shrank $g$ only; C enlarged $\eta$ only.</p>
   <script>
-  m3anim(document.getElementById('m6p36a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p39a'), function (g, t, k) {
     var c = k.c, M = window.M6, i;
     var H = M.FX.H, ts = M.FX.tstar, t0 = M.FX.t0, q = M.quad(H, ts), B = 5, es = 0.1;
     var gs = q.g(t0), gm = M.sc(1 / B, gs);
@@ -2822,20 +2972,20 @@ window.M6 = (function () {
         return (+x.toFixed(d)).toString().replace('-', '\u2212');
       }).join(', ') + ')';
     }
-    k.text('to match:  \u03b7 sum \u00d7 g sum  =  0.1 \u00d7 ' + vec(gs, 0) + '  =  ' +
+    k.text('subtract:  \u03b7 sum \u00d7 g sum  =  0.1 \u00d7 ' + vec(gs, 0) + '  =  ' +
            vec(M.sc(es, gs), 2), [56, 28], c.res, { size: 17, mono: true });
     k.text('g mean  =  ' + vec(gm, 1) + ',    B = 5', [56, 54], c.out, { size: 17, mono: true });
     k.seg([40, 72], [1112, 72], c.rule, 1);
-    var opt = [['A', es, '\u03b7 sum'], ['B', es / B, '\u03b7 sum / B'],
-               ['C', es * B, 'B \u00d7 \u03b7 sum']];
+    var opt = [['A', es, gm, 'g mean'], ['B', es * B, gm, 'g mean'],
+               ['C', es * B, gs, 'g sum']];
     for (i = 0; i < 3; i++) {
-      var y = 96 + i * 26, step = M.sc(opt[i][1], gm), hit = k.shown(2) && i === 2;
+      var y = 96 + i * 26, step = M.sc(opt[i][1], opt[i][2]), hit = k.shown(2) && i === 1;
       k.text(opt[i][0], [60, y], hit ? c.ans : c.ink, { size: 17, mono: true, bold: true });
-      k.text('\u03b7 mean = ' + opt[i][2], [96, y], hit ? c.ans : c.ink,
+      k.text('\u03b7 = ' + opt[i][1] + ', ' + opt[i][3], [96, y], hit ? c.ans : c.ink,
              { size: 17, mono: true });
-      k.text('\u03b7 mean \u00d7 g mean = ' + (k.shown(2) ? vec(step, 3) : '?'), [376, y],
+      k.text('subtract \u03b7 g = ' + (k.shown(2) ? vec(step, 3) : '?'), [376, y],
              k.shown(2) ? (hit ? c.ans : c.dim) : c.dim, { size: 17, mono: true });
-      if (k.shown(2)) k.text(hit ? 'matches' : (i ? '25 \u00d7 too short' : '5 \u00d7 too short'),
+      if (k.shown(2)) k.text(hit ? 'matches' : (i === 2 ? '5 \u00d7 too long' : '5 \u00d7 too short'),
                              [850, y], hit ? c.ans : c.dim, { size: 16, mono: true });
     }
     if (!k.shown(2)) k.text('which row reproduces it?', [850, 122], c.dim,
@@ -2844,22 +2994,22 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 37 ============ -->
+<!-- ============ 40 ============ -->
 <section class="slide" data-part="IV">
   <h2>Convexity and Optimality</h2>
   <p class="sub">What zero gradient tells us</p>
   <figure>
-    <canvas id="m6p37a" width="1152" height="296" role="img" aria-label="Three panels. Left, an interior minimum of a smooth curve: from the lowest point one secant runs up to the right and one runs up to the left, and as the animation plays the probe step shrinks and both secants flatten onto the same horizontal line. The rise over a positive step is positive; the same rise over a negative step is divided by a negative number, so the two difference quotients have opposite signs, and the only value both can equal is zero. Middle, a boundary point: a similar curve on a domain that stops at a hatched wall, with its lowest value at the wall itself. Only a positive step exists there, an arrow shows the one allowed direction, and the slope at that endpoint is plainly not zero. Right, a corner: a V-shaped curve whose arms have slopes minus one point one and plus one point one, so the two one-sided quotients disagree and no derivative exists at the corner at all."></canvas>
+    <canvas id="m6p40a" width="1152" height="296" role="img" aria-label="Three panels. Left, an interior minimum of a smooth curve: from the lowest point one secant runs up to the right and one runs up to the left, and as the animation plays the probe step shrinks and both secants flatten onto the same horizontal line. The rise over a positive step is positive; the same rise over a negative step is divided by a negative number, so the two difference quotients have opposite signs, and the only value both can equal is zero. Middle, a boundary point: a similar curve on a domain that stops at a hatched wall, with its lowest value at the wall itself. Only a positive step exists there, an arrow shows the one allowed direction, and the slope at that endpoint is plainly not zero. Right, a corner: a V-shaped curve whose arms have slopes minus one point one and plus one point one, so the two one-sided quotients disagree and no derivative exists at the corner at all."></canvas>
   </figure>
   <div class="eq tight">$$\text{interior, }L\text{ differentiable, local minimum}:\quad\frac{L(\theta+\tau e_j)-L(\theta)}{\tau}\begin{cases}\ \ge 0,&\tau>0\\ \ \le 0,&\tau<0\end{cases}\Longrightarrow g_j=0$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 16px;max-width:none">
     <dt class="in">$e_j$</dt><dd>the $j$-th coordinate direction</dd>
-    <dt class="in">$\tau$</dt><dd>a probe step of either sign</dd>
+    <dt class="in">$\tau$</dt><dd>a sufficiently small nonzero probe step, either sign</dd>
     <dt class="nul">$g_j$</dt><dd>one limit, so $\ge0$ and $\le0$ at once</dd>
     <dt class="nul">a corner</dt><dd>no limit, so no $g_j$ to set to zero</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p37a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p40a'), function (g, t, k) {
     var c = k.c, i, x;
     k.seg([384, 16], [384, 240], c.rule, 1);
     k.seg([768, 16], [768, 240], c.rule, 1);
@@ -2913,12 +3063,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 38 ============ -->
+<!-- ============ 41 ============ -->
 <section class="slide" data-part="IV">
   <h2>Convexity and Optimality</h2>
   <p class="sub">Stationary points have different roles</p>
   <figure>
-    <canvas id="m6p38a" width="1152" height="300" role="img" aria-label="Three panels sharing one vertical scale. Left, the curve of x-one squared sits in the lower half of the panel with its lowest point in the middle, and two blue direction arrows leave that point climbing to the left and to the right, so both directions go up; the panel is labelled minimum. Middle, the curve of minus x-one squared is the mirror image in the upper half, with two arrows leaving the top point and falling both ways; the panel is labelled maximum. Right, the two coordinate slices of x-one squared minus x-two squared cross at the same point: one branch rises in both directions, carrying the arrow labelled x-one, and the other falls in both directions, carrying the arrow labelled x-two; the panel is labelled saddle. All three panels mark the point with the same black dot, and one caption says the gradient is zero at every black dot."></canvas>
+    <canvas id="m6p41a" width="1152" height="300" role="img" aria-label="Three panels sharing one vertical scale. Left, the curve of x-one squared sits in the lower half of the panel with its lowest point in the middle, and two blue direction arrows leave that point climbing to the left and to the right, so both directions go up; the panel is labelled minimum. Middle, the curve of minus x-one squared is the mirror image in the upper half, with two arrows leaving the top point and falling both ways; the panel is labelled maximum. Right, the two coordinate slices of x-one squared minus x-two squared cross at the same point: one branch rises in both directions, carrying the arrow labelled x-one, and the other falls in both directions, carrying the arrow labelled x-two; the panel is labelled saddle. All three panels mark the point with the same black dot, and one caption says the gradient is zero at every black dot."></canvas>
   </figure>
   <div class="eq tight">$$f_1=x_1^2,\qquad f_2=-x_1^2,\qquad f_3=x_1^2-x_2^2,\qquad \nabla f_k(0)=0$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 16px;max-width:none">
@@ -2928,7 +3078,7 @@ window.M6 = (function () {
     <dt class="nul">$\nabla f_k(0)$</dt><dd>the same zero in all three, so it cannot tell them apart</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p38a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p41a'), function (g, t, k) {
     var c = k.c, i, x;
     k.seg([384, 16], [384, 284], c.rule, 1);
     k.seg([768, 16], [768, 284], c.rule, 1);
@@ -2978,7 +3128,7 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 39 ============ -->
+<!-- ============ 42 ============ -->
 <section class="slide" data-part="IV">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>Convexity and Optimality</h2>
@@ -2996,11 +3146,11 @@ window.M6 = (function () {
       <p class="reveal step" data-step="3" data-handout="hide"><b>B.</b> Lower on both sides. $x^4$ has the same readings: a vanishing curvature decides nothing.</p>
     </div>
     <figure>
-      <canvas id="m6p39a" width="556" height="410" role="img" aria-label="Across the top, a table of three readings taken at the origin for two functions, minus x to the fourth and x to the fourth: value zero, slope zero, curvature zero. All six entries are the same number, so the table cannot separate the two functions, and a note says so. The lower part of the panel stays blank through the question. The second reveal draws the two curves on one vertical scale, one hanging below its flat top and one rising above its flat bottom, and prints the sampled values at plus or minus one tenth and at plus or minus one hundredth. The third reveal labels one curve as falling on both sides of the origin and the other as rising on both sides, and adds a line saying that a strictly positive curvature reading would have decided the question while a zero one does not."></canvas>
+      <canvas id="m6p42a" width="556" height="410" role="img" aria-label="Across the top, a table of three readings taken at the origin for two functions, minus x to the fourth and x to the fourth: value zero, slope zero, curvature zero. All six entries are the same number, so the table cannot separate the two functions, and a note says so. The lower part of the panel stays blank through the question. The second reveal draws the two curves on one vertical scale, one hanging below its flat top and one rising above its flat bottom, and prints the sampled values at plus or minus one tenth and at plus or minus one hundredth. The third reveal labels one curve as falling on both sides of the origin and the other as rising on both sides, and adds a line saying that a strictly positive curvature reading would have decided the question while a zero one does not."></canvas>
     </figure>
   </div>
   <script>
-  m3anim(document.getElementById('m6p39a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p42a'), function (g, t, k) {
     var c = k.c, i, x;
     /* --- always on: the three readings at the origin, identical for both functions --- */
     k.text('three readings at x = 0, the same for both', [16, 22], c.dim,
@@ -3042,13 +3192,13 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 40 ============ -->
+<!-- ============ 43 ============ -->
 <section class="slide" data-part="IV">
   <p class="eyebrow">Definition</p>
   <h2>Convexity and Optimality</h2>
   <p class="sub">A convex domain contains segments</p>
   <figure>
-    <canvas id="m6p40a" width="1152" height="300" role="img" aria-label="Two shaded regions. On the left a filled disk with two marked points inside it, labelled x and y, joined by a straight segment; a travelling dot runs along that segment as the animation plays and never leaves the shading, and the caption says every segment stays inside. On the right a ring: a filled annulus with a hole punched out of the middle, drawn with a dashed inner boundary. Two points on opposite sides of the hole are joined by a segment whose middle stretch crosses the hole; that stretch is drawn thicker and in a contrasting colour, and the travelling dot changes to the same colour and is marked outside C while it is there. That panel is labelled not convex, and its caption says this one segment leaves it."></canvas>
+    <canvas id="m6p43a" width="1152" height="300" role="img" aria-label="Two shaded regions. On the left a filled disk with two marked points inside it, labelled x and y, joined by a straight segment; a travelling dot runs along that segment as the animation plays and never leaves the shading, and the caption says every segment stays inside. On the right a ring: a filled annulus with a hole punched out of the middle, drawn with a dashed inner boundary. Two points on opposite sides of the hole are joined by a segment whose middle stretch crosses the hole; that stretch is drawn thicker and in a contrasting colour, and the travelling dot changes to the same colour and is marked outside C while it is there. That panel is labelled not convex, and its caption says this one segment leaves it."></canvas>
   </figure>
   <div class="eq tight">$$x,y\in C,\quad \alpha\in[0,1]\qquad\Longrightarrow\qquad \alpha x+(1-\alpha)y\in C$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 16px;max-width:none">
@@ -3058,7 +3208,7 @@ window.M6 = (function () {
     <dt class="nul">not convex</dt><dd>one segment leaving $C$ is enough</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p40a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p43a'), function (g, t, k) {
     var c = k.c, i;
     function disk(cx, cy, r, fill) {
       g.save(); g.beginPath(); g.arc(cx, cy, r, 0, 2 * Math.PI);
@@ -3115,13 +3265,13 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 41 ============ -->
+<!-- ============ 44 ============ -->
 <section class="slide" data-part="IV">
   <p class="eyebrow">Definition</p>
   <h2>Convexity and Optimality</h2>
   <p class="sub">A convex function lies below its chords</p>
   <figure>
-    <canvas id="m6p41a" width="1152" height="300" role="img" aria-label="Left, a bowl-shaped curve with two points marked on it, x on the left and y on the right, joined by a straight chord. A travelling marker moves between the two ends; at each position a short segment is drawn from the curve up to the chord and labelled gap. The gap is widest in the middle and closes to nothing at both ends, so the chord is never below the curve. Right, a domain made of two separate intervals with a wide dashed gap between them, which is not a convex set. One point sits in each interval, and their midpoint lands in the gap: it is drawn as an open circle and marked not in the domain, so the left-hand side of the chord inequality would ask for a value the function does not have."></canvas>
+    <canvas id="m6p44a" width="1152" height="300" role="img" aria-label="Left, a bowl-shaped curve with two points marked on it, x on the left and y on the right, joined by a straight chord. A travelling marker moves between the two ends; at each position a short segment is drawn from the curve up to the chord and labelled gap. The gap is widest in the middle and closes to nothing at both ends, so the chord is never below the curve. Right, a domain made of two separate intervals with a wide dashed gap between them, which is not a convex set. One point sits in each interval, and their midpoint lands in the gap: it is drawn as an open circle and marked not in the domain, so the left-hand side of the chord inequality would ask for a value the function does not have."></canvas>
   </figure>
   <div class="eq tight">$$f(\alpha x+(1-\alpha)y)\ \le\ \alpha f(x)+(1-\alpha)f(y)\qquad\text{for all }x,y\in C,\ \alpha\in[0,1]$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 16px;max-width:none">
@@ -3131,7 +3281,7 @@ window.M6 = (function () {
     <dt class="in">$C$</dt><dd>convex, or some segment leaves it and the left side has no value</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p41a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p44a'), function (g, t, k) {
     var c = k.c, i, x;
     /* --- left: the chord of a bowl, and the gap that never goes negative --- */
     var f = function (v) { return 0.5 * v * v + 0.15; };
@@ -3172,7 +3322,7 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 42 ============ -->
+<!-- ============ 45 ============ -->
 <section class="slide" data-part="IV">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>Convexity and Optimality</h2>
@@ -3190,11 +3340,11 @@ window.M6 = (function () {
       <p class="reveal step" data-step="3" data-handout="hide"><b>A.</b> One midpoint settles these two. The definition itself asks every $x$, $y$ and $\alpha$.</p>
     </div>
     <figure>
-      <canvas id="m6p42a" width="556" height="340" role="img" aria-label="Two panels, one above the other. Each shows a parabola through the origin and a straight chord joining its values at minus one and plus one, with the two endpoints marked. In the upper panel, labelled A, the parabola opens upward and its chord runs above the curve. In the lower panel, labelled B, the parabola opens downward and its chord runs below the curve. Nothing else is marked while the question is up. The first reveal adds a dashed vertical at the midpoint of each panel, from the curve to the chord. The second reveal prints the two heights being compared in each panel. The third reveal prints the comparison itself, holding in one panel and failing in the other."></canvas>
+      <canvas id="m6p45a" width="556" height="340" role="img" aria-label="Two panels, one above the other. Each shows a parabola through the origin and a straight chord joining its values at minus one and plus one, with the two endpoints marked. In the upper panel, labelled A, the parabola opens upward and its chord runs above the curve. In the lower panel, labelled B, the parabola opens downward and its chord runs below the curve. Nothing else is marked while the question is up. The first reveal adds a dashed vertical at the midpoint of each panel, from the curve to the chord. The second reveal prints the two heights being compared in each panel. The third reveal prints the comparison itself, holding in one panel and failing in the other."></canvas>
     </figure>
   </div>
   <script>
-  m3anim(document.getElementById('m6p42a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p45a'), function (g, t, k) {
     var c = k.c, i, x;
     var sx = 110, sy = 70, XR = 1.25, cx = 160;
     function panel(base, sgn) {
@@ -3230,13 +3380,13 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 43 ============ -->
+<!-- ============ 46 ============ -->
 <section class="slide" data-part="IV">
   <p class="eyebrow">Key inequality</p>
   <h2>Convexity and Optimality</h2>
   <p class="sub">A supporting tangent gives a global bound</p>
   <figure>
-    <canvas id="m6p43a" width="1152" height="296" role="img" aria-label="Left, the parabola x squared with its tangent line drawn at the point where x is three. The tangent is extended right across the panel, from the far left of the window to the far right, and stays under the curve the whole way. At y equals minus one a vertical segment joins the tangent height to the curve height and is labelled gap sixteen. The caption says the tangent is under the curve everywhere, not only near the point of contact. Right, the curve of minus x to the fourth with its tangent at x equals one. Here the tangent crosses above the curve: at y equals zero the curve is at zero while the tangent is higher, and a vertical segment marks that the bound fails. The caption notes that this function is not convex, so the global inequality is not available, and that a Taylor line would still be a good local approximation."></canvas>
+    <canvas id="m6p46a" width="1152" height="296" role="img" aria-label="Left, the parabola x squared with its tangent line drawn at the point where x is three. The tangent is extended right across the panel, from the far left of the window to the far right, and stays under the curve the whole way. At y equals minus one a vertical segment joins the tangent height to the curve height and is labelled gap sixteen. The caption says the tangent is under the curve everywhere, not only near the point of contact. Right, the curve of minus x to the fourth with its tangent at x equals one. Here the tangent crosses above the curve: at y equals zero the curve is at zero while the tangent is higher, and a vertical segment marks that the bound fails. The caption notes that this function is not convex, so the global inequality is not available, and that a Taylor line would still be a good local approximation."></canvas>
   </figure>
   <div class="eq tight">$$f(y)\ \ge\ f(x)+\nabla f(x)\T(y-x)\qquad\text{for every }x,y\in C$$</div>
   <div class="cols" style="grid-template-columns:1.1fr 1fr;gap:26px;align-items:start;flex:none">
@@ -3250,7 +3400,7 @@ window.M6 = (function () {
     </div>
   </div>
   <script>
-  m3anim(document.getElementById('m6p43a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p46a'), function (g, t, k) {
     var c = k.c, i, x;
     k.seg([624, 18], [624, 278], c.rule, 1);
     /* --- left: a convex f, whose tangent at x = 3 stays under it across the whole window --- */
@@ -3291,13 +3441,13 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 44 ============ -->
+<!-- ============ 47 ============ -->
 <section class="slide" data-part="IV">
   <p class="eyebrow">Certificate</p>
   <h2>Convexity and Optimality</h2>
   <p class="sub">Zero gradient now certifies a minimum</p>
   <figure>
-    <canvas id="m6p44a" width="1152" height="300" role="img" aria-label="Left, the parabola x squared with its tangent at the origin, which is horizontal and lies along the axis. A marker sweeps across the window; at every position a vertical segment runs from that horizontal tangent up to the curve, and it always points upward, so the value there is never below the value at the origin. The caption reads: nothing in the domain is lower. Right, the curve of minus x to the fourth, which also has a horizontal tangent at the origin, but the curve falls away below the tangent on both sides; two small downward arrows mark the falling stretches and the caption says this one falls below its own tangent, so there is no certificate."></canvas>
+    <canvas id="m6p47a" width="1152" height="300" role="img" aria-label="Left, the parabola x squared with its tangent at the origin, which is horizontal and lies along the axis. A marker sweeps across the window; at every position a vertical segment runs from that horizontal tangent up to the curve, and it always points upward, so the value there is never below the value at the origin. The caption reads: nothing in the domain is lower. Right, the curve of minus x to the fourth, which also has a horizontal tangent at the origin, but the curve falls away below the tangent on both sides; two small downward arrows mark the falling stretches and the caption says this one falls below its own tangent, so there is no certificate."></canvas>
   </figure>
   <div class="eq tight">$$\nabla f(x)=0\ \Longrightarrow\ f(y)\ \ge\ f(x)+0\T(y-x)=f(x)\quad\text{for every }y\in C$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 16px;max-width:none">
@@ -3307,7 +3457,7 @@ window.M6 = (function () {
     <dt class="in">convex</dt><dd>the assumption doing the work; without it $\nabla f=0$ is necessary only, and only in the interior</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p44a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p47a'), function (g, t, k) {
     var c = k.c, i, x;
     k.seg([600, 18], [600, 282], c.rule, 1);
     /* --- left: convex, so the horizontal tangent is a floor under the whole curve --- */
@@ -3343,7 +3493,7 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 45 ============ -->
+<!-- ============ 48 ============ -->
 <section class="slide" data-part="IV">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>Convexity and Optimality</h2>
@@ -3361,11 +3511,11 @@ window.M6 = (function () {
       <p class="reveal step" data-step="3" data-handout="hide"><b>B.</b> A whole line. Convexity makes every minimizer global, not unique.</p>
     </div>
     <figure>
-      <canvas id="m6p45a" width="556" height="360" role="img" aria-label="The parameter plane with the first coordinate running across and the second running up. The shading is made of vertical bands that get darker as you move away from the vertical axis in either direction, because the value depends on the first coordinate alone; a key says darker means a larger value. Nothing is marked while the question is up. The second reveal puts dots on the vertical axis at the origin and one unit above it, both labelled value zero, and an arrow just to the right of the axis labelled: one tenth across gives one hundredth, which is already positive. The third reveal draws the whole vertical axis as one thick line and labels it every point with first coordinate zero."></canvas>
+      <canvas id="m6p48a" width="556" height="360" role="img" aria-label="The parameter plane with the first coordinate running across and the second running up. The shading is made of vertical bands that get darker as you move away from the vertical axis in either direction, because the value depends on the first coordinate alone; a key says darker means a larger value. Nothing is marked while the question is up. The second reveal puts dots on the vertical axis at the origin and one unit above it, both labelled value zero, and an arrow just to the right of the axis labelled: one tenth across gives one hundredth, which is already positive. The third reveal draws the whole vertical axis as one thick line and labels it every point with first coordinate zero."></canvas>
     </figure>
   </div>
   <script>
-  m3anim(document.getElementById('m6p45a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p48a'), function (g, t, k) {
     var c = k.c, i;
     var S = k.plane(278, 180, 150);
     /* --- the level structure: f = x1^2 reads one coordinate, so its bands are vertical --- */
@@ -3400,13 +3550,13 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 46 ============ -->
+<!-- ============ 49 ============ -->
 <section class="slide" data-part="IV">
   <p class="eyebrow">Equivalence</p>
   <h2>Convexity and Optimality</h2>
   <p class="sub">Curvature everywhere</p>
   <figure>
-    <canvas id="m6p46a" width="1152" height="300" role="img" aria-label="Left, the two quartics minus x to the fourth and x to the fourth drawn about one dashed horizontal line, one hanging below it and one rising above it, each labelled with its formula. Right, two sign strips, one for each function. The upper strip is labelled with the second derivative of minus x to the fourth, which is minus twelve x squared, and carries a minus sign at every sampled point except a single zero at the middle; its verdict reads negative at every other x, so not convex. The lower strip is labelled with the second derivative of x to the fourth, which is twelve x squared, and carries a plus sign at every sampled point except the same single zero at the middle; its verdict reads nonnegative at every x, so convex. The two strips differ only in the signs away from the origin, which is the point the quantifier makes. A line between them says that the dots only sample: the sign at every x is read off the formula, because nine points could never verify a statement about all of them."></canvas>
+    <canvas id="m6p49a" width="1152" height="300" role="img" aria-label="Left, the two quartics minus x to the fourth and x to the fourth drawn about one dashed horizontal line, one hanging below it and one rising above it, each labelled with its formula. Right, two sign strips, one for each function. The upper strip is labelled with the second derivative of minus x to the fourth, which is minus twelve x squared, and carries a minus sign at every sampled point except a single zero at the middle; its verdict reads negative at every other x, so not convex. The lower strip is labelled with the second derivative of x to the fourth, which is twelve x squared, and carries a plus sign at every sampled point except the same single zero at the middle; its verdict reads nonnegative at every x, so convex. The two strips differ only in the signs away from the origin, which is the point the quantifier makes. A line between them says that the dots only sample: the sign at every x is read off the formula, because nine points could never verify a statement about all of them."></canvas>
   </figure>
   <div class="eq tight">$$f\in C^2\text{ on an open convex }C:\qquad f\text{ convex}\iff\nabla^2f(x)\succeq0\ \text{ for every }x\in C$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 16px;max-width:none">
@@ -3416,7 +3566,7 @@ window.M6 = (function () {
     <dt class="nul">one point</dt><dd>$-x^4$ has $\nabla^2f(0)=0$, and $-12x^2<0$ everywhere else</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p46a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p49a'), function (g, t, k) {
     var c = k.c, i, x;
     k.seg([570, 20], [570, 280], c.rule, 1);
     /* --- left: the two quartics, one hanging and one rising about the same flat point --- */
@@ -3455,13 +3605,57 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 47 ============ -->
+<!-- ============ 50 ============ -->
+<section class="slide" data-part="IV">
+  <h2>Convexity and Optimality</h2>
+  <p class="sub">Which conclusion needs which hypothesis</p>
+  <figure>
+    <canvas id="m6p50a" width="1152" height="300" role="img" aria-label="Five statements from this section listed in a column, each with the hypotheses it needs beside it and a mark saying whether it is one-way or an equivalence. First: at an interior local minimum of a differentiable function the gradient vanishes, needing interior and differentiable, and necessary only. Second: for a convex function every local minimum is global, needing convexity alone and no derivative. Third: a zero gradient certifies a global minimum, needing convex and differentiable on a convex set. Fourth: the Hessian positive semidefinite everywhere is equivalent to convexity, needing twice continuous differentiability on an open convex set. Fifth: the Hessian positive semidefinite at a single point gives nothing, with minus x to the fourth as the counterexample."></canvas>
+  </figure>
+  <div class="eq tight">$$\nabla f(x)=0\ \text{ at an interior local min}\quad\text{vs}\quad \nabla f(x)=0\ \Rightarrow\ \text{global min}$$</div>
+  <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
+    <dt class="nul">left</dt><dd>differentiable, interior; necessary only</dd>
+    <dt class="ans">right</dt><dd>adds convexity; now sufficient and global</dd>
+  </dl>
+  <script>
+  m3anim(document.getElementById('m6p50a'), function (g, t, k) {
+    var c = k.c, i;
+    var rows = [
+      ['∇L(θ) = 0 at an interior local min', 'interior, differentiable',
+       'one way, necessary only', c.out],
+      ['every local min is global', 'f convex on convex C  (no derivative)',
+       'one way', c.ans],
+      ['∇f(x) = 0  ⇒  global min on C', 'f convex AND differentiable on convex C',
+       'one way, now sufficient', c.ans],
+      ['∇²f ⪰ 0 everywhere on C', 'f ∈ C², C open convex',
+       '⇔ f convex', c.in],
+      ['∇²f(x) ⪰ 0 at one x', 'nothing follows',
+       'counterexample −x⁴ at 0', c.nul]];
+    k.text('statement', [30, 28], c.dim, { size: 14, mono: true, bold: true });
+    k.text('needs', [520, 28], c.dim, { size: 14, mono: true, bold: true });
+    k.text('direction', [900, 28], c.dim, { size: 14, mono: true, bold: true });
+    k.seg([24, 40], [1128, 40], c.rule, 1.4);
+    for (i = 0; i < rows.length; i++) {
+      var y = 72 + i * 44;
+      k.text(rows[i][0], [30, y], rows[i][3], { size: 16, mono: true });
+      k.text(rows[i][1], [520, y], c.dim, { size: 15, mono: true });
+      k.text(rows[i][2], [900, y], rows[i][3], { size: 15, mono: true });
+      if (i) k.seg([24, y - 22], [1128, y - 22], c.rule, 0.6);
+    }
+    k.seg([24, 290], [1128, 290], c.rule, 1.4);
+    k.text('the first two are different statements, and only the third needs both hypotheses',
+           [30, 282], c.dim, { size: 15, mono: true });
+  }, { seconds: 1, hold: 0, rest: 0 });
+  </script>
+</section>
+
+<!-- ============ 51 ============ -->
 <section class="slide" data-part="IV">
   <p class="eyebrow">New objective</p>
   <h2>Convexity and Optimality</h2>
   <p class="sub">A quadratic penalty changes the problem</p>
   <figure>
-    <canvas id="m6p47a" width="1152" height="300" role="img" aria-label="Left, three curves over one parameter axis: a dashed bowl for the original objective, a dotted bowl centred on the origin for the penalty, and a solid bowl for their sum. The solid bowl's lowest point sits between the other two lowest points, and an arrow along the axis runs from the old minimiser toward the origin, labelled pulled toward zero. Right, the gradients at the old minimiser: a note that the original gradient is zero there, an arrow for the penalty's gradient, which is not zero, and the sum of the two drawn as the same nonzero arrow and labelled as the new gradient. The caption reads: so the old minimiser is no longer stationary."></canvas>
+    <canvas id="m6p51a" width="1152" height="300" role="img" aria-label="Left, three curves over one parameter axis: a dashed bowl for the original objective, a dotted bowl centred on the origin for the penalty, and a solid bowl for their sum. The solid bowl's lowest point sits between the other two lowest points, and an arrow along the axis runs from the old minimiser toward the origin, labelled pulled toward zero. Right, the gradients at the old minimiser: a note that the original gradient is zero there, an arrow for the penalty's gradient, which is not zero, and the sum of the two drawn as the same nonzero arrow and labelled as the new gradient. The caption reads: so the old minimiser is no longer stationary."></canvas>
   </figure>
   <div class="eq tight">$$L_\rho=L+\tfrac{\rho}{2}\lVert\theta\rVert^2,\qquad g_\rho=g+\rho\theta,\qquad \rho>0$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 16px;max-width:none">
@@ -3472,7 +3666,7 @@ window.M6 = (function () {
   </dl>
   <p class="small" style="margin:6px 0 0">A new objective, so in general a new minimiser.</p>
   <script>
-  m3anim(document.getElementById('m6p47a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p51a'), function (g, t, k) {
     var c = k.c, i, x;
     k.seg([644, 20], [644, 280], c.rule, 1);
     /* One scalar quadratic, so the picture is about the shift and not about these numbers.
@@ -3518,7 +3712,7 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 48 ============ -->
+<!-- ============ 52 ============ -->
 <section class="slide" data-part="IV">
   <p class="eyebrow you" data-min="2">Vote</p>
   <h2>Convexity and Optimality</h2>
@@ -3536,11 +3730,11 @@ window.M6 = (function () {
       <p class="reveal step" data-step="3" data-handout="hide"><b>B.</b> Positive diagonal: a unique global minimum.</p>
     </div>
     <figure>
-      <canvas id="m6p48a" width="556" height="420" role="img" aria-label="The parameter plane with two families of level curves. Ellipses, stretched along the first coordinate because that curvature is the smaller one, are centred on the target point marked theta-star. Circles are centred on the origin, because the penalty only measures distance from the origin. A legend inside the plot names the two families. Nothing else is marked while the question is up. The second reveal adds three small open circles labelled A, B and C at the three offered points: A sits on theta-star, C sits on the origin, and B sits between them. The third reveal fills B, draws the one ellipse and the one circle that pass through it and shows them touching there, draws the two gradient arrows at B pointing exactly opposite each other, and prints the penalised gradient at A and at C, neither of which is zero, together with the observation that the stiffer coordinate keeps four fifths of its value while the softer one keeps one half."></canvas>
+      <canvas id="m6p52a" width="556" height="420" role="img" aria-label="The parameter plane with two families of level curves. Ellipses, stretched along the first coordinate because that curvature is the smaller one, are centred on the target point marked theta-star. Circles are centred on the origin, because the penalty only measures distance from the origin. A legend inside the plot names the two families. Nothing else is marked while the question is up. The second reveal adds three small open circles labelled A, B and C at the three offered points: A sits on theta-star, C sits on the origin, and B sits between them. The third reveal fills B, draws the one ellipse and the one circle that pass through it and shows them touching there, draws the two gradient arrows at B pointing exactly opposite each other, and prints the penalised gradient at A and at C, neither of which is zero, together with the observation that the stiffer coordinate keeps four fifths of its value while the softer one keeps one half."></canvas>
     </figure>
   </div>
   <script>
-  m3anim(document.getElementById('m6p48a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p52a'), function (g, t, k) {
     var c = k.c, i;
     var M = window.M6, H = M.FX.H, ts = M.FX.tstar, rho = 2;
     var S = k.plane(224, 164, 120);
@@ -3593,12 +3787,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 49 ============ -->
+<!-- ============ 53 ============ -->
 <section class="slide" data-part="V">
   <h2>Stochastic Gradients and Training</h2>
   <p class="sub">One dataset, many local losses</p>
   <figure>
-    <canvas id="m6p49a" width="1152" height="288" role="img" aria-label="One blue box on the left holds the parameter theta. Four arrows leave it, one into each of four boxes stacked on the right of it; each box is one example's own loss and carries its value, two, two, two and eighteen, with the row it came from named underneath. Four arrows leave those boxes and converge on a single box further right holding six, labelled the mean, with the note that the sum is divided by N on the way in. A line beside that box says the mean is not any one example's loss."></canvas>
+    <canvas id="m6p53a" width="1152" height="288" role="img" aria-label="One blue box on the left holds the parameter theta. Four arrows leave it, one into each of four boxes stacked on the right of it; each box is one example's own loss and carries its value, two, two, two and eighteen, with the row it came from named underneath. Four arrows leave those boxes and converge on a single box further right holding six, labelled the mean, with the note that the sum is divided by N on the way in. A line beside that box says the mean is not any one example's loss."></canvas>
   </figure>
   <div class="eq tight">$$L(\theta)=\frac1N\sum_{i=1}^{N}\ell_i(\theta)$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -3608,7 +3802,7 @@ window.M6 = (function () {
     <dt class="out">$L$</dt><dd>one number, whatever $N$ is</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p49a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p53a'), function (g, t, k) {
     var c = k.c, M = window.M6, i;
     /* the section's dataset: four one-example quadratics, l_i = (theta - c_i)^2 / 2, read at
        theta = 2. Computed here, not written in, so the picture cannot drift from fixtures.py. */
@@ -3638,12 +3832,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 50 ============ -->
+<!-- ============ 54 ============ -->
 <section class="slide" data-part="V">
   <h2>Stochastic Gradients and Training</h2>
   <p class="sub">A mini-batch estimates the full gradient</p>
   <figure>
-    <canvas id="m6p50a" width="1152" height="300" role="img" aria-label="A row of four cells holds the four one-example gradients at the current theta: two, two, two and minus six, with the example number above each. Two of the cells are ringed by a dashed box, marked as the indices drawn for this step, and the ring moves to a different pair as the animation runs. An arrow carries the mean of just those two into an orange box, the estimate, and beside it a separate box holds the full-data gradient, zero. A note between them says the estimate is not the gradient. Below, six small signed bars stand for the six possible draws of two, each either plus two or minus two, with the current draw highlighted, and a note says not one of the six is the full-data gradient."></canvas>
+    <canvas id="m6p54a" width="1152" height="300" role="img" aria-label="A row of four cells holds the four one-example gradients at the current theta: two, two, two and minus six, with the example number above each. Two of the cells are ringed by a dashed box, marked as the indices drawn for this step, and the ring moves to a different pair as the animation runs. An arrow carries the mean of just those two into an orange box, the estimate, and beside it a separate box holds the full-data gradient, zero. A note between them says the estimate is not the gradient. Below, six small signed bars stand for the six possible draws of two, each either plus two or minus two, with the current draw highlighted, and a note says not one of the six is the full-data gradient."></canvas>
   </figure>
   <div class="eq tight">$$\hat g_t=\frac1B\sum_{i\in\mathcal B_t}\nabla_\theta\ell_i(\theta_t)$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -3654,7 +3848,7 @@ window.M6 = (function () {
   </dl>
   <p class="small" style="max-width:none;margin:6px 0 0">Drawn uniformly without replacement from $\{1,\dots,N\}$, independently of $\theta_t$, afresh each step.</p>
   <script>
-  m3anim(document.getElementById('m6p50a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p54a'), function (g, t, k) {
     var c = k.c, M = window.M6, i, j;
     var cs = [0, 0, 0, 8], th = 2;
     var grad = cs.map(function (ci) { return th - ci; });          /* 2, 2, 2, -6 */
@@ -3706,7 +3900,7 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 51 ============ -->
+<!-- ============ 55 ============ -->
 <section class="slide" data-part="V">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>Stochastic Gradients and Training</h2>
@@ -3724,11 +3918,11 @@ window.M6 = (function () {
       <p class="reveal step" data-step="3">Subtracting $\eta(-1)$ moves $\theta$ up. C uses the sum $-2$.</p>
     </div>
     <figure>
-      <canvas id="m6p51a" width="556" height="400" role="img" aria-label="Above a zero line, two orange bars stand for the two sampled gradients, one short bar up labelled plus one and one long bar down labelled minus three. A third slot beside them is empty at first. Below a dividing rule, a horizontal arrow is the parameter line, with the starting value theta marked by a blue dot and three other positions ticked and labelled theta minus two eta, theta plus eta, and theta plus two eta. Nothing on the parameter line is marked or chosen until the answer is revealed."></canvas>
+      <canvas id="m6p55a" width="556" height="400" role="img" aria-label="Above a zero line, two orange bars stand for the two sampled gradients, one short bar up labelled plus one and one long bar down labelled minus three. A third slot beside them is empty at first. Below a dividing rule, a horizontal arrow is the parameter line, with the starting value theta marked by a blue dot and three other positions ticked and labelled theta minus two eta, theta plus eta, and theta plus two eta. Nothing on the parameter line is marked or chosen until the answer is revealed."></canvas>
     </figure>
   </div>
   <script>
-  m3anim(document.getElementById('m6p51a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p55a'), function (g, t, k) {
     var c = k.c, M = window.M6;
     var s = [1, -3], mean = M.mean(s), tot = s[0] + s[1];
     var num = function (v) { return String(v).replace('-', '−'); };
@@ -3777,22 +3971,22 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 52 ============ -->
+<!-- ============ 56 ============ -->
 <section class="slide" data-part="V">
   <h2>Stochastic Gradients and Training</h2>
   <p class="sub">Why uniform sampling has the right average</p>
   <figure>
-    <canvas id="m6p52a" width="1152" height="300" role="img" aria-label="Three panels. The first holds a list of four one-example gradients, two, minus four, one and five, with their mean, one, named as the full-data gradient; a ring travels along the four cells as the animation runs. The second panel writes out all four single draws, each with weight one quarter, and their average, which is one. The third panel writes out the six draws of two, minus one, three halves, seven halves, minus three halves, one half and three, with their average, which is also one, and notes that not one of the six is itself one, which is the noise. A strip across the bottom shows a nonuniform draw with weights seven tenths, one tenth, one tenth and one tenth, whose average is eight fifths instead."></canvas>
+    <canvas id="m6p56a" width="1152" height="300" role="img" aria-label="Three panels. The first holds a list of four one-example gradients, two, minus four, one and five, with their mean, one, named as the full-data gradient; a ring travels along the four cells as the animation runs. The second panel writes out all four single draws, each with weight one quarter, and their average, which is one. The third panel writes out the six draws of two, minus one, three halves, seven halves, minus three halves, one half and three, with their average, which is also one, and notes that not one of the six is itself one, which is the noise. A strip across the bottom shows a nonuniform draw with weights seven tenths, one tenth, one tenth and one tenth, whose average is eight fifths instead."></canvas>
   </figure>
   <div class="eq tight">$$\sum_{i=1}^{N}w_i\,\nabla\ell_i(\theta)=\nabla_\theta L(\theta)\quad\text{when }w_i=\tfrac1N$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
     <dt class="dat">$w_i$</dt><dd>how often index $i$ is drawn</dd>
     <dt class="res">$\nabla\ell_i$</dt><dd>example $i$'s own gradient</dd>
     <dt class="res">$\nabla L$</dt><dd>the full-data gradient</dd>
-    <dt class="nul">$w_i\ne\tfrac1N$</dt><dd>a different average</dd>
+    <dt class="nul">$w_i\ne\tfrac1N$</dt><dd>may change the average</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p52a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p56a'), function (g, t, k) {
     var c = k.c, M = window.M6, i, j;
     var gd = [2, -4, 1, 5], full = M.mean(gd);
     var pr = [];
@@ -3847,12 +4041,61 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 53 ============ -->
+<!-- ============ 57 ============ -->
+<section class="slide" data-part="V">
+  <h2>Stochastic Gradients and Training</h2>
+  <p class="sub">Unbiased at every $B$; only the spread changes</p>
+  <figure>
+    <canvas id="m6p57a" width="1152" height="288" role="img" aria-label="Four number lines, one for each batch size from one to four, drawn on the same scale from minus seven to plus three. On each line the possible batch gradients are marked as dots, with repeated values drawn as a stack, and the average of all draws is marked by a tall tick at zero. For batch size one the dots sit at plus two and minus six; for two at plus two and minus two; for three at plus two and minus two thirds; for four a single dot at zero. The average tick stays at zero on every line while the dots close in on it, and the variance is printed beside each line as twelve, four, four thirds and zero."></canvas>
+  </figure>
+  <div class="eq tight">$$\E[\hat g_t\mid\mathcal F_t]=\nabla L(\theta_t),\qquad \operatorname{Var}=\frac{\sigma^2}{B}\cdot\frac{N-B}{N-1}$$</div>
+  <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
+    <dt class="ans">$\E[\cdot\mid\mathcal F_t]$</dt><dd>average over batches, given the history; a fresh uniform draw</dd>
+    <dt class="res">$\sigma^2$</dt><dd>the spread of the $N$ single-example gradients</dd>
+    <dt class="in">$\frac{N-B}{N-1}$</dt><dd>without replacement; it is $0$ at $B=N$</dd>
+  </dl>
+  <script>
+  m3anim(document.getElementById('m6p57a'), function (g, t, k) {
+    var c = k.c, i, j;
+    /* theta = 2 is the full minimiser of the mean of (theta - c_i)^2/2 with c = (0,0,0,8),
+       so the single-example gradients are 2, 2, 2, -6 and the full gradient is 0.
+       Each estimate carries its probability: the two values are NOT equally likely, and the
+       value 2 survives at B = 1, 2, 3 with its probability falling 3/4, 1/2, 1/4. Saying
+       "the dots close in" would be wrong -- what falls is the variance. */
+    var rows = [[1, [[2, 3, '3/4'], [-6, 1, '1/4']], '12'],
+                [2, [[2, 3, '1/2'], [-2, 3, '1/2']], '4'],
+                [3, [[2, 1, '1/4'], [-2 / 3, 3, '3/4']], '4/3'],
+                [4, [[0, 1, '1']], '0']];
+    var X = function (v) { return 230 + (v + 7) * 84; };     /* -7 -> 230, 3 -> 1070 */
+    k.text('average of all draws', [X(0), 30], c.ans,
+           { size: 15, mono: true, align: 'center', bold: true });
+    for (i = 0; i < rows.length; i++) {
+      var y = 62 + i * 50, B = rows[i][0];
+      k.text('B = ' + B, [34, y + 5], c.ink, { size: 16, mono: true });
+      k.text('var ' + rows[i][2], [116, y + 5], c.dim, { size: 15, mono: true });
+      k.seg([X(-7), y], [X(3), y], c.rule, 1.2);
+      k.seg([X(0), y - 15], [X(0), y + 15], c.ans, 2.2);
+      for (j = 0; j < rows[i][1].length; j++) {
+        var v = rows[i][1][j][0], mult = rows[i][1][j][1], pr = rows[i][1][j][2], m;
+        for (m = 0; m < mult; m++) k.dot([X(v), y - m * 8], 4.2, c.res);
+        k.text((v === -2 / 3 ? '\u22122/3' : String(v).replace('-', '\u2212')) + '  p=' + pr,
+               [X(v), y + 19], c.res, { size: 13, mono: true, align: 'center' });
+      }
+    }
+    k.text('\u03b8 = 2, c = (0,0,0,8): single-example gradients 2, 2, 2, \u22126',
+           [34, 254], c.dim, { size: 15, mono: true });
+    k.text('the tick never moves. The value 2 stays put; its probability falls. The variance falls.',
+           [34, 276], c.ans, { size: 15, mono: true });
+  }, { seconds: 1, hold: 0, rest: 0 });
+  </script>
+</section>
+
+<!-- ============ 58 ============ -->
 <section class="slide" data-part="V">
   <h2>Stochastic Gradients and Training</h2>
   <p class="sub">A noisy step can raise the full loss</p>
   <figure>
-    <canvas id="m6p53a" width="1152" height="280" role="img" aria-label="On the left, the full-data loss drawn as a bowl against theta, with dotted guides at the heights six and eight. A blue dot starts at theta equals two, the bottom of the bowl, and slides left to theta equals one, where the curve is higher; the two heights are labelled six and thirteen halves. An orange arrow under the axis marks the step, taken from one example's gradient alone. On the right, a table gives each example's own loss at theta equals two and at theta equals one: two and one half three times over, then eighteen and forty nine halves for the fourth, which is ringed as the outlier. Under the table a line reads mean six becomes thirteen halves."></canvas>
+    <canvas id="m6p58a" width="1152" height="280" role="img" aria-label="On the left, the full-data loss drawn as a bowl against theta, with dotted guides at the heights six and eight. A blue dot starts at theta equals two, the bottom of the bowl, and slides left to theta equals one, where the curve is higher; the two heights are labelled six and thirteen halves. An orange arrow under the axis marks the step, taken from one example's gradient alone. On the right, a table gives each example's own loss at theta equals two and at theta equals one: two and one half three times over, then eighteen and forty nine halves for the fourth, which is ringed as the outlier. Under the table a line reads mean six becomes thirteen halves."></canvas>
   </figure>
   <div class="eq tight">$$\ell_i(\theta)=\tfrac12(\theta-c_i)^2,\qquad c=(0,0,0,8)$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -3864,7 +4107,7 @@ window.M6 = (function () {
     <p style="margin:4px 0 0">$\nabla L(2)=0$, so $\theta=2$ minimises $L$, at $L=6$. Draw example $1$, with $\eta=\tfrac12$: $\theta'=1$ and $L=\tfrac{13}2$.</p>
   </div>
   <script>
-  m3anim(document.getElementById('m6p53a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p58a'), function (g, t, k) {
     var c = k.c, M = window.M6, i;
     var cs = [0, 0, 0, 8];
     var Lf = function (x) { return M.mean(cs.map(function (ci) { return (x - ci) * (x - ci) / 2; })); };
@@ -3924,22 +4167,21 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 54 ============ -->
+<!-- ============ 59 ============ -->
 <section class="slide" data-part="V">
   <h2>Stochastic Gradients and Training</h2>
-  <p class="sub">A schedule changes step size over time</p>
+  <p class="sub">First condition: no ceiling fixed in advance</p>
   <figure>
-    <canvas id="m6p54a" width="1152" height="268" role="img" aria-label="On the left, step size plotted against iteration for three schedules: a over t plus one with a equal to one, the same with a equal to one half, and a constant step size drawn as a flat line. Dots light up along each schedule in turn as the animation runs, and the first six values of the first schedule are written underneath as one, one half, one third, one quarter, one fifth, one sixth. On the right, a panel of plain sentences: the two series are hypotheses rather than the theorem, the theorem also assumes things about the objective, the noise and bounded iterates, none of which this course has established, that a step of size eta moves eta times the size of the gradient estimate rather than eta, so the sum of the step sizes bounds a distance only once the gradient estimate is bounded, and that these are tests a schedule passes rather than a promise about a network."></canvas>
+    <canvas id="m6p59a" width="1152" height="268" role="img" aria-label="On the left, step size plotted against the iteration count for the schedule a over t plus one, drawn for a equal to one and a equal to one half, with a constant step size as a flat line for comparison. The first six values of the a equals one schedule are listed underneath. On the right, the reading of the first condition: the sum of the step sizes diverges, so the budget of step size never runs out, together with the warning that a step of size eta t moves eta t times the size of the gradient estimate, not eta t, so the sum bounds a distance only once that size is bounded."></canvas>
   </figure>
-  <div class="eq tight">$$\sum_{t\ge0}\eta_t=\infty,\qquad \sum_{t\ge0}\eta_t^2<\infty$$</div>
+  <div class="eq tight">$$\sum_{t\ge0}\eta_t=\infty$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
-    <dt class="in">$\eta_t$</dt><dd>step size at step $t$</dd>
-    <dt>$\sum\eta_t$</dt><dd>the step budget, not a distance</dd>
-    <dt>$\sum\eta_t^2$</dt><dd>how fast the steps shrink</dd>
+    <dt class="in">$\eta_t$</dt><dd>step size at step $t$, chosen before training</dd>
+    <dt>$\sum\eta_t$</dt><dd>a sum of step sizes, not a distance travelled</dd>
+    <dt class="nul">needs</dt><dd>$\|\hat g_t\|\le G$ before it bounds any distance</dd>
   </dl>
-  <p class="callout small" style="max-width:none;margin:8px 0 0">The two series are conditions inside a theorem whose other assumptions this course has not made, so they are not a convergence guarantee.</p>
   <script>
-  m3anim(document.getElementById('m6p54a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p59a'), function (g, t, k) {
     var c = k.c, i;
     var n = 20, sch = function (a) { return function (q) { return a / (q + 1); }; };
     var X = function (q) { return 70 + q * 26; }, Y = function (v) { return 206 - v * 150; };
@@ -3973,20 +4215,85 @@ window.M6 = (function () {
            { size: 16, mono: true });
 
     k.seg([620, 18], [620, 244], c.rule, 1);
-    [['the two series are hypotheses, not the theorem', 48, c.ink],
-     ['the theorem also assumes the objective, the', 74, c.ink],
-     ['noise, and bounded iterates', 96, c.ink],
-     ['none of those is established in this course', 124, c.ink],
-     ['a step of size ηₜ moves ηₜ‖ĝₜ‖, not ηₜ, so Σηₜ', 160, c.nul],
-     ['bounds a distance only once ‖ĝₜ‖ is bounded', 182, c.nul],
-     ['these are tests a schedule passes, not a promise', 214, c.nul]].forEach(function (q) {
-      k.text(q[0], [640, q[1]], q[2], { size: 15, mono: true });
+    k.text('what it says', [640, 44], c.ans, { size: 16, mono: true, bold: true });
+    [['the budget of step size never runs out, so the', 68, c.ink],
+     ['bound GΣηₜ stops giving one fixed ceiling', 88, c.ink],
+     ['what it does not say', 120, c.nul],
+     ['ηₜ moves ηₜ‖ĝₜ‖, not ηₜ, so Σηₜ bounds a', 146, c.nul],
+     ['distance only once ‖ĝₜ‖ ≤ G', 166, c.nul],
+     ['it does NOT make the trajectory unbounded, and', 192, c.nul],
+     ['does not promise the run leaves any ball:', 212, c.nul],
+     ['if every ĝₜ used is 0, θ never moves at all', 232, c.nul]].forEach(function (q) {
+      k.text(q[0], [640, q[1]], q[2],
+             { size: 15, mono: true, bold: q[1] === 120 });
     });
   }, { seconds: 3.8, hold: 0.8, rest: 1 });
   </script>
 </section>
 
-<!-- ============ 55 ============ -->
+<!-- ============ 60 ============ -->
+<section class="slide" data-part="V">
+  <h2>Stochastic Gradients and Training</h2>
+  <p class="sub">Second condition: the injected noise settles</p>
+  <figure>
+    <canvas id="m6p60a" width="1152" height="268" role="img" aria-label="On the left the squares of the same schedule plotted against the iteration count, falling away far faster than the step sizes themselves, with their running total drawn above them flattening towards a finite value. The first six squared values are listed underneath. On the right, what the condition says: the displacement each step injects is proportional to eta t times the error between the estimate and the true gradient, and under the stated conditional-moment assumptions and deterministic schedule, a finite sum of squared step sizes makes the signed cumulative noise converge, not its absolute path length or the parameter sequence. Below that, the two assumptions it needs, a centred error and a bounded conditional second moment, and the note that the two series conditions are hypotheses of a theorem whose other assumptions this course has not established."></canvas>
+  </figure>
+  <div class="eq tight">$$\sum_{t\ge0}\eta_t^2<\infty$$</div>
+  <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
+    <dt class="res">$\hat g_t-g_t$</dt><dd>the step's error; need not shrink on its own</dd>
+    <dt>$\sum\eta_t^2$</dt><dd>how fast the steps shrink, so the error's effect does</dd>
+    <dt class="nul">needs</dt><dd>the error centred, and its second moment bounded</dd>
+  </dl>
+  <script>
+  m3anim(document.getElementById('m6p60a'), function (g, t, k) {
+    var c = k.c, i;
+    var n = 20, sq = function (q) { return 1 / ((q + 1) * (q + 1)); };
+    var X = function (q) { return 70 + q * 26; }, Y = function (v) { return 206 - v * 150; };
+    k.seg([X(0) - 10, Y(0)], [X(n - 1) + 16, Y(0)], c.dim, 1.6);
+    k.seg([X(0) - 10, Y(0)], [X(0) - 10, Y(1) - 14], c.dim, 1.6);
+    [[1, '1'], [0.5, '1/2'], [0, '0']].forEach(function (q) {
+      k.text(q[1], [X(0) - 18, Y(q[0])], c.dim, { size: 14, mono: true, align: 'right' });
+    });
+    [0, 5, 10, 15].forEach(function (q) {
+      k.text(String(q), [X(q), Y(0) + 20], c.dim, { size: 14, mono: true, align: 'center' });
+    });
+    k.text('t', [X(n - 1) + 26, Y(0)], c.dim, { size: 16, mono: true });
+    var lit = Math.min(n, 1 + Math.floor(t * n)), pts = [], run = [], acc = 0;
+    for (i = 0; i < n; i++) {
+      pts.push([X(i), Y(sq(i))]);
+      acc += sq(i);
+      run.push([X(i), Y(acc / 2)]);          /* drawn at half scale so it fits the axis */
+    }
+    k.poly(pts, c.res, 2.6);
+    for (i = 0; i < lit; i++) k.dot([X(i), Y(sq(i))], 3.4, c.res);
+    k.poly(run, c.ans, 2.0, null, [5, 4]);
+    /* the legend sits above the peak of the squares curve: at y = 72 and 96 the dashed running
+       total ran straight through it, and the longer label crossed the rule into the right
+       column. Both are measured by layout.py's fillText hook now. */
+    k.seg([300, 30], [328, 30], c.res, 2.6);
+    k.text('ηₜ² for a = 1', [338, 30], c.res, { size: 15, mono: true });
+    k.seg([300, 52], [328, 52], c.ans, 2.0, [5, 4]);
+    k.text('running total (½ scale)', [338, 52], c.ans, { size: 15, mono: true });
+    k.text('a = 1:   1,  1/4,  1/9,  1/16,  1/25,  1/36', [40, 250], c.dim,
+           { size: 16, mono: true });
+
+    k.seg([620, 18], [620, 244], c.rule, 1);
+    k.text('what it says', [640, 44], c.ans, { size: 16, mono: true, bold: true });
+    [['noise contribution: −ηₜ(ĝₜ − gₜ)', 72, c.ink],
+     ['under the assumptions below, its signed', 92, c.ink],
+     ['cumulative sum converges; not a bound', 112, c.ink],
+     ['on path length or proof of training', 132, c.ink],
+     ['what it needs', 164, c.nul],
+     ['the error centred given the past, and its', 190, c.nul],
+     ['conditional second moment bounded', 210, c.nul],
+     ['both series are hypotheses, not the theorem', 236, c.nul]].forEach(function (q) {
+      k.text(q[0], [640, q[1]], q[2], { size: 15, mono: true, bold: q[1] === 164 });
+    });
+  }, { seconds: 3.8, hold: 0.8, rest: 1 });
+  </script>
+</section>
+
+<!-- ============ 61 ============ -->
 <section class="slide" data-part="V">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>Stochastic Gradients and Training</h2>
@@ -4004,11 +4311,11 @@ window.M6 = (function () {
       <p class="reveal step" data-step="3">A. B's step budget $\sum\eta_t$ is finite; C has $\sum\eta_t^2=n\eta^2$.</p>
     </div>
     <figure>
-      <canvas id="m6p55a" width="556" height="420" role="img" aria-label="Three bar charts stacked, one for each option and all drawn in the same colour and to the same scale. The first, A, draws the terms of one over t plus one, falling away to the right. The second, B, draws the terms of one over t plus one squared, where only the first bar is tall. The third, C, draws a constant step size as sixteen bars of equal height. No chart carries a verdict in the resting picture. When the reasoning is revealed, brackets appear under the first chart grouping its bars into doubling blocks labelled one half, seven twelfths, and five hundred and thirty three over eight hundred and forty, and each chart gains a short remark about its own total."></canvas>
+      <canvas id="m6p61a" width="556" height="420" role="img" aria-label="Three bar charts stacked, one for each option and all drawn in the same colour and to the same scale. The first, A, draws the terms of one over t plus one, falling away to the right. The second, B, draws the terms of one over t plus one squared, where only the first bar is tall. The third, C, draws a constant step size as sixteen bars of equal height. No chart carries a verdict in the resting picture. When the reasoning is revealed, brackets appear under the first chart grouping its bars into doubling blocks labelled one half, seven twelfths, and five hundred and thirty three over eight hundred and forty, and each chart gains a short remark about its own total."></canvas>
     </figure>
   </div>
   <script>
-  m3anim(document.getElementById('m6p55a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p61a'), function (g, t, k) {
     var c = k.c, i;
     /* the three block sums the reveal prints, added as exact rationals: 1/3 + 1/4 in doubles is
        0.5833333333333333, and 12 times that is 6.999999999999999, not 7 */
@@ -4060,12 +4367,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 56 ============ -->
+<!-- ============ 62 ============ -->
 <section class="slide" data-part="V">
   <h2>Stochastic Gradients and Training</h2>
   <p class="sub">One complete training iteration</p>
   <figure>
-    <canvas id="m6p56a" width="1152" height="300" role="img" aria-label="Five numbered rows. Each row holds one operation on the left and, after an arrow, the object that operation produces on the right. Clearing the stored gradients produces a store of zeros. The forward pass on the drawn batch produces one predicted value per drawn example. Reducing produces the batch loss, a single number. Backward from the seed one produces the batch gradient, one rate per parameter. The update produces a new parameter column, and nothing else changes. A travelling highlight moves down the rows in order and rests on the update."></canvas>
+    <canvas id="m6p62a" width="1152" height="300" role="img" aria-label="Five numbered rows. Each row holds one operation on the left and, after an arrow, the object that operation produces on the right. Clearing the stored gradients produces a store of zeros. The forward pass on the drawn batch produces one predicted value per drawn example. Reducing produces the batch loss, a single number. Backward from the seed one produces the batch gradient, one rate per parameter. The update produces a new parameter column, and nothing else changes. A travelling highlight moves down the rows in order and rests on the update."></canvas>
   </figure>
   <div class="eq tight">$$\theta_{t+1}=\theta_t-\eta_t\hat g_t$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -4075,7 +4382,7 @@ window.M6 = (function () {
   </dl>
   <p class="small" style="max-width:none;margin:6px 0 0">Five operations, five different objects, and only the last one assigns to $\theta$.</p>
   <script>
-  m3anim(document.getElementById('m6p56a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p62a'), function (g, t, k) {
     var c = k.c, i;
     var rows = [['clear the stored gradients', 'every gradient slot holds 0', 'nul'],
                 ['forward on the drawn batch', 'one predicted value per drawn example', 'out'],
@@ -4099,69 +4406,166 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 57 ============ -->
+<!-- ============ 63 ============ -->
 <section class="slide" data-part="V">
   <h2>Stochastic Gradients and Training</h2>
-  <p class="sub">Two different kinds of accumulation</p>
+  <p class="sub">Accumulation inside one graph: required</p>
   <figure>
-    <canvas id="m6p57a" width="1152" height="300" role="img" aria-label="Three panels separated by vertical rules. The first, inside one graph, takes r equals x times x plus x at x equals two and stacks its three contributions, two, two and one, which add to five, the derivative; it is labelled required. The second, across iterations, runs two fresh graphs at the same theta into a single gradient slot that ends up holding ten, which is the derivative of neither run, and is labelled a leftover unless intended. The third, on purpose, sums two micro batch gradients and divides by k when the micro batches are the same size, weighting each by its own size when they are not, and is labelled a policy rather than a mistake."></canvas>
+    <canvas id="m6p63a" width="1152" height="288" role="img" aria-label="The expression r equals x times x plus x evaluated at x equals two, with the three places x appears marked underneath. Each marked use sends one contribution into its own box, two from the left factor, two from the right factor and one from the direct use. A rule under the three boxes sums them to five, labelled d r by d x. A caption says the plus-equals is the chain rule and is required."></canvas>
   </figure>
   <div class="eq tight">$$\bar u \mathrel{+}= \bar v\,\frac{\partial v}{\partial u}$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
     <dt class="res">$\bar u$</dt><dd>the gradient slot for $u$</dd>
     <dt class="res">$\bar v$</dt><dd>what arrived downstream</dd>
     <dt>$\partial v/\partial u$</dt><dd>the local factor, this use</dd>
+    <dt>$\mathrel{+}=$</dt><dd>add every use; each term carries its own $\partial v/\partial u$</dd>
   </dl>
-  <p class="small" style="max-width:none;margin:6px 0 0">Inside one graph this is required. Across two fresh graphs at the same $\theta$ it is a leftover.</p>
   <script>
-  m3anim(document.getElementById('m6p57a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p63a'), function (g, t, k) {
     var c = k.c, i;
-    var slots = [2, 2, 1], tot = slots.reduce(function (a, b) { return a + b; }, 0);
-    var store = 0;
-    for (i = 0; i < 2; i++) slots.forEach(function (s) { store += s; });
-    k.seg([380, 16], [380, 272], c.rule, 1);
-    k.seg([748, 16], [748, 272], c.rule, 1);
-
-    k.text('inside one graph', [24, 28], c.ans, { size: 16, mono: true, bold: true });
-    k.text('r = x*x + x,   x = 2', [24, 56], c.dim, { size: 15, mono: true });
-    k.cells([60, 80], slots.map(function (s) { return [s]; }),
-            { cw: 70, ch: 36, col: c.res, size: 17 });
-    ['left slot', 'right slot', 'direct use'].forEach(function (s, m) {
-      k.text(s, [140, 98 + m * 36], c.dim, { size: 14, mono: true });
-    });
-    k.seg([60, 196], [130, 196], c.rule, 1.6);
-    k.text(String(tot), [95, 218], c.res, { size: 22, mono: true, bold: true, align: 'center' });
-    k.text('dr/dx', [140, 218], c.dim, { size: 15, mono: true });
-    k.text('the += is required', [24, 258], c.ans, { size: 15, mono: true });
-
-    k.text('across iterations', [392, 28], c.nul, { size: 16, mono: true, bold: true });
-    k.text('two fresh graphs, same θ', [392, 56], c.dim, { size: 15, mono: true });
-    var a1 = k.node([450, 96], 'run 1', { w: 90, h: 36, col: c.dim, fill: c.panel, size: 15 });
-    var a2 = k.node([450, 150], 'run 2', { w: 90, h: 36, col: c.dim, fill: c.panel, size: 15 });
-    var sl = k.node([620, 123], String(store), { w: 100, h: 50, col: c.nul, fill: c.panel,
-                     size: 22, sub: 'the slot', ssize: 13 });
-    k.link(a1, sl, c.res, { label: String(tot) });
-    k.link(a2, sl, c.res, { label: String(tot), side: 'bottom' });
-    k.text('the derivative of neither run', [392, 200], c.dim, { size: 15, mono: true });
-    k.text('a leftover, unless intended', [392, 258], c.nul, { size: 15, mono: true });
-
-    k.text('on purpose', [760, 28], c.in, { size: 16, mono: true, bold: true });
-    k.text('k micro batches, one update', [760, 56], c.dim, { size: 15, mono: true });
-    var m1 = k.node([820, 100], 'g₁', { w: 70, h: 36, col: c.res, fill: c.panel, size: 17 });
-    var m2 = k.node([820, 146], 'g₂', { w: 70, h: 36, col: c.res, fill: c.panel, size: 17 });
-    var sm = k.node([960, 123], 'sum', { w: 90, h: 50, col: c.res, fill: c.panel, size: 18 });
-    k.link(m1, sm, c.res, {});
-    k.link(m2, sm, c.res, {});
-    var dv = k.node([1080, 123], '÷ k', { w: 80, h: 50, col: c.in, fill: c.panel, size: 20 });
-    k.link(sm, dv, c.in, {});
-    k.text('equal sizes: divide by k, or use η/k', [760, 200], c.dim, { size: 15, mono: true });
-    k.text('unequal: weight each by its own size', [760, 226], c.dim, { size: 15, mono: true });
-    k.text('a policy, not a mistake', [760, 258], c.in, { size: 15, mono: true });
+    var use = [['left factor', 2], ['right factor', 2], ['direct use', 1]];
+    var tot = use.reduce(function (a, u) { return a + u[1]; }, 0);
+    k.text('one graph, x used three times', [24, 26], c.ans, { size: 16, mono: true, bold: true });
+    k.text('r = x*x + x,   x = 2', [24, 58], c.dim, { size: 17, mono: true });
+    /* the three places x appears, marked under the expression it is read from */
+    var at = [[64, 'left factor'], [96, 'right factor'], [160, 'direct use']];
+    for (i = 0; i < 3; i++) k.seg([at[i][0], 68], [at[i][0], 82], c.res, 2);
+    /* one box per use, left to right, then the rule and the sum */
+    var x0 = [180, 480, 780];
+    for (i = 0; i < 3; i++) {
+      k.node([x0[i], 128], String(use[i][1]), { w: 110, h: 52, col: c.res, fill: c.panel,
+             size: 22, sub: use[i][0], ssize: 13 });
+      if (i) k.text('+', [(x0[i] + x0[i - 1]) / 2, 136], c.dim, { size: 22, mono: true,
+                    align: 'center' });
+    }
+    k.arrow([848, 128], [932, 128], c.res, 2.4);
+    k.node([1020, 128], String(tot), { w: 110, h: 52, col: c.res, fill: c.panel,
+           size: 24, sub: 'dr/dx', ssize: 13 });
+    k.text('every use contributes one term; the slot adds them', [24, 222], c.dim,
+           { size: 15, mono: true });
+    k.text('the += is the chain rule here, and is required', [24, 256], c.ans,
+           { size: 16, mono: true });
   }, { seconds: 1, hold: 0, rest: 0 });
   </script>
 </section>
 
-<!-- ============ 58 ============ -->
+<!-- ============ 64 ============ -->
+<section class="slide" data-part="V">
+  <h2>Stochastic Gradients and Training</h2>
+  <p class="sub">Accumulation across two backward passes: a leftover</p>
+  <figure>
+    <canvas id="m6p64a" width="1152" height="288" role="img" aria-label="Two fresh forward graphs built at the same theta, drawn one above the other, each producing a gradient of five. Both arrows run into a single parameter slot, which ends holding ten. A note beside the slot says ten is the gradient of twice the loss rather than of the single loss that was intended, so it is a correct gradient of the wrong objective. A caption says nothing was cleared between them, and that this is a bug unless it was asked for."></canvas>
+  </figure>
+  <div class="eq tight">$$\text{slot}=\hat g_1+\hat g_2=10,\qquad \hat g_1=\hat g_2=5$$</div>
+  <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
+    <dt class="res">$\hat g_i$</dt><dd>run $i$'s gradient, both at the same $\theta$</dd>
+    <dt class="nul">slot</dt><dd>never cleared between the two</dd>
+  </dl>
+  <p class="small" style="max-width:none;margin:6px 0 0">Same arithmetic as the page before, different scope.</p>
+  <script>
+  m3anim(document.getElementById('m6p64a'), function (g, t, k) {
+    var c = k.c;
+    k.text('two fresh graphs, same θ, nothing cleared', [24, 26], c.nul,
+           { size: 16, mono: true, bold: true });
+    var a1 = k.node([220, 96], 'run 1', { w: 150, h: 48, col: c.dim, fill: c.panel, size: 17 });
+    var a2 = k.node([220, 176], 'run 2', { w: 150, h: 48, col: c.dim, fill: c.panel, size: 17 });
+    var sl = k.node([640, 136], '10', { w: 150, h: 64, col: c.nul, fill: c.panel,
+                     size: 26, sub: 'the slot', ssize: 13 });
+    k.link(a1, sl, c.res, { label: '5' });
+    k.link(a2, sl, c.res, { label: '5', side: 'bottom' });
+    k.text('= \u2207(2L), not \u2207L', [840, 124], c.nul, { size: 17, mono: true });
+    k.text('correct, but of 2L', [840, 148], c.nul, { size: 14, mono: true });
+    k.text('each run alone would give 5', [840, 180], c.dim, { size: 15, mono: true });
+    k.text('a leftover, and a bug unless you asked for it', [24, 256], c.nul,
+           { size: 16, mono: true });
+  }, { seconds: 1, hold: 0, rest: 0 });
+  </script>
+</section>
+
+<!-- ============ 65 ============ -->
+<section class="slide" data-part="V">
+  <h2>Stochastic Gradients and Training</h2>
+  <p class="sub">Accumulation on purpose: micro-batches</p>
+  <figure>
+    <canvas id="m6p65a" width="1152" height="288" role="img" aria-label="k micro batch gradients drawn as a stack feeding one sum box, which feeds a divide by k box, which feeds a single update. Underneath, two lines: equal micro batch sizes make dividing by k the mean over their union; unequal sizes need each mean weighted by its own size, with the worked case of sizes one and three and means zero and four giving three rather than two."></canvas>
+  </figure>
+  <div class="eq tight">$$\frac{\sum_m B_m\hat g_m}{\sum_m B_m}\ \xrightarrow{\ B_m\equiv b\ }\ \frac1k\sum_{m=1}^{k}\hat g_m$$</div>
+  <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
+    <dt class="res">$\hat g_m$</dt><dd>micro-batch $m$'s mean gradient</dd>
+    <dt class="in">$B_m$</dt><dd>its size; equal sizes collapse the weights</dd>
+  </dl>
+  <script>
+  m3anim(document.getElementById('m6p65a'), function (g, t, k) {
+    var c = k.c;
+    k.text('k micro-batches at one θ, one update', [24, 26], c.in,
+           { size: 16, mono: true, bold: true });
+    var m1 = k.node([180, 92], 'g₁', { w: 96, h: 42, col: c.res, fill: c.panel, size: 18 });
+    var m2 = k.node([180, 150], 'g₂', { w: 96, h: 42, col: c.res, fill: c.panel, size: 18 });
+    var sm = k.node([430, 121], 'sum', { w: 130, h: 56, col: c.res, fill: c.panel, size: 19 });
+    k.link(m1, sm, c.res, {});
+    k.link(m2, sm, c.res, {});
+    var dv = k.node([680, 121], '÷ k', { w: 120, h: 56, col: c.in, fill: c.panel, size: 22 });
+    k.link(sm, dv, c.in, {});
+    var up = k.node([930, 121], 'one update', { w: 180, h: 56, col: c.in, fill: c.panel,
+                     size: 17 });
+    k.link(dv, up, c.in, {});
+    k.text('equal sizes: ÷k gives the mean; plain SGD can instead use η/k', [24, 214], c.dim,
+           { size: 15, mono: true });
+    k.text('sizes 1 and 3, means 0 and 4:  ÷k gives 2,  the union mean is 3', [24, 240], c.res,
+           { size: 15, mono: true });
+    k.text('a policy, not a mistake', [24, 270], c.in, { size: 16, mono: true });
+  }, { seconds: 1, hold: 0, rest: 0 });
+  </script>
+</section>
+
+<!-- ============ 66 ============ -->
+<section class="slide" data-part="V">
+  <h2>Stochastic Gradients and Training</h2>
+  <p class="sub">Accumulate once, or step per micro-batch?</p>
+  <figure>
+    <canvas id="m6p66a" width="1152" height="276" role="img" aria-label="Two routes from the same starting parameter four, drawn one above the other. The upper route accumulates: micro-batch A gives gradient four and micro-batch B gives zero, both read at four, their mean is two, and one step of size a quarter lands at seven halves. The lower route steps twice: micro-batch A gives four at theta four and the step lands at three, then micro-batch B is read at three, where it gives minus one, and the second step lands at thirteen quarters. The two routes change both the reduction weights and where the second gradient is evaluated, and that only the upper one computes the gradient of the four-example mean loss."></canvas>
+  </figure>
+  <div class="eq tight">$$\theta-\eta\,\frac{g_A(\theta)+g_B(\theta)}{2}\ \underset{\text{in general}}{\neq}\ \bigl(\theta-\eta g_A(\theta)\bigr)-\eta\,g_B\bigl(\theta-\eta g_A(\theta)\bigr)$$</div>
+  <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
+    <dt class="ans">left</dt><dd>both read at $\theta$; one step on the full-data gradient</dd>
+    <dt class="nul">right</dt><dd>$g_B$ read after the first step, so somewhere else</dd>
+  </dl>
+  <script>
+  m3anim(document.getElementById('m6p66a'), function (g, t, k) {
+    var c = k.c;
+    /* c = (0,0,0,8), loss (theta-c_i)^2/2, theta0 = 4, eta = 1/4, A = {1,2}, B = {3,4}.
+       g_A(4) = 4, g_B(4) = 0, mean 2 = the full-data gradient, so one step lands at 7/2.
+       Stepping twice: 4 -> 3, then g_B(3) = -1, so 3 -> 13/4. */
+    k.text('accumulate, then one step', [30, 28], c.ans, { size: 16, mono: true, bold: true });
+    var y1 = 76;
+    k.node([120, y1], 'θ = 4', { w: 112, h: 44, col: c.dat, size: 18 });
+    k.text('gᴬ(4) = 4', [250, y1 - 8], c.res, { size: 15, mono: true });
+    k.text('gᴮ(4) = 0', [250, y1 + 14], c.res, { size: 15, mono: true });
+    k.arrow([360, y1], [412, y1], c.dim, 2.2);
+    k.node([500, y1], 'mean 2', { w: 130, h: 44, col: c.res, size: 17 });
+    k.text('= ∇L(4), the four-example mean', [580, y1 + 36], c.dim,
+           { size: 14, mono: true });
+    k.arrow([572, y1], [624, y1], c.dim, 2.2);
+    k.node([712, y1], 'θ = 7/2', { w: 130, h: 44, col: c.ans, size: 18 });
+    k.text('one step of η = 1/4', [800, y1 - 24], c.dim, { size: 14, mono: true });
+
+    k.seg([24, 138], [1128, 138], c.rule, 1);
+    k.text('step on each micro-batch', [30, 164], c.nul, { size: 16, mono: true, bold: true });
+    var y2 = 212;
+    k.node([120, y2], 'θ = 4', { w: 112, h: 44, col: c.dat, size: 18 });
+    k.text('gᴬ(4) = 4', [250, y2 - 8], c.res, { size: 15, mono: true });
+    k.arrow([360, y2], [412, y2], c.dim, 2.2);
+    k.node([478, y2], 'θ = 3', { w: 110, h: 44, col: c.nul, size: 18 });
+    k.text('gᴮ(3) = −1', [560, y2 - 8], c.res, { size: 15, mono: true });
+    k.text('read HERE, not at 4', [560, y2 + 14], c.nul, { size: 14, mono: true });
+    k.arrow([700, y2], [752, y2], c.dim, 2.2);
+    k.node([840, y2], 'θ = 13/4', { w: 140, h: 44, col: c.nul, size: 18 });
+    k.text('7/2 ≠ 13/4', [1000, y2], c.nul, { size: 17, mono: true, bold: true });
+  }, { seconds: 1, hold: 0, rest: 0 });
+  </script>
+</section>
+
+<!-- ============ 67 ============ -->
 <section class="slide" data-part="V">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>Stochastic Gradients and Training</h2>
@@ -4176,14 +4580,14 @@ window.M6 = (function () {
       </ol>
       <p class="reveal step" data-step="1">Only an assignment to $\theta$ moves $\theta$.</p>
       <p class="reveal step" data-step="2">None of the four lines does, so $\theta_{t+1}=\theta_t$.</p>
-      <p class="reveal step" data-step="3">A. Dropping the clearing is a different failure: with $\eta=\tfrac12$, step two reads $-5$, not $-7$.</p>
+      <p class="reveal step" data-step="3">A. Only line five moves $\theta$, and it is the line that is not there.</p>
     </div>
     <figure>
-      <canvas id="m6p58a" width="556" height="400" role="img" aria-label="Four lines of a loop are listed: clear the gradient store, forward on the batch, form the loss, backward. A fifth line is a dashed empty box holding a question mark. Below, two blue cells hold the parameter before and after the iteration and carry the same value, with an equals sign between them, while an orange cell beside them holds the gradient store with a nonzero entry. Nothing in the resting picture names which operation is absent. When the answer is revealed the dashed box is filled with the update, and a second panel appears comparing two loops that both update, one clearing and one not: with a step size of one half the clearing loop reads two then minus seven and lands theta at nine halves, while the loop that never clears reads two then minus five and lands at seven halves, because its second gradient is read at the parameter the first step moved to."></canvas>
+      <canvas id="m6p67a" width="556" height="308" role="img" aria-label="Four lines of a loop are listed: clear the gradient store, forward on the batch, form the loss, backward. A fifth line is a dashed empty box holding a question mark. Below, two blue cells hold the parameter before and after the iteration and carry the same value, with an equals sign between them, while an orange cell beside them holds the gradient store with a nonzero entry. Nothing in the resting picture names which operation is absent. When the answer is revealed the dashed box is filled with the update."></canvas>
     </figure>
   </div>
   <script>
-  m3anim(document.getElementById('m6p58a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p67a'), function (g, t, k) {
     var c = k.c, i;
     /* Issue #68 R05: a loop that updates must read each gradient at the parameter it is standing
        on. Reading both draws at theta = 2 describes the loop that never updates, which is the
@@ -4199,13 +4603,8 @@ window.M6 = (function () {
       });
       return { reads: reads, th: th };
     }
-    var frozen = loop(false, false), good = loop(true, true), noclear = loop(false, true);
+    var frozen = loop(false, false);   /* this page draws the frozen loop only */
     var num = function (v) { return String(v).replace('-', '−'); };
-    var fr = function (v) {
-      var sg = v < 0 ? '−' : '', a = Math.abs(v);
-      return sg + (Math.abs(a - Math.round(a)) < 1e-9 ? String(Math.round(a))
-                                                      : Math.round(2 * a) + '/2');
-    };
     var lines = ['clear the gradient store', 'forward on the batch', 'form the loss', 'backward'];
     lines.forEach(function (sx, m) {
       k.text(String(m + 1) + '.  ' + sx, [36, 46 + m * 30], c.ink, { size: 16, mono: true });
@@ -4232,35 +4631,77 @@ window.M6 = (function () {
       k.text('these two are equal, and the store is not zero', [40, 290], c.dim,
              { size: 15, mono: true });
     }
-    if (k.shown(3)) {
-      /* the other omission: both of these loops DO update, so each gradient is read where the
-         loop is standing. The second read differs precisely because theta moved. */
-      k.seg([24, 304], [532, 304], c.rule, 1);
-      k.text('a different omission,  η = 1/2', [40, 322], c.nul,
-             { size: 15, mono: true, bold: true });
-      var rows = [['clearing', good, c.ans], ['not clearing', noclear, c.nul]];
-      k.text('step 1', [250, 344], c.dim, { size: 13, mono: true, align: 'center' });
-      k.text('step 2', [340, 344], c.dim, { size: 13, mono: true, align: 'center' });
-      k.text('θ ends', [440, 344], c.dim, { size: 13, mono: true, align: 'center' });
-      rows.forEach(function (q, m) {
-        var y = 366 + m * 22;
-        k.text(q[0], [40, y], q[2], { size: 14, mono: true });
-        k.text(num(q[1].reads[0]), [250, y], q[2], { size: 14, mono: true, align: 'center' });
-        k.text(num(q[1].reads[1]), [340, y], q[2], { size: 14, mono: true, align: 'center' });
-        k.text(fr(q[1].th), [440, y], q[2], { size: 14, mono: true, align: 'center' });
-      });
-    }
   }, { seconds: 1, hold: 0, rest: 0 });
   </script>
 </section>
 
-<!-- ============ 59 ============ -->
+<!-- ============ 68 ============ -->
+<section class="slide" data-part="V">
+  <h2>Stochastic Gradients and Training</h2>
+  <p class="sub">A different omission: clearing, over two steps</p>
+  <figure>
+    <canvas id="m6p68a" width="1152" height="268" role="img" aria-label="Two loops that both update, compared over two iterations with a step size of one half. The clearing loop reads two, steps to one, reads minus seven there and ends at nine halves. The loop that never clears reads two, steps to one, adds minus seven to the two already in the store and so uses minus five, ending at seven halves. A note underneath says both read their second gradient at the same parameter, and that the store is what differs."></canvas>
+  </figure>
+  <div class="eq tight">$$\text{slot}_t=\textstyle\sum_{s\le t}\hat g_s\quad\text{instead of}\quad \hat g_t$$</div>
+  <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
+    <dt class="res">$\hat g_s$</dt><dd>read at the $\theta$ the loop is standing on</dd>
+    <dt class="nul">slot</dt><dd>a running sum when line one is missing</dd>
+  </dl>
+  <p class="small" style="max-width:none;margin:6px 0 0">Both loops update. Only line one differs, and they end apart.</p>
+  <script>
+  m3anim(document.getElementById('m6p68a'), function (g, t, k) {
+    var c = k.c;
+    var cs = [0, 0, 0, 8], th0 = 2, eta = 0.5, draws = [0, 3];
+    function loop(clear) {
+      var th = th0, slot = 0, reads = [], at = [];
+      draws.forEach(function (ix) {
+        at.push(th);
+        var gi = th - cs[ix];
+        slot = clear ? gi : slot + gi;
+        reads.push(slot);
+        th = th - eta * slot;
+      });
+      return { reads: reads, at: at, th: th };
+    }
+    var good = loop(true), noclear = loop(false);
+    var num = function (v) { return String(v).replace('-', '−'); };
+    var fr = function (v) {
+      var sg = v < 0 ? '−' : '', a = Math.abs(v);
+      return sg + (Math.abs(a - Math.round(a)) < 1e-9 ? String(Math.round(a))
+                                                      : Math.round(2 * a) + '/2');
+    };
+    k.text('both loops update,  η = 1/2,  θ starts at 2', [28, 28], c.ink,
+           { size: 16, mono: true, bold: true });
+    var cx = [372, 566, 760, 976];
+    ['store at step 1', 'θ after step 1', 'store at step 2', 'θ ends'].forEach(
+      function (h, m) {
+        k.text(h, [cx[m], 70], c.dim, { size: 14, mono: true, align: 'center' });
+      });
+    [['clearing', good, c.ans], ['never clearing', noclear, c.nul]].forEach(function (q, m) {
+      var y = 112 + m * 46;
+      k.text(q[0], [28, y], q[2], { size: 17, mono: true, bold: true });
+      k.text(num(q[1].reads[0]), [cx[0], y], q[2], { size: 18, mono: true, align: 'center' });
+      k.text(fr(q[1].at[1]), [cx[1], y], c.dim, { size: 18, mono: true, align: 'center' });
+      k.text(num(q[1].reads[1]), [cx[2], y], q[2], { size: 18, mono: true, align: 'center' });
+      k.text(fr(q[1].th), [cx[3], y], q[2], { size: 18, mono: true, bold: true,
+             align: 'center' });
+    });
+    k.seg([28, 188], [1124, 188], c.rule, 1);
+    k.text('both read their second gradient at θ = 1, because both moved there', [28, 214],
+           c.dim, { size: 15, mono: true });
+    k.text('the store is what differs: −7 alone, or −5 with the leftover 2 still in it',
+           [28, 242], c.res, { size: 15, mono: true });
+  }, { seconds: 1, hold: 0, rest: 0 });
+  </script>
+</section>
+
+<!-- ============ 69 ============ -->
 <section class="slide" data-part="VI">
   <p class="eyebrow">New block</p>
   <h2>Layer Normalization</h2>
   <p class="sub">Controlling feature offset and scale</p>
   <figure>
-    <canvas id="m6p59a" width="1152" height="260" role="img" aria-label="Left: three feature columns from the same layer, drawn as groups of three gold bars on one baseline. The first group sits low, the second is the same shape lifted far up the axis, and the third is much wider apart. A dashed line across each group marks that group's own average, and the three dashed lines sit at three very different heights. Right: the same three groups after each has been centred on a shared zero line and divided by its own spread; now all three straddle zero and reach comparable heights, and the three groups look like one another."></canvas>
+    <canvas id="m6p69a" width="1152" height="260" role="img" aria-label="Left: three feature columns from the same layer, drawn as groups of three gold bars on one baseline. The first group sits low, the second is the same shape lifted far up the axis, and the third is much wider apart. A dashed line across each group marks that group's own average, and the three dashed lines sit at three very different heights. Right: the same three groups after each has been centred on a shared zero line and divided by its own spread; now all three straddle zero and reach comparable heights, and the three groups look like one another."></canvas>
   </figure>
   <div class="eq tight">$$h\in\R^{d}\ \longmapsto\ z\in\R^{d}\quad\text{one sample at a time}$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -4271,7 +4712,7 @@ window.M6 = (function () {
   </dl>
   <p class="tiny" style="margin:6px 0 0">It fixes offset and scale; it is not a promise that a model trains faster.</p>
   <script>
-  m3anim(document.getElementById('m6p59a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p69a'), function (g, t, k) {
     var c = k.c, M = window.M6, i, j;
     var EPS = M.FX.ln.eps, one = [1, 1, 1], zero = [0, 0, 0];
     var cols = [[1, 2, 3], [9, 10, 11], [2, 6, 10]];
@@ -4311,12 +4752,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 60 ============ -->
+<!-- ============ 70 ============ -->
 <section class="slide" data-part="VI">
   <h2>Layer Normalization</h2>
   <p class="sub">Mean and variance over features</p>
   <figure>
-    <canvas id="m6p60a" width="1152" height="268" role="img" aria-label="Left: a grid with four rows of three cells. Rows are samples and columns are features. The second row is outlined and holds the numbers 1, 2 and 3; the other rows hold only dots, because no other sample is used here. A bracket under the outlined row spans all three of its cells and is labelled: the average runs along this row, three features of one sample. A separate arrow points down the middle column and is struck through, labelled: not down the batch. Right: the three numbers of that row as bars on a baseline, with a dashed line at their average labelled with the Greek letter mu, and a double-headed arrow from the dashed line to one bar labelled: each gap, squared and averaged, is v."></canvas>
+    <canvas id="m6p70a" width="1152" height="268" role="img" aria-label="Left: a grid with four rows of three cells. Rows are samples and columns are features. The second row is outlined and holds the numbers 1, 2 and 3; the other rows hold only dots, because no other sample is used here. A bracket under the outlined row spans all three of its cells and is labelled: the average runs along this row, three features of one sample. A separate arrow points down the middle column and is struck through, labelled: not down the batch. Right: the three numbers of that row as bars on a baseline, with a dashed line at their average labelled with the Greek letter mu, and a double-headed arrow from the dashed line to one bar labelled: each gap, squared and averaged, is v."></canvas>
   </figure>
   <div class="eq tight">$$\mu=\frac1d\sum_{j=1}^{d}h_j,\qquad v=\frac1d\sum_{j=1}^{d}(h_j-\mu)^2$$</div>
   <dl class="gloss">
@@ -4326,7 +4767,7 @@ window.M6 = (function () {
   </dl>
   <p class="tiny" style="margin:4px 0 0">Divided by $d$, not $d-1$: the population variance of the $d$ numbers in front of us.</p>
   <script>
-  m3anim(document.getElementById('m6p60a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p70a'), function (g, t, k) {
     var c = k.c, M = window.M6, i, j;
     var h = M.FX.ln.h, HI = 1;                     /* the sample row the lecture follows */
     /* --- left: samples down, features across. Only one row is ours. --------------------- */
@@ -4372,70 +4813,135 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 61 ============ -->
+<!-- ============ 71 ============ -->
 <section class="slide" data-part="VI">
   <h2>Layer Normalization</h2>
-  <p class="sub">Center, scale, then learn an affine change</p>
+  <p class="sub">Step one: centre the features</p>
   <figure>
-    <canvas id="m6p61a" width="1152" height="252" role="img" aria-label="A left-to-right pipeline of small columns of three cells. The first column is the input h holding 1, 2 and 3, in gold. An arrow labelled subtract mu times the ones column leads to the centred column c holding minus 1, 0 and 1. Beside it two small panels report mu equals 2 and v equals two thirds. The next arrow is labelled divide by s, and a note underneath says s equals the square root of v plus epsilon, still a symbol. It leads to a column u drawn with empty cells. Two blue parameter columns, gamma holding 2, minus 1, 3 and beta holding 0, 1, minus 1, feed the last arrow, labelled multiply entry by entry and add, which leads to the output column z, also drawn with empty cells. A note to the right of z says the learned pair is a learnable output scale and shift, shared by every sample, and that they do not invert the block."></canvas>
+    <canvas id="m6p71a" width="1152" height="236" role="img" aria-label="The input column h holding one, two and three in gold, beside a panel giving mu equal to two, the mean over the three features of this one sample. An arrow labelled subtract mu times the ones column leads to the centred column c holding minus one, zero and one. A second panel reports v equal to two thirds, the mean of the squared centred entries. A note says the mean is taken over features within one sample, never across the batch, and that c sums to zero by construction."></canvas>
   </figure>
-  <div class="eq tight">$$c=h-\mu\mathbf1,\qquad u=\frac{c}{s},\quad s=\sqrt{v+\varepsilon},\qquad z=\gamma\odot u+\beta$$</div>
+  <div class="eq tight">$$\mu=\tfrac1d\textstyle\sum_i h_i,\qquad c=h-\mu\mathbf1,\qquad v=\tfrac1d\textstyle\sum_i c_i^2$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
-    <dt class="out">$c$</dt><dd>the centred features, $d\times1$</dd>
-    <dt class="out">$s$</dt><dd>one positive number for this sample</dd>
-    <dt>$\varepsilon>0$</dt><dd>a fixed constant, so $s$ is never $0$</dd>
-    <dt class="in">$\gamma,\beta$</dt><dd>learned, $d\times1$ each, shared by samples</dd>
+    <dt class="dat">$h$</dt><dd>one sample's features, $d\times1$</dd>
+    <dt class="out">$\mu$</dt><dd>mean over features, not over the batch</dd>
+    <dt class="out">$c$</dt><dd>the centred features; $\sum_i c_i=0$ always</dd>
+    <dt class="out">$v$</dt><dd>their mean square, this sample's spread</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p61a'), function (g, t, k) {
-    var c = k.c, M = window.M6;
-    var F = M.FX.ln, fw = M.ln(F.h, F.eps, F.gam, F.bet);
-    var cw = 74, ch = 40, yt = 64;
-    function col(x, vals, colr, name, hi) {
-      k.cells([x, yt], vals.map(function (v) { return [v]; }),
-              { cw: cw, ch: ch, col: colr, size: 18,
-                hi: hi ? [[0, 0], [1, 0], [2, 0]] : [], hicol: colr });
-      k.text(name, [x + cw / 2, yt - 16], colr, { size: 17, mono: true, bold: true, align: 'center' });
-    }
-    col(46, F.h.map(String), c.dat, 'h', true);
-    k.arrow([132, yt + 60], [188, yt + 60], c.dim, 2.4);
-    k.text('\u2212 \u03bc\u00b71', [160, yt + 44], c.out, { size: 15, mono: true, align: 'center' });
-    col(198, fw.c.map(String), c.out, 'c', false);
-    k.text('\u03bc = 2', [288, yt + 24], c.out, { size: 16, mono: true });
-    k.text('v = 2/3', [288, yt + 50], c.out, { size: 16, mono: true });
-    k.text('s = \u221a(v + \u03b5)', [288, yt + 76], c.dim, { size: 16, mono: true });
-    k.text('still a symbol', [288, yt + 100], c.dim, { size: 14, mono: true });
-    k.arrow([410, yt + 60], [466, yt + 60], c.dim, 2.4);
-    k.text('\u00f7 s', [438, yt + 44], c.out, { size: 15, mono: true, align: 'center' });
-    col(476, ['', '', ''], c.out, 'u', false);
-    /* the two learned columns are not built from h, so they come in from above */
-    k.cells([612, 12], F.gam.map(function (v) { return [v]; }),
-            { cw: 56, ch: 28, col: c.in, size: 16 });
-    k.text('\u03b3', [604, 54], c.in, { size: 18, mono: true, bold: true, align: 'right' });
-    k.cells([700, 12], F.bet.map(function (v) { return [v]; }),
-            { cw: 56, ch: 28, col: c.in, size: 16 });
-    k.text('\u03b2', [692, 54], c.in, { size: 18, mono: true, bold: true, align: 'right' });
-    k.seg([640, 96], [640, 118], c.in, 2);
-    k.seg([728, 96], [728, 118], c.in, 2);
-    k.arrow([560, yt + 60], [812, yt + 60], c.dim, 2.4);
-    k.text('\u03b3 \u2299 u + \u03b2', [684, yt + 84], c.in, { size: 15, mono: true, align: 'center' });
-    col(822, ['', '', ''], c.out, 'z', false);
-    k.text('a learnable output scale', [918, yt + 14], c.dim, { size: 14, mono: true });
-    k.text('and shift, shared by', [918, yt + 36], c.dim, { size: 14, mono: true });
-    k.text('every sample. They do', [918, yt + 58], c.dim, { size: 14, mono: true });
-    k.text('not invert the block', [918, yt + 80], c.dim, { size: 14, mono: true });
-    k.text('u and z get numbers once \u03b5 is fixed', [46, 222], c.dim, { size: 14, mono: true });
+  m3anim(document.getElementById('m6p71a'), function (g, t, k) {
+    var c = k.c;
+    var h = [1, 2, 3], mu = 2, cc = [-1, 0, 1];
+    var num = function (v) { return String(v).replace('-', '−'); };
+    k.text('h', [112, 34], c.dat, { size: 18, mono: true, bold: true, align: 'center' });
+    k.cells([70, 50], h.map(function (x) { return [String(x)]; }),
+            { cw: 84, ch: 44, col: c.dat, size: 19 });
+    k.node([330, 94], 'μ = 2', { w: 150, h: 48, col: c.out, fill: c.panel, size: 19,
+           sub: 'mean over features', ssize: 12 });
+    k.arrow([164, 94], [248, 94], c.dim, 2.2);
+    k.text('− μ·1', [206, 76], c.dim, { size: 15, mono: true, align: 'center' });
+    k.arrow([414, 94], [498, 94], c.dim, 2.2);
+    k.text('c', [562, 34], c.out, { size: 18, mono: true, bold: true, align: 'center' });
+    k.cells([520, 50], cc.map(function (x) { return [num(x)]; }),
+            { cw: 84, ch: 44, col: c.out, size: 19 });
+    k.node([830, 94], 'v = 2/3', { w: 170, h: 48, col: c.out, fill: c.panel, size: 19,
+           sub: 'mean of cᵢ squared', ssize: 12 });
+    k.arrow([614, 94], [742, 94], c.dim, 2.2);
+    k.text('−1 + 0 + 1 = 0:  centring always gives a column that sums to zero',
+           [70, 194], c.dim, { size: 15, mono: true });
+    k.text('one sample at a time. Nothing here looks at any other sample.', [70, 220], c.ans,
+           { size: 15, mono: true });
   }, { seconds: 1, hold: 0, rest: 0 });
   </script>
 </section>
 
-<!-- ============ 62 ============ -->
+<!-- ============ 72 ============ -->
+<section class="slide" data-part="VI">
+  <h2>Layer Normalization</h2>
+  <p class="sub">Step two: divide by $s$, and why $\varepsilon$ is there</p>
+  <figure>
+    <canvas id="m6p72a" width="1152" height="236" role="img" aria-label="The centred column c holding minus one, zero and one, with an arrow labelled divide by s leading to the normalized column u. Beside the arrow a panel defines s as the square root of v plus epsilon and notes that with v equal to two thirds and epsilon equal to one third, v plus epsilon is exactly one, so s is one and u equals c. Underneath, two lines: epsilon keeps s away from zero when a sample is flat, and because epsilon is positive the mean of u squared is v over v plus epsilon, which is strictly below one rather than equal to it."></canvas>
+  </figure>
+  <div class="eq tight">$$u=\frac{c}{s},\qquad s=\sqrt{v+\varepsilon},\qquad \varepsilon>0$$</div>
+  <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
+    <dt class="out">$s$</dt><dd>one positive number for this sample</dd>
+    <dt>$\varepsilon$</dt><dd>fixed, so $s$ is never $0$ on a flat sample</dd>
+    <dt class="res">$u$</dt><dd>the normalized features; their statistics are the next vote</dd>
+  </dl>
+  <script>
+  m3anim(document.getElementById('m6p72a'), function (g, t, k) {
+    var c = k.c;
+    var cc = [-1, 0, 1], uu = [-1, 0, 1];
+    var num = function (v) { return String(v).replace('-', '−'); };
+    k.text('c', [112, 34], c.out, { size: 18, mono: true, bold: true, align: 'center' });
+    k.cells([70, 50], cc.map(function (x) { return [num(x)]; }),
+            { cw: 84, ch: 44, col: c.out, size: 19 });
+    k.arrow([164, 94], [300, 94], c.dim, 2.2);
+    k.text('÷ s', [232, 76], c.dim, { size: 15, mono: true, align: 'center' });
+    k.node([430, 94], 's = √(v+ε)', { w: 210, h: 48, col: c.out, fill: c.panel,
+           size: 18, sub: 'v = 2/3, ε = 1/3  ⇒  s = 1', ssize: 12 });
+    k.arrow([546, 94], [660, 94], c.dim, 2.2);
+    k.text('u', [722, 34], c.res, { size: 18, mono: true, bold: true, align: 'center' });
+    k.cells([680, 50], uu.map(function (x) { return [num(x)]; }),
+            { cw: 84, ch: 44, col: c.res, size: 19 });
+    k.text('here s is exactly 1, so u = c', [800, 94], c.dim, { size: 15, mono: true });
+    k.text('ε > 0 keeps s away from 0 when every feature of a sample agrees',
+           [70, 194], c.dim, { size: 15, mono: true });
+    k.text('and it is why mean(u²) = v/(v+ε) is below 1, not equal to it',
+           [70, 220], c.res, { size: 15, mono: true });
+  }, { seconds: 1, hold: 0, rest: 0 });
+  </script>
+</section>
+
+<!-- ============ 73 ============ -->
+<section class="slide" data-part="VI">
+  <h2>Layer Normalization</h2>
+  <p class="sub">Step three: the learned scale and shift</p>
+  <figure>
+    <canvas id="m6p73a" width="1152" height="248" role="img" aria-label="The normalized column u holding minus one, zero and one, beside two blue learned columns gamma holding two, minus one and three, and beta holding zero, one and minus one. An entry-by-entry multiply and add leads to the output column z holding minus two, one and two. Underneath, the first component is expanded in full: z one equals gamma one times u one plus beta one, which is two times minus one plus zero, which is minus two. A note says centring loses the sample mean, and learned gamma and beta cannot restore that missing input information."></canvas>
+  </figure>
+  <div class="eq tight">$$z=\gamma\odot u+\beta,\qquad z_i=\gamma_i u_i+\beta_i$$</div>
+  <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
+    <dt class="in">$\gamma,\beta$</dt><dd>learned, $d\times1$ each, one pair for all samples</dd>
+    <dt>$\odot$</dt><dd>entry by entry, not a matrix product</dd>
+    <dt class="res">$z$</dt><dd>what leaves the block, $d\times1$</dd>
+  </dl>
+  <script>
+  m3anim(document.getElementById('m6p73a'), function (g, t, k) {
+    var c = k.c;
+    var u = [-1, 0, 1], ga = [2, -1, 3], be = [0, 1, -1];
+    var z = u.map(function (x, i) { return ga[i] * x + be[i]; });
+    var num = function (v) { return String(v).replace('-', '−'); };
+    function col(x, name, vals, cl) {
+      k.text(name, [x + 42, 34], cl, { size: 18, mono: true, bold: true, align: 'center' });
+      k.cells([x, 50], vals.map(function (v) { return [num(v)]; }),
+              { cw: 84, ch: 40, col: cl, size: 18 });
+    }
+    col(60, 'u', u, c.res);
+    k.text('⊙', [186, 110], c.dim, { size: 22, mono: true, align: 'center' });
+    col(228, 'γ', ga, c.in);
+    k.text('+', [354, 110], c.dim, { size: 22, mono: true, align: 'center' });
+    col(396, 'β', be, c.in);
+    k.text('=', [522, 110], c.dim, { size: 22, mono: true, align: 'center' });
+    col(564, 'z', z, c.ans);
+    /* one component in full, so the general formula has an instance beside it */
+    k.seg([740, 30], [740, 190], c.rule, 1);
+    k.text('one component in full', [770, 44], c.ink, { size: 16, mono: true, bold: true });
+    k.text('z₁ = γ₁ u₁ + β₁', [770, 84], c.dim,
+           { size: 17, mono: true });
+    k.text('   = 2·(−1) + 0', [770, 114], c.dim, { size: 17, mono: true });
+    k.text('   = −2', [770, 144], c.ans, { size: 18, mono: true, bold: true });
+    k.text('centring loses μ; learned γ and β cannot restore that missing mean', [60, 222], c.dim, { size: 15, mono: true });
+  }, { seconds: 1, hold: 0, rest: 0 });
+  </script>
+</section>
+
+<!-- ============ 74 ============ -->
 <section class="slide" data-part="VI">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>Layer Normalization</h2>
   <p class="sub">What is exactly zero or one?</p>
   <figure>
-    <canvas id="m6p62a" width="1152" height="160" role="img" aria-label="On the left a note gives the numbers in use: epsilon is one third, which is far larger than a library's ten to the minus five and is enlarged on purpose so the effect can be seen; with it s is exactly one and u is minus one, zero, one. In the middle the three entries of u are drawn as signed bars about a zero line, and beside them the three squared entries as bars from zero. Two slots are drawn empty with question marks, one labelled average of u and one labelled average of u squared. After the first click a line appears reading: the centred entries sum to zero. After the answer the two slots are filled, a dashed line marks the height one above the squared bars for comparison, and a note on the right gives the output column z as minus two, one, two, whose own average is not zero."></canvas>
+    <canvas id="m6p74a" width="1152" height="160" role="img" aria-label="On the left a note gives the numbers in use: epsilon is one third, which is far larger than a library's ten to the minus five and is enlarged on purpose so the effect can be seen; with it s is exactly one and u is minus one, zero, one. In the middle the three entries of u are drawn as signed bars about a zero line, and beside them the three squared entries as bars from zero. Two slots are drawn empty with question marks, one labelled average of u and one labelled average of u squared. After the first click a line appears reading: the centred entries sum to zero. After the answer the two slots are filled, a dashed line marks the height one above the squared bars for comparison, and a note on the right gives the output column z as minus two, one, two, whose own average is not zero."></canvas>
   </figure>
   <p class="q">For a <b>nonconstant</b> $h$ and $\varepsilon>0$, the normalized $u$ has</p>
   <ol class="opts one">
@@ -4446,7 +4952,7 @@ window.M6 = (function () {
   <p class="reveal step" data-step="1">$\mathbf1\T c=0$ by construction; and $s^2=v+\varepsilon$, not $v$.</p>
   <p class="reveal step" data-step="2">$\operatorname{mean}(u^2)=v/(v+\varepsilon)=2/3$. A needs $\varepsilon=0$; $\gamma,\beta$ then move $z$ anyway.</p>
   <script>
-  m3anim(document.getElementById('m6p62a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p74a'), function (g, t, k) {
     var c = k.c, M = window.M6, j;
     var F = M.FX.ln, fw = M.ln(F.h, F.eps, F.gam, F.bet);
     var u = fw.u, u2 = u.map(function (x) { return x * x; });
@@ -4495,13 +5001,13 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 63 ============ -->
+<!-- ============ 75 ============ -->
 <section class="slide" data-part="VI">
   <p class="eyebrow">Supplement</p>
   <h2>Layer Normalization</h2>
   <p class="sub">Where the backward pass is written down</p>
   <figure>
-    <canvas id="m6p63a" width="1152" height="212" role="img" aria-label="Left: the forward chain already written, as five small boxes joined left to right: the feature column h, then the pair mu and v, then the pair c and s, then the normalized column u, then the output z, with the learned pair gamma and beta entering z from above. Beneath that chain a single long arrow runs the other way, from z back to h, labelled backward, the supplement, with a note that it returns one column to the layer below and one for each of the learned pair. Right: three short arrows labelled direct, through mu and through v, converging into a single box labelled one column, under the heading three routes in and the note two corrections out."></canvas>
+    <canvas id="m6p75a" width="1152" height="212" role="img" aria-label="Left: the forward chain already written, as five small boxes joined left to right: the feature column h, then the pair mu and v, then the pair c and s, then the normalized column u, then the output z, with the learned pair gamma and beta entering z from above. Beneath that chain a single long arrow runs the other way, from z back to h, labelled backward, the supplement, with a note that it returns one column to the layer below and one for each of the learned pair. Right: three short arrows labelled direct, through mu and through v, converging into a single box labelled one column, under the heading three routes in and the note two corrections out."></canvas>
   </figure>
   <div class="eq tight">$$\nabla_z L\ \longmapsto\ \nabla_h L,\ \nabla_\gamma L,\ \nabla_\beta L$$</div>
   <dl class="gloss">
@@ -4516,7 +5022,7 @@ window.M6 = (function () {
   <p class="cite">Eleven pages, with the worked numbers and its own three votes:
     jingz6676.github.io/rob6013/layernorm-backward.html</p>
   <script>
-  m3anim(document.getElementById('m6p63a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p75a'), function (g, t, k) {
     var c = k.c, i;
     /* --- the chain the four pages behind us left standing ----------------------------- */
     var lab = ['h', 'μ, v', 'c, s', 'u', 'z'], wid = [70, 96, 96, 70, 70];
@@ -4550,13 +5056,13 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 64 ============ -->
+<!-- ============ 76 ============ -->
 <section class="slide" data-part="VII">
   <p class="eyebrow">Putting it together</p>
   <h2>A Complete Learning Step</h2>
   <p class="sub">The same chain rule in every block</p>
   <figure>
-    <canvas id="m6p64a" width="1152" height="256" role="img" aria-label="Five panels in a row, labelled inputs, operations, a scalar loss, reverse rules and update. Three rows run across them, one for each block this lecture differentiated: the scalar graph, an affine step followed by a ReLU gate, and the mini-batch loop. In the first four panels each row names that block's own symbols, and the loop's row repeats the row above it with an example index on every value. The fifth panel holds a single line instead of three, the same parameter update for all of them. Small chevrons point from each panel to the next, and one arrow leaves the fifth panel, runs back under the whole row and re-enters the first, because the next pass starts from the changed parameter."></canvas>
+    <canvas id="m6p76a" width="1152" height="256" role="img" aria-label="Five panels in a row, labelled inputs, operations, a scalar loss, reverse rules and update. Three rows run across them, one for each block this lecture differentiated: the scalar graph, an affine step followed by a ReLU gate, and the mini-batch loop. In the first four panels each row names that block's own symbols, and the loop's row repeats the row above it with an example index on every value. The fifth panel holds a single line instead of three, the same parameter update for all of them. Small chevrons point from each panel to the next, and one arrow leaves the fifth panel, runs back under the whole row and re-enters the first, because the next pass starts from the changed parameter."></canvas>
   </figure>
   <div class="eq tight">$$\bar L=1,\qquad\bar u\mathrel{+}=\bar v\,\frac{\partial v}{\partial u},\qquad\theta_{t+1}=\theta_t-\eta_tg_t$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -4566,7 +5072,7 @@ window.M6 = (function () {
     <dt class="in">$\eta_t$</dt><dd>enters here, nowhere earlier</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p64a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p76a'), function (g, t, k) {
     var c = k.c, i, j, m;
     /* five stations, three blocks: the grid is the point, so it is built from one table */
     var head = [['inputs', c.in], ['operations', c.out], ['a scalar loss', c.out],
@@ -4632,7 +5138,7 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 65 ============ -->
+<!-- ============ 77 ============ -->
 <section class="slide" data-part="VII">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>A Complete Learning Step</h2>
@@ -4648,12 +5154,12 @@ window.M6 = (function () {
       <p class="reveal step" data-step="1">Compare the rule with $(L(w+\tau)-L(w-\tau))/2\tau$ at the same $w$.</p>
     </div>
     <figure>
-      <canvas id="m6p65a" width="520" height="400" role="img" aria-label="Above, one loss curve in the single weight w, with the current point marked. Two straight lines pass through that point with clearly different slopes: one is drawn through two probe points placed symmetrically either side of w, and the other is the line the hand-written rule claims. As the animation runs the two probe points slide inward toward w and the line through them does not move at all, because a centred difference of a quadratic is exact. Below a dividing rule, empty axes whose horizontal direction is the learning rate and whose vertical direction is the length of the step. After the answer is revealed the two lines above carry their numbers, the probe six and the hand rule three, and two rays appear from the origin below, one for each of those numbers. The rays meet only at a learning rate of zero."></canvas>
+      <canvas id="m6p77a" width="520" height="400" role="img" aria-label="Above, one loss curve in the single weight w, with the current point marked. Two straight lines pass through that point with clearly different slopes: one is drawn through two probe points placed symmetrically either side of w, and the other is the line the hand-written rule claims. As the animation runs the two probe points slide inward toward w and the line through them does not move at all, because a centred difference of a quadratic is exact. Below a dividing rule, empty axes whose horizontal direction is the learning rate and whose vertical direction is the length of the step. After the answer is revealed the two lines above carry their numbers, the probe six and the hand rule three, and two rays appear from the origin below, one for each of those numbers. The rays meet only at a learning rate of zero."></canvas>
     </figure>
   </div>
   <p class="reveal step" data-step="2">Probe $6$, rule $3$, and $\eta\cdot3\ne\eta\cdot6$ for all $\eta>0$. A right derivative still leaves step size and modelling open.</p>
   <script>
-  m3anim(document.getElementById('m6p65a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p77a'), function (g, t, k) {
     var c = k.c, M = window.M6, i;
     /* the fixture the whole autograd section walks: a = w x, e = a - ystar, L = e^2/2 */
     var X = M.FX.graph.x, YS = M.FX.graph.ys, W = M.FX.graph.w;
@@ -4715,12 +5221,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 66 ============ -->
+<!-- ============ 78 ============ -->
 <section class="slide" data-part="VII">
   <h2>A Complete Learning Step</h2>
   <p class="sub">Three distinct claims about training</p>
   <figure>
-    <canvas id="m6p66a" width="1152" height="240" role="img" aria-label="Three panels side by side, numbered one, two and three: the gradient is correct, the training objective is decreasing, and the predictions are useful. Under each panel is the evidence it takes: a centred probe at one smooth point and step size, the objective before against the objective after on the same data, and data the objective never looked at. Between the panels an arrow grows from the first to the second and from the second to the third, and each arrow is then struck through with a cross. A line at the bottom says that neither arrow holds and that each claim needs its own evidence."></canvas>
+    <canvas id="m6p78a" width="1152" height="240" role="img" aria-label="Three panels side by side, numbered one, two and three: the gradient is correct, the training objective is decreasing, and the predictions are useful. Under each panel is the evidence it takes: a centred probe at one smooth point and step size, the objective before against the objective after on the same data, and data the objective never looked at. Between the panels an arrow grows from the first to the second and from the second to the third, and each arrow is then struck through with a cross. A line at the bottom says that neither arrow holds and that each claim needs its own evidence."></canvas>
   </figure>
   <div class="eq tight">$$\text{(i) }g=\nabla_\theta L\qquad\text{(ii) }L(\theta_{t+1})&lt;L(\theta_t)\qquad\text{(iii) }\ell\text{ at an unseen }x$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -4729,7 +5235,7 @@ window.M6 = (function () {
     <dt class="dat">(iii)</dt><dd>a data question, asked where $L$ never looked</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p66a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p78a'), function (g, t, k) {
     var c = k.c, i;
     var claim = [['the gradient', 'is correct', c.res],
                  ['the training objective', 'is decreasing', c.in],
@@ -4766,7 +5272,7 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 67 ============ -->
+<!-- ============ 79 ============ -->
 <section class="slide" data-part="VII">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>A Complete Learning Step</h2>
@@ -4782,12 +5288,12 @@ window.M6 = (function () {
       <p class="reveal step" data-step="1">Each mode needs $|1-\eta\lambda_i|&lt;1$, and the proof fixed $H$.</p>
     </div>
     <figure>
-      <canvas id="m6p67a" width="520" height="400" role="img" aria-label="Above, the level sets of a two-parameter quadratic drawn as nested ellipses around its minimizer, with three start dots far apart on the plane, and beside them the fixed curvature matrix, the minimizer and the learning rate written out. After the answer is revealed, three paths grow from those dots and all three land on the minimizer. Below a dividing rule, a horizontal line for the error multiplier one minus the learning rate times an eigenvalue, with the band between minus one and one shaded and ticked. After the first reveal a dot appears inside that band for each of this matrix's two eigenvalues; after the second, an arrow points off the left end of the line for a far steeper curvature, one hundred in every direction, whose multiplier is minus nineteen and lies far outside the band."></canvas>
+      <canvas id="m6p79a" width="520" height="400" role="img" aria-label="Above, the level sets of a two-parameter quadratic drawn as nested ellipses around its minimizer, with three start dots far apart on the plane, and beside them the fixed curvature matrix, the minimizer and the learning rate written out. After the answer is revealed, three paths grow from those dots and all three land on the minimizer. Below a dividing rule, a horizontal line for the error multiplier one minus the learning rate times an eigenvalue, with the band between minus one and one shaded and ticked. After the first reveal a dot appears inside that band for each of this matrix's two eigenvalues; after the second, an arrow points off the left end of the line for a far steeper curvature, one hundred in every direction, whose multiplier is minus nineteen and lies far outside the band."></canvas>
     </figure>
   </div>
   <p class="reveal step" data-step="2">One fixed $H$, every mode. Not a network whose curvature moves, and not unseen data. Repeated steps return in Lecture 7.</p>
   <script>
-  m3anim(document.getElementById('m6p67a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p79a'), function (g, t, k) {
     var c = k.c, M = window.M6, j;
     var H = M.FX.H, ts = M.FX.tstar, eta = 1 / 5;
     var lam = [H[0][0], H[1][1]];
@@ -4846,7 +5352,7 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 68 ============ -->
+<!-- ============ 80 ============ -->
 <section class="slide nofoot refs" data-part="VII">
   <h2>References</h2>
   <p class="sub">Where these rules come from</p>
@@ -4858,7 +5364,7 @@ window.M6 = (function () {
   </ol>
 </section>
 
-<!-- ============ 69 ============ -->
+<!-- ============ 81 ============ -->
 <section class="slide nofoot refs" data-part="VII">
   <h2>References</h2>
   <p class="sub">Implementations, and the course standards</p>
