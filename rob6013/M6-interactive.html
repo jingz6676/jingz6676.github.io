@@ -1125,7 +1125,7 @@ window.M6 = (function () {
   <h2>From Derivatives to Learning</h2>
   <p class="sub">Which quantity changes?</p>
   <figure>
-    <canvas id="m6p03a" width="1152" height="168" role="img" aria-label="Four labelled cards in a row: a gold card for the observed input x, a gold card for the target y-star, a blue card for the model weight theta, and a grey card for the learning rate eta. Before the first reveal a single question, changed, sits under the row. At the first reveal two tests appear under each card, asking whether the loss depends on it and whether we are free to move it, with the answer to each. At the second reveal those are replaced by a role written above each card: given, given, updated, we choose it."></canvas>
+    <canvas id="m6p03a" width="1152" height="168" role="img" aria-label="Four labelled cards in a row: a gold card for the observed input x, a gold card for the target y-star, a blue card for the model weight theta, and a grey card for the learning rate eta. Before the first reveal a single question, changed, sits under the row. At the first reveal two tests appear under each card, asking whether the loss depends on it and whether we are free to move it, without answering either test. At the second reveal those are replaced by a role written above each card: given, given, updated, we choose it."></canvas>
   </figure>
   <p class="q">Fitting a <b>fixed</b> dataset: which quantity does the update directly adjust?</p>
   <ol class="opts one">
@@ -1142,8 +1142,6 @@ window.M6 = (function () {
     /* at size 14 the mono face runs about 8.4 px a character, so a label has to stay under the
        196 px card pitch or two of them touch */
     var slot = ['given', 'given', 'updated', 'we choose it'];
-    var ask = ['in L?  yes', 'in L?  yes', 'in L?  yes', 'in L?  no'];
-    var free = ['free?  no', 'free?  no', 'free?  yes', 'free?  ours'];
     /* 168-high canvas: the lowest label lands at y + h + 44 = 142, with room under it.
        It used to be y + h + 50 = 168, exactly on the boundary, and only at reveal 1. */
     var x0 = 96, dx = 196, y = 46, h = 52;
@@ -1156,9 +1154,9 @@ window.M6 = (function () {
         k.text(slot[i], [x0 + i * dx + 75, y - 12], c.dim,
                { size: 14, mono: true, align: 'center' });
       } else if (k.shown(1)) {
-        k.text(ask[i], [x0 + i * dx + 75, y + h + 22], c.dim,
+        k.text('in L?', [x0 + i * dx + 75, y + h + 22], c.dim,
                { size: 15, mono: true, align: 'center' });
-        k.text(free[i], [x0 + i * dx + 75, y + h + 44], c.dim,
+        k.text('free to update?', [x0 + i * dx + 75, y + h + 44], c.dim,
                { size: 15, mono: true, align: 'center' });
       } else {
         k.text('changed?', [x0 + i * dx + 75, y + h + 30], c.rule,
@@ -1365,7 +1363,7 @@ window.M6 = (function () {
   <h2>From Derivatives to Learning</h2>
   <p class="sub">Where does updating happen?</p>
   <figure>
-    <canvas id="m6p08a" width="1152" height="140" role="img" aria-label="Three boxes labelled forward, backward and update, each with a small store of two parameter values drawn beneath it. Forward and backward both show the same two numbers; the store under update shows two question marks, because what it holds is the question. At the first reveal each box is labelled with what it does to the parameter: reads, reads, assigns. Only at the second reveal does the update store fill in with different numbers, and it is outlined and pointed at as the one store that changed."></canvas>
+    <canvas id="m6p08a" width="1152" height="140" role="img" aria-label="Three boxes labelled forward, backward and update, each with a small store of two parameter values drawn beneath it. Forward and backward both show the same two numbers; the store under update shows two question marks, because what it holds is the question. The first reveal gives a neutral hint about assignment. At the second reveal the boxes are labelled reads, reads, assigns, and the update store fills with different numbers and is outlined as the store that changed."></canvas>
   </figure>
   <p class="q">In ordinary gradient descent, which operation changes a weight?</p>
   <ol class="opts one">
@@ -1395,7 +1393,7 @@ window.M6 = (function () {
       k.cells([x + w / 2 - 84, 98],
               [store[i].map(function (v) { return (hide && i === 2) ? '?' : v.toFixed(2); })],
               { cw: 84, ch: 34, col: hit ? c.in : c.dim, title: '\u03b8', tcol: hit ? c.in : c.dim });
-      if (k.shown(1)) k.text(verb[i], [x + w / 2, 18], i === 2 ? c.in : c.dim,
+      if (k.shown(2)) k.text(verb[i], [x + w / 2, 18], i === 2 ? c.in : c.dim,
                              { size: 15, mono: true, align: 'center' });
       if (hit) {
         k.arrow([x + w + 26, 115], [x + w + 4, 115], c.in, 2.4);
@@ -2206,14 +2204,14 @@ window.M6 = (function () {
   <figure>
     <canvas id="m6p26a" width="1152" height="168" role="img" aria-label="Two panels along the top, each a freshly built graph for one training step, drawn as three small boxes w, a and L joined by arrows. Arrows run down from each panel into one wide slot below, marked w.grad and labelled as the store that persists. The left panel's arrow is drawn first and the slot holds the first step's number; as the animation runs the right panel's arrow is drawn too and the slot turns into a question mark, which stays a question mark until the answer is revealed. A note beside the slot appears with the first reveal, saying nothing clears it between steps."></canvas>
   </figure>
-  <p class="q">Two fresh graphs over one $w$, no clearing. What is in $\bar w$?</p>
+  <p class="q">Two fresh graphs at unchanged $w$, no clearing. What is in $\bar w$?</p>
   <ol class="opts one">
     <li><i>A</i>this step's gradient only</li>
     <li><i>B</i>the old and the new, added<b class="ok step" data-step="2">&#10003;</b></li>
     <li><i>C</i>$w$ updates itself</li>
   </ol>
   <p class="reveal step" data-step="1">Each step builds a new graph, but the parameter and its grad slot outlive it, and the write is still $\mathrel{+}=$.</p>
-  <p class="reveal step" data-step="2">The slot reads $6$, then $12$. Adding is right <i>within</i> one graph and stale <i>across</i> steps.</p>
+  <p class="reveal step" data-step="2">The slot reads $6$, then $12$. Across passes, clear unless you intend to accumulate.</p>
   <script>
   m3anim(document.getElementById('m6p26a'), function (g, t, k) {
     var c = k.c, M = window.M6, F = M.graph(M.FX.graph.w, M.FX.graph.x, M.FX.graph.ys);
@@ -3337,7 +3335,7 @@ window.M6 = (function () {
       </ol>
       <p class="reveal step" data-step="1">The midpoint of $-1$ and $1$ is $0$, and the chord there is the average of the end values.</p>
       <p class="reveal step" data-step="2">$x^2$ gives $0\le1$. $-x^2$ would need $0\le-1$.</p>
-      <p class="reveal step" data-step="3" data-handout="hide"><b>A.</b> One midpoint settles these two. The definition itself asks every $x$, $y$ and $\alpha$.</p>
+      <p class="reveal step" data-step="3" data-handout="hide"><b>A.</b> This midpoint rejects B; convexity requires every $x$, $y$ and $\alpha$.</p>
     </div>
     <figure>
       <canvas id="m6p45a" width="556" height="340" role="img" aria-label="Two panels, one above the other. Each shows a parabola through the origin and a straight chord joining its values at minus one and plus one, with the two endpoints marked. In the upper panel, labelled A, the parabola opens upward and its chord runs above the curve. In the lower panel, labelled B, the parabola opens downward and its chord runs below the curve. Nothing else is marked while the question is up. The first reveal adds a dashed vertical at the midpoint of each panel, from the curve to the chord. The second reveal prints the two heights being compared in each panel. The third reveal prints the comparison itself, holding in one panel and failing in the other."></canvas>
@@ -3506,12 +3504,12 @@ window.M6 = (function () {
         <li><i>B</i>every $(0,t)$<b class="ok step" data-step="3">&#10003;</b></li>
         <li><i>C</i>every point</li>
       </ol>
-      <p class="reveal step" data-step="1">$f\ge0$ always, and $f=0$ exactly when $x_1=0$. The value never mentions $x_2$.</p>
+      <p class="reveal step" data-step="1">A square is nonnegative. Which inputs attain the lowest possible value?</p>
       <p class="reveal step" data-step="2">$f(0,1)=0=f(0,0)$, while $f(\tfrac1{10},t)=\tfrac1{100}>0$ for every $t$.</p>
       <p class="reveal step" data-step="3" data-handout="hide"><b>B.</b> A whole line. Convexity makes every minimizer global, not unique.</p>
     </div>
     <figure>
-      <canvas id="m6p48a" width="556" height="360" role="img" aria-label="The parameter plane with the first coordinate running across and the second running up. The shading is made of vertical bands that get darker as you move away from the vertical axis in either direction, because the value depends on the first coordinate alone; a key says darker means a larger value. Nothing is marked while the question is up. The second reveal puts dots on the vertical axis at the origin and one unit above it, both labelled value zero, and an arrow just to the right of the axis labelled: one tenth across gives one hundredth, which is already positive. The third reveal draws the whole vertical axis as one thick line and labels it every point with first coordinate zero."></canvas>
+      <canvas id="m6p48a" width="556" height="360" role="img" aria-label="The parameter plane with the first coordinate running across and the second running up. The shading is made of vertical bands that have stronger blue as you move away from the vertical axis in either direction, because the value depends on the first coordinate alone; a key says stronger blue means a larger value. Nothing is marked while the question is up. The second reveal puts dots on the vertical axis at the origin and one unit above it, both labelled value zero, and an arrow just to the right of the axis labelled: one tenth across gives one hundredth, which is already positive. The third reveal draws the whole vertical axis as one thick line and labels it every point with first coordinate zero."></canvas>
     </figure>
   </div>
   <script>
@@ -3530,7 +3528,7 @@ window.M6 = (function () {
       g.restore();
     }
     k.grid(S, -1.65, 1.65, -1.1, 1.1, { step: 1, labels: ['x₁', 'x₂'] });
-    k.text('darker = larger f', [36, 24], c.in, { size: 14, mono: true, bold: true });
+    k.text('more blue = larger f', [36, 24], c.in, { size: 14, mono: true, bold: true });
     if (k.shown(2)) {
       [[[0, 0], 16], [[0, 1], -1]].forEach(function (q) {
         k.dot(S(q[0]), 7, c.ink);
@@ -3610,7 +3608,7 @@ window.M6 = (function () {
   <h2>Convexity and Optimality</h2>
   <p class="sub">Which conclusion needs which hypothesis</p>
   <figure>
-    <canvas id="m6p50a" width="1152" height="300" role="img" aria-label="Five statements from this section listed in a column, each with the hypotheses it needs beside it and a mark saying whether it is one-way or an equivalence. First: at an interior local minimum of a differentiable function the gradient vanishes, needing interior and differentiable, and necessary only. Second: for a convex function every local minimum is global, needing convexity alone and no derivative. Third: a zero gradient certifies a global minimum, needing convex and differentiable on a convex set. Fourth: the Hessian positive semidefinite everywhere is equivalent to convexity, needing twice continuous differentiability on an open convex set. Fifth: the Hessian positive semidefinite at a single point gives nothing, with minus x to the fourth as the counterexample."></canvas>
+    <canvas id="m6p50a" width="1152" height="300" role="img" aria-label="Five statements from this section listed in a column, each with the hypotheses it needs beside it and a mark saying whether it is one-way or an equivalence. First: at an interior local minimum of a differentiable function the gradient vanishes, needing interior and differentiable, and necessary only. Second: for a convex function every local minimum is global, needing convexity alone and no derivative. Third: a zero gradient certifies a global minimum, needing convex and differentiable on a convex set. Fourth: the Hessian positive semidefinite everywhere is equivalent to convexity, needing twice continuous differentiability on an open convex set. Fifth: the Hessian merely positive semidefinite at a single point does not classify it, with minus x to the fourth as the counterexample."></canvas>
   </figure>
   <div class="eq tight">$$\nabla f(x)=0\ \text{ at an interior local min}\quad\text{vs}\quad \nabla f(x)=0\ \Rightarrow\ \text{global min}$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -3629,7 +3627,7 @@ window.M6 = (function () {
        'one way, now sufficient', c.ans],
       ['∇²f ⪰ 0 everywhere on C', 'f ∈ C², C open convex',
        '⇔ f convex', c.in],
-      ['∇²f(x) ⪰ 0 at one x', 'nothing follows',
+      ['∇²f(x) ⪰ 0 at one x', 'inconclusive',
        'counterexample −x⁴ at 0', c.nul]];
     k.text('statement', [30, 28], c.dim, { size: 14, mono: true, bold: true });
     k.text('needs', [520, 28], c.dim, { size: 14, mono: true, bold: true });
@@ -4603,7 +4601,7 @@ window.M6 = (function () {
       });
       return { reads: reads, th: th };
     }
-    var frozen = loop(false, false);   /* this page draws the frozen loop only */
+    var frozen = loop(true, false);   /* this page draws the frozen loop only */
     var num = function (v) { return String(v).replace('-', '−'); };
     var lines = ['clear the gradient store', 'forward on the batch', 'form the loss', 'backward'];
     lines.forEach(function (sx, m) {
@@ -4710,7 +4708,7 @@ window.M6 = (function () {
     <dt class="out">$z$</dt><dd>what the next layer reads, same shape</dd>
     <dt class="in">two per feature</dt><dd>a learned scale and shift, kept at the end</dd>
   </dl>
-  <p class="tiny" style="margin:6px 0 0">It fixes offset and scale; it is not a promise that a model trains faster.</p>
+  <p class="tiny" style="margin:6px 0 0">It controls feature offset and scale; faster training is not guaranteed.</p>
   <script>
   m3anim(document.getElementById('m6p69a'), function (g, t, k) {
     var c = k.c, M = window.M6, i, j;
@@ -4975,7 +4973,7 @@ window.M6 = (function () {
     k.seg([x0 - 12, y1], [x0 + 3 * (bw + bg) + 2, y1], c.dim, 1.6);
     k.text('u\u00b2', [x0 - 20, y1 - 9], c.out, { size: 16, mono: true, bold: true, align: 'right' });
     for (j = 0; j < 3; j++) {
-      var xb = x0 + j * (bw + bg), h2 = u2[j] * sc * (0.4 + 0.6 * t);
+      var xb = x0 + j * (bw + bg), h2 = u2[j] * sc;
       k.poly([[xb, y1], [xb + bw, y1], [xb + bw, y1 - h2], [xb, y1 - h2]], c.out, 2, c.panel);
     }
     if (k.shown(2)) {

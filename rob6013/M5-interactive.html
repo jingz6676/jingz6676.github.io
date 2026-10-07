@@ -1642,12 +1642,12 @@ window.M5 = (function () {
     <div>
       <div class="eq tight">$$\begin{aligned}D_vL&=\frac{d}{dt}L(x+tv)\Big|_{t=0}\\&=\nabla L\T v=\|\nabla L\|_2\cos\phi\end{aligned}$$</div>
       <dl class="gloss">
-        <dt class="in">$v$</dt><dd>a direction with $\|v\|_2=1$</dd>
+        <dt class="in">$v$</dt><dd>$\|v\|_2=1$</dd>
         <dt>$\phi$</dt><dd>angle from $v$ to $\nabla L$</dd>
         <dt class="res">$\nabla L\ne0$</dt><dd>largest at $v=\nabla L/\|\nabla L\|_2$</dd>
       </dl>
       <div class="ex" style="margin-top:10px"><p class="lbl">Worked example</p>
-        <p style="margin:5px 0 0">A different loss: $\tfrac12(x_1^2+2x_2^2)$ at $(2,\tfrac12)$, $\nabla L=(2,1)$, $D_vL=\sqrt5\cos60^\circ\approx1.118$.</p>
+        <p style="margin:5px 0 0">New loss: $\tfrac12(x_1^2+2x_2^2)$ at $(2,\tfrac12)$, $\nabla L=(2,1)$, $D_vL=\sqrt5\cos60^\circ\approx1.118$.</p>
       </div>
     </div>
   </div>
@@ -2474,7 +2474,7 @@ window.M5 = (function () {
         <dt class="out">$dL\in\R$</dt><dd>the matching change in the loss</dd>
         <dt class="res">$\nabla_xL$</dt><dd>shaped like $x$</dd>
       </dl>
-      <p style="font-size:19px;line-height:1.4;color:var(--dim);margin:12px 0 0">Match $dL=(\nabla_xL)\T dx$ for every $dx$: $dx=e_j$ reads off entry $j$. $d$ is a linear increment, not a number to cancel.</p>
+      <p style="font-size:19px;line-height:1.4;color:var(--dim);margin:12px 0 0">Match $dL=(\nabla_xL)\T dx$ for every $dx$: $dx=e_j$ reads off entry $j$. $d$ means differential, not a number to cancel.</p>
     </div>
     <figure>
       <canvas id="m5p25c" width="520" height="330" role="img" aria-label="A blue column of two cells labelled dx one and dx two feeds an orange row of two cells holding the coefficients two and minus one, and that row feeds a teal box labelled dL. A dot travels along the path, blue on the input side and teal after the coefficients. Underneath, the line dL equals two times dx one plus minus one times dx two, with the coefficients orange and the increments blue, and a dashed orange arrow carries the same two numbers into an orange column labelled the gradient of L with respect to x."></canvas>
