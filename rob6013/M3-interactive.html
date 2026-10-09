@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>M3 · Linear Algebra III</title>
+<title>Lecture 3 · Linear Algebra III</title>
 </head>
 <body>
 
@@ -2452,6 +2452,8 @@ window.m3anim = function (cv, draw, o) {
         <dt>$Ax,b,r\in\R^m$</dt><dd>prediction, readings, residual: measurement space</dd>
         <dt>$f(x)$</dt><dd>one number, $\ge0$; any $A$, no rank assumption</dd>
         <dt>$|r_i|$</dt><dd>the side of square $i$ &#8212; a side cannot be negative</dd>
+        <dt>$e=-r$</dt><dd>Lecture 5 writes $e=Ax-b$</dd>
+        <dt>$cf$, $c&gt;0$</dt><dd>same minimiser, gradient $\times c$</dd>
       </dl>
     </div>
   </div>
@@ -2805,7 +2807,7 @@ window.m3anim = function (cv, draw, o) {
         <dt>$G_{ij}$</dt><dd>lengths <b>and</b> angle at once (p8)</dd>
         <dt>$\varphi$</dt><dd>between $a_i,a_j$, both $\neq0$</dd>
       </dl>
-      <p class="reveal step" data-step="1">A large $|G_{ij}|$ needs long columns <b>and</b> $|\cos\varphi|$ not small. $G=I$ exactly for orthonormal columns, singular exactly for dependent ones (p55).</p>
+      <p class="reveal step" data-step="1">Large $|G_{ij}|$ alone does not imply near-parallel columns. $G=I$ exactly for orthonormal columns, singular exactly for dependent ones (p55).</p>
     </div>
   </div>
 </section>
@@ -5239,6 +5241,7 @@ window.m3anim = function (cv, draw, o) {
     <li>Boyd &amp; Vandenberghe. <a href="https://web.stanford.edu/~boyd/vmls/"><em>Introduction to Applied Linear Algebra</em></a>, 5.4, 10.4, 12&ndash;13, 18. Cambridge, 2018.</li>
     <li>Lynch &amp; Park. <a href="https://modernrobotics.org"><em>Modern Robotics</em></a>, 5.3, 6.2. Cambridge, 2017.</li>
   </ol>
+  <p class="cite">Course standards: <a href="https://jingz6676.github.io/rob6013/notation.html"><em>Notation and Conventions</em></a>, symbols, shapes and the two sign conventions; <a href="https://jingz6676.github.io/rob6013/reading.html"><em>Textbooks and Reading Guide</em></a>, what each source is for and where its notation differs.</p>
 </section>
 
 </div>
@@ -5405,6 +5408,7 @@ window.m3anim = function (cv, draw, o) {
     return d;
   }
 
+  var pres_last = -1;
   function paintPresenter() {
     var p = document.getElementById('pres');
     if (!p) return;
@@ -5432,10 +5436,15 @@ window.m3anim = function (cv, draw, o) {
               guides += sayInto(p, para.trim());
               body.appendChild(p);
             });
-          } else if (bk.t === 'board') {
-            body.appendChild(boardBlock(bk.lines || [], bk.notes || []));
           } else {
-            body.appendChild(instrBlock(bk.t, bk.items || []));
+            /* A label on an instructor block says when in the page it happens -- "vote",
+               "after the reveal" -- which is what makes an interleaved activity page readable. */
+            if (bk.label) {
+              var il = document.createElement('div'); il.className = 'plab';
+              il.textContent = bk.label; body.appendChild(il);
+            }
+            body.appendChild(bk.t === 'board' ? boardBlock(bk.lines || [], bk.notes || [])
+                                              : instrBlock(bk.t, bk.items || []));
           }
         });
       } else {
@@ -5480,7 +5489,11 @@ window.m3anim = function (cv, draw, o) {
       body.innerHTML = a ? a.innerHTML : '<span class="dim">no notes on this slide</span>';
       typeset(body);
     }
-    body.scrollTop = 0;
+    /* Reading position. The panel that scrolls is #pres, not #pbody, so the old body.scrollTop = 0
+       here never did anything: a reveal already kept the lecturer's place, and a new slide wrongly
+       kept it too, opening a fresh script halfway down. Reset the real scroller, and only when the
+       slide changes. */
+    if (pres_last !== i) { p.scrollTop = 0; body.scrollTop = 0; pres_last = i; }
   }
 
   function fit() {
@@ -5541,7 +5554,12 @@ window.m3anim = function (cv, draw, o) {
       if (c) c.textContent = (i + 1) + ' / ' + slides.length;
     }
     var nb = document.getElementById('notes'), a = slides[i].querySelector('aside.notes');
-    if (nb) nb.innerHTML = a ? a.innerHTML : '<span class="dim">no notes on this slide</span>';
+    if (nb) {
+      nb.innerHTML = a ? a.innerHTML : '<span class="dim">no notes on this slide</span>';
+      /* The notes carry the same board mathematics the presenter panel shows, so they need the
+         same pass: KaTeX has already run over the document by the time this HTML is inserted. */
+      typeset(nb);
+    }
     if (history.replaceState) history.replaceState(null, '', '#' + (i + 1));
     paintPresenter(); sync();
   }
