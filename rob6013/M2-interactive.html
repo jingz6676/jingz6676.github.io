@@ -3412,6 +3412,15 @@ body.print .squash{animation:none;transform:scaleY(0)}
 </section>
 
 <!-- ============ 83 ============ -->
+<section class="slide" data-part="I"><p class="eyebrow">Integrated whiteboard problem</p><h2>Coordinates, Modes and Stability</h2>
+<p>$B=\begin{bmatrix}1&amp;1\\1&amp;-1\end{bmatrix}$, $D=\operatorname{diag}(1/2,1/4)$, $x_0=(3,1)\T$. Find $A$, $x_k$, determinant and stability.</p>
+<div class="step" data-step="1"><div class="eq">$$A=BDB^{-1},\quad z_0=B^{-1}x_0=(2,1)\T$$</div><dl class="gloss"><dt>z</dt><dd>basis coordinates; $z_{k+1}=Dz_k$</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$x_k=2(1/2)^k(1,1)\T+(1/4)^k(1,-1)\T$$</div><dl class="gloss"><dt>gains</dt><dd>$\det A=1/8$, $\rho(A)=1/2$: all states decay</dd></dl></div></section>
+
+<section class="slide" data-part="I"><p class="eyebrow">Your turn</p><h2>Coordinates, Modes and Stability</h2>
+<p>$B=\begin{bmatrix}1&amp;1\\0&amp;1\end{bmatrix}$, $D=\operatorname{diag}(2,3)$. With $x_0=(2,1)\T$, find $A$, $x_k$, determinant and stability.</p>
+<div class="step" data-step="1"><div class="eq">$$B^{-1}=\begin{bmatrix}1&amp;-1\\0&amp;1\end{bmatrix},\quad A=BDB^{-1}=\begin{bmatrix}2&amp;1\\0&amp;3\end{bmatrix}$$</div><dl class="gloss"><dt>inverse</dt><dd>use $B^{-1}$, not $B\T$</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$\det A=6,\quad\rho(A)=3>1$$</div><dl class="gloss"><dt>conclusion</dt><dd>not all states decay</dd></dl></div><div class="step" data-step="3"><div class="eq">$$x_k=(2^k+3^k,3^k)\T$$</div><dl class="gloss"><dt>check</dt><dd>$z_0=B^{-1}x_0=(1,1)\T$</dd></dl></div></section>
 <section class="slide nofoot refs" data-part="I">
   <p class="eyebrow">Selected references</p>
   <h2>Courses and books</h2>

@@ -1086,9 +1086,11 @@ window.M5 = (function () {
       <p class="q">$L=\tfrac12(x_1+2x_2-3)^2$, now at $x=(0,0)$. Which step of length $\varepsilon=0.1$ lowers $L$ the most?</p>
       <ol class="opts one">
         <li><i>A</i>$(\varepsilon,\,0)$</li>
-        <li><i>B</i>$(0,\,\varepsilon)$</li>
+        <li><i>B</i>$(0,\,\varepsilon)$<b class="ok step" data-step="2">&#10003;</b></li>
         <li><i>C</i>$(-\varepsilon,\,0)$</li>
       </ol>
+      <p class="reveal step" data-step="1">New losses $4.205$, $3.92$, $4.805$, against $4.5$ where we started.</p>
+      <p class="reveal step" data-step="2">B is the best of these three. The steepest direction of all is not on offer.</p>
     </div>
     <figure>
       <canvas id="m5p03a" width="556" height="374" role="img" aria-label="Parameter space, zoomed in tightly around the origin. Because the loss depends on x1 plus twice x2 only, its contours are parallel straight lines running down to the right; seven of them cross the panel, unlabelled. A blue dot marks the starting point at the origin, and three blue arrows of equal length grow out of it: A to the right, B upward, C to the left. No arrow is marked and no level is numbered. After the first click each arrow tip and the starting point get their loss value; after the second click arrow B and its value turn green."></canvas>
@@ -1208,10 +1210,11 @@ window.M5 = (function () {
     <div>
       <p class="q">$x\in\R^3$, $W\in\R^{2\times3}$, $\hat y=Wx$, $L=\tfrac12\|\hat y-y^\star\|^2$. What shapes are $L$, $\nabla_xL$ and $\nabla_WL$?</p>
       <ol class="opts one">
-        <li><i>A</i>$1$, $3\times1$, $2\times3$</li>
+        <li><i>A</i>$1$, $3\times1$, $2\times3$<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>B</i>$2\times1$, $3\times1$, $3\times2$</li>
         <li><i>C</i>$1$, $1\times3$, $3\times2$</li>
       </ol>
+      <p class="reveal step" data-step="2">A gradient carries the shape of the variable it differentiates. Row conventions exist; ours is columns.</p>
     </div>
     <figure>
       <canvas id="m5p05a" width="556" height="376" role="img" aria-label="Shape cards. The top row shows the objects we are given as grids of empty cells: x with three cells in one column, W with two rows of three cells, and the target with two cells in one column. No numbers are written in any cell. After the first click a second row appears in orange: one single cell for the loss, a column of three cells for the gradient with respect to x, and a two by three grid for the gradient with respect to W, each labelled with its shape."></canvas>
@@ -1386,9 +1389,10 @@ window.M5 = (function () {
       <p class="q">$f(x)=x^2$ at $x=1$. The tangent predicts $1+2h$; the curve gives $(1+h)^2$. How does actual minus predicted behave?</p>
       <ol class="opts one">
         <li><i>A</i>like $h$</li>
-        <li><i>B</i>like $h^2$</li>
+        <li><i>B</i>like $h^2$<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>C</i>zero for every $h$</li>
       </ol>
+      <p class="reveal step" data-step="2">$(1+h)^2-(1+2h)=h^2$: $0.25$ at $h=0.5$, $0.01$ at $h=0.1$. Exact only at $h=0$.</p>
     </div>
     <figure>
       <canvas id="m5p08a" width="604" height="318" role="img" aria-label="Two panels drawn on exactly the same axes and the same scale. Each shows the curve f of x equals x squared, the teal tangent at x equals one, a blue step h along the horizontal, and two dots above its far end: the height the curve reaches and the height the tangent predicts. In the left panel h is one half and the two dots are clearly apart; in the right panel h is one tenth and they look like a single dot. Neither gap is measured until the reveal, which then writes the size of each one."></canvas>
@@ -1512,10 +1516,11 @@ window.M5 = (function () {
     <div>
       <p class="q">At $x=(0,0)$, what is $\nabla L=(\partial_1L,\ \partial_2L)$?</p>
       <ol class="opts one">
-        <li><i>A</i>$(-3,-6)$</li>
+        <li><i>A</i>$(-3,-6)$<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>B</i>$(-3,-3)$</li>
         <li><i>C</i>$(3,6)$</li>
       </ol>
+      <p class="reveal step" data-step="2">$s=-3$, and the slices give $s$ and $2s$. Both slopes are signed derivatives per unit of their own coordinate, not a ranking of importance when the units differ.</p>
     </div>
     <figure>
       <canvas id="m5p10a" width="560" height="316" role="img" aria-label="The same two slices as before, on the same scales, each with a dot at the starting height above the origin. Nothing is drawn through either dot, so neither steepness is measured. After the first click an orange straight line is laid along each curve at its dot, and each line is labelled with its slope."></canvas>
@@ -1711,9 +1716,10 @@ window.M5 = (function () {
       <p class="q">Back at $x=(0,0)$. Which unit direction has $D_vL=0$?</p>
       <ol class="opts one">
         <li><i>A</i>$(1,2)/\sqrt5$</li>
-        <li><i>B</i>$(2,-1)/\sqrt5$</li>
+        <li><i>B</i>$(2,-1)/\sqrt5$<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>C</i>$(-1,-2)/\sqrt5$</li>
       </ol>
+      <p class="reveal step" data-step="2">$\nabla L\T v$ gives $-3\sqrt5$, $0$, $3\sqrt5$. Here B does better than first order: $L$ is constant along that whole line.</p>
     </div>
     <figure>
       <canvas id="m5p13a" width="572" height="384" role="img" aria-label="Parameter space around the origin, with six straight level lines of the loss running parallel across the panel; the level line through the origin itself is not drawn. Three blue unit arrows leave the origin, labelled A, B and C, one up and to the right, one down and to the right, one down and to the left. No arrow carries a value. After the first click the missing level line appears in green through the origin and each arrow is given its directional derivative."></canvas>
@@ -1896,10 +1902,11 @@ window.M5 = (function () {
     <div>
       <p class="q">$f:\R^3\to\R^2$. Which shape must $J_f$ have?</p>
       <ol class="opts one">
-        <li><i>A</i>$3\times2$</li>
-        <li><i>B</i>$2\times3$</li>
-        <li><i>C</i>$2\times2$</li>
+        <li><i>A</i>$3\times2$<span class="why step" data-step="1">(3×2)(3×1) ✗</span></li>
+        <li><i>B</i>$2\times3$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">(2×3)(3×1) = 2×1</span></li>
+        <li><i>C</i>$2\times2$<span class="why step" data-step="1">(2×2)(3×1) ✗</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$dy=J_f\,dx$ with $dx$ of size $3\times1$ and $dy$ of size $2\times1$: rows are outputs, columns are inputs.</p>
     </div>
     <figure>
       <canvas id="m5p16c" width="640" height="280" role="img" aria-label="Three empty cell grids labelled A, B and C, with three rows and two columns, two rows and three columns, and two rows and two columns. Each carries its size underneath. Nothing is marked or coloured. After the first click a blue three by one column appears beside each grid with a multiplication sign, and a line under each says whether the product is defined. After the second click the middle grid gains input labels along its columns and output labels along its rows."></canvas>
@@ -2114,10 +2121,11 @@ window.M5 = (function () {
     <div>
       <p class="q">$f:\R^2\to\R^3$ then $g:\R^3\to\R$, <span style="white-space:nowrap">with $L=g(f(x))$.</span> Which product is $\partial L/\partial x$?</p>
       <ol class="opts one">
-        <li><i>A</i>$J_fJ_g$</li>
-        <li><i>B</i>$J_gJ_f$</li>
-        <li><i>C</i>$J_g+J_f$</li>
+        <li><i>A</i>$J_fJ_g$<span class="why step" data-step="1">(3×2)(1×3) ✗</span></li>
+        <li><i>B</i>$J_gJ_f$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">(1×3)(3×2) = 1×2</span></li>
+        <li><i>C</i>$J_g+J_f$<span class="why step" data-step="1">1×3 + 3×2 ✗</span></li>
       </ol>
+      <p class="reveal step" data-step="2">Inner dimensions must match, and a sum needs two equal shapes. Only B is defined, and it is $1\times2$, the shape of $(\nabla_xL)\T$.</p>
     </div>
     <figure>
       <canvas id="m5p19c" width="620" height="270" role="img" aria-label="A chain of three boxes: x in R2, then y in R3, then L in R, joined by arrows labelled f and g. Below them two empty cell grids give the two Jacobian shapes, three rows by two columns for J f and one row by three columns for J g. No product is drawn. After the second click a one by two grid appears at the bottom."></canvas>
@@ -2292,10 +2300,11 @@ window.M5 = (function () {
     <div>
       <p class="q">$J$ is $2\times3$ and $g=\nabla_yL\in\R^2$. Which product is $\nabla_xL$?</p>
       <ol class="opts one">
-        <li><i>A</i>$Jg$</li>
-        <li><i>B</i>$J\T g$</li>
-        <li><i>C</i>$J^{+}g$</li>
+        <li><i>A</i>$Jg$<span class="why step" data-step="1">(2×3)(2×1) ✗</span></li>
+        <li><i>B</i>$J\T g$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">(3×2)(2×1) = 3×1</span></li>
+        <li><i>C</i>$J^{+}g$<span class="why step" data-step="1">3×1, other question</span></li>
       </ol>
+      <p class="reveal step" data-step="2">The middle caption is the question. $J^{+}g$ is the minimum-norm least-squares input for a requested $g$, which need not be reachable. With a square $J$ all three shapes agree, so a shape check goes quiet.</p>
     </div>
     <figure>
       <canvas id="m5p22c" width="640" height="250" role="img" aria-label="The same small diagram three times: a dot, an arrow into an unlabelled box, and an arrow out to a second dot. Each copy carries a different caption underneath: a perturbation in the input, a sensitivity at the output, a motion we want at the output. Nothing is marked. After the second click one product is written under each caption."></canvas>
@@ -2409,10 +2418,11 @@ window.M5 = (function () {
     <div>
       <p class="q">Assign reverse mode or one forward JVP to jobs A, B and C.</p>
       <ol class="opts one">
-        <li><i>1</i>A reverse &#183; B forward &#183; C forward</li>
+        <li><i>1</i>A reverse &#183; B forward &#183; C forward<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>2</i>A forward &#183; B reverse &#183; C reverse</li>
         <li><i>3</i>A reverse &#183; B reverse &#183; C reverse</li>
       </ol>
+      <p class="reveal step" data-step="2">C is one JVP along the supplied $v$, with no Jacobian built. Judge by the product you need, not by what networks usually do.</p>
     </div>
     <figure>
       <canvas id="m5p24c" width="620" height="270" role="img" aria-label="Three job cards. A: many blue input dots joined to one teal output node. B: one blue input dot joined to many teal output dots. C: a single blue arrow v entering an unlabelled box with several outputs leaving it. Each card carries its job description in two lines. Nothing names a mode until the second click."></canvas>
@@ -2598,9 +2608,10 @@ window.M5 = (function () {
       <p class="q">$L(W)=2W_{11}-W_{12}+3W_{21}+0\cdot W_{22}$. Which matrix is $\nabla_WL$?</p>
       <ol class="opts one">
         <li><i>A</i>$\begin{bmatrix}2&amp;3\\-1&amp;0\end{bmatrix}$</li>
-        <li><i>B</i>$\begin{bmatrix}2&amp;-1\\3&amp;0\end{bmatrix}$</li>
+        <li><i>B</i>$\begin{bmatrix}2&amp;-1\\3&amp;0\end{bmatrix}$<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>C</i>$2W$</li>
       </ol>
+      <p class="reveal step" data-step="2">Each cell holds the coefficient of its own entry. A transposes them; $2W$ is $\nabla_W\|W\|_F^2$.</p>
     </div>
     <figure>
       <canvas id="m5p27c" width="540" height="330" role="img" aria-label="A two-by-two grid whose cells are named W one one, W one two, W two one and W two two, with no numbers in them. After the first click the W one two cell is ringed in blue, the increment of W one two by one tenth is written beside it and an arrow leads to a teal box holding the matching change in the loss. After the second click a second grid appears below, holding the four coefficients in green, labelled as the derivative of L with respect to W."></canvas>
@@ -2747,9 +2758,10 @@ window.M5 = (function () {
       <p class="q">$L=2x_1^2+\tfrac12x_2^2=\tfrac12x\T Hx$ with $H$ diagonal. Which $H$?</p>
       <ol class="opts one">
         <li><i>A</i>$\mathrm{diag}(2,\tfrac12)$</li>
-        <li><i>B</i>$\mathrm{diag}(4,1)$</li>
+        <li><i>B</i>$\mathrm{diag}(4,1)$<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>C</i>$\mathrm{diag}(1,4)$</li>
       </ol>
+      <p class="reveal step" data-step="2">$\nabla L=Hx=(4x_1,x_2)$. In $x\T Kx$ the coefficient matrix is $K$ itself, and the Hessian is $2K$ for symmetric $K$.</p>
     </div>
     <figure>
       <canvas id="m5p30c" width="620" height="360" role="img" aria-label="Left: the expansion of one half x transpose H x into one half h one x one squared plus one half h two x two squared, beside a diagonal grid whose entries are named h one and h two. After the first click the grid fills with four and one in green and a shaded bowl appears on the right, with two teal curves along the axes, the steep one labelled two x one squared and the shallow one labelled one half x two squared. After the second click a dashed stick marks the point one, one on the bowl and an orange arrow lies in the base plane."></canvas>
@@ -2939,10 +2951,12 @@ window.M5 = (function () {
     <div>
       <p class="q">$L(x)=\tfrac12[(x-3)^2+(x-1)^2]$ with scalar $x$. What is $L'(0)$?</p>
       <ol class="opts one">
-        <li><i>A</i>$-4$</li>
+        <li><i>A</i>$-4$<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>B</i>$+4$</li>
         <li><i>C</i>$0$</li>
       </ol>
+      <p class="reveal step" data-step="1">$L'(x)=2x-4$, so a small increase in $x$ lowers the loss.</p>
+      <p class="reveal step" data-step="2">Minimiser $x=2$, output $(2,2)$, residual $(1,-1)$. The gradient is one number in parameter space; the residual is a vector in output space.</p>
     </div>
     <figure>
       <canvas id="m5p33c" width="560" height="340" role="img" aria-label="Left, output space: the teal line of reachable outputs through the origin, a gold target at three, one, and a blue dot at the origin marked as the output when x is zero. Right: an empty pair of axes labelled x and L of x. After the first click the loss curve and its orange tangent at x equals zero appear. After the second click the minimiser is marked in green on both panels and an orange residual with a right-angle mark joins the green output to the target."></canvas>
@@ -3146,10 +3160,11 @@ window.M5 = (function () {
     <div>
       <p class="q">Which triple is $(u,v,L)$, and at which node do the other two break?</p>
       <ol class="opts one">
-        <li><i>A</i>$(6,5,25)$</li>
-        <li><i>B</i>$(6,7,49)$</li>
-        <li><i>C</i>$(5,6,36)$</li>
+        <li><i>A</i>$(6,5,25)$<b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>B</i>$(6,7,49)$<span class="why step" data-step="2">$v=u-c$</span></li>
+        <li><i>C</i>$(5,6,36)$<span class="why step" data-step="2">$u=a+b$</span></li>
       </ol>
+      <p class="reveal step" data-step="2">B breaks at the addition node; C breaks at the multiplication node and then again at the addition.</p>
     </div>
     <figure>
       <canvas id="m5p36c" width="660" height="330" role="img" aria-label="The same graph with the three computed edge labels showing question marks. After the first click the two operations run again and the three values appear in green, one after another. After the second click a grey note sits beside the multiply box and beside the add box, naming the operation each wrong answer used there."></canvas>
@@ -3279,8 +3294,9 @@ window.M5 = (function () {
       <ol class="opts one">
         <li><i>A</i>$10$</li>
         <li><i>B</i>$20$</li>
-        <li><i>C</i>$30$</li>
+        <li><i>C</i>$30$<b class="ok step" data-step="1">&#10003;</b></li>
       </ol>
+      <p class="reveal step" data-step="2">$\bar a=b\,\bar u=30$ and $\bar b=a\,\bar u=20$. A forgot the local factor; B used $a$ where the rule asks for $b$.</p>
     </div>
     <figure>
       <canvas id="m5p39c" width="660" height="330" role="img" aria-label="The filled graph with its forward values. Orange notes give v-bar, u-bar and c-bar as ten, and two orange arrows point back into the a box and the b box, each labelled with a question mark. After the first click the route from a through the multiply and add boxes to L is redrawn thick and green. After the second click the two question marks are replaced by the numbers that return to a and to b."></canvas>
@@ -3377,9 +3393,10 @@ window.M5 = (function () {
       <p class="q">At $x=3$ a program reports $dL/dx=6$. What is wrong?</p>
       <ol class="opts one">
         <li><i>A</i>the result is correct</li>
-        <li><i>B</i>the path through $u$ is missing</li>
+        <li><i>B</i>the path through $u$ is missing<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>C</i>the path through $v$ is missing</li>
       </ol>
+      <p class="reveal step" data-step="2">Both paths contribute: $2$ through $u$ and $6$ through $v$, so $dL/dx=8$. The reported $6$ is the $v$ path alone. Overwriting is one possible cause; a $u$ term never added is another.</p>
     </div>
     <figure>
       <canvas id="m5p41c" width="560" height="340" role="img" aria-label="The same fork and merge, with both backward arcs drawn in the same orange at the same width and with no numbers on them, and a card stating the reported result. After the first click the arc through u is redrawn in green as the one whose contribution is missing from the reported six. After the second click both arcs carry their contribution and the accumulator below x reads two plus six."></canvas>
@@ -3520,10 +3537,14 @@ window.M5 = (function () {
     <div>
       <p class="q">Which of these is backpropagation itself?</p>
       <ol class="opts one">
-        <li><i>A</i>compute $\nabla_\theta L$ from the stored values</li>
+        <li><i>A</i>compute $\nabla_\theta L$ from the stored values<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>B</i>change $\theta$ with an update rule</li>
         <li><i>C</i>both together</li>
       </ol>
+      <p class="reveal step" data-step="2">Backpropagation produces the gradient and stops.</p>
+      <div class="card step" data-step="2" style="margin-top:10px;border-style:dashed;color:var(--dim)">
+        <p class="tag" style="margin:0 0 4px">Next lecture</p>
+        $\theta_{\text{new}}=\theta-\eta\nabla_\theta L$, with a learning rate $\eta$.</div>
     </div>
     <figure>
       <canvas id="m5p44c" width="600" height="300" role="img" aria-label="Two panels. Left: a small chain from theta through f to L with a teal forward edge and an orange arrow returning underneath, headed compute the gradient from the stored forward values. Right, inside a dashed frame: a parameter axis with one blue dot, headed change the parameters. After the second click a grey dashed arrow moves the dot along the axis and the grey update rule appears above it, marked as next lecture."></canvas>
@@ -3669,10 +3690,11 @@ window.M5 = (function () {
     <div>
       <p class="q">$x$ has $3$ entries and $z$ has $2$, so $W$ is $2\times3$. Which product has $W$&#8217;s shape?</p>
       <ol class="opts one">
-        <li><i>A</i>$xg_z\T$</li>
-        <li><i>B</i>$g_zx\T$</li>
-        <li><i>C</i>$g_z\T x$</li>
+        <li><i>A</i>$xg_z\T$<span class="why step" data-step="1">3 &#215; 2</span></li>
+        <li><i>B</i>$g_zx\T$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">2 &#215; 3</span></li>
+        <li><i>C</i>$g_z\T x$<span class="why step" data-step="1">not defined</span></li>
       </ol>
+      <p class="reveal step" data-step="2">A shape check rejects a wrong formula; it never proves a right one.</p>
     </div>
     <figure style="margin:0">
       <canvas id="m5p47" width="560" height="300" role="img" aria-label="On the left a blue column of three cells named x one to x three, and an orange column of two cells named g one and g two. On the right an empty two by three outline labelled W. The second click fills a second two by three grid with the six products of one g entry and one x entry."></canvas>
@@ -3764,10 +3786,11 @@ window.M5 = (function () {
     <div>
       <p class="q">A ReLU layer had $z=(-2,3)$ on the forward pass, and $g_a=(4,-5)$ arrives. Which is $g_z$?</p>
       <ol class="opts one">
-        <li><i>A</i>$(0,-5)$</li>
-        <li><i>B</i>$(4,0)$</li>
-        <li><i>C</i>$(0,5)$</li>
+        <li><i>A</i>$(0,-5)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">mask (0, 1)</span></li>
+        <li><i>B</i>$(4,0)$<span class="why step" data-step="1">mask (1, 0)</span></li>
+        <li><i>C</i>$(0,5)$<span class="why step" data-step="1">sign flipped</span></li>
       </ol>
+      <p class="reveal step" data-step="2">An active unit passes a negative sensitivity unchanged: ReLU clamps the value, not the gradient.</p>
     </div>
     <figure style="margin:0">
       <canvas id="m5p49" width="600" height="300" role="img" aria-label="Two gates, one per unit. Above each gate is its forward preactivation in teal, minus two and three. Orange arrows arrive from the right carrying four and minus five. The gates are plain grey and empty, and the space to their left is empty. The first click fills in each gate and whatever leaves it."></canvas>
@@ -3939,10 +3962,11 @@ window.M5 = (function () {
     <div>
       <p class="q">Three numbers sit at the end of the forward pass. Which one is $g_{\hat y}=\partial L/\partial\hat y$?</p>
       <ol class="opts one">
-        <li><i>A</i>$6$</li>
-        <li><i>B</i>$5$</li>
-        <li><i>C</i>$12.5$</li>
+        <li><i>A</i>$6$<span class="why step" data-step="1">the prediction</span></li>
+        <li><i>B</i>$5$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">the error</span></li>
+        <li><i>C</i>$12.5$<span class="why step" data-step="1">the loss</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$\dfrac{d}{d\hat y}\tfrac12(\hat y-1)^2=\hat y-1$, so this loss makes the first prediction sensitivity equal the error.</p>
     </div>
     <figure style="margin:0">
       <canvas id="m5p52" width="580" height="280" role="img" aria-label="The tail of the graph: a one, the prediction box holding six, and the loss box holding twelve point five, with the gold target one entering the loss and the error written under the last edge. Nothing is orange yet. The first click adds the backward arrow out of the loss and sorts the three numbers into separate labelled cards."></canvas>
@@ -4035,10 +4059,11 @@ window.M5 = (function () {
     <div>
       <p class="q">The forward pass left $z_1=(3,-1)$, and $g_{a_1}=(10,-5)$ now arrives. Which is $g_{z_1}$?</p>
       <ol class="opts one">
-        <li><i>A</i>$(10,-5)$</li>
-        <li><i>B</i>$(10,0)$</li>
-        <li><i>C</i>$(0,-5)$</li>
+        <li><i>A</i>$(10,-5)$<span class="why step" data-step="1">no mask at all</span></li>
+        <li><i>B</i>$(10,0)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">mask (1, 0)</span></li>
+        <li><i>C</i>$(0,-5)$<span class="why step" data-step="1">reversed forward mask $(0,1)$</span></li>
       </ol>
+      <p class="reveal step" data-step="2">The mask is read from the forward row, never from the sign of the sensitivity above.</p>
     </div>
     <figure style="margin:0">
       <canvas id="m5p54" width="600" height="292" role="img" aria-label="Four rows of two cells, one column per hidden unit. The top row holds the forward preactivations three and minus one in teal; the third row holds the arriving sensitivities ten and minus five in orange; the gate row and the bottom result row are empty. The first click fills the gate row from the forward row and the bottom row from the gate and the row above it."></canvas>
@@ -4138,10 +4163,11 @@ window.M5 = (function () {
     <div>
       <p class="q">Why is the second row of $\nabla_{W_1}L$ zero here?</p>
       <ol class="opts one">
-        <li><i>A</i>that row of $W_1$ is zero</li>
-        <li><i>B</i>$z_{1,2}&lt;0$, so the path is blocked</li>
-        <li><i>C</i>a two-layer network always has one</li>
+        <li><i>A</i>that row of $W_1$ is zero<span class="why step" data-step="1">it is $(1,-1)$</span></li>
+        <li><i>B</i>$z_{1,2}&lt;0$, so the path is blocked<b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>C</i>a two-layer network always has one<span class="why step" data-step="1">it depends on $x$</span></li>
       </ol>
+      <p class="reveal step" data-step="2">Feed $x'=(2,1)$: now $z_1=(3,1)$, both units are active, and that row becomes $(-8,-4)$. A zero input or cancellation can zero a gradient too.</p>
     </div>
     <figure style="margin:0">
       <canvas id="m5p56" width="660" height="300" role="img" aria-label="On the left the two by two first weight gradient for the current input, with its second row zero. The first click marks that row and names the blocked gate beside it. The second click repeats the forward pass with a different input on the right, filling in the new preactivations and the new weight gradient, whose second row is no longer zero."></canvas>
@@ -4337,10 +4363,11 @@ window.M5 = (function () {
     <div>
       <p class="q">$B=4$, $n=3$, $m=2$ and $Z=XW\T$, with $G=\partial L/\partial Z$. Which is $\nabla_WL$?</p>
       <ol class="opts one">
-        <li><i>A</i>$X\T G$</li>
-        <li><i>B</i>$G\T X$</li>
-        <li><i>C</i>$GX\T$</li>
+        <li><i>A</i>$X\T G$<span class="why step" data-step="1">3 &#215; 2</span></li>
+        <li><i>B</i>$G\T X$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">2 &#215; 3</span></li>
+        <li><i>C</i>$GX\T$<span class="why step" data-step="1">not defined</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$X\T G$ is the gradient of $U$ in $Y=XU$. Name the parameter first, then multiply.</p>
     </div>
     <figure style="margin:0">
       <canvas id="m5p59" width="560" height="300" role="img" aria-label="Three empty cell grids at the top, four by three for the samples, four by two for the upstream sensitivities, and two by three for the weights, each labelled with its shape only. No product is drawn until the first click, which then writes out the inner dimensions of all three candidates."></canvas>
@@ -4432,10 +4459,11 @@ window.M5 = (function () {
     <div>
       <p class="q">$G=\begin{bmatrix}1&amp;2\\3&amp;4\\-1&amp;5\end{bmatrix}$ with $B=3$ and $m=2$. Which is $\nabla_bL$?</p>
       <ol class="opts one">
-        <li><i>A</i>$(3,7,4)$</li>
-        <li><i>B</i>$(1,2)$</li>
-        <li><i>C</i>$(3,11)$</li>
+        <li><i>A</i>$(3,7,4)$<span class="why step" data-step="1">row sums</span></li>
+        <li><i>B</i>$(1,2)$<span class="why step" data-step="1">one sample only</span></li>
+        <li><i>C</i>$(3,11)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">column sums</span></li>
       </ol>
+      <p class="reveal step" data-step="2">Sum over samples, not over features: in code, <code>G.sum(dim=0)</code>. The bias has one entry per feature.</p>
     </div>
     <figure style="margin:0">
       <canvas id="m5p61" width="520" height="320" role="img" aria-label="The three by two grid of upstream sensitivities, its rows labelled by sample and its columns by feature, above an empty result row of two cells. The first click sends one orange arrow down each column and fills the result row."></canvas>
@@ -4583,10 +4611,11 @@ window.M5 = (function () {
     <div>
       <p class="q">$G$ is already $(Z-Y)/B$ for the same batch. The next line writes <code>dW = G.T @ X / B</code>. That result is:</p>
       <ol class="opts one">
-        <li><i>A</i>correct</li>
-        <li><i>B</i>too small by a factor $B$</li>
-        <li><i>C</i>too large by a factor $B$</li>
+        <li><i>A</i>correct<span class="why step" data-step="1">that is $G\T X$</span></li>
+        <li><i>B</i>too small by a factor $B$<b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>C</i>too large by a factor $B$<span class="why step" data-step="1">dividing shrinks it</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$1/B$ appears twice: once inside $G$, once in the divide. Apply the loss scale exactly once.</p>
     </div>
     <figure style="margin:0">
       <canvas id="m5p64" width="560" height="300" role="img" aria-label="The two lines of code, plain. The first click prints the value the code produces beside the value the rule gives, and the second click rings the two places where one over B is applied."></canvas>
@@ -4703,10 +4732,11 @@ window.M5 = (function () {
 1  &#8722;1</pre></div>
   <p class="q">Move $W_1[1,2]$ by $\varepsilon=0.01$, nothing else. Given $L_+=12.7008$ and $L_-=12.3008$, what is $\dfrac{L_+-L_-}{2\varepsilon}$?</p>
   <ol class="opts">
-    <li><i>A</i>$10$</li>
-    <li><i>B</i>$20$</li>
-    <li><i>C</i>$40$</li>
+    <li><i>A</i>$10$<span class="why step" data-step="2">divided by $4\varepsilon$</span></li>
+    <li><i>B</i>$20$<b class="ok step" data-step="1">&#10003;</b></li>
+    <li><i>C</i>$40$<span class="why step" data-step="2">divided by $\varepsilon$</span></li>
   </ol>
+  <p class="reveal step" data-step="2">$0.4/0.02=20$, and the hand value of $\nabla_{W_1}L$ at that entry agrees. The first unit reads $3.02>0$ then $2.98>0$: no gate flips.</p>
   <figure>
     <canvas id="m5p66c" width="1150" height="230" role="img" aria-label="Two rows of boxes, one per perturbed weight value. Each row is a forward chain: the hidden preactivation, the activation, the prediction, the error and the loss. The two loss boxes already carry the given values twelve point seven zero zero eight and twelve point three zero zero eight; the three boxes before them are dashed and empty until the reveal fills them in order, when the first hidden value reads three point zero two in the upper pass and two point nine eight in the lower one, both positive."></canvas>
   </figure>
@@ -4842,9 +4872,11 @@ window.M5 = (function () {
       <p class="q">Does a smaller $\varepsilon$ always give a better check?</p>
       <ol class="opts one">
         <li><i>A</i>yes, without limit</li>
-        <li><i>B</i>no &#8212; truncation and cancellation pull opposite ways</li>
+        <li><i>B</i>no &#8212; truncation and cancellation pull opposite ways<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>C</i>$\varepsilon$ does not matter</li>
       </ol>
+      <p class="reveal step" data-step="1">Truncation here is $O(\varepsilon^2)$ for smooth enough $L$; the subtraction loses digits as $\varepsilon$ shrinks.</p>
+      <p class="reveal step" data-step="2">Sweep a few $\varepsilon$ in double precision; no one value fits all.</p>
     </div>
     <figure>
       <canvas id="m5p68c" width="580" height="420" role="img" aria-label="Two panels side by side, each stating one fact on its own. On the left, a short table of step sizes against the chord slope each one produces, with the exact slope beneath a rule. On the right, the two loss values at a very small step printed to seventeen digits, their shared leading digits dimmed and the differing tail in gold, with the size of their difference. The lower third of the figure is empty until the reveal draws a U-shaped curve of total error against step size, with its two branches named and a caption saying it is schematic."></canvas>
@@ -4983,9 +5015,11 @@ window.M5 = (function () {
       <p class="q">Which test shows a manual backward returns the right numbers?</p>
       <ol class="opts one">
         <li><i>A</i>the gradient is not <code>None</code></li>
-        <li><i>B</i>values against AD and an independent finite difference</li>
+        <li><i>B</i>values against AD and an independent finite difference<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>C</i>the shape only</li>
       </ol>
+      <p class="reveal step" data-step="1">A and C are diagnostics; neither establishes a value. Use a smooth fixture.</p>
+      <p class="reveal step" data-step="2">The linear task we read checks shapes, the forward product and that gradients exist, never their values.</p>
       <p class="cite">Inspected 2026-09-30: <b>TorchCode</b> <code>torch_judge/tasks/linear.py</code> blob <code>82fe0b4d</code>: one task at one version, not every TorchCode test.</p>
     </div>
     <figure>
@@ -5164,10 +5198,12 @@ window.M5 = (function () {
     <div>
       <p class="q">$X$ is $4\times3$, $W$ is $2\times3$, $G$ is $4\times2$. Which line gives $dX$?</p>
       <ol class="opts one">
-        <li><i>A</i><code>G @ W</code></li>
-        <li><i>B</i><code>G @ W.T</code></li>
-        <li><i>C</i><code>W @ G</code></li>
+        <li><i>A</i><code>G @ W</code><b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>B</i><code>G @ W.T</code><span class="why step" data-step="2">inner $2\ne3$</span></li>
+        <li><i>C</i><code>W @ G</code><span class="why step" data-step="2">inner $3\ne4$</span></li>
       </ol>
+      <p class="reveal step" data-step="1">$(4\times2)(2\times3)=4\times3$, the shape of $X$.</p>
+      <p class="reveal step" data-step="2">$dX_{ik}=\sum_jG_{ij}W_{jk}$ sums the $m$ outputs; the forward pass summed the $n$ inputs.</p>
     </div>
     <figure>
       <canvas id="m5p73c" width="560" height="330" role="img" aria-label="Three empty cell grids with their dimensions named: X four by three, W two by three, G four by two. Nothing is multiplied. After the vote three rows line up each candidate's inner dimensions, one matching pair in green and two clashing pairs in purple, and two last lines write one entry of the forward pass and one entry of the result as sums over different indices."></canvas>
@@ -5275,10 +5311,11 @@ window.M5 = (function () {
     <div>
       <p class="q">$z=(-2,3)$ and $g_a=(4,-5)$. Which line gives $g_z$?</p>
       <ol class="opts one">
-        <li><i>A</i><code>g_a * (g_a &gt; 0)</code></li>
-        <li><i>B</i><code>g_a * (z &gt; 0)</code></li>
-        <li><i>C</i><code>relu(g_a)</code></li>
+        <li><i>A</i><code>g_a * (g_a &gt; 0)</code><span class="why step" data-step="2">$(4,0)$</span></li>
+        <li><i>B</i><code>g_a * (z &gt; 0)</code><b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>C</i><code>relu(g_a)</code><span class="why step" data-step="2">$(4,0)$</span></li>
       </ol>
+      <p class="reveal step" data-step="2">B gives $(0,-5)$. A and C read the sign of the upstream gradient and delete a real negative entry; the mask belongs to the forward $z$.</p>
     </div>
     <figure>
       <canvas id="m5p75c" width="560" height="330" role="img" aria-label="Two rows a mask could be read from: the forward values and the upstream gradient, both drawn in plain ink with two empty dashed boxes beside each for the mask it would produce. After the vote each mask is filled in and the two products are written out beneath, one in green and one in purple."></canvas>
@@ -5448,10 +5485,11 @@ window.M5 = (function () {
     <div>
       <p class="q">$J=\begin{bmatrix}1&amp;2\\0&amp;1\end{bmatrix}$, $e=(1,-1)$. What is $\nabla_qL=J\T e$?</p>
       <ol class="opts one">
-        <li><i>A</i>$(1,1)$</li>
-        <li><i>B</i>$(-1,-1)$</li>
-        <li><i>C</i>$(1,3)$</li>
+        <li><i>A</i>$(1,1)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">columns of J</span></li>
+        <li><i>B</i>$(-1,-1)$<span class="why step" data-step="1">that is Je</span></li>
+        <li><i>C</i>$(1,3)$<span class="why step" data-step="1">signs of $e$ dropped</span></li>
       </ol>
+      <p class="reveal step" data-step="2">Each entry is one column of $J$ dotted with $e$: $1\cdot1+0\cdot(-1)$, then $2\cdot1+1\cdot(-1)$. Neither joint is larger.</p>
     </div>
     <figure>
       <canvas id="m5p78f" width="620" height="356" role="img" aria-label="Left, task space: the orange error arrow e drawn from the origin, with an empty integer grid around it. Right, a bar scale from zero to three with two dashed empty slots, one per joint, each carrying a question mark. After the click the two columns of J appear as teal arrows beside the error arrow, their dot products are printed, and the two bars fill to the same height."></canvas>
@@ -5579,10 +5617,11 @@ window.M5 = (function () {
     <div>
       <p class="q">$x=2,\ w=3,\ b=1,\ y^\star=4$, so $z=7$ and $e=3$. What is $(\partial L/\partial x,\ \partial L/\partial w)$?</p>
       <ol class="opts one">
-        <li><i>A</i>$(6,9)$</li>
-        <li><i>B</i>$(9,6)$</li>
-        <li><i>C</i>$(3,3)$</li>
+        <li><i>A</i>$(6,9)$<span class="why step" data-step="1">swapped: ex, then ew</span></li>
+        <li><i>B</i>$(9,6)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">ew, then ex</span></li>
+        <li><i>C</i>$(3,3)$<span class="why step" data-step="1">e twice: w and x dropped</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$\partial L/\partial x=ew=3\cdot3$ and $\partial L/\partial w=ex=3\cdot2$. One forward value, two partners.</p>
     </div>
     <figure>
       <canvas id="m5p80f" width="620" height="372" role="img" aria-label="A row of forward values across the top: x, w and b in blue, z in teal, the gold target and the orange error. Below, two empty framed plots at one vertical scale, one for the loss against x with w and b fixed, one for the loss against w with x and b fixed, each carrying a question mark. After the click each plot draws its curve, a probe point sweeps between minus epsilon and plus epsilon, and the chord through the two probe points is drawn with its slope printed."></canvas>
@@ -5705,10 +5744,11 @@ window.M5 = (function () {
     <div>
       <p class="q">Both candidates are $2\times2$. Which test separates them?</p>
       <ol class="opts one">
-        <li><i>A</i>assert the shape is $2\times2$</li>
-        <li><i>B</i>check that every value is finite</li>
-        <li><i>C</i>compare an entrywise derivative with the declared loss</li>
+        <li><i>A</i>assert the shape is $2\times2$<span class="why step" data-step="1">passes anyway</span></li>
+        <li><i>B</i>check that every value is finite<span class="why step" data-step="1">passes anyway</span></li>
+        <li><i>C</i>compare an entrywise derivative with the declared loss<b class="ok step" data-step="1">&#10003;</b></li>
       </ol>
+      <p class="reveal step" data-step="2">With $L(W)=\langle G,XW\T\rangle_F$, $G$ is $\nabla_ZL$ for $Z=XW\T$, exactly. Perturb $W_{12}$: the slope is 5, not 0.</p>
     </div>
     <figure>
       <canvas id="m5p82f" width="620" height="366" role="img" aria-label="Two candidate gradient grids side by side, the entry in row one column two ringed in each. Below them an empty axis pair for the change in the declared loss against the change in that entry, carrying a question mark. After the click a purple flat line shows what the transposed candidate predicts, an orange line is drawn through two probe points at plus and minus epsilon, and a green caption reports the measured slope."></canvas>
@@ -5891,10 +5931,11 @@ window.M5 = (function () {
     <div>
       <p class="q">With $\hat y=(1,2)$, $e=(-1,0)$ and $B=2$: what is $(\partial L/\partial w,\ \partial L/\partial b)$?</p>
       <ol class="opts one">
-        <li><i>A</i>$(-1,-1)$</li>
-        <li><i>B</i>$(-0.5,-0.5)$</li>
-        <li><i>C</i>$(0.5,0.5)$</li>
+        <li><i>A</i>$(-1,-1)$<span class="why step" data-step="1">no $1/B$</span></li>
+        <li><i>B</i>$(-0.5,-0.5)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">$\sum e_ix_i/B$</span></li>
+        <li><i>C</i>$(0.5,0.5)$<span class="why step" data-step="1">sign of $e$</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$(-1\cdot1+0\cdot2)/2$ and $(-1+0)/2$. Sample 2 contributes nothing: its error is zero.</p>
     </div>
     <figure>
       <canvas id="m5p85f" width="620" height="320" role="img" aria-label="Two rows, one per parameter. Each row reads as sample one plus sample two equals an accumulator box. Before the click all four contribution cards and both accumulators are empty dashed boxes with question marks. After the click each card shows the product of its two local derivatives with its value, and each accumulator prints the sum."></canvas>
@@ -6008,10 +6049,11 @@ window.M5 = (function () {
     <div>
       <p class="q">Duplicate both samples, so $B=4$, with the same mean loss and the same $w,b$. The gradient&#8230;</p>
       <ol class="opts one">
-        <li><i>A</i>doubles</li>
-        <li><i>B</i>stays $(-0.5,-0.5)$</li>
-        <li><i>C</i>halves</li>
+        <li><i>A</i>doubles<span class="why step" data-step="1">sum loss only</span></li>
+        <li><i>B</i>stays $(-0.5,-0.5)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">both double</span></li>
+        <li><i>C</i>halves<span class="why step" data-step="1">$B$ alone</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$\sum e_ix_i$ goes from $-1$ to $-2$ and $B$ from 2 to 4. An unnormalised sum loss would double.</p>
     </div>
     <figure>
       <canvas id="m5p87f" width="620" height="340" role="img" aria-label="The two-row design matrix on the left, an arrow, and the same matrix with every row written twice on the right, labelled with the new batch size. Below, a fraction bar with a question mark above and below it before the click; after the click the numerator and the denominator are both filled in, the quotient is printed, and a line beside it says what an unnormalised sum loss would give instead."></canvas>
@@ -6138,9 +6180,10 @@ window.M5 = (function () {
       <p class="q">What actually travels backward?</p>
       <ol class="opts one">
         <li><i>A</i>the prediction error, copied through every layer</li>
-        <li><i>B</i>downstream sensitivity &#215; local derivatives, summed over paths</li>
+        <li><i>B</i>downstream sensitivity &#215; local derivatives, summed over paths<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>C</i>inverse matrices that undo the forward pass</li>
       </ol>
+      <p class="reveal step" data-step="2">Seed $\partial L/\partial L=1$. Then $\partial L/\partial\hat y=e$ for $L=\tfrac12e^2$, or $e_i/B$ for the batch mean.</p>
     </div>
     <figure>
       <canvas id="m5p89f" width="660" height="356" role="img" aria-label="A small graph: one input feeds a shared node, which branches into two units. The upper unit is active and teal; the lower one is inactive and drawn in purple. Both meet again at a prediction node that feeds the loss. After the click, the seed at the loss is marked one, orange backward arrows run from the loss along both branches carrying the loss derivative at the prediction, which is e for a single half-squared loss and e over B for the batch mean just used, the purple branch is labelled times zero, the active branch times one, and the two arriving contributions add at the shared node."></canvas>
@@ -6217,7 +6260,7 @@ window.M5 = (function () {
         <li class="step" data-step="3"><i>3</i>$\nabla_WL=g_zx\T$ &#8212; one affine use: an outer product, shaped like $W$</li>
         <li class="step" data-step="4"><i>4</i>a shared variable, or a batch, sums its paths</li>
       </ol>
-      <p class="reveal step" data-step="5">Next time: automatic differentiation, and using these gradients for parameter updates.</p>
+      <p class="reveal step" data-step="5">Next: new data, your choice of method.</p>
     </div>
     <figure>
       <canvas id="m5p90f" width="640" height="376" role="img" aria-label="The running graph: an input, an affine node with its weight matrix hanging below, a rectified unit, a prediction and the loss, with an orange backward chain beneath the forward one. Each click attaches one rule tag to the place it governs: the forward edge, the backward edge, the weight node, and the accumulator where two sample paths meet at the shared weight. The last click shows all four together."></canvas>
@@ -6262,6 +6305,27 @@ window.M5 = (function () {
 </section>
 
 <!-- ============ 91 ============ -->
+<section class="slide" data-part="I">
+ <p class="eyebrow you" data-min="3">Vote · pairs</p>
+ <h2>Putting the Derivatives Together</h2>
+ <p class="sub">New Data, Same Method?</p>
+ <div class="eq">$$\hat y_i=wx_i+b,\quad L=\frac1{2B}\sum_i(\hat y_i-y_i)^2,\quad B=2$$</div>
+ <dl class="gloss"><dt>$(x_i,y_i)$</dt><dd>$(-1,1),(2,1)$: input, target</dd><dt>$(w,b)$</dt><dd>$(1,0)$: shared parameters</dd></dl>
+ <div class="cols" style="grid-template-columns:1fr 1fr;gap:36px">
+  <div><p>Find $L$ and both gradients. Choose a method; check one slope.</p>
+  <ol class="opts one">
+   <li><i>A</i>$(2,-\tfrac12)$<b class="ok step" data-step="1">&#10003;</b></li>
+   <li><i>B</i>$(4,-1)$<span class="why step" data-step="2">mean omitted</span></li>
+   <li><i>C</i>$(1,-\tfrac14)$<span class="why step" data-step="2">mean counted twice</span></li>
+  </ol></div>
+  <div class="step" data-step="1">
+   <table><thead><tr><th>sample</th><th>$e_i$</th><th>$e_ix_i/B$</th><th>$e_i/B$</th></tr></thead><tbody><tr><td>1</td><td>$-2$</td><td>$1$</td><td>$-1$</td></tr><tr><td>2</td><td>$1$</td><td>$1$</td><td>$1/2$</td></tr><tr><td>sum</td><td>—</td><td>$2$</td><td>$-1/2$</td></tr></tbody></table>
+   <p>$L=5/4$.</p>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 92 ============ -->
 <section class="slide nofoot refs" data-part="R">
   <h2>References</h2>
   <p class="sub">Where the rules come from</p>
@@ -6274,7 +6338,7 @@ window.M5 = (function () {
   </ol>
 </section>
 
-<!-- ============ 92 ============ -->
+<!-- ============ 93 ============ -->
 <section class="slide nofoot refs" data-part="R">
   <h2>References</h2>
   <p class="sub">Practice, and the course standards</p>

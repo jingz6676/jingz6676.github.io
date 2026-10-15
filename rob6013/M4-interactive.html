@@ -994,9 +994,11 @@ window.M4 = (function () {
       <p class="q">$\operatorname{Col}(A)=\operatorname{span}(e_1)$ and $b=(2,1)$. Which candidate output is closest to $b$?</p>
       <ol class="opts one">
         <li><i>A</i>$(0,0)$</li>
-        <li><i>B</i>$(2,0)$</li>
+        <li><i>B</i>$(2,0)$<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>C</i>$(3,0)$</li>
       </ol>
+      <p class="reveal step" data-step="1">Squared distances $d^2=\|b-y\|^2$: $5,\ 1,\ 2$. Ranking by $d$ or by $d^2$ is the same.</p>
+      <p class="reveal step" data-step="2">$r=b-\hat b=(0,1)$ is perpendicular to $e_1$.</p>
     </div>
     <figure>
       <svg viewBox="0 0 520 330" width="600" height="381" role="img" aria-label="Output space with a light grid. The horizontal axis is drawn in teal: the reachable outputs. Three teal candidate points labelled A, B and C sit on it at zero, two and three, and a gold target b sits at two one. After the first click, dashed segments join b to each candidate, each labelled with its squared distance. After the second click, one of the segments is drawn in orange with a right-angle mark, and its candidate turns green.">
@@ -1014,12 +1016,26 @@ window.M4 = (function () {
         <text x="370" y="274" text-anchor="middle" class="m">3</text>
         <text x="470" y="274" text-anchor="middle" class="m">4</text>
         <text x="58" y="155" text-anchor="end" class="m">1</text>
+        <g class="step" data-step="1">
+          <line x1="270" y1="150" x2="70" y2="250" class="d-stroke" stroke-width="1.8" stroke-dasharray="6 5"/>
+          <line x1="270" y1="150" x2="270" y2="250" class="d-stroke" stroke-width="1.8" stroke-dasharray="6 5"/>
+          <line x1="270" y1="150" x2="370" y2="250" class="d-stroke" stroke-width="1.8" stroke-dasharray="6 5"/>
+          <text x="156" y="186" text-anchor="middle" class="lbl" style="paint-order:stroke;stroke:var(--bg);stroke-width:5px">d&#178; = 5</text>
+          <text x="258" y="206" text-anchor="end" class="lbl" style="paint-order:stroke;stroke:var(--bg);stroke-width:5px">d&#178; = 1</text>
+          <text x="340" y="194" class="lbl" style="paint-order:stroke;stroke:var(--bg);stroke-width:5px">d&#178; = 2</text>
+        </g>
         <circle cx="70" cy="250" r="7" class="out-f"/>
         <text x="56" y="236" text-anchor="middle" class="lbl">A</text>
         <circle cx="270" cy="250" r="7" class="out-f"/>
         <text x="252" y="236" text-anchor="middle" class="lbl">B</text>
         <circle cx="370" cy="250" r="7" class="out-f"/>
         <text x="388" y="236" text-anchor="middle" class="lbl">C</text>
+        <g class="step" data-step="2">
+          <line x1="270" y1="158" x2="270" y2="243" class="res-s" stroke-width="3.6"/>
+          <path d="M270 238 L282 238 L282 250" class="stroke" fill="none" stroke-width="1.6"/>
+          <circle cx="270" cy="250" r="9.5" class="ans-f" style="stroke:var(--bg);stroke-width:3px"/>
+          <text x="282" y="212" class="res-f big">r</text>
+        </g>
         <circle cx="270" cy="150" r="8" class="dat-f"/>
         <text x="284" y="146" class="dat-f big">b</text>
       </svg>
@@ -1041,8 +1057,10 @@ window.M4 = (function () {
       <ol class="opts one">
         <li><i>A</i>only $(1,1)$</li>
         <li><i>B</i>only $(2,0)$</li>
-        <li><i>C</i>all three</li>
+        <li><i>C</i>all three<b class="ok step" data-step="1">&#10003;</b></li>
       </ol>
+      <p class="reveal step" data-step="1">$Ax=(x_1+x_2,\,0)$, and all three have $x_1+x_2=2$.</p>
+      <p class="reveal step" data-step="2">These three are only examples: the whole line $x_1+x_2=2$ works. $A(1,-1)=0$, so sliding along $(1,-1)$ changes the input, not the output.</p>
     </div>
   </div>
   <script>
@@ -1132,9 +1150,11 @@ window.M4 = (function () {
       <p class="small" style="margin:6px 0 10px">×50 zoom: read the numbers, not the lengths.</p>
       <ol class="opts one">
         <li><i>A</i>horizontal $\delta_1$</li>
-        <li><i>B</i>vertical $\delta_2$</li>
+        <li><i>B</i>vertical $\delta_2$<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>C</i>equally</li>
       </ol>
+      <p class="reveal step" data-step="1">$A^{-1}=\operatorname{diag}(1,100)$: $\ 0.008\to0.008$, $\ 0.008\to0.8$.</p>
+      <p class="reveal step" data-step="2">What $A$ squeezes most, inversion stretches most.</p>
     </div>
   </div>
   <script>
@@ -1389,10 +1409,11 @@ window.M4 = (function () {
     <canvas id="m4p08c" width="370" height="300" role="img" aria-label="Surface C: a surface over the input plane with labelled axes x one, x two and q, same camera and scales as A. After the second click, two curves appear on one of the three surfaces."></canvas>
   </div>
   <ol class="opts" style="grid-template-columns:repeat(3,1fr);gap:9px 14px;margin-top:6px">
-    <li><i>A</i>surface A</li>
-    <li><i>B</i>surface B</li>
-    <li><i>C</i>surface C</li>
+    <li><i>A</i>surface A<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="2">4x&#8321;&#178; + x&#8322;&#178;</span></li>
+    <li><i>B</i>surface B<span class="why step" data-step="2">x&#8321;&#178; + 4x&#8322;&#178;</span></li>
+    <li><i>C</i>surface C<span class="why step" data-step="2">x&#8321;&#178; &#8722; x&#8322;&#178;</span></li>
   </ol>
+  <p class="reveal step" data-step="2">Along $x_1$: $4x_1^2$, second derivative $8$; along $x_2$: $x_2^2$, second derivative $2$. Larger coefficient, steeper wall.</p>
   <script>
   (function () {
     var kit = window.m4p07kit, R = 1.6, Z = 1.8;
@@ -1483,10 +1504,11 @@ window.M4 = (function () {
     <canvas id="m4p10c" width="370" height="300" role="img" aria-label="Surface C, the graph of the form of option C, same camera and scales. After the second click a path along the x two axis is drawn on it."></canvas>
   </div>
   <ol class="opts" style="grid-template-columns:repeat(3,1fr);gap:9px 14px;margin-top:6px">
-    <li><i>A</i>$H=\operatorname{diag}(2,1)$</li>
-    <li><i>B</i>$H=\operatorname{diag}(2,0)$</li>
-    <li><i>C</i>$H=\operatorname{diag}(2,-1)$</li>
+    <li><i>A</i>$H=\operatorname{diag}(2,1)$<span class="why step" data-step="2">PD</span></li>
+    <li><i>B</i>$H=\operatorname{diag}(2,0)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="2">PSD, not PD</span></li>
+    <li><i>C</i>$H=\operatorname{diag}(2,-1)$<span class="why step" data-step="2">indefinite</span></li>
   </ol>
+  <p class="reveal step" data-step="2">At $x=e_2$ the heights are $1$, $0$, $-1$. B is never negative, yet it is $0$ at $e_2\neq0$.</p>
   <script>
   (function () {
     var kit = window.m4p07kit, R = 1.6, Z = 1.8;
@@ -1592,8 +1614,9 @@ window.M4 = (function () {
   <ol class="opts" style="grid-template-columns:repeat(3,1fr);gap:9px 14px;margin-top:6px">
     <li><i>A</i>bowl</li>
     <li><i>B</i>flat trough</li>
-    <li><i>C</i>saddle</li>
+    <li><i>C</i>saddle<b class="ok step" data-step="1">&#10003;</b></li>
   </ol>
+  <p class="reveal step" data-step="2">$x\T Hx=3z_1^2-z_2^2$: up along $v_1$, down along $v_2$. It takes both signs, so $H$ is indefinite.</p>
   <script>
   (function () {
     var kit = window.m4p07kit, R = 1.5, Z = 1.5;
@@ -1692,15 +1715,18 @@ window.M4 = (function () {
     <div>
       <p class="q">$A_1=\mathrm{diag}(1,2)$ and $A_2=\begin{bmatrix}1&amp;1\\0&amp;0\end{bmatrix}$ map the unit circle as shown. Which $A\T A$ is PD?</p>
       <ol class="opts one">
-        <li><i>A</i>only $A_1\T A_1$</li>
+        <li><i>A</i>only $A_1\T A_1$<b class="ok step" data-step="2">&#10003;</b></li>
         <li><i>B</i>only $A_2\T A_2$</li>
         <li><i>C</i>both</li>
       </ol>
+      <p class="reveal step" data-step="2">$\|A_2x\|^2=(x_1+x_2)^2=0$ at $x=(1,-1)$. $A\T A\succ0$ exactly when $A$ has full column rank.</p>
     </div>
     <figure>
       <canvas id="m4p14c" width="720" height="285" role="img" aria-label="Three panels at one common scale. Left, the unit circle in the input plane. Middle and right, the circle deforms into its image under A one and under A two: an ellipse reaching two on the vertical axis, and a segment on the horizontal axis. After the first click, the two Gram matrices appear under the output panels. After the second click, one input direction is drawn in purple on the circle, and its images are drawn in the two output panels."></canvas>
       <div style="display:grid;grid-template-columns:repeat(3,240px);text-align:center;font-size:20px;margin-top:2px">
         <span></span>
+        <p class="step" data-step="1" style="margin:0">$A_1\T A_1=\mathrm{diag}(1,4)$</p>
+        <p class="step" data-step="1" style="margin:0">$A_2\T A_2=\begin{bmatrix}1&amp;1\\1&amp;1\end{bmatrix}$</p>
       </div>
     </figure>
   </div>
@@ -1858,9 +1884,11 @@ window.M4 = (function () {
       <p class="q">$4z_1^2+z_2^2=1$ is the level set $x\T Hx=1$ in principal coordinates. Which eigenvalue sets its long axis?</p>
       <ol class="opts one">
         <li><i>A</i>the larger</li>
-        <li><i>B</i>the smaller</li>
+        <li><i>B</i>the smaller<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>C</i>neither</li>
       </ol>
+      <p class="reveal step" data-step="1">On axis $i$, $\lambda_iz_i^2=1$, so the semiaxis is $1/\sqrt{\lambda_i}$ ($\lambda_i&gt;0$):<br>larger $\lambda_i$, shorter axis.</p>
+      <p class="reveal step" data-step="2">A level set, not a circle's image (that comes with the SVD).</p>
     </div>
     <figure>
       <p class="spc in">input space, z = Qᵀx</p>
@@ -2110,10 +2138,12 @@ window.M4 = (function () {
     <div>
       <p class="q">$A=\mathrm{diag}(3,1)$. Which unit input has the longest output $Ax$?</p>
       <ol class="opts one">
-        <li><i>A</i>horizontal, $e_1$</li>
-        <li><i>B</i>vertical, $e_2$</li>
-        <li><i>C</i>diagonal, $(e_1+e_2)/\sqrt2$</li>
+        <li><i>A</i>horizontal, $e_1$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">‖Ax‖ = 3</span></li>
+        <li><i>B</i>vertical, $e_2$<span class="why step" data-step="1">‖Ax‖ = 1</span></li>
+        <li><i>C</i>diagonal, $(e_1+e_2)/\sqrt2$<span class="why step" data-step="1">‖Ax‖ = √5 ≈ 2.24</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$\|Ax\|^2=9x_1^2+x_2^2$ with $x_1^2+x_2^2=1$: all of $x$ on $e_1$.</p>
+      <p class="q step" data-step="2" style="font-size:20px;margin-top:10px">Does C&#8217;s output still point at 45°?</p>
     </div>
     <figure>
       <canvas id="m4p20" width="620" height="270" role="img" aria-label="Two panels at the same scale. Input space: the dashed unit circle with three unit arrows, A horizontal, B vertical and C at 45 degrees. Output space: an empty integer grid from minus 3 to 3 across and minus 1 to 1 up. After the first click the plane is stretched by A: the circle becomes its image and the three arrows become their outputs, each still labelled with its letter."></canvas>
@@ -2359,10 +2389,11 @@ window.M4 = (function () {
     <div>
       <p class="q">$A$ is $3\times2$, with full SVD $A=U\Sigma V\T$. What are the shapes of $(U,\Sigma,V\T)$?</p>
       <ol class="opts one">
-        <li><i>A</i>(3×3, 3×2, 2×2)</li>
-        <li><i>B</i>(3×2, 2×2, 2×3)</li>
-        <li><i>C</i>(2×2, 2×3, 3×3)</li>
+        <li><i>A</i>(3×3, 3×2, 2×2)<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">product 3×2</span></li>
+        <li><i>B</i>(3×2, 2×2, 2×3)<span class="why step" data-step="1">product 3×3</span></li>
+        <li><i>C</i>(2×2, 2×3, 3×3)<span class="why step" data-step="1">product 2×3</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$U$: square, output side $\R^3$. $V$: square, input side $\R^2$. $\Sigma$: the shape of $A$.</p>
     </div>
     <figure>
       <svg viewBox="0 0 430 170" width="430" height="170" role="img" aria-label="A drawn as a block of three rows and two columns, labelled 3 by 2, then an equals sign and three equal dashed squares with question marks, labelled U, Sigma and V transpose. After the second click the squares are replaced by blocks of their true sizes with their sizes written underneath.">
@@ -2380,9 +2411,38 @@ window.M4 = (function () {
         <text x="265" y="82" text-anchor="middle" class="big" style="fill:var(--dim)">?</text>
         <rect x="326" y="30" width="90" height="90" class="d-stroke" fill="none" stroke-width="1.6" stroke-dasharray="6 5" rx="4"/>
         <text x="371" y="82" text-anchor="middle" class="big" style="fill:var(--dim)">?</text>
+        <g class="step" data-step="2">
+        <rect x="111" y="27" width="96" height="96" style="fill:var(--bg)"/>
+        <rect x="217" y="27" width="96" height="96" style="fill:var(--bg)"/>
+        <rect x="323" y="27" width="96" height="96" style="fill:var(--bg)"/>
+        <rect x="118" y="33" width="22" height="84" class="out-f out-s" fill-opacity=".16" stroke-width="1.4" rx="4"/>
+        <text x="129" y="23" text-anchor="middle" class="lbl out-f">u₁</text>
+        <rect x="148" y="33" width="22" height="84" class="out-f out-s" fill-opacity=".16" stroke-width="1.4" rx="4"/>
+        <text x="159" y="23" text-anchor="middle" class="lbl out-f">u₂</text>
+        <rect x="178" y="33" width="22" height="84" class="out-f out-s" fill-opacity=".16" stroke-width="1.4" rx="4"/>
+        <text x="189" y="23" text-anchor="middle" class="lbl out-f">u₃</text>
+        <rect x="114" y="30" width="90" height="90" class="out-s" fill="none" stroke-width="1.8" rx="3"/>
+        <rect x="235" y="30" width="60" height="90" class="d-fill" fill-opacity=".05"/>
+        <line x1="235" y1="60" x2="295" y2="60" class="d-stroke" stroke-opacity=".35" stroke-width="1"/>
+        <line x1="235" y1="90" x2="295" y2="90" class="d-stroke" stroke-opacity=".35" stroke-width="1"/>
+        <line x1="265" y1="30" x2="265" y2="120" class="d-stroke" stroke-opacity=".35" stroke-width="1"/>
+        <text x="250" y="50" text-anchor="middle" class="lbl" style="fill:var(--ink)">σ₁</text>
+        <text x="280" y="50" text-anchor="middle" class="m">0</text>
+        <text x="250" y="80" text-anchor="middle" class="m">0</text>
+        <text x="280" y="80" text-anchor="middle" class="lbl" style="fill:var(--ink)">σ₂</text>
+        <text x="250" y="110" text-anchor="middle" class="m">0</text>
+        <text x="280" y="110" text-anchor="middle" class="m">0</text>
+        <rect x="235" y="30" width="60" height="90" class="stroke" fill="none" stroke-width="1.8" rx="3"/>
+        <rect x="344" y="34" width="54" height="22" class="in-f in-s" fill-opacity=".16" stroke-width="1.4" rx="4"/>
+        <rect x="344" y="64" width="54" height="22" class="in-f in-s" fill-opacity=".16" stroke-width="1.4" rx="4"/>
+        <rect x="341" y="30" width="60" height="60" class="in-s" fill="none" stroke-width="1.8" rx="3"/>
+        </g>
         <text x="159" y="144" text-anchor="middle" class="big">U</text>
+        <text x="159" y="164" text-anchor="middle" class="lbl step" data-step="2"><tspan class="out-f">3</tspan>×<tspan class="out-f">3</tspan></text>
         <text x="265" y="144" text-anchor="middle" class="big">Σ</text>
+        <text x="265" y="164" text-anchor="middle" class="lbl step" data-step="2"><tspan class="out-f">3</tspan>×<tspan class="in-f">2</tspan></text>
         <text x="371" y="144" text-anchor="middle" class="big">Vᵀ</text>
+        <text x="371" y="164" text-anchor="middle" class="lbl step" data-step="2"><tspan class="in-f">2</tspan>×<tspan class="in-f">2</tspan></text>
       </svg>
     </figure>
   </div>
@@ -2478,10 +2538,11 @@ window.M4 = (function () {
     <div>
       <p class="q">A $2\times2$ matrix maps the unit circle onto the segment from $-2e_1$ to $2e_1$. What are $(\sigma_1,\sigma_2)$?</p>
       <ol class="opts one">
-        <li><i>A</i>$(2,1)$</li>
-        <li><i>B</i>$(2,0)$</li>
-        <li><i>C</i>$(0,0)$</li>
+        <li><i>A</i>$(2,1)$<span class="why step" data-step="1">would leave height 1</span></li>
+        <li><i>B</i>$(2,0)$<b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>C</i>$(0,0)$<span class="why step" data-step="1">image = one point</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$\sigma_1=\|Av_1\|=2$ is half the length $4$: $\pm v_1\mapsto\pm2e_1$. And $Av_2=0$, so $\sigma_2=0$.</p>
     </div>
     <figure>
       <canvas id="m4p25" width="620" height="270" role="img" aria-label="Two panels at the same scale. Input space: the unit circle. Output space: an integer grid from minus 3 to 3 with a thick horizontal segment from minus 2 to 2 on the first axis, titled as the image of the unit circle. After the second click an animation relates the circle, the segment and two input directions, with the lengths marked."></canvas>
@@ -2708,10 +2769,12 @@ window.M4 = (function () {
     <div>
       <p class="q">Which statement about the SVD is true?</p>
       <ol class="opts one">
-        <li><i>A</i>It exists only for square $A$</li>
-        <li><i>B</i>Input and output dimensions may differ</li>
-        <li><i>C</i>Singular values can be negative</li>
+        <li><i>A</i>It exists only for square $A$<span class="why step" data-step="2">every $A$ has one</span></li>
+        <li><i>B</i>Input and output dimensions may differ<b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>C</i>Singular values can be negative<span class="why step" data-step="2">$\sigma_i=\|Av_i\|\ge0$</span></li>
       </ol>
+      <p class="reveal step" data-step="1">$v_i\in\R^n$, $u_i\in\R^m$. An eigenvector needs one space: $m=n$.</p>
+      <p class="reveal step" data-step="2">Eigenvalues may be negative or complex; $\sigma_i$ is a length.</p>
     </div>
     <figure>
       <canvas id="m4p28" width="620" height="440" role="img" aria-label="Two pictures of the same 2 by 2 matrix. Top, headed Av = lambda v: one plane with a blue vector v and a longer teal vector Av lying on the same dashed line through the origin, labelled R2 to R2, A square. Bottom, headed A v i = sigma i u i: an input plane with a unit circle and a blue unit vector v1, an arrow labelled A, and a separate output plane with a dashed ellipse and a teal arrow A v1 = sigma1 u1 pointing in a different direction; the planes are labelled input space and output space. After the first click, the labels of the three planes change."></canvas>
@@ -2847,10 +2910,11 @@ window.M4 = (function () {
     <div>
       <p class="q">With $\sigma=(3,1)$ and $u_i=v_i$ as before, let $x=v_1+2v_2$. What is $Ax$?</p>
       <ol class="opts one">
-        <li><i>A</i>$3u_1+2u_2$</li>
-        <li><i>B</i>$u_1+6u_2$</li>
-        <li><i>C</i>$3u_1+6u_2$</li>
+        <li><i>A</i>$3u_1+2u_2$<b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>B</i>$u_1+6u_2$<span class="why step" data-step="2">gains swapped</span></li>
+        <li><i>C</i>$3u_1+6u_2$<span class="why step" data-step="2">both times 3</span></li>
       </ol>
+      <p class="reveal step" data-step="2">Each coordinate keeps its own gain:<br>$c_1v_1+c_2v_2\ \mapsto\ \sigma_1c_1u_1+\sigma_2c_2u_2$</p>
     </div>
     <figure>
       <canvas id="m4p30" width="640" height="370" role="img" aria-label="Left, the input plane: x is built head to tail from one unit step along v1 and two unit steps along v2, both blue, with the resulting blue arrow x. Right, the output plane: the dashed image ellipse of the unit circle and thin teal unit arrows u1 and u2, and nothing else before the first click. After the first click, teal output components are drawn head to tail from the origin and a green arrow Ax joins the origin to their end."></canvas>
@@ -3067,10 +3131,11 @@ window.M4 = (function () {
     <div>
       <p class="q">Keep one term of $A=3u_1v_1\T+u_2v_2\T$:<br>$A_1=3u_1v_1\T$. Which input does $A_1$ send to $0$?</p>
       <ol class="opts one">
-        <li><i>A</i>$v_1$</li>
-        <li><i>B</i>$v_2$</li>
-        <li><i>C</i>$v_1+v_2$</li>
+        <li><i>A</i>$v_1$<span class="why step" data-step="2">$\mapsto 3u_1$</span></li>
+        <li><i>B</i>$v_2$<b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>C</i>$v_1+v_2$<span class="why step" data-step="2">$\mapsto 3u_1$</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$A_1x=3\,(v_1\T x)\,u_1$ reads only the $v_1$ coordinate, and $v_1\T v_2=0$: $\mathrm{Null}(A_1)=\mathrm{span}(v_2)$, a whole line.</p>
     </div>
     <figure>
       <canvas id="m4p33" width="620" height="340" role="img" aria-label="Left, the input plane: the unit circle and three blue candidate inputs v1, v2 and v1 + v2. Right, the output plane: the teal image ellipse of A with dashed lines along u1 and u2. After the first click the output picture changes from A to A1 and the images of the three candidates under A1 are drawn."></canvas>
@@ -3216,10 +3281,11 @@ window.M4 = (function () {
     <div>
       <p class="q">A $3\times3$ matrix has singular values $5,\,2,\,0$. Which pair is (rank, nullity)?</p>
       <ol class="opts one">
-        <li><i>A</i>$(3,0)$</li>
-        <li><i>B</i>$(2,1)$</li>
-        <li><i>C</i>$(1,2)$</li>
+        <li><i>A</i>$(3,0)$<span class="why step" data-step="2">a zero gain adds no rank</span></li>
+        <li><i>B</i>$(2,1)$<b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>C</i>$(1,2)$<span class="why step" data-step="2">2 is small, not zero</span></li>
       </ol>
+      <p class="reveal step" data-step="2">rank $=\#\{\sigma_i&gt;0\}=2$; nullity $=n-\text{rank}=1$, $\mathrm{Null}(A)=\mathrm{span}(v_3)$.</p>
     </div>
     <figure>
       <canvas id="m4p35" width="620" height="380" role="img" aria-label="Left, the input space R3: the unit sphere drawn as three dashed great circles and three blue unit vectors v1, v2, v3. Right, the output space R3: three dashed axes along u1, u2, u3 and nothing else before the first click. After the first click, the images of the input directions are drawn in the output space, and an input turning between two of them is followed by its output."></canvas>
@@ -3462,9 +3528,10 @@ window.M4 = (function () {
   </figure>
   <ol class="opts" style="grid-template-columns:repeat(3,1fr);margin-top:8px">
     <li><i>A</i>the horizontal line</li>
-    <li><i>B</i>the long-axis line</li>
+    <li><i>B</i>the long-axis line<b class="ok step" data-step="2">&#10003;</b></li>
     <li><i>C</i>the short-axis line</li>
   </ol>
+  <p class="reveal step" data-step="1">Orange: perpendicular reconstruction distances, not the vertical regression residuals of Lecture 3. <span class="step" data-step="2">Long axis: $8\times0.3^2=0.72$.</span></p>
   <script>
   m3anim(document.getElementById('m4p38'), function (g, t, k) {
     var c = k.c, i, n, one = k.shown(1), two = k.shown(2);
@@ -3568,11 +3635,13 @@ window.M4 = (function () {
       <figure>
         <canvas id="m4p40" width="700" height="244" role="img" aria-label="Feature space drawn at one scale: the origin at the far left and seven gold points clustered near ten, zero, spread mostly up and down by about one and a half. After the first click, arrows join the origin to every point and a blue arrow shows the first right singular vector of the raw data. After the second click, a second panel shows the centered points with arrows from the origin and the first right singular vector of the centered data."></canvas>
       </figure>
+      <p class="reveal step" data-step="1">$\|Xv\|^2=\sum_j(x_j\T v)^2$ weighs raw vectors: $\|Xe_1\|^2=700.18$, $\|Xe_2\|^2=7$.</p>
+      <p class="reveal step" data-step="2">Centered, the vectors are nearly vertical, and so is $v_1$ of $X_c$.</p>
     </div>
     <div>
       <p class="q">Uncentered $X$: what does its first right singular vector $v_1$ mostly reflect?</p>
       <ol class="opts one">
-        <li><i>A</i>the cloud&#8217;s offset from the origin</li>
+        <li><i>A</i>the cloud&#8217;s offset from the origin<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>B</i>the largest variation around the mean, guaranteed</li>
         <li><i>C</i>the number of samples $N$</li>
       </ol>
@@ -3779,10 +3848,11 @@ window.M4 = (function () {
     <div>
       <p class="q">A new small example: centered data have singular values $\sigma_1=3$, $\sigma_2=1$. What share of the total variance does the first component keep?</p>
       <ol class="opts one">
-        <li><i>A</i>75%</li>
-        <li><i>B</i>90%</li>
-        <li><i>C</i>50%</li>
+        <li><i>A</i>75%<span class="why step" data-step="2">3/(3+1): σ not squared</span></li>
+        <li><i>B</i>90%<b class="ok step" data-step="2">&#10003;</b><span class="why step" data-step="2">9/(9+1)</span></li>
+        <li><i>C</i>50%<span class="why step" data-step="2">counts components</span></li>
       </ol>
+      <p class="reveal step" data-step="2">Variance along $v_i$ is $\sigma_i^2/(N-1)$: square first, then share. $N-1$ cancels.</p>
     </div>
     <figure>
       <svg viewBox="0 0 440 340" width="440" height="340" role="img" aria-label="Two grey bars for the singular values, three units and one unit tall, drawn at twenty-five pixels per unit. The first click adds, at the same scale, bars for their squares. The second click adds, at the same scale, one stacked bar of total height ten: nine green units, as tall as the first squared bar, under one grey unit, with the first component's share of the total.">
@@ -3794,6 +3864,22 @@ window.M4 = (function () {
         <text x="128" y="255" text-anchor="middle" class="big">1</text>
         <text x="64" y="314" text-anchor="middle" class="lbl">σ₁</text>
         <text x="128" y="314" text-anchor="middle" class="lbl">σ₂</text>
+        <g class="step" data-step="1">
+          <text x="250" y="30" text-anchor="middle" class="lbl">σᵢ²</text>
+          <rect x="194" y="65" width="48" height="225" class="fill" fill-opacity=".4"/>
+          <rect x="258" y="265" width="48" height="25" class="fill" fill-opacity=".4"/>
+          <text x="218" y="55" text-anchor="middle" class="big">9</text>
+          <text x="282" y="255" text-anchor="middle" class="big">1</text>
+          <text x="218" y="314" text-anchor="middle" class="lbl">σ₁²</text>
+          <text x="282" y="314" text-anchor="middle" class="lbl">σ₂²</text>
+        </g>
+        <g class="step" data-step="2">
+          <text x="362" y="30" text-anchor="middle" class="lbl">share</text>
+          <rect x="338" y="40" width="48" height="25" class="d-fill" fill-opacity=".3"/>
+          <rect x="338" y="65" width="48" height="225" class="ans-f" fill-opacity=".75"/>
+          <text x="392" y="184" class="big ans-f">90%</text>
+          <text x="362" y="314" text-anchor="middle" class="lbl">9 of 10</text>
+        </g>
       </svg>
     </figure>
   </div>
@@ -3890,10 +3976,11 @@ window.M4 = (function () {
     <div>
       <p class="q">$\mu=0$, centered point $x_c=(2,0)$, first direction $v_1=(1,1)/\sqrt2$. Which pair is its score $z$ and reconstruction $\hat x$?</p>
       <ol class="opts one">
-        <li><i>A</i>$z=\sqrt2,\ \hat x=(1,1)$</li>
-        <li><i>B</i>$z=2,\ \hat x=(2,2)$</li>
-        <li><i>C</i>$z=1,\ \hat x=(1,0)$</li>
+        <li><i>A</i>$z=\sqrt2,\ \hat x=(1,1)$<b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>B</i>$z=2,\ \hat x=(2,2)$<span class="why step" data-step="2">$(1,1)$ is not unit</span></li>
+        <li><i>C</i>$z=1,\ \hat x=(1,0)$<span class="why step" data-step="2">off the line</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$z=x_c\T v_1=2/\sqrt2=\sqrt2$, $\hat x=z\,v_1=(1,1)$; error $(1,-1)\perp v_1$.</p>
     </div>
     <figure>
       <canvas id="m4p45" width="460" height="440" role="img" aria-label="Feature space at one scale with a light integer grid. A teal line through the origin at forty-five degrees, the blue unit arrow v one on it, and the gold point x c at two, zero. Three hollow candidate points are labelled A at one, one, B at two, two and C at one, zero. After the first click, an orange segment drops from x c to the line at a right angle, the point where it lands turns green, and a blue bracket along the line gives the score."></canvas>
@@ -4136,10 +4223,11 @@ window.M4 = (function () {
     <div>
       <p class="q">$A=\begin{bmatrix}3&amp;0\\0&amp;1\end{bmatrix}$, $b=(6,2)$. Which $x$ gives $Ax=b$?</p>
       <ol class="opts one">
-        <li><i>A</i>$x=(18,2)$</li>
-        <li><i>B</i>$x=(2,2)$</li>
-        <li><i>C</i>$x=(2,6)$</li>
+        <li><i>A</i>$x=(18,2)$<span class="why step" data-step="2">Ax = (54, 2)</span></li>
+        <li><i>B</i>$x=(2,2)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="2">Ax = (6, 2)</span></li>
+        <li><i>C</i>$x=(2,6)$<span class="why step" data-step="2">Ax = (6, 6)</span></li>
       </ol>
+      <p class="reveal step" data-step="2">Divide by each gain: $x_1=6/3$, $x_2=2/1$.</p>
     </div>
     <figure>
       <canvas id="m4p48" width="600" height="300" role="img" aria-label="Two panels. Right, output space on a unit grid: a gold arrow b to six, two, with its dashed teal components, six along the first axis and two up. Left, input space: bare axes with no scale and a question mark. After the first click the two components travel into the input panel, the input panel gets the same grid, and they settle on one input, which is marked."></canvas>
@@ -4283,10 +4371,11 @@ window.M4 = (function () {
     <div>
       <p class="q">$A=\begin{bmatrix}2&amp;0\\0&amp;0\end{bmatrix}$, $b=(4,3)$. What is $A^+b$?</p>
       <ol class="opts one">
-        <li><i>A</i>$(2,0)$</li>
-        <li><i>B</i>$(2,3)$</li>
-        <li><i>C</i>none: no exact solution</li>
+        <li><i>A</i>$(2,0)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="2">Ax = (4, 0)</span></li>
+        <li><i>B</i>$(2,3)$<span class="why step" data-step="2">same residual, longer $\|x\|$</span></li>
+        <li><i>C</i>none: no exact solution<span class="why step" data-step="2">A⁺ always exists</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$A^+=\begin{bmatrix}\frac12&amp;0\\0&amp;0\end{bmatrix}$ leaves the zero gain alone. $A^+b$ exists even when $Ax=b$ has no solution.</p>
     </div>
     <figure>
       <canvas id="m4p50" width="600" height="320" role="img" aria-label="Two panels at one scale on unit grids. Left, input space: two candidate inputs marked A and B. Right, output space: the horizontal axis drawn thick and teal as the set of reachable outputs, Col of A, and a gold target b above it. After the first click a point drops from b straight down onto the axis, leaving an orange segment, and one candidate input is marked. After the second click a dashed purple vertical line through that candidate appears in the input panel."></canvas>
@@ -4541,10 +4630,11 @@ window.M4 = (function () {
     <div>
       <p class="q">All three solve $x_1+x_2=2$. Which has the smallest norm $\|x\|$?</p>
       <ol class="opts one">
-        <li><i>A</i>$(2,0)$</li>
-        <li><i>B</i>$(1,1)$</li>
-        <li><i>C</i>$(0,2)$</li>
+        <li><i>A</i>$(2,0)$<span class="why step" data-step="2">‖x‖² = 4</span></li>
+        <li><i>B</i>$(1,1)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="2">‖x‖² = 2</span></li>
+        <li><i>C</i>$(0,2)$<span class="why step" data-step="2">‖x‖² = 4</span></li>
       </ol>
+      <p class="reveal step" data-step="2">The first circle to touch the line is tangent to it, so the radius there is perpendicular to it: $x^\star\perp(1,-1)$, the null direction.</p>
     </div>
     <figure>
       <canvas id="m4p53" width="440" height="430" role="img" aria-label="Input space on a unit grid. A blue line x one plus x two equals two, with three neutral dots on it marked A, B and C at two, zero; one, one; and zero, two. After the first click circles centred at the origin grow outward until one of them first touches the line; that circle and the touching point turn green with a right-angle mark, and a larger dashed circle passes through the other two dots. After the second click a short purple arrow along the line marks its direction."></canvas>
@@ -4716,10 +4806,11 @@ window.M4 = (function () {
     <div>
       <p class="q">Both output errors have length $0.01$. Which gives the larger input error $\|\delta x\|$?</p>
       <ol class="opts one">
-        <li><i>A</i>$\delta b=(0.01,\,0)$</li>
-        <li><i>B</i>$\delta b=(0,\,0.01)$</li>
-        <li><i>C</i>the same for both</li>
+        <li><i>A</i>$\delta b=(0.01,\,0)$<span class="why step" data-step="1">$\|\delta x\|=0.01$</span></li>
+        <li><i>B</i>$\delta b=(0,\,0.01)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">$\|\delta x\|=1$</span></li>
+        <li><i>C</i>the same for both<span class="why step" data-step="1">gains differ</span></li>
       </ol>
+      <p class="reveal step" data-step="2">Along $u_i$, $\|\delta x\|=\|\delta b\|/\sigma_i$: $0.01/1$ against $0.01/0.01$. Equal $\|\delta b\|$, unequal $\|\delta x\|$.</p>
     </div>
     <figure>
       <canvas id="m4p55" width="600" height="410" role="img" aria-label="Two panels with their own scale bars. Right, output space, where the bar is 0.01 long: two orange arrows of that same length, one horizontal and one vertical. Left, input space, where the bar is 1 long: empty axes with a question mark. After the first click, each output error's input error is drawn in the left panel at that scale, with its length."></canvas>
@@ -4891,10 +4982,11 @@ window.M4 = (function () {
     <canvas id="m4p57" width="1000" height="286" role="img" aria-label="One output-space plot at a single scale in two rows with shared tick marks from minus 10 to 10. Top row: the image ellipse of A equal to diag of 10 and 1, twenty units wide and two tall. Bottom row: the image ellipse of B equal to diag of 2 and 1, four units wide and two tall. After the first click, a copy of each ellipse moves to the right and is scaled so that the two long axes are equal, and each copy is labelled."></canvas>
   </figure>
   <ol class="opts" style="grid-template-columns:repeat(3,1fr);margin-top:8px">
-    <li><i>A</i>$A=\mathrm{diag}(10,1)$</li>
-    <li><i>B</i>$B=\mathrm{diag}(2,1)$</li>
-    <li><i>C</i>equally conditioned</li>
+    <li><i>A</i>$A=\mathrm{diag}(10,1)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">$\kappa_2=10$</span></li>
+    <li><i>B</i>$B=\mathrm{diag}(2,1)$<span class="why step" data-step="1">$\kappa_2=2$</span></li>
+    <li><i>C</i>equally conditioned<span class="why step" data-step="1">same $\sigma_{\min}$ only</span></li>
   </ol>
+  <p class="reveal step" data-step="2">$\kappa_2$ is the axis ratio, not the size. Same $\sigma_{\min}$: same absolute gain, not same relative sensitivity.</p>
   <script>
   m3anim(document.getElementById('m4p57'), function (g, t, k) {
     /* both rows at 36 px per unit on both axes, one shared x scale; the copies are scaled uniformly (shape kept)
@@ -5003,10 +5095,11 @@ window.M4 = (function () {
     <div>
       <p class="q">Fix $A,b$. As $\lambda$ grows $0\to3$, what do $\|x_\lambda\|$ and $\|r_\lambda\|$ do?</p>
       <ol class="opts one">
-        <li><i>A</i>$\|x_\lambda\|$ nonincreasing, $\|r_\lambda\|$ nondecreasing</li>
-        <li><i>B</i>$\|x_\lambda\|$ increases, $\|r_\lambda\|$ always decreases</li>
-        <li><i>C</i>$b$ stays exactly attained</li>
+        <li><i>A</i>$\|x_\lambda\|$ nonincreasing, $\|r_\lambda\|$ nondecreasing<b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>B</i>$\|x_\lambda\|$ increases, $\|r_\lambda\|$ always decreases<span class="why step" data-step="1">norm falls</span></li>
+        <li><i>C</i>$b$ stays exactly attained<span class="why step" data-step="1">residual grows</span></li>
       </ol>
+      <p class="reveal step" data-step="2">No gain $\sigma_i/(\sigma_i^2+\lambda^2)$ grows with $\lambda$. Not always strictly: take $b=0$.</p>
     </div>
     <figure>
       <canvas id="m4p59" width="610" height="468" role="img" aria-label="Top left, input space with the blue arrow x lambda, which at lambda 0 is A plus b equal to one two. Top right, output space with the gold target b equal to two one and the teal arrow A x lambda, which at lambda 0 lands on b; the fixture A equal to diag of 2 and one half and the residual r lambda equal to b minus A x lambda are printed there. Bottom, a plot of norms against lambda from 0 to 3 at equal scale, with a marker at lambda 0 and two starting dots: the norm of x lambda, root 5, in blue and the norm of r lambda, 0, in orange. After the first click, lambda sweeps from 0 to 3 while both arrows move and both curves are traced, with live readouts."></canvas>
@@ -5222,10 +5315,11 @@ window.M4 = (function () {
     <div>
       <p class="q">Both shoulders turn $+5^\circ$, elbows fixed. The tip changes $\Delta p$ are…</p>
       <ol class="opts one">
-        <li><i>A</i>always identical</li>
-        <li><i>B</i>generally pose-dependent</li>
-        <li><i>C</i>determined only by joint count</li>
+        <li><i>A</i>always identical<span class="why step" data-step="2">&#8776;0.172 vs &#8776;0.060 long</span></li>
+        <li><i>B</i>generally pose-dependent<b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>C</i>determined only by joint count<span class="why step" data-step="2">same 2 joints</span></li>
       </ol>
+      <p class="reveal step" data-step="2">The shoulder swings the tip on a circle of radius $r$: $|\Delta p|\approx r\,\Delta q_1$ with $\Delta q_1=5^\circ\approx0.0873$ rad, not $5$.</p>
     </div>
     <figure>
       <canvas id="m4p62" width="680" height="420" role="img" aria-label="Two task-space panels with the same two-link arm, unit links. Left: q equal to 10 and 20 degrees, nearly straight. Right: q equal to 10 and 140 degrees, folded back. Each shoulder carries a blue turning arrow marked plus 5 degrees. After the first click each arm turns its shoulder by 5 degrees from a dashed copy of its old pose, and a teal tip-change arrow, drawn four times longer than true, appears with its coordinates printed below. After the second click a dashed radius from base to tip and a dashed circle arc appear in each panel, with the radius and the radius times 0.0873 printed below."></canvas>
@@ -5444,10 +5538,11 @@ window.M4 = (function () {
     <div>
       <p class="q">An arm has 7 joints. The task is only its 3D tip position. What shape is $J$?</p>
       <ol class="opts one">
-        <li><i>A</i>$7\times3$</li>
-        <li><i>B</i>$3\times7$</li>
-        <li><i>C</i>$7\times7$</li>
+        <li><i>A</i>$7\times3$<span class="why step" data-step="2">ℝ³ → ℝ⁷</span></li>
+        <li><i>B</i>$3\times7$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="2">ℝ⁷ → ℝ³</span></li>
+        <li><i>C</i>$7\times7$<span class="why step" data-step="2">ℝ⁷ → ℝ⁷</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$J$ is $m\times n$: one row per task coordinate, one column per joint, so $J\Delta q$ takes $\Delta q\in\R^7$ to $\Delta p\in\R^3$.</p>
     </div>
     <figure>
       <svg viewBox="0 0 620 400" width="676" height="436" role="img" aria-label="Left, joint space: seven blue sliders labelled q1 to q7, one per joint. Right, task space: three teal readouts labelled p1, p2, p3, the coordinates of the tip. A black arrow labelled J of q runs from the sliders to the readouts. After the first click a grid of cells appears between them, its columns labelled by joints and its rows by tip coordinates, with its size written below.">
@@ -5482,6 +5577,12 @@ window.M4 = (function () {
         <text x="546" y="281" text-anchor="middle" class="big out-f">p₃</text>
         <line x1="196" y1="110" x2="458.9" y2="110" class="stroke" stroke-width="2.4"/><polygon points="470,110 457,115.8 457,104.2" class="fill"/>
         <text x="333" y="96" text-anchor="middle" class="big">J(q)</text>
+        <g class="step" data-step="1">
+          <g class="out-s" fill="none" stroke-width="1.4">
+            <rect x="248" y="172" width="26" height="30"/><rect x="274" y="172" width="26" height="30"/><rect x="300" y="172" width="26" height="30"/><rect x="326" y="172" width="26" height="30"/><rect x="352" y="172" width="26" height="30"/><rect x="378" y="172" width="26" height="30"/><rect x="404" y="172" width="26" height="30"/>
+            <rect x="248" y="202" width="26" height="30"/><rect x="274" y="202" width="26" height="30"/><rect x="300" y="202" width="26" height="30"/><rect x="326" y="202" width="26" height="30"/><rect x="352" y="202" width="26" height="30"/><rect x="378" y="202" width="26" height="30"/><rect x="404" y="202" width="26" height="30"/>
+            <rect x="248" y="232" width="26" height="30"/><rect x="274" y="232" width="26" height="30"/><rect x="300" y="232" width="26" height="30"/><rect x="326" y="232" width="26" height="30"/><rect x="352" y="232" width="26" height="30"/><rect x="378" y="232" width="26" height="30"/><rect x="404" y="232" width="26" height="30"/>
+          </g>
           <text x="261" y="164" text-anchor="middle" class="lbl in-f">q₁</text><text x="287" y="164" text-anchor="middle" class="lbl in-f">q₂</text><text x="313" y="164" text-anchor="middle" class="lbl in-f">q₃</text><text x="339" y="164" text-anchor="middle" class="lbl in-f">q₄</text><text x="365" y="164" text-anchor="middle" class="lbl in-f">q₅</text><text x="391" y="164" text-anchor="middle" class="lbl in-f">q₆</text><text x="417" y="164" text-anchor="middle" class="lbl in-f">q₇</text>
           <text x="240" y="192" text-anchor="end" class="lbl out-f">p₁</text><text x="240" y="222" text-anchor="end" class="lbl out-f">p₂</text><text x="240" y="252" text-anchor="end" class="lbl out-f">p₃</text>
           <text x="339" y="294" text-anchor="middle" class="big ans-f">3 rows × 7 columns</text>
@@ -5577,10 +5678,11 @@ window.M4 = (function () {
       </dl>
       <p class="q">Only joint 1 turns, by a small $\varepsilon>0$: $\Delta q=(\varepsilon,0)$. The tip mainly moves…</p>
       <ol class="opts">
-        <li><i>A</i>right</li>
-        <li><i>B</i>up</li>
-        <li><i>C</i>left</li>
+        <li><i>A</i>right<span class="why step" data-step="2">Δq’s own axis</span></li>
+        <li><i>B</i>up<b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>C</i>left<span class="why step" data-step="2">column 2</span></li>
       </ol>
+      <p class="reveal step" data-step="2">Column 1, not row 1 $(0,-1)$: $\Delta p\approx\varepsilon j_1=(0,2\varepsilon)$</p>
     </div>
     <figure>
       <svg viewBox="0 0 560 360" width="650" height="418" role="img" aria-label="Two panels. Joint space: axes q1 and q2 and a blue arrow along the q1 axis labelled delta q equals epsilon, 0. Task space: axes x and y with three grey dashed candidate arrows from the origin, labelled A pointing right, B pointing up and C pointing left. After the first click a green tip-change arrow is drawn with its coordinates. After the second click a teal arrow for joint 2's column is added on the same task axes.">
@@ -5602,6 +5704,8 @@ window.M4 = (function () {
         <text x="494" y="196" text-anchor="middle" class="big">A</text>
         <text x="384" y="136" class="big">B</text>
         <text x="326" y="196" text-anchor="middle" class="big">C</text>
+        <g class="step" data-step="1"><line x1="410" y1="210" x2="410" y2="101" class="ans-s" stroke-width="4"/><polygon points="410,90 415.9,103 404.1,103" class="ans-f"/><text x="422" y="100" class="lbl ans-f">Δp ≈ (0, 2ε)</text></g>
+        <g class="step" data-step="2"><line x1="410" y1="210" x2="361.1" y2="210" class="out-s" stroke-width="4"/><polygon points="350,210 363,204.2 363,215.8" class="out-f"/><text x="350" y="240" text-anchor="middle" class="lbl out-f">εj₂: joint 2</text></g>
       </svg>
     </figure>
   </div>
@@ -5714,9 +5818,11 @@ window.M4 = (function () {
       <p class="q">Straight arm, $q=(0,0)$: $J=\begin{bmatrix}0&amp;0\\2&amp;1\end{bmatrix}$. Which nonzero tip velocities $J\dot q$ exist?</p>
       <ol class="opts one">
         <li><i>A</i>only horizontal, along the arm</li>
-        <li><i>B</i>only vertical, across the arm</li>
+        <li><i>B</i>only vertical, across the arm<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>C</i>any direction in the plane</li>
       </ol>
+      <p class="reveal step" data-step="2">Rank $1&lt;2$: a singular configuration; $\det J=l_1l_2\sin q_2=0\iff q_2=k\pi$.</p>
+      <p class="reveal step" data-step="3">A finite bend still moves the tip inward; a least-squares step still exists.</p>
     </div>
   </div>
   <script>
@@ -5916,10 +6022,11 @@ window.M4 = (function () {
     <div>
       <p class="q">The tip must move at the same speed $c$, along $u_1$ or $u_2$. Which needs the smaller joint speed $\|\dot q\|$?</p>
       <ol class="opts one">
-        <li><i>A</i>along $u_1$, the long axis</li>
+        <li><i>A</i>along $u_1$, the long axis<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>B</i>along $u_2$, the short axis</li>
         <li><i>C</i>the same for both</li>
       </ol>
+      <p class="reveal step" data-step="2">$J(\alpha v_i)=\alpha\sigma_iu_i$ has speed $c$ at $\alpha=c/\sigma_i$, when $\sigma_i>0$: more gain, less joint speed.</p>
     </div>
   </div>
   <script>
@@ -6064,10 +6171,12 @@ window.M4 = (function () {
     <div>
       <p class="q">The straight arm again. Which joint velocity gives $J\dot q=0$?</p>
       <ol class="opts one">
-        <li><i>A</i>$\dot q=(1,0)$</li>
-        <li><i>B</i>$\dot q=(1,-2)$</li>
-        <li><i>C</i>$\dot q=(1,2)$</li>
+        <li><i>A</i>$\dot q=(1,0)$<span class="why step" data-step="2">Jq̇ = (0, 2)</span></li>
+        <li><i>B</i>$\dot q=(1,-2)$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="2">Jq̇ = (0, 0)</span></li>
+        <li><i>C</i>$\dot q=(1,2)$<span class="why step" data-step="2">Jq̇ = (0, 4)</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$1\cdot(0,2)+(-2)\cdot(0,1)=0$: the two column effects cancel exactly.</p>
+      <p class="reveal step" data-step="3">Exact now, not later: held for time $t$, $q=t(1,-2)$ puts the tip at $(2\cos t,\,0)$, drifting inward.</p>
     </div>
   </div>
   <script>
@@ -6210,9 +6319,10 @@ window.M4 = (function () {
       <p class="q">With $\lambda=0.1$ the damped step minimises $\|J\dot q-\dot p_{\rm d}\|^2+\lambda^2\|\dot q\|^2$. What does damping do?</p>
       <ol class="opts one">
         <li><i>A</i>hits every desired $\dot p_{\rm d}$ exactly</li>
-        <li><i>B</i>accepts task error to reduce joint speed</li>
+        <li><i>B</i>accepts task error to reduce joint speed<b class="ok step" data-step="1">&#10003;</b></li>
         <li><i>C</i>changes the arm&#8217;s link lengths</li>
       </ol>
+      <p class="reveal step" data-step="2">The weak direction is mostly given up: its gain $\sigma_2/(\sigma_2^2+\lambda^2)$ stays below $1/(2\lambda)$.</p>
     </div>
   </div>
   <script>
@@ -6476,13 +6586,20 @@ window.M4 = (function () {
         <polyline points="718.6,226.6 723.2,212.5 727.8,199.9 732.3,188.5 736.9,178.5 741.5,169.6 746.0,161.8 750.6,155.1 755.2,149.3 759.7,144.4 764.3,140.3 768.9,137.0 773.4,134.3 778.0,132.2 782.6,130.7 787.2,129.5 791.7,128.8 796.3,128.3 800.9,128.1 805.4,128.0 810.0,128.0 814.6,128.0 819.1,127.9 823.7,127.7 828.3,127.2 832.8,126.5 837.4,125.3 842.0,123.8 846.6,121.7 851.1,119.0 855.7,115.7 860.3,111.6 864.8,106.7 869.4,100.9 874.0,94.2 878.5,86.4 883.1,77.5 887.7,67.5 892.2,56.1 896.8,43.5 901.4,29.4"/>
       </g>
       <circle cx="150" cy="128" r="5.5" class="fill"/><circle cx="480" cy="128" r="5.5" class="fill"/><circle cx="810" cy="128" r="5.5" class="fill"/>
+      <g class="step" data-step="1">
+        <polyline class="ans-s" fill="none" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" points="56.9,29.4 61.5,39.0 66.2,48.2 70.8,56.8 75.5,64.9 80.2,72.6 84.8,79.7 89.5,86.4 94.1,92.5 98.8,98.2 103.4,103.4 108.1,108.0 112.7,112.2 117.4,115.9 122.1,119.1 126.7,121.8 131.4,124.1 136.0,125.8 140.7,127.0 145.3,127.8 150.0,128.0 154.7,127.8 159.3,127.0 164.0,125.8 168.6,124.1 173.3,121.8 177.9,119.1 182.6,115.9 187.3,112.2 191.9,108.0 196.6,103.4 201.2,98.2 205.9,92.5 210.5,86.4 215.2,79.7 219.8,72.6 224.5,64.9 229.2,56.8 233.8,48.2 238.5,39.0 243.1,29.4"/>
+        <text x="218" y="180" text-anchor="middle" class="lbl ans-f">local minimum</text>
+        <text x="548" y="92" text-anchor="middle" class="lbl">local maximum</text>
+        <text x="878" y="180" text-anchor="middle" class="lbl">neither</text>
+      </g>
     </svg>
   </figure>
   <ol class="opts" style="grid-template-columns:repeat(3,1fr)">
-    <li><i>A</i>$f(t)=t^2$</li>
-    <li><i>B</i>$f(t)=-t^2$</li>
-    <li><i>C</i>$f(t)=t^3$</li>
+    <li><i>A</i>$f(t)=t^2$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="2">f″(0) = 2</span></li>
+    <li><i>B</i>$f(t)=-t^2$<span class="why step" data-step="2">f″(0) = −2</span></li>
+    <li><i>C</i>$f(t)=t^3$<span class="why step" data-step="2">f″(0) = 0</span></li>
   </ol>
+  <p class="reveal step" data-step="2">A flat tangent is not enough. The sign of $f''(0)$ separates A from B; C crosses its flat tangent, so it is neither.</p>
 </section>
 
 <!-- ============ 79 ============ -->
@@ -6633,10 +6750,12 @@ window.M4 = (function () {
     <div>
       <p class="q">$f(x_1,x_2)=2x_1^2+\tfrac12x_2^2$. Which matrix is its Hessian?</p>
       <ol class="opts one">
-        <li><i>A</i><span class="mat" style="grid-template-columns:repeat(2,auto)"><span>2</span><span>0</span><span>0</span><span>$\frac12$</span></span></li>
-        <li><i>B</i><span class="mat" style="grid-template-columns:repeat(2,auto)"><span>4</span><span>0</span><span>0</span><span>1</span></span></li>
-        <li><i>C</i><span class="mat" style="grid-template-columns:repeat(2,auto)"><span>1</span><span>0</span><span>0</span><span>4</span></span></li>
+        <li><i>A</i><span class="mat" style="grid-template-columns:repeat(2,auto)"><span>2</span><span>0</span><span>0</span><span>$\frac12$</span></span><span class="why step" data-step="2">$B$, the coefficients</span></li>
+        <li><i>B</i><span class="mat" style="grid-template-columns:repeat(2,auto)"><span>4</span><span>0</span><span>0</span><span>1</span></span><b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>C</i><span class="mat" style="grid-template-columns:repeat(2,auto)"><span>1</span><span>0</span><span>0</span><span>4</span></span><span class="why step" data-step="2">axes swapped</span></li>
       </ol>
+      <p class="reveal step" data-step="1">Differentiate twice: $4x_1$ then $4$; $x_2$ then $1$. No $x_1x_2$ term, so mixed $0$.</p>
+      <p class="reveal step" data-step="2">$a\,x_i^2$ gives $H_{ii}=2a$. Name the coefficients $B$: $f=x\T Bx=\tfrac12x\T Hx$, so $H=2B=\mathrm{diag}(4,1)$.</p>
     </div>
     <figure>
       <canvas id="m4p81" width="560" height="400" role="img" aria-label="The graph of f over the parameter plane, a bowl drawn from the formula with the deck's common camera angle and equal scales on x one, x two and f. The bowl is narrower along x one than along x two. After the second click two cross-section curves are drawn on the bowl, a solid one along x one and a dashed one along x two, each labelled with its second derivative through a short leader line."></canvas>
@@ -6764,10 +6883,11 @@ window.M4 = (function () {
     <div>
       <p class="q">Along which unit $v$ is $g''(0)=v\T Hv$ largest?</p>
       <ol class="opts one">
-        <li><i>A</i>$v=e_1$</li>
-        <li><i>B</i>$v=e_2$</li>
-        <li><i>C</i>$v=\tfrac{1}{\sqrt2}(1,1)$, at $45^\circ$</li>
+        <li><i>A</i>$v=e_1$<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="1">= 4</span></li>
+        <li><i>B</i>$v=e_2$<span class="why step" data-step="1">= 1</span></li>
+        <li><i>C</i>$v=\tfrac{1}{\sqrt2}(1,1)$, at $45^\circ$<span class="why step" data-step="1">= 2.5</span></li>
       </ol>
+      <p class="reveal step" data-step="2">C gives $\tfrac12(4+1)$, an average. For unit $v$: $4v_1^2+v_2^2\le4$, with equality only at $v=\pm e_1$.</p>
     </div>
     <figure>
       <svg viewBox="0 0 600 370" width="600" height="370" role="img" aria-label="Left, parameter space with equal axis scales: the unit circle, dashed, and three blue unit arrows from the origin labelled A along x one, B along x two and C at forty-five degrees between them. Right, an empty pair of axes t and g with equal scales and integer ticks, for the three cross-sections. After the first click three parabolas appear on these shared axes, one per direction, labelled A, B and C.">
@@ -6800,6 +6920,12 @@ window.M4 = (function () {
         <text x="372" y="354" text-anchor="middle" class="m">&#8722;1</text><text x="532" y="354" text-anchor="middle" class="m">1</text>
         <text x="441" y="255" text-anchor="end" class="m">1</text><text x="441" y="175" text-anchor="end" class="m">2</text><text x="441" y="95" text-anchor="end" class="m">3</text>
         <text x="570" y="335" class="m">t</text><text x="460" y="76" class="m">g</text>
+        <g class="step" data-step="1">
+          <g class="out-s" fill="none" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round">
+            <polyline points="355.7,98.0 360.5,120.6 365.3,142.1 370.1,162.4 374.9,181.5 379.8,199.5 384.6,216.3 389.4,232.0 394.2,246.5 399.0,259.8 403.8,272.0 408.7,283.0 413.5,292.9 418.3,301.6 423.1,309.1 427.9,315.5 432.7,320.7 437.6,324.8 442.4,327.7 447.2,329.4 452.0,330.0 456.8,329.4 461.6,327.7 466.4,324.8 471.3,320.7 476.1,315.5 480.9,309.1 485.7,301.6 490.5,292.9 495.3,283.0 500.2,272.0 505.0,259.8 509.8,246.5 514.6,232.0 519.4,216.3 524.2,199.5 529.1,181.5 533.9,162.4 538.7,142.1 543.5,120.6 548.3,98.0"/>
+            <polyline points="348.0,262.4 353.2,269.0 358.4,275.2 363.6,281.2 368.8,286.7 374.0,292.0 379.2,296.9 384.4,301.4 389.6,305.7 394.8,309.6 400.0,313.1 405.2,316.3 410.4,319.2 415.6,321.7 420.8,323.9 426.0,325.8 431.2,327.3 436.4,328.5 441.6,329.3 446.8,329.8 452.0,330.0 457.2,329.8 462.4,329.3 467.6,328.5 472.8,327.3 478.0,325.8 483.2,323.9 488.4,321.7 493.6,319.2 498.8,316.3 504.0,313.1 509.2,309.6 514.4,305.7 519.6,301.4 524.8,296.9 530.0,292.0 535.2,286.7 540.4,281.2 545.6,275.2 550.8,269.0 556.0,262.4"/>
+            <polyline points="348.0,161.0 353.2,177.5 358.4,193.1 363.6,207.9 368.8,221.8 374.0,234.9 379.2,247.2 384.4,258.6 389.6,269.2 394.8,278.9 400.0,287.8 405.2,295.8 410.4,303.0 415.6,309.3 420.8,314.8 426.0,319.4 431.2,323.2 436.4,326.2 441.6,328.3 446.8,329.6 452.0,330.0 457.2,329.6 462.4,328.3 467.6,326.2 472.8,323.2 478.0,319.4 483.2,314.8 488.4,309.3 493.6,303.0 498.8,295.8 504.0,287.8 509.2,278.9 514.4,269.2 519.6,258.6 524.8,247.2 530.0,234.9 535.2,221.8 540.4,207.9 545.6,193.1 550.8,177.5 556.0,161.0"/>
+          </g>
           <text x="555" y="100" class="big out-f">A</text>
           <text x="562" y="165" class="big out-f">C</text>
           <text x="562" y="266" class="big out-f">B</text>
@@ -6886,10 +7012,11 @@ window.M4 = (function () {
       </dl>
       <p class="q">Can this Hessian alone classify both points?</p>
       <ol class="opts one">
-        <li><i>A</i>Yes: both are minima</li>
-        <li><i>B</i>Yes: both are saddles</li>
-        <li><i>C</i>No: higher-order terms matter</li>
+        <li><i>A</i>Yes: both are minima<span class="why step" data-step="2">f₋ falls along y</span></li>
+        <li><i>B</i>Yes: both are saddles<span class="why step" data-step="2">f₊ rises along y</span></li>
+        <li><i>C</i>No: higher-order terms matter<b class="ok step" data-step="1">&#10003;</b></li>
       </ol>
+      <p class="reveal step" data-step="2">$f_+$: strict minimum with $H$ only PSD. PD is sufficient, not necessary.</p>
     </div>
     <figure>
       <p class="spc in">parameter space ℝ²</p>
@@ -6963,16 +7090,13 @@ window.M4 = (function () {
   <div class="eq" style="margin:0 0 8px">$$f(x)=\tfrac12\|Ax-b\|^2,\qquad \nabla f(x)=A\T(Ax-b),\qquad H=A\T A$$</div>
   <div class="cols" style="grid-template-columns:1fr 598px;gap:24px;align-items:start">
     <div>
-      <dl class="gloss" style="margin:0">
-        <dt>$A\in\R^{m\times n}$</dt><dd>$b\in\R^m$, $x\in\R^n$</dd>
-        <dt>$\nabla f=0$</dt><dd>$A\T Ax=A\T b$: the normal equations</dd>
-        <dt>$H$</dt><dd>constant and PSD; $b$ never changes the shape</dd>
-      </dl>
-      <div class="ex" style="margin-top:16px"><p class="lbl">Worked example</p>
-        Valley: $A\T A=$ <span class="mat" style="grid-template-columns:repeat(2,auto)"><span>5</span><span>10</span><span>10</span><span>20</span></span>, trace 25, det 0: $\lambda=25,0$, and $A(2,-1)=0$.</div>
+      <dl class="gloss"><dt>$H$</dt><dd>Hessian</dd></dl><p class="q ex"><span class="mat" style="grid-template-columns:repeat(2,auto)"><span>1</span><span>2</span><span>2</span><span>4</span></span> $=A$, $b=(1,0)$: best output, shortest input, curvature?</p>
+      <p class="reveal step" data-step="1">Project onto $Ax=(1,2)s$.<br>$s=1/5$, $\hat b=(1,2)/5$, $r=(4,-2)/5$</p>
+      <p class="reveal step" data-step="2">$x_1+2x_2=1/5$; shortest $x=(1,2)/25$</p>
+      <p class="reveal step" data-step="3">$\lambda(H)=25,0$<br>Flat direction $(2,-1)$; $\min f=2/5$.</p>
     </div>
     <div>
-    <p class="spc in">parameter space ℝ²</p>
+    <p class="spc in">surfaces: b = 0</p>
     <div class="panels">
       <figure>
         <p class="spc" style="height:74px;display:flex;align-items:center;gap:8px">A = <span class="mat" style="grid-template-columns:repeat(2,auto);font-size:15px"><span>1</span><span>0</span><span>0</span><span>1</span><span>1</span><span>1</span></span> full column rank</p>
@@ -7031,7 +7155,7 @@ window.M4 = (function () {
 
 <!-- ============ 87 ============ -->
 <section class="slide" data-part="I">
-  <p class="eyebrow you" data-min="1.5">Vote</p>
+  <p class="eyebrow you" data-min="4">Vote</p>
   <h2>Hessians and Local Curvature</h2>
   <p class="sub">What Shape Is This Least-Squares Objective?</p>
   <div class="heroA"><span>A =</span><pre>1 1
@@ -7039,12 +7163,13 @@ window.M4 = (function () {
 1</pre></div>
   <div class="cols" style="grid-template-columns:1fr 560px;gap:24px;align-items:start">
     <div>
-      <p class="q">$f=\tfrac12\|Ax-b\|^2=\tfrac12[(x_1+x_2-2)^2+1]$. What shape is its graph?</p>
+      <p class="q">$f=\tfrac12\|Ax-b\|^2$. Choose a method; find $A\hat x,r,A^+b$, a flat direction and the graph shape.</p>
       <ol class="opts one">
-        <li><i>A</i>A bowl with one lowest point</li>
-        <li><i>B</i>A trough: its whole bottom is the line <span style="white-space:nowrap">$x_1+x_2=2$</span></li>
-        <li><i>C</i>A saddle</li>
+        <li><i>A</i>A bowl with one lowest point<span class="why step" data-step="2">AᵀA singular</span></li>
+        <li><i>B</i>A trough, bottom: <span style="white-space:nowrap">$x_1+x_2=2$</span><b class="ok step" data-step="1">&#10003;</b></li>
+        <li><i>C</i>A saddle<span class="why step" data-step="2">AᵀA ⪰ 0</span></li>
       </ol>
+      <p class="reveal step" data-step="2">$Ax=(2,0)$, $r=(0,1)$: $\min f=1/2$.<br>$A^+b=(1,1)$; flat direction $(1,-1)$.</p>
     </div>
     <figure>
       <canvas id="m4p87" width="560" height="440" role="img" aria-label="Top: the parameter plane x1, x2 drawn in perspective with a light grid from minus one half to two and a half and a vertical axis f, empty before the vote. Bottom: output space with the teal reachable line, the horizontal axis, and the gold target b at 2, 1 above it. After the first click the graph of f appears over the plane, heights drawn at half scale, with its minimum marked in green. After the second click a blue point moves over the marked minimum while a readout gives its height, and output space shows the image A x with an orange residual to b."></canvas>
@@ -7258,9 +7383,10 @@ window.M4 = (function () {
       <p class="q">Linear model: $J=$ <span class="mat" style="grid-template-columns:repeat(2,auto)"><span>2</span><span>0</span><span>0</span><span>0</span></span>, desired $\Delta p=(2,1)$.<br>Which set is right?</p>
       <ol class="opts one">
         <li><i>A</i>rank 2, minimum-norm step $(1,1)$, $J\T J$ PD</li>
-        <li><i>B</i>rank 1, minimum-norm LS step $(1,0)$, $J\T J$ PSD but not PD</li>
+        <li><i>B</i>rank 1, minimum-norm LS step $(1,0)$, $J\T J$ PSD but not PD<b class="ok step" data-step="1">&#10003;</b><span class="why step" data-step="2">JᵀJ=diag(4,0)</span></li>
         <li><i>C</i>rank 1, minimum-norm step $(2,0)$, target exactly reachable</li>
       </ol>
+      <p class="q step" data-step="3" style="margin-top:12px">Why a best step if $r\ne0$? Why $\Delta q_2=0$?</p>
     </div>
     <figure>
       <svg viewBox="0 0 520 256" width="520" height="256" role="img" aria-label="Left, joint space: a blue unit arrow e1 and a purple unit arrow e2 marked as sent to zero. An arrow labelled J leads to task space on the right: the teal horizontal line of reachable tip changes, Col of J, with light grid lines at 1 and 2, and a gold point above it, the desired tip change 2, 1. After the second click, a joint step, the tip change it achieves and the leftover residual are drawn.">
@@ -7286,6 +7412,20 @@ window.M4 = (function () {
         <text x="70" y="146" class="lbl nul-f">e&#8322; &#8614; 0</text>
         <text x="511" y="232" text-anchor="end" class="lbl out-f">Col(J)</text>
         <circle cx="450" cy="138" r="7" class="dat-f"/>
+        <g class="step" data-step="2">
+          <line x1="60.0" y1="210.0" x2="120.0" y2="210.0" class="ans-s" stroke-width="4.5"/>
+          <polygon points="132.0,210.0 117.0,215.5 117.0,204.5" class="ans-f"/>
+          <text x="96" y="236" text-anchor="middle" class="lbl ans-f">(1,0)</text>
+          <!-- the achieved change lies on Col(J): drawn 6 px above it on a background halo, so it does not melt into the teal line -->
+          <line x1="306.0" y1="204.0" x2="440.0" y2="204.0" style="stroke:var(--bg)" stroke-width="9"/>
+          <line x1="306.0" y1="204.0" x2="438.8" y2="204.0" class="ans-s" stroke-width="4.5"/>
+          <polygon points="450.0,204.0 436.0,209.5 436.0,198.5" class="ans-f" style="stroke:var(--bg)" stroke-width="1.5" stroke-linejoin="round"/>
+          <text x="430" y="236" text-anchor="end" class="lbl ans-f">(2,0)</text>
+          <line x1="450.0" y1="210.0" x2="450.0" y2="156.4" class="res-s" stroke-width="3.2"/>
+          <polygon points="450.0,146.0 455.5,159.0 444.5,159.0" class="res-f"/>
+          <path d="M462 210 L462 198 L450 198" class="res-s" fill="none" stroke-width="1.6"/>
+          <text x="440" y="184" text-anchor="end" class="lbl res-f">r = (0,1)</text>
+        </g>
       </svg>
     </figure>
   </div>

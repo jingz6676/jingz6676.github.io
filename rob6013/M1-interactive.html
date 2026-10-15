@@ -4993,6 +4993,15 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
   <p class="cite">Axler, S. <b>Linear Algebra Done Right</b>, 4th ed., 3.21, p. 62; 3.57, p. 78. Springer, 2024.</p>
 </section>
 
+<section class="slide" data-part="I"><p class="eyebrow">Integrated whiteboard problem</p><h2>Linear Systems and Four Subspaces</h2>
+<p>Given $C=\begin{bmatrix}1&amp;2&amp;0\\0&amp;1&amp;1\\1&amp;3&amp;1\end{bmatrix}$, $b=(4,1,5)\T$. Find reachability, all solutions and four-space dimensions.</p>
+<div class="step" data-step="1"><div class="eq">$$r_3-r_1-r_2=0\ \Rightarrow\ b_3=b_1+b_2,\quad r=2$$</div><dl class="gloss"><dt>r</dt><dd>rank; two independent rows</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$x=(2,1,0)\T+t(2,-1,1)\T$$</div><dl class="gloss"><dt>t</dt><dd>any real; dimensions: $2,1,2,1$</dd></dl></div></section>
+
+<section class="slide" data-part="I"><p class="eyebrow">Your turn · new matrix</p><h2>Linear Systems and Four Subspaces</h2>
+<p>$D=\begin{bmatrix}1&amp;0&amp;2\\0&amp;1&amp;-1\end{bmatrix}$, $b=(3,1)\T$. Find all solutions. Is every target reachable? Is its input unique?</p>
+<div class="step" data-step="1"><div class="eq">$$x_3=t,\quad x_1=3-2t,\quad x_2=1+t$$</div><dl class="gloss"><dt>t</dt><dd>the free third coordinate</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$x=(3,1,0)\T+t(-2,1,1)\T$$</div><dl class="gloss"><dt>rank 2</dt><dd>every target reached; nullity 1: inputs not unique</dd></dl></div></section>
 <section class="slide nofoot refs" data-part="I">
   <p class="eyebrow">Selected references</p>
   <h2>Courses, books and lectures</h2>

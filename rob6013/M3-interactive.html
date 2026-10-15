@@ -343,6 +343,11 @@ body.print .slide .step{opacity:1!important}
 body.print.handout .slide .step[data-handout="hide"]{opacity:0!important}
 @media print{body.handout .slide .step[data-handout="hide"]{opacity:0!important}}
 
+
+/* Only the transfer question survives student printing; screen reveal timing is unchanged. */
+body.print.handout #m3p54-transfer-question{opacity:1!important}
+@media print{body.handout #m3p54-transfer-question{opacity:1!important}}
+
 /* a revealed explanation line under a question */
 .reveal{font-size:20px;line-height:1.4;margin:10px 0 0;padding:6px 0 6px 16px;border-left:4px solid var(--c-res-ok);max-width:none}
 
@@ -3287,21 +3292,25 @@ window.m3anim = function (cv, draw, o) {
 
 <!-- ============ 54 ============ -->
 <section class="slide" data-part="I">
+  <p class="eyebrow you" data-min="3">Transfer · alone / pairs</p>
   <h2>Least Squares</h2>
   <p class="sub">When Is the Minimiser Unique?</p>
+  <div class="heroA"><span>A =</span><pre>1 0
+1 1
+1 2</pre><span>b =</span><pre>1
+2
+4</pre></div>
   <div class="cols" style="grid-template-columns:1fr 330px;gap:26px;align-items:center">
     <div>
       <div class="eq" style="margin:0 0 8px">$$\hat x+\mathrm{Null}(A)=\{\hat x\}\iff\mathrm{Null}(A)=\{0\}\iff\mathrm{rank}\,A=n$$</div>
-      <dl class="gloss">
-        <dt>argmin</dt><dd>$=\hat x+$Null$(A)$ (p52); one point &#8660; independent columns</dd>
-        <dt>rank-nullity</dt><dd>$\dim$ Null$(A)=n-\mathrm{rank}\,A$</dd>
-        <dt>$m\ge n$</dt><dd>from rank $A=n\le m$; not assumed</dd>
-      </dl>
-      <p class="reveal step" data-step="1">p53's fit: independent columns, one bottom. p49: a valley of bottoms, one $\hat b$.</p>
+      <dl class="gloss"><dt>$n$</dt><dd>number of parameters</dd></dl>
+      <p class="reveal step" data-step="1">One point or a family.</p>
+      <div id="m3p54-transfer-question" class="step" data-step="2"><p class="q">For new readings, choose a method; find $\hat x,r$. Is $\hat x$ unique?</p></div>
+      <p class="reveal step" data-step="3">$A\T b=(7,10)$; $\hat x=(5/6,3/2)$<br>$r=(1,-2,1)/6$; $A\T r=0$. Rank unchanged: unique.</p>
     </div>
     <figure style="margin:0">
-      <svg viewBox="0 0 340 518" width="330" height="503" role="img" aria-label="Two contour plots at the same scale, both with light grids. Top, the three-point fit in beta zero and beta one: two nested tilted ellipses; the click adds the blue point x hat at their centre. Bottom, the all-ones matrix in x one and x two: four straight parallel dotted level lines; the click adds the solid blue valley line through their middle.">
-        <text x="304" y="14" text-anchor="end" class="lbl">p53 bowl</text>
+      <svg viewBox="0 0 340 518" width="315" height="480" role="img" aria-label="Two contour plots at the same scale, both with light grids. Top, the three-point fit in beta zero and beta one: two nested tilted ellipses; the click adds the blue point x hat at their centre. Bottom, the all-ones matrix in x one and x two: four straight parallel dotted level lines; the click adds the solid blue valley line through their middle.">
+        <text x="304" y="14" text-anchor="end" class="lbl">previous fit</text>
         <g class="d-stroke" stroke-width="1" stroke-opacity=".3"><line x1="164" y1="22" x2="164" y2="232"/><line x1="234" y1="22" x2="234" y2="232"/><line x1="304" y1="22" x2="304" y2="232"/><line x1="24" y1="92" x2="304" y2="92"/><rect x="24" y="22" width="280" height="210" fill="none"/></g>
         <line x1="24" y1="162" x2="304" y2="162" class="d-stroke" stroke-width="1.2"/>
         <line x1="94" y1="22" x2="94" y2="232" class="d-stroke" stroke-width="1.2"/>
@@ -3315,7 +3324,7 @@ window.m3anim = function (cv, draw, o) {
           <circle cx="175.67" cy="127" r="6" class="in-f"/>
           <text x="185.67" y="151" class="in-f big" style="paint-order:stroke;stroke:var(--bg);stroke-width:5px">x&#770;</text>
         </g>
-        <text x="304" y="278" text-anchor="end" class="lbl">p49 valley</text>
+        <text x="304" y="278" text-anchor="end" class="lbl">dependent case</text>
         <g class="d-stroke" stroke-width="1" stroke-opacity=".3"><line x1="164" y1="286" x2="164" y2="496"/><line x1="234" y1="286" x2="234" y2="496"/><line x1="304" y1="286" x2="304" y2="496"/><line x1="24" y1="356" x2="304" y2="356"/><rect x="24" y="286" width="280" height="210" fill="none"/></g>
         <line x1="24" y1="426" x2="304" y2="426" class="d-stroke" stroke-width="1.2"/>
         <line x1="94" y1="286" x2="94" y2="496" class="d-stroke" stroke-width="1.2"/>

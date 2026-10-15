@@ -1134,12 +1134,12 @@ window.M8 = (function () {
 <!-- ============ 44 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow you" data-min="3">Try, compare, explain</p><h2>Estimation</h2><p class="sub">A proper prior resolves an ambiguous fit</p>
-<div class="eq">$$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix},\quad b=\binom12,\quad\mu_0=0,\ \lambda^2=1$$</div><dl class="gloss"><dt>Symbols</dt><dd>Find all least-squares fits, then the unique MAP estimate.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Solution</p><div class="eq">$$\theta_{MAP}=\binom{5/11}{5/11};\qquad\theta_{LS,1}+\theta_{LS,2}=1$$</div><dl class="gloss"><dt>Result</dt><dd>$\theta_{LS}$ any least-squares minimizer.</dd></dl><b class="ok step" data-step="1">Check</b></div></div>
+<div class="eq">$$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix},\quad b=\binom12,\quad\mu_0=0,\ \lambda^2=1$$</div><dl class="gloss"><dt>Task</dt><dd>Find all least-squares fits, then the unique MAP estimate.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Solution</p><div class="eq">$$\theta_{LS,1}+\theta_{LS,2}=1;\quad\begin{bmatrix}6&5\\5&6\end{bmatrix}\theta=\binom55\quad\Rightarrow\quad\theta_{MAP}=\binom{5/11}{5/11}$$</div><dl class="gloss"><dt>Result</dt><dd>$\theta_{LS}$ least-squares solution.</dd></dl><b class="ok step" data-step="1">✓</b></div></div>
 </section>
 <!-- ============ 45 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8 · Integrated board</p><h2>Integrated board</h2><p class="sub">Calibrate one offset from three readings</p>
-<div class="eq">$$b=(1,2,3)^T,\quad b_i=\theta+\varepsilon_i,\quad\varepsilon_i\overset{iid}{\sim}\mathcal N(0,1)$$</div><dl class="gloss"><dt>Symbols</dt><dd>$\theta$ shared offset; known noise variance $1$; prior $\theta\sim\mathcal N(0,1)$.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Worked example</p><div class="eq">$$J_{data}=\tfrac12(3\theta^2-12\theta+14),\quad\hat\theta_{MLE}=2$$</div><dl class="gloss"><dt>Result</dt><dd>$J_{data}$ squared-error objective; MLE its minimizer.</dd></dl></div></div>
+<div class="eq">$$b=(1,2,3)^T,\quad b_i=\theta+\varepsilon_i,\quad\varepsilon_i\overset{iid}{\sim}\mathcal N(0,1)$$</div><dl class="gloss"><dt>Symbols</dt><dd>$\theta$ offset; prior $\mathcal N(0,1)$. Find MLE, posterior, CI and credible interval.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Worked example</p><div class="eq">$$J_{data}=\tfrac12(3\theta^2-12\theta+14),\quad\hat\theta_{MLE}=2$$</div><dl class="gloss"><dt>Result</dt><dd>$J_{data}$ squared-error objective; MLE its minimizer.</dd></dl></div></div>
 </section>
 <!-- ============ 46 ============ -->
 <section class="slide" data-part="IV">
@@ -1164,7 +1164,7 @@ window.M8 = (function () {
 <!-- ============ 50 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow you" data-min="6">Try, compare, explain</p><h2>Transfer</h2><p class="sub">Rebuild the calibration argument independently</p>
-<div class="eq">$$b=(2,3)^T,\quad\sigma^2=1,\quad\theta\sim\mathcal N(1,1)$$</div><dl class="gloss"><dt>Symbols</dt><dd>Find MLE, MAP, posterior variance, CI and credible interval; state both interpretations.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Solution</p><div class="eq">$$\hat\theta_{MLE}=2.5,\quad\hat\theta_{MAP}=2,\quad P_1=\tfrac13$$</div><dl class="gloss"><dt>Result</dt><dd>$P_1$ posterior variance.</dd></dl><b class="ok step" data-step="1">Check</b></div></div>
+<div class="eq">$$b=(2,3)^T,\quad\sigma^2=1,\quad\theta\sim\mathcal N(1,1)$$</div><dl class="gloss"><dt>Task</dt><dd>Find MLE, MAP, posterior variance, CI and credible interval; state both interpretations.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Solution</p><div class="eq">$$J_{post}=\tfrac32(\theta-2)^2+1;\quad\hat\theta_{MLE}=2.5,\quad\theta\mid b\sim\mathcal N(2,\tfrac13)$$</div><dl class="gloss"><dt>Result</dt><dd>$J_{post}$ posterior negative log up to a constant.</dd></dl><b class="ok step" data-step="1">✓</b></div></div>
 </section>
 <!-- ============ 51 ============ -->
 <section class="slide" data-part="IV">

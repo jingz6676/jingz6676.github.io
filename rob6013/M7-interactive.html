@@ -919,6 +919,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
  if(type==='defective'){
   axes('t','state');var S=plot(x=>x*Math.exp(-x),5,0,1,c.in);plot(x=>Math.exp(-x),5,0,1,c.out);k.dot(S(5*t,5*t*Math.exp(-5*t)),6,c.dat);label('t exp(−t)',100,60,c.in);label('exp(−t)',250,60,c.out);return;
  }
+ if(type==='modes'&&page===16){axes('t','state');var S=plot(x=>Math.exp(-2*x),3,0,1,c.in);k.dot(S(3*t,Math.exp(-6*t)),6,c.dat);label('new start (1,1): x₁ = x₂',100,55,c.in,16);label('both decay at rate −2',100,80,c.dim,15);return;}
  if(type==='modes'){
   var r1=page===29?2:1,r2=page===29?8:2;axes('t','mode');var S=plot(x=>Math.exp(-r1*x),3,0,1,c.in);plot(x=>Math.exp(-r2*x),3,0,1,c.out);k.dot(S(3*t,Math.exp(-r1*3*t)),6,c.dat);label('rate −'+r1,95,55,c.in);label('rate −'+r2,235,55,c.out);return;
  }
@@ -1158,15 +1159,20 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 
 <!-- ===== 16 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow">Worked example</p>
+<p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Linear Dynamics</h2>
 <p class="sub">Return from modal coordinates</p>
 <div class="cols w6040"><div>
 <div class="eq">$$x(t)=Ve^{\Lambda t}V^{-1}x_0=\begin{bmatrix}e^{-t}+e^{-2t}\\e^{-2t}\end{bmatrix}$$</div>
 <dl class="gloss"><dt>V</dt><dd>[[1,1],[0,1]]</dd><dt>Λ</dt><dd>diag(−1,−2)</dd><dt>V⁻¹x₀</dt><dd>(1,1): initial modal coordinates</dd></dl>
-<div class="ex"><p>A=[[-1,−1],[0,−2]], x₀=(2,1). Check x(0)=x₀.</p></div>
+<div class="ex"><p>A=[[-1,−1],[0,−2]], x₀=(2,1).</p></div>
+<p class="q">Change x₀ to (1,1). Find its modal coordinates and trajectory.</p>
+<div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<div class="eq">$$c_0=(0,1)^T,\quad x(t)=(e^{-2t},e^{-2t})^T$$</div>
+<dl class="gloss"><dt>result</dt><dd>from the stated model and givens</dd></dl>
+<p>Check x(0)=(1,1).</p></div>
 </div><figure><canvas id="m7p16a" width="440" height="320" aria-label="Return from modal coordinates"></canvas></figure></div>
-<script>m3anim(document.getElementById("m7p16a"),function(g,t,k){drawM7(g,t,k,"modes",16,false);},{rest:0.4,seconds:5});</script>
+<script>m3anim(document.getElementById("m7p16a"),function(g,t,k){drawM7(g,t,k,"modes",16,true);},{rest:0.4,seconds:5});</script>
 </section>
 
 <!-- ===== 17 ===== -->
@@ -1601,9 +1607,9 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">A different angle, the same method choice</p>
 <div class="cols w6040"><div>
 <div class="eq">$$q_0=0.5,\quad v_0=0,\quad h=0.1,\quad m=\ell=g_0=1$$</div>
-<dl class="gloss"><dt>q₀</dt><dd>new angle in radians</dd><dt>v₀</dt><dd>zero angular velocity</dd><dt>h</dt><dd>Euler step</dd></dl>
-<div class="teaching-point"><p>Compute one Euler step and its energy change.</p></div>
-<p class="q">Does the first Euler step preserve energy?</p>
+<dl class="gloss"><dt>q₀</dt><dd>new angle in radians</dd><dt>v₀</dt><dd>zero angular velocity</dd><dt>h</dt><dd>positive time step</dd></dl>
+<div class="teaching-point"><p>One model call. Choose a method, then compute the step.</p></div>
+<p class="q">Does your step preserve energy?</p>
 <div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
 <div class="eq">$$x_1=(.5,-.04794255386)^T,\quad\Delta E=.001149244235$$</div>
 <dl class="gloss"><dt>result</dt><dd>from the stated model and givens</dd></dl>

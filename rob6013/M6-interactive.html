@@ -5138,6 +5138,33 @@ window.M6 = (function () {
 
 <!-- ============ 77 ============ -->
 <section class="slide" data-part="VII">
+<p class="eyebrow">Worked example</p><h2>A Complete Learning Step</h2>
+<p class="sub">From data to a checked parameter update</p>
+<p>$x=(1,2),\ y^\star=(1,3),\quad w=1,\ b=0,\ \eta=0.1$</p>
+<div class="eq">$$e_i=wx_i+b-y_i^\star,\qquad L=\tfrac14\sum_i e_i^2$$</div>
+<dl class="gloss"><dt>$x_i,y_i^\star$</dt><dd>data</dd><dt>$w,b$</dt><dd>parameters</dd><dt>$e_i,L$</dt><dd>error; mean loss</dd></dl>
+<p>Forward → backward → update → recheck.</p>
+<div class="eq tight">$$g_w=\tfrac12\sum_i e_ix_i=-1,\qquad g_b=\tfrac12\sum_i e_i=-0.5$$</div>
+<dl class="gloss"><dt>$g_w,g_b$</dt><dd>shared gradients</dd></dl>
+<p>$L=0.25\ \to\ (w',b')=(1.1,0.05)\ \to\ L'=0.14625$</p>
+</section>
+<!-- ============ 78 ============ -->
+<section class="slide" data-part="VII">
+<p class="eyebrow you" data-min="3.25">Vote</p><h2>A Complete Learning Step</h2>
+<p class="sub">Choose the steps for changed data</p>
+<p class="q">$x=(1,3),\ y^\star=(2,2),\ w=1,\ b=0,\ \eta=0.1$. Find $L,g_w,g_b$; choose $(w',b',L')$.</p>
+<div class="eq tight">$$e_i=wx_i+b-y_i^\star,\qquad L=\tfrac14\sum_i e_i^2$$</div>
+<dl class="gloss"><dt>$e_i$</dt><dd>error</dd><dt>$w,b$</dt><dd>parameters</dd><dt>$L$</dt><dd>mean loss</dd></dl>
+<ol class="opts one">
+<li><i>A</i>$(0.9,0,0.5)$</li>
+<li><i>B</i>$(0.9,0,0.425)$<b class="ok step" data-step="2">&#10003;</b></li>
+<li><i>C</i>$(0.95,0,0.45625)$</li>
+</ol>
+<p class="reveal step" data-step="1">Hint: $g_w=\tfrac12\sum_i e_ix_i,\quad g_b=\tfrac12\sum_i e_i$.</p>
+<p class="reveal step" data-step="2">$e=(-1,1),\ L=0.5,\ (g_w,g_b)=(1,0)$. Recompute the loss.</p>
+</section>
+<!-- ============ 79 ============ -->
+<section class="slide" data-part="VII">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>A Complete Learning Step</h2>
   <p class="sub">Diagnose before changing the optimizer</p>
@@ -5152,12 +5179,12 @@ window.M6 = (function () {
       <p class="reveal step" data-step="1">Compare the rule with $(L(w+\tau)-L(w-\tau))/2\tau$ at the same $w$.</p>
     </div>
     <figure>
-      <canvas id="m6p77a" width="520" height="400" role="img" aria-label="Above, one loss curve in the single weight w, with the current point marked. Two straight lines pass through that point with clearly different slopes: one is drawn through two probe points placed symmetrically either side of w, and the other is the line the hand-written rule claims. As the animation runs the two probe points slide inward toward w and the line through them does not move at all, because a centred difference of a quadratic is exact. Below a dividing rule, empty axes whose horizontal direction is the learning rate and whose vertical direction is the length of the step. After the answer is revealed the two lines above carry their numbers, the probe six and the hand rule three, and two rays appear from the origin below, one for each of those numbers. The rays meet only at a learning rate of zero."></canvas>
+      <canvas id="m6p79a" width="520" height="400" role="img" aria-label="Above, one loss curve in the single weight w, with the current point marked. Two straight lines pass through that point with clearly different slopes: one is drawn through two probe points placed symmetrically either side of w, and the other is the line the hand-written rule claims. As the animation runs the two probe points slide inward toward w and the line through them does not move at all, because a centred difference of a quadratic is exact. Below a dividing rule, empty axes whose horizontal direction is the learning rate and whose vertical direction is the length of the step. After the answer is revealed the two lines above carry their numbers, the probe six and the hand rule three, and two rays appear from the origin below, one for each of those numbers. The rays meet only at a learning rate of zero."></canvas>
     </figure>
   </div>
   <p class="reveal step" data-step="2">Probe $6$, rule $3$, and $\eta\cdot3\ne\eta\cdot6$ for all $\eta>0$. A right derivative still leaves step size and modelling open.</p>
   <script>
-  m3anim(document.getElementById('m6p77a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p79a'), function (g, t, k) {
     var c = k.c, M = window.M6, i;
     /* the fixture the whole autograd section walks: a = w x, e = a - ystar, L = e^2/2 */
     var X = M.FX.graph.x, YS = M.FX.graph.ys, W = M.FX.graph.w;
@@ -5219,12 +5246,12 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 78 ============ -->
+<!-- ============ 80 ============ -->
 <section class="slide" data-part="VII">
   <h2>A Complete Learning Step</h2>
   <p class="sub">Three distinct claims about training</p>
   <figure>
-    <canvas id="m6p78a" width="1152" height="240" role="img" aria-label="Three panels side by side, numbered one, two and three: the gradient is correct, the training objective is decreasing, and the predictions are useful. Under each panel is the evidence it takes: a centred probe at one smooth point and step size, the objective before against the objective after on the same data, and data the objective never looked at. Between the panels an arrow grows from the first to the second and from the second to the third, and each arrow is then struck through with a cross. A line at the bottom says that neither arrow holds and that each claim needs its own evidence."></canvas>
+    <canvas id="m6p80a" width="1152" height="240" role="img" aria-label="Three panels side by side, numbered one, two and three: the gradient is correct, the training objective is decreasing, and the predictions are useful. Under each panel is the evidence it takes: a centred probe at one smooth point and step size, the objective before against the objective after on the same data, and data the objective never looked at. Between the panels an arrow grows from the first to the second and from the second to the third, and each arrow is then struck through with a cross. A line at the bottom says that neither arrow holds and that each claim needs its own evidence."></canvas>
   </figure>
   <div class="eq tight">$$\text{(i) }g=\nabla_\theta L\qquad\text{(ii) }L(\theta_{t+1})&lt;L(\theta_t)\qquad\text{(iii) }\ell\text{ at an unseen }x$$</div>
   <dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr;gap:4px 14px">
@@ -5233,7 +5260,7 @@ window.M6 = (function () {
     <dt class="dat">(iii)</dt><dd>a data question, asked where $L$ never looked</dd>
   </dl>
   <script>
-  m3anim(document.getElementById('m6p78a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p80a'), function (g, t, k) {
     var c = k.c, i;
     var claim = [['the gradient', 'is correct', c.res],
                  ['the training objective', 'is decreasing', c.in],
@@ -5270,7 +5297,7 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 79 ============ -->
+<!-- ============ 81 ============ -->
 <section class="slide" data-part="VII">
   <p class="eyebrow you" data-min="1">Vote</p>
   <h2>A Complete Learning Step</h2>
@@ -5286,12 +5313,12 @@ window.M6 = (function () {
       <p class="reveal step" data-step="1">Each mode needs $|1-\eta\lambda_i|&lt;1$, and the proof fixed $H$.</p>
     </div>
     <figure>
-      <canvas id="m6p79a" width="520" height="400" role="img" aria-label="Above, the level sets of a two-parameter quadratic drawn as nested ellipses around its minimizer, with three start dots far apart on the plane, and beside them the fixed curvature matrix, the minimizer and the learning rate written out. After the answer is revealed, three paths grow from those dots and all three land on the minimizer. Below a dividing rule, a horizontal line for the error multiplier one minus the learning rate times an eigenvalue, with the band between minus one and one shaded and ticked. After the first reveal a dot appears inside that band for each of this matrix's two eigenvalues; after the second, an arrow points off the left end of the line for a far steeper curvature, one hundred in every direction, whose multiplier is minus nineteen and lies far outside the band."></canvas>
+      <canvas id="m6p81a" width="520" height="400" role="img" aria-label="Above, the level sets of a two-parameter quadratic drawn as nested ellipses around its minimizer, with three start dots far apart on the plane, and beside them the fixed curvature matrix, the minimizer and the learning rate written out. After the answer is revealed, three paths grow from those dots and all three land on the minimizer. Below a dividing rule, a horizontal line for the error multiplier one minus the learning rate times an eigenvalue, with the band between minus one and one shaded and ticked. After the first reveal a dot appears inside that band for each of this matrix's two eigenvalues; after the second, an arrow points off the left end of the line for a far steeper curvature, one hundred in every direction, whose multiplier is minus nineteen and lies far outside the band."></canvas>
     </figure>
   </div>
   <p class="reveal step" data-step="2">One fixed $H$, every mode. Not a network whose curvature moves, and not unseen data. Repeated steps return in Lecture 7.</p>
   <script>
-  m3anim(document.getElementById('m6p79a'), function (g, t, k) {
+  m3anim(document.getElementById('m6p81a'), function (g, t, k) {
     var c = k.c, M = window.M6, j;
     var H = M.FX.H, ts = M.FX.tstar, eta = 1 / 5;
     var lam = [H[0][0], H[1][1]];
@@ -5350,7 +5377,7 @@ window.M6 = (function () {
   </script>
 </section>
 
-<!-- ============ 80 ============ -->
+<!-- ============ 82 ============ -->
 <section class="slide nofoot refs" data-part="VII">
   <h2>References</h2>
   <p class="sub">Where these rules come from</p>
@@ -5362,7 +5389,7 @@ window.M6 = (function () {
   </ol>
 </section>
 
-<!-- ============ 81 ============ -->
+<!-- ============ 83 ============ -->
 <section class="slide nofoot refs" data-part="VII">
   <h2>References</h2>
   <p class="sub">Implementations, and the course standards</p>
