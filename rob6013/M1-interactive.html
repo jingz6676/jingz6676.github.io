@@ -952,9 +952,9 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
 
     </svg>
   </figure>
-  <p class="callout small">$\|e\|_R^{2}=e\T R^{-1}e$, with $R$ the measurement covariance.</p>
+  <p class="callout small">$\|r\|_R^{2}=r\T R^{-1}r$, with $R$ the measurement covariance.</p>
   <dl class="gloss">
-    <dt>e</dt><dd>$z-h(x)$ here, measurement minus prediction, which the course writes $r$; from Lecture 5 on, $e$ is prediction minus target, so the two differ by a sign</dd>
+    <dt>r</dt><dd>$z-h(x)$: measurement minus prediction; $R$ is positive definite</dd>
   </dl>
   <p class="cite">Barfoot, T. D. <b>State Estimation for Robotics</b>, Chapter 4. Cambridge University Press, 2017.</p>
 </section>
@@ -1235,13 +1235,13 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
       <text x="165" y="20" text-anchor="middle" class="m">f(x) = a x</text>
       <line x1="30" y1="140" x2="300" y2="140" class="d-stroke" stroke-width="1.2"/>
       <line x1="165" y1="42" x2="165" y2="188" class="d-stroke" stroke-width="1.2"/>
-      <line x1="60" y1="175" x2="270" y2="105" class="a-stroke" stroke-width="2.8"/>
+      <line x1="60" y1="175" x2="270" y2="105" class="in-s" stroke-width="2.8"/>
       <circle cx="165" cy="140" r="5" class="a-fill"/>
       <text x="165" y="212" text-anchor="middle" class="m ans-f step" data-step="1">LINEAR</text>
       <text x="485" y="20" text-anchor="middle" class="m">f(x) = a x + c,&#160; c &#8800; 0</text>
       <line x1="350" y1="140" x2="620" y2="140" class="d-stroke" stroke-width="1.2"/>
       <line x1="485" y1="42" x2="485" y2="188" class="d-stroke" stroke-width="1.2"/>
-      <line x1="380" y1="130" x2="590" y2="60" class="res-s" stroke-width="2.8"/>
+      <line x1="380" y1="130" x2="590" y2="60" class="in-s" stroke-width="2.8"/>
       <line x1="485" y1="95" x2="485" y2="140" class="res-s" stroke-width="1.6" stroke-dasharray="4 4"/>
       <circle cx="485" cy="95" r="5.5" class="res-f pulse"/>
       <text x="495" y="122" class="m res-f">c</text>
@@ -1250,7 +1250,7 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
       <text x="805" y="20" text-anchor="middle" class="m">f(x) = |x|</text>
       <line x1="670" y1="140" x2="940" y2="140" class="d-stroke" stroke-width="1.2"/>
       <line x1="805" y1="42" x2="805" y2="188" class="d-stroke" stroke-width="1.2"/>
-      <path d="M705 40 L805 140 L905 40" class="nul-s" fill="none" stroke-width="2.8"/>
+      <path d="M705 40 L805 140 L905 40" class="in-s" fill="none" stroke-width="2.8"/>
       <circle cx="805" cy="140" r="5" class="nul-f"/>
       <g class="step" data-step="2">
         <line x1="729" y1="64" x2="881" y2="64" class="d-stroke" stroke-width="1.4" stroke-dasharray="5 4"/>
@@ -1527,6 +1527,23 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
   </figure>
   <p class="cite">Axler, S. <b>Linear Algebra Done Right</b>, 4th ed., 3.54 transpose, p. 77; (AC)&#7511; = C&#7511;A&#7511;, p. 78. Springer, 2024.</p>
 </section>
+<section class="slide" data-review-id="m1-map-worked" data-min="2">
+<p class="eyebrow">Integrated worked example</p><h2>A matrix is a map</h2><p>$B=\begin{bmatrix}1&0\\0&1\\1&1\end{bmatrix}$, $A=\begin{bmatrix}1&2&0\\0&1&1\end{bmatrix}$. Apply $B$, then $A$, to $x=(1,-1)\T$; check the transpose.</p>
+<div class="step" data-step="1"><div class="eq">$$AB=\begin{bmatrix}1&2\\1&2\end{bmatrix}$$</div><dl class="gloss"><dt>reason</dt><dd>$\R^2\to\R^3\to\R^2$: the inner dimensions match.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m1-map-worked-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>A matrix is a map</h2><p>Continue; check the original map.</p><div><div class="eq">$$AB=\begin{bmatrix}1&2\\1&2\end{bmatrix}$$</div><dl class="gloss"><dt>reason</dt><dd>$\R^2\to\R^3\to\R^2$: the inner dimensions match.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$Bx=(1,-1,0)\T,\quad A(Bx)=(-1,-1)\T=(AB)x$$</div><dl class="gloss"><dt>reason</dt><dd>Following the intermediate vector checks the product.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$(AB)\T=B\T A\T=\begin{bmatrix}1&1\\2&2\end{bmatrix}$$</div><dl class="gloss"><dt>reason</dt><dd>BA is 3 by 3; it describes a different trip.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m1-map-transfer" data-min="3">
+<p class="eyebrow">Independent transfer</p><h2>A matrix is a map</h2><p>Keep $B$. Now $A=\begin{bmatrix}1&0&2\\0&1&-1\end{bmatrix}$ and $x=(2,1)\T$. Find $AB$, its output and $(AB)\T$.</p>
+<div class="step" data-step="1"><div class="eq">$$AB=\begin{bmatrix}3&2\\-1&0\end{bmatrix}$$</div><dl class="gloss"><dt>reason</dt><dd>Column $j$ is $A(Be_j)$.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m1-map-transfer-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>A matrix is a map</h2><p>Continue; check the original map.</p><div><div class="eq">$$AB=\begin{bmatrix}3&2\\-1&0\end{bmatrix}$$</div><dl class="gloss"><dt>reason</dt><dd>Column $j$ is $A(Be_j)$.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$Bx=(2,1,3)\T,\quad (AB)x=(8,-2)\T$$</div><dl class="gloss"><dt>reason</dt><dd>Check each output using the intermediate vector.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$(AB)\T=B\T A\T=\begin{bmatrix}3&-1\\2&0\end{bmatrix}$$</div><dl class="gloss"><dt>reason</dt><dd>Transposition reverses the factor order.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+
 <!-- ============ 31 SPAN AND COLUMN SPACE DIVIDER ============ -->
 <section class="slide title" data-part="I">
   <h1>Span and column space</h1>
@@ -1734,7 +1751,7 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
       <p class="step" data-step="2">row 1 gives $c_1=3$, row 2 gives $c_2=2$</p>
       <p class="step" data-step="3">row 3 is then forced: $2(3)+2=8$, not 9</p>
     </div>
-    <figure>
+    <figure class="step" data-step="3">
       <svg viewBox="0 0 460 220" width="440" height="210" role="img" aria-label="A tilted plane holding the target three two eight, and a second target three two nine floating one unit above the plane">
         <defs>
           <marker id="mbA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="out-f"/></marker>
@@ -1979,7 +1996,7 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
       </g>
       <line x1="570" y1="120" x2="780" y2="120" class="d-stroke" stroke-width="1" opacity=".3"/>
       <line x1="675" y1="46" x2="675" y2="192" class="d-stroke" stroke-width="1" opacity=".3"/>
-      <line x1="600" y1="126" x2="750" y2="54" class="res-s" stroke-width="2.8"/>
+      <line x1="600" y1="126" x2="750" y2="54" class="in-s" stroke-width="2.8"/>
       <line x1="675" y1="120" x2="675" y2="90" class="res-s pulse" stroke-width="2.4" stroke-dasharray="4 3"/>
       <circle cx="675" cy="120" r="4.5" class="fill"/>
       <text x="675" y="214" text-anchor="middle" class="m">SHIFTED LINE · AFFINE</text>
@@ -1987,11 +2004,11 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
         <line x1="826" y1="28" x2="844" y2="46" class="res-s" stroke-width="3"/>
         <line x1="844" y1="28" x2="826" y2="46" class="res-s" stroke-width="3"/>
       </g>
-      <circle cx="945" cy="120" r="52" class="res-s" fill="none" stroke-width="2.8"/>
+      <circle cx="945" cy="120" r="52" class="in-s" fill="none" stroke-width="2.8"/>
       <circle cx="945" cy="120" r="4.5" class="fill"/>
       <text x="936" y="140" text-anchor="end" class="m">0</text>
       <circle cx="985" cy="87" r="5" class="in-f"/>
-      <g class="bld" style="animation-delay:1.4s">
+      <g class="step" data-step="1">
         <line x1="991" y1="82" x2="1021" y2="57" class="res-s" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#exA)"/>
         <circle cx="1025" cy="53" r="5" class="res-f"/>
         <text x="1034" y="74" class="res-f">×2</text>
@@ -2366,6 +2383,23 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
   <p class="callout small">When do different columns carry independent information?</p>
   <p class="cite">Axler, S. <b>Linear Algebra Done Right</b>, 4th ed., 2.15 linearly independent, p. 32. Springer, 2024.</p>
 </section>
+<section class="slide" data-review-id="m1-span-worked" data-min="2">
+<p class="eyebrow">Integrated worked example</p><h2>Span and column space</h2><p>$S=\{y\in\R^3:y_3=y_1+2y_2\}$. Prove $S$ is a subspace, give spanning vectors, and test $b=(2,-1,0)\T$.</p>
+<div class="step" data-step="1"><div class="eq">$$y=(s,t,s+2t)\T=s(1,0,1)\T+t(0,1,2)\T$$</div><dl class="gloss"><dt>reason</dt><dd>Every member is a combination, and every combination satisfies the equation.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m1-span-worked-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>Span and column space</h2><p>Continue; check the original map.</p><div><div class="eq">$$y=(s,t,s+2t)\T=s(1,0,1)\T+t(0,1,2)\T$$</div><dl class="gloss"><dt>reason</dt><dd>Every member is a combination, and every combination satisfies the equation.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$S=\operatorname{span}\{(1,0,1)\T,(0,1,2)\T\}$$</div><dl class="gloss"><dt>reason</dt><dd>A span contains zero and is closed under linear combinations.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$b=2(1,0,1)\T-(0,1,2)\T\in S$$</div><dl class="gloss"><dt>reason</dt><dd>The third coordinate checks: 2 minus 2 is zero.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m1-span-transfer" data-min="3">
+<p class="eyebrow">Independent transfer</p><h2>Span and column space</h2><p>$T=\{y:y_3=2y_1-y_2\}$. Find spanning vectors. Is $(1,3,0)\T$ in $T$? Is $y_3=2y_1-y_2+1$ a subspace?</p>
+<div class="step" data-step="1"><div class="eq">$$T=\operatorname{span}\{(1,0,2)\T,(0,1,-1)\T\}$$</div><dl class="gloss"><dt>reason</dt><dd>Use the first two coordinates as free coefficients.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m1-span-transfer-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>Span and column space</h2><p>Continue; check the original map.</p><div><div class="eq">$$T=\operatorname{span}\{(1,0,2)\T,(0,1,-1)\T\}$$</div><dl class="gloss"><dt>reason</dt><dd>Use the first two coordinates as free coefficients.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$2(1)-3=-1\ne0$$</div><dl class="gloss"><dt>reason</dt><dd>The target fails the defining equation.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$0\ne 2(0)-0+1$$</div><dl class="gloss"><dt>reason</dt><dd>The shifted set misses zero and is not a subspace.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+
 
 <section class="slide title" data-part="I">
   <h1>Null Space and Linear Independence</h1>
@@ -3450,7 +3484,7 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
     <div class="eq" style="margin:0;flex:0 1 auto">$$\text{dimension counts independent degrees of freedom}$$</div>
   </div>
   <dl class="gloss">
-    <dt>finite</dt><dd>every space in this course has a finite basis</dd>
+    <dt>finite</dt><dd>the vector spaces considered here have finite bases</dd>
   </dl>
   <div class="eq">$$\boxed{\,\dim\{0\}=0\,}$$</div>
   <dl class="gloss">
@@ -3945,7 +3979,7 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
   </dl>
   <div class="eq step" data-step="1">$$\dim\Col(B)=6,\qquad \dim\Null(B)=10-6=4,\qquad \text{4 free variables}$$</div>
   <dl class="gloss">
-    <dt>the trap</dt><dd>use the 10, not the 7</dd>
+    <dt class="step" data-step="2">the trap</dt><dd class="step" data-step="2">use the 10, not the 7</dd>
   </dl>
   <figure>
     <svg viewBox="0 0 900 172" width="900" height="172" role="img" aria-label="A seven by ten box, with the ten columns split into six surviving directions and four sent to zero">
@@ -4044,6 +4078,23 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
   </div>
   <p class="cite">Axler, S. <b>Linear Algebra Done Right</b>, 4th ed., 3.21 fundamental theorem of linear maps, p. 62. Springer, 2024.</p>
 </section>
+<section class="slide" data-review-id="m1-rank-worked" data-min="2">
+<p class="eyebrow">Integrated worked example</p><h2>Basis, Dimension, and Rank</h2><p>$F=\begin{bmatrix}1&2&0&1\\0&0&1&-1\end{bmatrix}$. Find bases of $\Col(F)$ and $\Null(F)$, rank and nullity.</p>
+<div class="step" data-step="1"><div class="eq">$$x_2=s,\ x_4=t:\quad x_1=-2s-t,\ x_3=t$$</div><dl class="gloss"><dt>reason</dt><dd>Pivot columns 1 and 3 determine two variables.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m1-rank-worked-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>Basis, Dimension, and Rank</h2><p>Continue; check the original map.</p><div><div class="eq">$$x_2=s,\ x_4=t:\quad x_1=-2s-t,\ x_3=t$$</div><dl class="gloss"><dt>reason</dt><dd>Pivot columns 1 and 3 determine two variables.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$\Null(F)=\operatorname{span}\{(-2,1,0,0)\T,(-1,0,1,1)\T\}$$</div><dl class="gloss"><dt>reason</dt><dd>The two free-coordinate patterns prove independence.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$\Col(F)=\R^2,\quad r=2,\quad n-r=2$$</div><dl class="gloss"><dt>reason</dt><dd>Original columns 1 and 3 form the output basis; 2+2=4.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m1-rank-transfer" data-min="3">
+<p class="eyebrow">Independent transfer</p><h2>Basis, Dimension, and Rank</h2><p>$G=\begin{bmatrix}1&0\\0&1\\1&1\end{bmatrix}$. Find rank, nullity and $\Col(G)$. Can it reach $(1,2,4)\T$?</p>
+<div class="step" data-step="1"><div class="eq">$$\operatorname{rank}G=2,\quad\operatorname{nullity}G=2-2=0$$</div><dl class="gloss"><dt>reason</dt><dd>Two input coordinates, two independent columns.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m1-rank-transfer-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>Basis, Dimension, and Rank</h2><p>Continue; check the original map.</p><div><div class="eq">$$\operatorname{rank}G=2,\quad\operatorname{nullity}G=2-2=0$$</div><dl class="gloss"><dt>reason</dt><dd>Two input coordinates, two independent columns.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$Gx=(x_1,x_2,x_1+x_2)\T$$</div><dl class="gloss"><dt>reason</dt><dd>Its image is the plane y3 = y1 + y2.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$1+2=3\ne4$$</div><dl class="gloss"><dt>reason</dt><dd>Full column rank gives uniqueness when reachable, not existence for every target.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+
 
 <!-- ============ 80 LINEAR SYSTEMS DIVIDER ============ -->
 <section class="slide title" data-part="I">
@@ -4779,6 +4830,23 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
   </div>
   <p class="cite">Lynch, K. M. and Park, F. C. <b>Modern Robotics</b>, &#167;5.3 singularity analysis, p. 191. Cambridge University Press, 2017 preprint.</p>
 </section>
+<section class="slide" data-review-id="m1-inverse-worked" data-min="2">
+<p class="eyebrow">Integrated worked example</p><h2>Invertibility and Singular Matrices</h2><p>$H=\begin{bmatrix}1&2\\0&1\end{bmatrix}$, $b=(5,2)\T$. Solve $Hx=b$, find $H^{-1}$, and connect uniqueness to rank.</p>
+<div class="step" data-step="1"><div class="eq">$$x_2=b_2,\quad x_1=b_1-2b_2$$</div><dl class="gloss"><dt>reason</dt><dd>Back-substitution works for an arbitrary target.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m1-inverse-worked-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>Invertibility and Singular Matrices</h2><p>Continue; check the original map.</p><div><div class="eq">$$x_2=b_2,\quad x_1=b_1-2b_2$$</div><dl class="gloss"><dt>reason</dt><dd>Back-substitution works for an arbitrary target.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$H^{-1}=\begin{bmatrix}1&-2\\0&1\end{bmatrix},\quad x=(1,2)\T$$</div><dl class="gloss"><dt>reason</dt><dd>The inverse collects the coefficients of b.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$HH^{-1}=H^{-1}H=I,\quad\Null(H)=\{0\},\ r=2$$</div><dl class="gloss"><dt>reason</dt><dd>A reversible map reaches every target exactly once.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m1-inverse-transfer" data-min="3">
+<p class="eyebrow">Independent transfer</p><h2>Invertibility and Singular Matrices</h2><p>$K=\begin{bmatrix}1&2\\2&4\end{bmatrix}$. Compare targets $(5,10)\T$ and $(5,11)\T$. Can an inverse exist?</p>
+<div class="step" data-step="1"><div class="eq">$$b=(5,10)\T:\quad x=(5,0)\T+t(-2,1)\T$$</div><dl class="gloss"><dt>reason</dt><dd>The second equation repeats twice the first.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m1-inverse-transfer-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>Invertibility and Singular Matrices</h2><p>Continue; check the original map.</p><div><div class="eq">$$b=(5,10)\T:\quad x=(5,0)\T+t(-2,1)\T$$</div><dl class="gloss"><dt>reason</dt><dd>The second equation repeats twice the first.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$b=(5,11)\T:\quad0=1$$</div><dl class="gloss"><dt>reason</dt><dd>Subtract twice row 1 from row 2: inconsistent.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$K(-2,1)\T=0,\quad(-2,1)\T\ne0$$</div><dl class="gloss"><dt>reason</dt><dd>An inverse cannot recover two inputs that share an output.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+
 
 <!-- ============ 98 FOUR SUBSPACES DIVIDER ============ -->
 <section class="slide title" data-part="I">
@@ -5234,6 +5302,22 @@ body.print .bloom,body.print .stretch,body.print .late{animation:none}
         body.innerHTML = html;
         var ps = body.querySelectorAll('p'), k = 0;
         (sc.say || sc.script || '').split(/\n\s*\n/).forEach(function (para) { if (para.trim()) guides += sayInto(ps[k++], para.trim()); });
+      }
+      /* Canonical scripts keep reading aids outside SAY so they cannot be mistaken
+         for words to read aloud. Older scripts may still carry inline guides. */
+      if (sc.pron && sc.pron.length && !guides) {
+        var aids = document.createElement('div');
+        aids.className = 'pron-aids';
+        sc.pron.forEach(function (guide) {
+          var aid = document.createElement('span');
+          aid.className = 'pron';
+          aid.title = 'pronunciation guide \u2014 not spoken';
+          aid.textContent = guide;
+          aids.appendChild(aid);
+          aids.appendChild(document.createTextNode(' '));
+          guides++;
+        });
+        body.insertBefore(aids, body.firstChild);
       }
       if (sc.zh) {
         var zl = document.createElement('div');

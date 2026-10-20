@@ -1733,6 +1733,23 @@ body.print .squash{animation:none;transform:scaleY(0)}
     </svg>
   </figure>
 </section>
+<section class="slide" data-review-id="m2-frame-worked" data-min="2">
+<p class="eyebrow">Integrated worked example</p><h2>Rotations and Frames</h2><p>$R=\frac15\begin{bmatrix}3&-4\\4&3\end{bmatrix}$ maps sensor to world. Sensor position $p=(1,2)\T$; measured displacement $d_s=(5,0)\T$. Find the world point and recover $d_s$.</p>
+<div class="step" data-step="1"><div class="eq">$$d_w=Rd_s=(3,4)\T,\quad q_w=p+d_w=(4,6)\T$$</div><dl class="gloss"><dt>reason</dt><dd>Rotate a displacement; then add the origin position.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m2-frame-worked-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>Rotations and Frames</h2><p>Continue; check the original map.</p><div><div class="eq">$$d_w=Rd_s=(3,4)\T,\quad q_w=p+d_w=(4,6)\T$$</div><dl class="gloss"><dt>reason</dt><dd>Rotate a displacement; then add the origin position.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$R\T(q_w-p)=R\T(3,4)\T=(5,0)\T$$</div><dl class="gloss"><dt>reason</dt><dd>Subtract the origin before reversing the coordinates.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$\|d_s\|=\|d_w\|=5$$</div><dl class="gloss"><dt>reason</dt><dd>Orthogonality preserves displacement length, not distance from an unrelated origin.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m2-frame-transfer" data-min="3">
+<p class="eyebrow">Independent transfer</p><h2>Rotations and Frames</h2><p>$Q=\begin{bmatrix}0&-1\\1&0\end{bmatrix}$ maps body to world, with origin $p=(2,-1)\T$. A world point is $q=(1,2)\T$. Find its body displacement and check.</p>
+<div class="step" data-step="1"><div class="eq">$$d_w=q-p=(-1,3)\T$$</div><dl class="gloss"><dt>reason</dt><dd>Subtract positions in the same frame.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m2-frame-transfer-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>Rotations and Frames</h2><p>Continue; check the original map.</p><div><div class="eq">$$d_w=q-p=(-1,3)\T$$</div><dl class="gloss"><dt>reason</dt><dd>Subtract positions in the same frame.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$d_b=Q\T d_w=(3,1)\T$$</div><dl class="gloss"><dt>reason</dt><dd>The fixed point calls for a passive coordinate change.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$p+Qd_b=(2,-1)\T+(-1,3)\T=q$$</div><dl class="gloss"><dt>reason</dt><dd>Forward reconstruction checks the frame convention.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+
 <!-- ============ 36 ============ -->
 <section class="slide title" data-part="I">
   <h1>The Determinant</h1>
@@ -2183,6 +2200,23 @@ body.print .squash{animation:none;transform:scaleY(0)}
   });
   </script>
 </section>
+<section class="slide" data-review-id="m2-det-worked" data-min="2">
+<p class="eyebrow">Integrated worked example</p><h2>The Determinant</h2><p>$S=\begin{bmatrix}1&2\\0&1\end{bmatrix}$, $D=\operatorname{diag}(-2,1/2)$. Apply $S$ then $D$. Find area factor, orientation and inverse existence.</p>
+<div class="step" data-step="1"><div class="eq">$$A=DS=\begin{bmatrix}-2&-4\\0&1/2\end{bmatrix}$$</div><dl class="gloss"><dt>reason</dt><dd>Composition order follows the maps, not their names.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m2-det-worked-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>The Determinant</h2><p>Continue; check the original map.</p><div><div class="eq">$$A=DS=\begin{bmatrix}-2&-4\\0&1/2\end{bmatrix}$$</div><dl class="gloss"><dt>reason</dt><dd>Composition order follows the maps, not their names.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$\det A=\det D\det S=(-1)(1)=-1$$</div><dl class="gloss"><dt>reason</dt><dd>Absolute determinant is area factor; the sign records orientation.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$|\det A|=1,\quad A^{-1}\text{ exists},\quad\|Ae_1\|=2$$</div><dl class="gloss"><dt>reason</dt><dd>Area preservation does not imply length preservation or rotation.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m2-det-transfer" data-min="3">
+<p class="eyebrow">Independent transfer</p><h2>The Determinant</h2><p>$T=\operatorname{diag}(2,1/4)$ acts on a region of area 6. Find its new area. Does every vector shrink? What changes if $1/4$ becomes 0?</p>
+<div class="step" data-step="1"><div class="eq">$$\det T=1/2,\quad\operatorname{area}(T\Omega)=3$$</div><dl class="gloss"><dt>reason</dt><dd>Multiply the original area by the absolute determinant.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m2-det-transfer-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>The Determinant</h2><p>Continue; check the original map.</p><div><div class="eq">$$\det T=1/2,\quad\operatorname{area}(T\Omega)=3$$</div><dl class="gloss"><dt>reason</dt><dd>Multiply the original area by the absolute determinant.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$Te_1=2e_1$$</div><dl class="gloss"><dt>reason</dt><dd>Area shrinks, but the first axis expands.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$\det\operatorname{diag}(2,0)=0$$</div><dl class="gloss"><dt>reason</dt><dd>The image lies on a line; area is zero and the inverse fails.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+
 
 <!-- ============ 50 ============ -->
 <section class="slide" data-part="I">
@@ -2254,7 +2288,7 @@ body.print .squash{animation:none;transform:scaleY(0)}
   </div>
   <dl class="gloss">
     <dt>A</dt><dd>the map: a square matrix</dd>
-    <dt>v</dt><dd>the eigenvector, a direction A does not turn</dd>
+    <dt>v</dt><dd>the eigenvector, a nonzero vector whose line A preserves</dd>
     <dt>$\lambda$</dt><dd>the eigenvalue, the factor v is stretched by</dd>
     <dt>$v\neq0$</dt><dd>required; $\lambda=0$ is allowed</dd>
   </dl>
@@ -2739,6 +2773,23 @@ body.print .squash{animation:none;transform:scaleY(0)}
     <figcaption>Directions only; each arrow is drawn to its own scale.</figcaption>
   </figure>
 </section>
+<section class="slide" data-review-id="m2-eigen-worked" data-min="2">
+<p class="eyebrow">Integrated worked example</p><h2>Eigenvalues and Eigenvectors</h2><p>$A=\begin{bmatrix}4&2\\0&1\end{bmatrix}$. Find eigenvalues and one eigenvector for each. Express $x=(0,3)\T$ in those directions and compute $Ax$.</p>
+<div class="step" data-step="1"><div class="eq">$$p(\lambda)=(4-\lambda)(1-\lambda)$$</div><dl class="gloss"><dt>reason</dt><dd>Triangular determinant gives eigenvalues 4 and 1.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m2-eigen-worked-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>Eigenvalues and Eigenvectors</h2><p>Continue; check the original map.</p><div><div class="eq">$$p(\lambda)=(4-\lambda)(1-\lambda)$$</div><dl class="gloss"><dt>reason</dt><dd>Triangular determinant gives eigenvalues 4 and 1.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$v_4=(1,0)\T,\quad v_1=(-2,3)\T$$</div><dl class="gloss"><dt>reason</dt><dd>Solve each shifted null-space problem; do not assume the coordinate axes work.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$x=2v_4+v_1,\quad Ax=8v_4+v_1=(6,3)\T$$</div><dl class="gloss"><dt>reason</dt><dd>Linearity combines the modes; direct multiplication agrees.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m2-eigen-transfer" data-min="3">
+<p class="eyebrow">Independent transfer</p><h2>Eigenvalues and Eigenvectors</h2><p>$N=\begin{bmatrix}2&1\\0&2\end{bmatrix}$. Find its eigenvalues and eigenspace. Can $(0,1)\T$ be built from eigenvectors of $N$?</p>
+<div class="step" data-step="1"><div class="eq">$$p(\lambda)=(2-\lambda)^2$$</div><dl class="gloss"><dt>reason</dt><dd>One eigenvalue, 2, counted twice.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+<section class="slide" data-review-id="m2-eigen-transfer-reasoning"><p class="eyebrow">Complete the reasoning</p><h2>Eigenvalues and Eigenvectors</h2><p>Continue; check the original map.</p><div><div class="eq">$$p(\lambda)=(2-\lambda)^2$$</div><dl class="gloss"><dt>reason</dt><dd>One eigenvalue, 2, counted twice.</dd></dl></div>
+<div class="step" data-step="1"><div class="eq">$$(N-2I)v=0\iff v_2=0$$</div><dl class="gloss"><dt>reason</dt><dd>All eigenvectors lie on the horizontal axis.</dd></dl></div>
+<div class="step" data-step="2"><div class="eq">$$E(2,N)=\operatorname{span}\{(1,0)\T\},\quad(0,1)\T\notin E(2,N)$$</div><dl class="gloss"><dt>reason</dt><dd>Repeated roots do not guarantee enough independent directions.</dd></dl></div>
+<p class="cite">Course-authored example. Definitions: Axler, Linear Algebra Done Right, 4th ed., 2024; Strang, MIT 18.06.</p></section>
+
 
 <!-- ============ 67 ============ -->
 <section class="slide" data-part="I">
@@ -3295,7 +3346,7 @@ body.print .squash{animation:none;transform:scaleY(0)}
   <h2>Diagonalization and Modes</h2>
   <div class="eq">$$n\ \text{distinct real eigenvalues}\Rightarrow A\ \text{is diagonalizable over }\R$$</div>
   <dl class="gloss">
-    <dt>real</dt><dd>slide 62's rotation: distinct complex roots, no real basis</dd>
+    <dt>real</dt><dd>the rotation example: distinct complex roots, no real basis</dd>
     <dt>one way only</dt><dd>the identity repeats an eigenvalue, yet is diagonal</dd>
   </dl>
   <p>Over $\mathbb C$ every square matrix has a Jordan form: diagonal plus ones just above it.</p>
@@ -4075,6 +4126,22 @@ body.print .squash{animation:none;transform:scaleY(0)}
         body.innerHTML = html;
         var ps = body.querySelectorAll('p'), k = 0;
         (sc.say || sc.script || '').split(/\n\s*\n/).forEach(function (para) { if (para.trim()) guides += sayInto(ps[k++], para.trim()); });
+      }
+      /* Canonical scripts keep reading aids outside SAY so they cannot be mistaken
+         for words to read aloud. Older scripts may still carry inline guides. */
+      if (sc.pron && sc.pron.length && !guides) {
+        var aids = document.createElement('div');
+        aids.className = 'pron-aids';
+        sc.pron.forEach(function (guide) {
+          var aid = document.createElement('span');
+          aid.className = 'pron';
+          aid.title = 'pronunciation guide \u2014 not spoken';
+          aid.textContent = guide;
+          aids.appendChild(aid);
+          aids.appendChild(document.createTextNode(' '));
+          guides++;
+        });
+        body.insertBefore(aids, body.firstChild);
       }
       if (sc.zh) {
         var zl = document.createElement('div');

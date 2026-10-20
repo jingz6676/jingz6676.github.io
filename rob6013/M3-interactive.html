@@ -813,8 +813,8 @@ window.m3anim = function (cv, draw, o) {
       </dl>
       <div class="eq" style="margin-top:22px">$$\begin{aligned}u\T v&amp;=v\T u\\(c_1u+c_2u')\T v&amp;=c_1u\T v+c_2u'\T v\end{aligned}$$</div>
       <dl class="gloss">
-        <dt>symmetric</dt><dd>each $u_iv_i=v_iu_i$</dd>
-        <dt>linear</dt><dd>$u'\in\R^m$ any other vector, $c_1,c_2$ any real scalars; slot 2 by symmetry</dd>
+        <dt>symmetry</dt><dd>each $u_iv_i=v_iu_i$</dd>
+        <dt>linear</dt><dd>$u'\in\R^m$ any other vector, $c_1,c_2$ scalars; slot 2 by symmetry</dd>
       </dl>
     </div>
     <figure>
@@ -823,6 +823,7 @@ window.m3anim = function (cv, draw, o) {
       </svg>
     </figure>
   </div>
+  <p class="small" style="margin:4px 0 0">Tuples denote columns.</p>
 </section>
 
 <!-- ============ 7 ============ -->
@@ -1087,7 +1088,7 @@ window.m3anim = function (cv, draw, o) {
   <style>.s15 .eq{font-size:28px}.s15 .gloss{max-width:none}</style>
   <div class="fill s15" style="max-width:1020px;padding-bottom:26px">
     <div>
-      <p class="small" style="margin:0 0 6px">$A\T r=(a_1\T r,…,a_n\T r)∈ℝ^n$, so $r\perp\text{Col}(A)⇔A\T r=0$.</p>
+      <p class="small" style="margin:0 0 6px">$A\T r=(a_1\T r,…,a_n\T r)\T∈ℝ^n$, so $r\perp\text{Col}(A)⇔A\T r=0$.</p>
       <div class="eq" style="margin:2px 0 0">$$\text{Col}(A)^⟂=\text{Null}(A\T)⊆ℝ^m,\qquad\text{Null}(A)=\text{Row}(A)^⟂⊆ℝ^n$$</div>
       <dl class="gloss">
         <dt>$a_j$</dt><dd>columns of $A∈ℝ^{m×n}$: they span $\text{Col}(A)$</dd>
@@ -3824,7 +3825,7 @@ window.m3anim = function (cv, draw, o) {
     <div>
       <p style="margin:0 0 10px">Why we could divide: $u_j=0$ would write $a_j$ from the earlier $q$&#8217;s, which independence forbids.</p>
       <p style="margin:0 0 10px">Without it, halting at $u_j=0$ is <b>not</b> basis extraction: $[e_1,2e_1,e_2]$ stops at $j=2$, missing $e_2$.</p>
-      <p class="reveal step" data-step="1">Skip it, carry on in the original order, index the kept $q$&#8217;s.<br>Pivoting instead reorders columns: $A\Pi=QR$ (Lecture 4).</p>
+      <p class="reveal step" data-step="1">Skip it, carry on in the original order, index the kept $q$&#8217;s.<br>Pivoting instead reorders columns: $A\Pi=QR$; it is a different algorithm.</p>
     </div>
     <figure>
       <svg viewBox="0 0 470 334" width="470" height="334" role="img" aria-label="A light grid. Three teal columns leave the origin: a1 along the horizontal axis, a2 equal to twice a1 drawn just below the axis so both are visible, and a3 straight up. After the click a2 is overdrawn in grey and marked skipped, and two black unit vectors q1 and q2 appear just beside a1 and a3, exactly as long as those columns, since q1 equals a1 and q2 equals a3.">
@@ -5462,6 +5463,22 @@ window.m3anim = function (cv, draw, o) {
         body.innerHTML = html;
         var ps = body.querySelectorAll('p'), k = 0;
         (sc.say || sc.script || '').split(/\n\s*\n/).forEach(function (para) { if (para.trim()) guides += sayInto(ps[k++], para.trim()); });
+      }
+      /* Canonical scripts keep reading aids outside SAY so they cannot be mistaken
+         for words to read aloud. Older scripts may still carry inline guides. */
+      if (sc.pron && sc.pron.length && !guides) {
+        var aids = document.createElement('div');
+        aids.className = 'pron-aids';
+        sc.pron.forEach(function (guide) {
+          var aid = document.createElement('span');
+          aid.className = 'pron';
+          aid.title = 'pronunciation guide \u2014 not spoken';
+          aid.textContent = guide;
+          aids.appendChild(aid);
+          aids.appendChild(document.createTextNode(' '));
+          guides++;
+        });
+        body.insertBefore(aids, body.firstChild);
       }
       if (sc.zh) {
         var zl = document.createElement('div');
