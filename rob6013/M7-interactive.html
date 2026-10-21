@@ -401,7 +401,7 @@ body.print #m7break{display:none!important}
 @media print{#m7break{display:none!important}}
 
 /* M7-LAYOUT */
-.slide .cols{gap:26px;align-items:start}.slide .cols>div{min-width:0}.slide .eq{font-size:25px;margin:12px 0}.slide .gloss{font-size:17px;line-height:1.28;margin:8px 0 12px}.slide .gloss dt{font-size:17px}.slide .gloss dd{font-size:17px}.slide .teaching-point p,.slide .ex p,.slide .answer p{font-size:20px;line-height:1.3;margin:10px 0}.slide .q{font-size:20px}.slide .mc-options{font-size:20px;line-height:1.25;margin:8px 0;padding-left:25px}.slide .mc-options li{padding:4px 0}.slide:has(.mc-options) .teaching-point{display:none}.slide:has(.mc-options) .eq{font-size:23px}.slide .answer{border-left:3px solid var(--c-res-ok);padding-left:14px}.slide figure{margin:12px 0}.slide .sub{font-size:26px}.slide .key{font-size:14px;margin-top:7px}.slide.title .tiny{font-size:14px}.slide.title .cols{flex:none;margin-top:20px}.slide.title .teaching-point p{font-size:24px}.slide .concept-route{font-size:21px;line-height:1.25;margin-top:14px}.slide .map-node{font-weight:600;color:var(--c-in);margin:3px 0}.slide .map-edge{margin:3px 0 3px 15px}.slide .map-check{margin-top:8px}.slide .data-figure{position:relative}.slide .data-figure:has(.shown) canvas{visibility:hidden}.slide .answer-table{position:absolute;inset:30px 0 auto}.slide .answer-table table{font-size:20px;width:100%;border-collapse:collapse}.slide .answer-table th,.slide .answer-table td{padding:12px 6px;text-align:right;border-bottom:1px solid var(--c-rule)}.slide .answer-table th:first-child,.slide .answer-table td:first-child{text-align:left}.slide .refs{font-size:24px;line-height:1.5}.slide .refs li{margin:20px 0}
+.slide .cols{gap:26px;align-items:start}.slide .cols>div{min-width:0}.slide .eq{font-size:25px;margin:12px 0}.slide .gloss{font-size:17px;line-height:1.28;margin:8px 0 12px}.slide .gloss dt{font-size:17px}.slide .gloss dd{font-size:17px}.slide .teaching-point p,.slide .ex p,.slide .answer p{font-size:20px;line-height:1.3;margin:10px 0}.slide .q{font-size:20px}.slide .mc-options{font-size:20px;line-height:1.25;margin:8px 0;padding-left:25px}.slide .mc-options li{padding:4px 0}.slide:has(.mc-options) .teaching-point{display:none}.slide:has(.mc-options) .eq{font-size:23px}.slide .answer{border-left:3px solid var(--c-res-ok);padding-left:14px}.slide figure{margin:12px 0}.slide .sub{font-size:26px}.slide .key{font-size:14px;margin-top:7px}.slide.title .tiny{font-size:14px}.slide.title .cols{flex:none;margin-top:20px}.slide.title .teaching-point p{font-size:24px}.slide .concept-route{font-size:21px;line-height:1.25;margin-top:14px}.slide .map-node{font-weight:600;color:var(--c-in);margin:3px 0}.slide .map-edge{margin:3px 0 3px 15px}.slide .map-check{margin-top:8px}.slide .data-figure{position:relative}.slide .data-figure:has(.shown) canvas{visibility:hidden}.slide .answer-table{position:absolute;inset:30px 0 auto}.slide .answer-table table{font-size:20px;width:100%;border-collapse:collapse}.slide .answer-table th,.slide .answer-table td{padding:12px 6px;text-align:right;border-bottom:1px solid var(--c-rule)}.slide .answer-table th:first-child,.slide .answer-table td:first-child{text-align:left}.slide .page-source{position:absolute;left:64px;right:64px;bottom:76px;margin:0;font-size:15px;line-height:1.25;color:inherit}.slide.title .page-source{bottom:80px}.slide .page-source a{color:inherit;text-decoration:underline}.slide .refs{list-style:none;padding-left:0;font-size:24px;line-height:1.5}.slide .refs li{margin:20px 0}
 </style>
 <script>
 /* ---------------------------------------------------------------------------
@@ -998,7 +998,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>A model gives a rate. A simulator produces a future state.</p></div>
 </div><figure><canvas id="m7p01a" width="440" height="320" aria-label="How does a simulator advance the world?"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p01a"),function(g,t,k){drawM7(g,t,k,"decay",1,false);},{rest:0.4,seconds:5});</script>
-<p class="tiny" style="margin:auto 0 0">Mathematics for Robotics &#183; ROB-GY 6013 &#183; NYU Tandon &#183; Jing Zhang &#183; Fall 2026</p>
+<p class="tiny" style="margin:auto 0 0">Mathematics for Robotics &#183; ROB-GY 6013 &#183; NYU Tandon &#183; Jing Zhang &#183; Fall 2026</p><p class="cite page-source"><span>Initial-value problem (IVP)</span> — <a href="https://fncbook.com/basics/">[4] FNC §6.1</a></p>
 </section>
 
 <!-- ===== 2 ===== -->
@@ -1011,12 +1011,13 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <dl class="gloss"><dt>h, k</dt><dd>step size and sample index</dd><dt>x(t), xₖ</dt><dd>exact state and numerical sample</dd></dl>
 <div class="concept-route" role="img" aria-label="Rate model is sampled by a time-stepping method to produce a numerical trajectory. Solver checks compare exact or refined solutions; model checks compare measurements."><div class="map-node">Rate model</div><div class="map-edge">↓ is sampled by</div><div class="map-node">Time-stepping method</div><div class="map-edge">↓ produces</div><div class="map-node">Numerical trajectory</div><div class="map-check">↳ Solver check: exact / refined solution</div><div class="map-check">↳ Model check: measurements</div></div></div><figure><canvas id="m7p02a" width="440" height="320" aria-label="A trajectory and its stored samples"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p02a"),function(g,t,k){drawM7(g,t,k,"decay",2,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Exact solution; numerical solution</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · Course map</p>
 </section>
 
 <!-- ===== 3 ===== -->
 <section class="slide" data-part="III">
 <p class="eyebrow">Definition</p>
-<h2>Velocity Fields</h2>
+<h2>Vector Fields</h2>
 <p class="sub">An arrow gives a rate, not a destination</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=f(x,t)\in\mathbb R^d$$</div>
@@ -1024,12 +1025,13 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>Illustration: x=(q,v)ᵀ and f=(v,−sin q)ᵀ. Arrow lengths are scaled.</p></div>
 </div><figure><canvas id="m7p03a" width="440" height="320" aria-label="An arrow gives a rate, not a destination"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p03a"),function(g,t,k){drawM7(g,t,k,"field",3,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Vector field; phase portrait</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a> · Course illustration</p>
 </section>
 
 <!-- ===== 4 ===== -->
 <section class="slide" data-part="III">
 <p class="eyebrow">Assumptions</p>
-<h2>Velocity Fields</h2>
+<h2>Vector Fields</h2>
 <p class="sub">One field, different initial states</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=-2x,\quad x(0)=1\ \text{or}\ 2$$</div>
@@ -1037,12 +1039,13 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>An initial-value problem combines the rule with its starting state.</p></div>
 </div><figure><canvas id="m7p04a" width="440" height="320" aria-label="One field, different initial states"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p04a"),function(g,t,k){drawM7(g,t,k,"twostarts",4,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Initial condition; solution trajectory</span> — <a href="https://fncbook.com/basics/">[4] FNC §6.1</a> · Course example</p>
 </section>
 
 <!-- ===== 5 ===== -->
 <section class="slide" data-part="III">
 <p class="eyebrow">Worked example</p>
-<h2>Velocity Fields</h2>
+<h2>Vector Fields</h2>
 <p class="sub">Verify an exact decay solution</p>
 <div class="cols w6040"><div>
 <div class="eq">$$x(t)=e^{-2t}\quad\Longrightarrow\quad\dot x=-2x$$</div>
@@ -1050,12 +1053,13 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="ex"><p>Worked example: x(0.1) = 0.8187307531.</p></div>
 </div><figure><canvas id="m7p05a" width="440" height="320" aria-label="Verify an exact decay solution"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p05a"),function(g,t,k){drawM7(g,t,k,"decay",5,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Exponential decay</span> — <a href="https://fncbook.com/basics/">[4] FNC §6.1</a> · Course example</p>
 </section>
 
 <!-- ===== 6 ===== -->
 <section class="slide" data-part="III">
 <p class="eyebrow you" data-min="1.5">Your turn</p>
-<h2>Velocity Fields</h2>
+<h2>Vector Fields</h2>
 <p class="sub">Your turn: a changed decay rate</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=-3x,\qquad x(0)=2$$</div>
@@ -1065,6 +1069,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct B. Check start AND rate.</p></div>
 </div><figure><canvas id="m7p06a" width="440" height="320" aria-label="Your turn: a changed decay rate"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p06a"),function(g,t,k){drawM7(g,t,k,"decay",6,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Exponential decay</span> — <a href="https://fncbook.com/basics/">[4] FNC §6.1</a> · Course example</p>
 </section>
 
 <!-- ===== 7 ===== -->
@@ -1078,6 +1083,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>The same angle can occur while a joint moves in either direction.</p></div>
 </div><figure><canvas id="m7p07a" width="440" height="320" aria-label="Position alone does not predict motion"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p07a"),function(g,t,k){drawM7(g,t,k,"pendulum",7,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>First-order system; state vector</span> — <a href="https://fncbook.com/systems/">[4] FNC §6.3</a></p>
 </section>
 
 <!-- ===== 8 ===== -->
@@ -1091,6 +1097,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>The model balances inertial, velocity-dependent and gravitational terms.</p></div>
 </div><figure><canvas id="m7p08a" width="440" height="320" aria-label="The manipulator equation is a force balance"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p08a"),function(g,t,k){drawM7(g,t,k,"forces",8,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Manipulator dynamics; mass matrix</span> — <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/chapter-8-1-lagrangian-formulation-of-dynamics-part-1-of-2/">[2] Modern Robotics §8.1</a></p>
 </section>
 
 <!-- ===== 9 ===== -->
@@ -1104,6 +1111,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>Compute acceleration by solving M a = τ − Cv − g.</p></div>
 </div><figure><canvas id="m7p09a" width="440" height="320" aria-label="Rewrite the mechanics as a first-order ODE"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p09a"),function(g,t,k){drawM7(g,t,k,"state",9,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>First-order system; forward dynamics</span> — <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/chapter-8-1-lagrangian-formulation-of-dynamics-part-1-of-2/">[2] Modern Robotics §8.1</a> · <a href="https://fncbook.com/systems/">[4] FNC §6.3</a></p>
 </section>
 
 <!-- ===== 10 ===== -->
@@ -1117,6 +1125,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="ex"><p>Worked example: solve acceleration, then assemble the full derivative.</p></div>
 </div><figure><canvas id="m7p10a" width="440" height="320" aria-label="A one-joint calculation"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p10a"),function(g,t,k){drawM7(g,t,k,"state",10,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Forward dynamics</span> — <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/chapter-8-1-lagrangian-formulation-of-dynamics-part-1-of-2/">[2] Modern Robotics §8.1</a> · Course example</p>
 </section>
 
 <!-- ===== 11 ===== -->
@@ -1132,6 +1141,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct C. Velocity, then acceleration.</p></div>
 </div><figure><canvas id="m7p11a" width="440" height="320" aria-label="Your turn: reduce the applied force"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p11a"),function(g,t,k){drawM7(g,t,k,"state",11,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Forward dynamics</span> — <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/chapter-8-1-lagrangian-formulation-of-dynamics-part-1-of-2/">[2] Modern Robotics §8.1</a> · Course example</p>
 </section>
 
 <!-- ===== 12 ===== -->
@@ -1145,6 +1155,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>Illustrated A has rows (−1,−1) and (0,−2); the field is homogeneous.</p></div>
 </div><figure><canvas id="m7p12a" width="440" height="320" aria-label="A constant matrix gives a linear field"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p12a"),function(g,t,k){drawM7(g,t,k,"linear",12,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Linear constant-coefficient system</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a> · Course example</p>
 </section>
 
 <!-- ===== 13 ===== -->
@@ -1158,6 +1169,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>Illustrated basis: v₁=(1,0)ᵀ, v₂=(1,1)ᵀ. Invertible does not mean orthogonal.</p></div>
 </div><figure><canvas id="m7p13a" width="440" height="320" aria-label="Recall the eigenvector coordinates"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p13a"),function(g,t,k){drawM7(g,t,k,"basis",13,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Diagonalization; modal coordinates</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a></p>
 </section>
 
 <!-- ===== 14 ===== -->
@@ -1171,6 +1183,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>Multiply on the left by V⁻¹; each coordinate now evolves alone.</p></div>
 </div><figure><canvas id="m7p14a" width="440" height="320" aria-label="The ODE separates into scalar modes"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p14a"),function(g,t,k){drawM7(g,t,k,"modes",14,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Decoupled linear ODEs</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a> · Course derivation</p>
 </section>
 
 <!-- ===== 15 ===== -->
@@ -1184,6 +1197,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>Negative rates decay; positive rates grow if the mode is present.</p></div>
 </div><figure><canvas id="m7p15a" width="440" height="320" aria-label="Each eigenvalue is a continuous growth rate"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p15a"),function(g,t,k){drawM7(g,t,k,"modes",15,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Eigenvalues; exponential growth and decay</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a> · Course example</p>
 </section>
 
 <!-- ===== 16 ===== -->
@@ -1199,6 +1213,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct A. Use the inverse basis.</p></div>
 </div><figure><canvas id="m7p16a" width="440" height="320" aria-label="Return from modal coordinates"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p16a"),function(g,t,k){drawM7(g,t,k,"modes",16,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Change of basis; matrix exponential</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a> · Course derivation</p>
 </section>
 
 <!-- ===== 17 ===== -->
@@ -1212,6 +1227,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>Diagonalization is one way to evaluate the solution, not an existence requirement.</p></div>
 </div><figure><canvas id="m7p17a" width="440" height="320" aria-label="The matrix exponential always exists"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p17a"),function(g,t,k){drawM7(g,t,k,"matrix",17,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Matrix exponential</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a></p>
 </section>
 
 <!-- ===== 18 ===== -->
@@ -1227,6 +1243,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct C. Both IVP checks pass.</p></div>
 </div><figure><canvas id="m7p18a" width="440" height="320" aria-label="Check a candidate for a defective system"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p18a"),function(g,t,k){drawM7(g,t,k,"defective",18,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Defective matrix; matrix exponential</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a> · Course example</p>
 </section>
 
 <!-- ===== 19 ===== -->
@@ -1240,6 +1257,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="ex"><p>This trajectory stays on the unit circle.</p></div>
 </div><figure><canvas id="m7p19a" width="440" height="320" aria-label="A real rotation has complex eigenvalues"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p19a"),function(g,t,k){drawM7(g,t,k,"rotation",19,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Complex eigenvalues; rotation</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a> · Course example</p>
 </section>
 
 <!-- ===== 20 ===== -->
@@ -1255,12 +1273,13 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct B. Coupling gives linear growth.</p></div>
 </div><figure><canvas id="m7p20a" width="440" height="320" aria-label="Zero real parts need a closer look"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p20a"),function(g,t,k){drawM7(g,t,k,"shear",20,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Boundedness; asymptotic decay</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a></p>
 </section>
 
 <!-- ===== 21 ===== -->
 <section class="slide" data-part="III">
 <p class="eyebrow">Derivation</p>
-<h2>Euler Integration</h2>
+<h2>Euler&#x27;s Method</h2>
 <p class="sub">An exact step is an integral</p>
 <div class="cols w6040"><div>
 <div class="eq">$$x(t+h)-x(t)=\int_t^{t+h}f(x(s),s)\,ds$$</div>
@@ -1268,12 +1287,13 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>The fundamental theorem of calculus gives the starting relation.</p></div>
 </div><figure><canvas id="m7p21a" width="440" height="320" aria-label="An exact step is an integral"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p21a"),function(g,t,k){drawM7(g,t,k,"area",21,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Integral form of an ODE</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · Course derivation</p>
 </section>
 
 <!-- ===== 22 ===== -->
 <section class="slide" data-part="III">
 <p class="eyebrow">Rule</p>
-<h2>Euler Integration</h2>
+<h2>Euler&#x27;s Method</h2>
 <p class="sub">Euler uses the rate at the start</p>
 <div class="cols w6040"><div>
 <div class="eq">$$x_{k+1}=x_k+h f(x_k,t_k)$$</div>
@@ -1281,12 +1301,13 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>Every component uses the same old state.</p></div>
 </div><figure><canvas id="m7p22a" width="440" height="320" aria-label="Euler uses the rate at the start"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p22a"),function(g,t,k){drawM7(g,t,k,"euler",22,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Explicit Euler method</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a></p>
 </section>
 
 <!-- ===== 23 ===== -->
 <section class="slide" data-part="III">
 <p class="eyebrow">Worked example</p>
-<h2>Euler Integration</h2>
+<h2>Euler&#x27;s Method</h2>
 <p class="sub">One step against an exact answer</p>
 <div class="cols w6040"><div>
 <div class="eq">$$x_1=1+0.1(-2)=0.8$$</div>
@@ -1294,12 +1315,13 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="ex"><p>Worked example: exact x(0.1)=0.8187307531; Euler is lower.</p></div>
 </div><figure><canvas id="m7p23a" width="440" height="320" aria-label="One step against an exact answer"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p23a"),function(g,t,k){drawM7(g,t,k,"euler",23,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Explicit Euler method; one-step error</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · Course example</p>
 </section>
 
 <!-- ===== 24 ===== -->
 <section class="slide" data-part="III">
 <p class="eyebrow you" data-min="1.5">Your turn</p>
-<h2>Euler Integration</h2>
+<h2>Euler&#x27;s Method</h2>
 <p class="sub">Your turn: two larger steps</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=-2x,\quad x_0=1,\quad h=0.2$$</div>
@@ -1309,19 +1331,21 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct A. Reevaluate the rate.</p></div>
 </div><figure><canvas id="m7p24a" width="440" height="320" aria-label="Your turn: two larger steps"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p24a"),function(g,t,k){drawM7(g,t,k,"euler",24,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Explicit Euler method</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · Course example</p>
 </section>
 
 <!-- ===== 25 ===== -->
 <section class="slide" data-part="III">
 <p class="eyebrow">Error analysis</p>
-<h2>Euler Integration</h2>
+<h2>Euler&#x27;s Method</h2>
 <p class="sub">Local error and accumulated error differ</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\begin{aligned}x(t+h)&amp;=x+h\dot x+\tfrac12h^2\ddot x+O(h^3)\\\ddot x&amp;=f_t+J_f f\end{aligned}$$</div>
 <dl class="gloss"><dt>x, f</dt><dd>evaluated on the exact path at time t</dd><dt>fₜ, Jf</dt><dd>partial time derivative and state Jacobian</dd></dl>
-<div class="teaching-point"><p>Assume f is C² with bounded derivatives near the finite trajectory.</p></div>
+<div class="teaching-point"><p>C² field, bounded derivatives. Local state error = h × FNC’s normalized LTE.</p></div>
 </div><figure><canvas id="m7p25a" width="440" height="320" aria-label="Local error and accumulated error differ"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p25a"),function(g,t,k){drawM7(g,t,k,"error",25,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Local error; global error</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a></p>
 </section>
 
 <!-- ===== 26 ===== -->
@@ -1335,6 +1359,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>Recall Lecture 6: A=−H turns this into the gradient-descent multiplier.</p></div>
 </div><figure><canvas id="m7p26a" width="440" height="320" aria-label="A repeated step has a multiplier"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p26a"),function(g,t,k){drawM7(g,t,k,"amplification",26,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Amplification factor</span> — <a href="https://fncbook.com/absstab-diffusion/">[4] FNC §11.3</a></p>
 </section>
 
 <!-- ===== 27 ===== -->
@@ -1345,9 +1370,10 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$|1+h\lambda|&lt;1\quad\Longleftrightarrow\quad0&lt;h&lt;-2/\lambda$$</div>
 <dl class="gloss"><dt>λ</dt><dd>real negative rate</dd><dt>h</dt><dd>positive step size</dd><dt>|1+hλ|</dt><dd>size of each numerical multiplier</dd></dl>
-<div class="teaching-point"><p>At the endpoint the factor is −1: oscillation without decay.</p></div>
+<div class="teaching-point"><p>FNC: bounded if |1+hλ| ≤ 1. Here: decay needs |1+hλ| &lt; 1.</p></div>
 </div><figure><canvas id="m7p27a" width="440" height="320" aria-label="The strict inequality decides decay"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p27a"),function(g,t,k){drawM7(g,t,k,"stability",27,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Absolute stability; asymptotic decay</span> — <a href="https://fncbook.com/absstab-diffusion/">[4] FNC §11.3</a></p>
 </section>
 
 <!-- ===== 28 ===== -->
@@ -1363,6 +1389,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct C. Magnitude decides decay.</p></div>
 </div><figure><canvas id="m7p28a" width="440" height="320" aria-label="Predict three step-size regimes"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p28a"),function(g,t,k){drawM7(g,t,k,"amplification",28,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Step-size restriction; asymptotic decay</span> — <a href="https://fncbook.com/absstab-diffusion/">[4] FNC §11.3</a> · Course example</p>
 </section>
 
 <!-- ===== 29 ===== -->
@@ -1378,6 +1405,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct B. Both strict bounds must hold.</p></div>
 </div><figure><canvas id="m7p29a" width="440" height="320" aria-label="Every mode must satisfy the bound"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p29a"),function(g,t,k){drawM7(g,t,k,"modes",29,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Stability of a linear system</span> — <a href="https://fncbook.com/absstab-diffusion/">[4] FNC §11.3</a> · Course example</p>
 </section>
 
 <!-- ===== 30 ===== -->
@@ -1391,6 +1419,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>A bounded exact orbit can produce an outward numerical spiral.</p></div>
 </div><figure><canvas id="m7p30a" width="440" height="320" aria-label="Euler adds energy to an oscillator"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p30a"),function(g,t,k){drawM7(g,t,k,"spiral",30,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Absolute stability; harmonic oscillator</span> — <a href="https://fncbook.com/absstab-diffusion/">[4] FNC §11.3</a></p>
 </section>
 
 <!-- ===== 31 ===== -->
@@ -1404,6 +1433,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>A solver check tests the approximation. Measurements test the physical model.</p></div>
 </div><figure><canvas id="m7p31a" width="440" height="320" aria-label="Model validation and solver verification"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p31a"),function(g,t,k){drawM7(g,t,k,"diagnosis",31,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Verification; validation</span> — <a href="https://www.grc.nasa.gov/www/wind/valid/tutorial/glossary.html">[5] NASA, V&amp;V glossary</a></p>
 </section>
 
 <!-- ===== 32 ===== -->
@@ -1417,6 +1447,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>A better slope estimate can improve the same time step.</p></div>
 </div><figure><canvas id="m7p32a" width="440" height="320" aria-label="Sample the field inside the step"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p32a"),function(g,t,k){drawM7(g,t,k,"midpoint",32,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Runge–Kutta methods</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
 </section>
 
 <!-- ===== 33 ===== -->
@@ -1427,9 +1458,10 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$k_1=f(x_k,t_k),\qquad k_2=f(x_k+\tfrac h2k_1,t_k+\tfrac h2)$$</div>
 <dl class="gloss"><dt>k₁,k₂</dt><dd>rates, not increments</dd><dt>h k₁/2</dt><dd>trial half-step displacement</dd><dt>tₖ+h/2</dt><dd>midpoint time</dd></dl>
-<div class="teaching-point"><p>The first rate predicts a location; the second samples the field there.</p></div>
+<div class="teaching-point"><p>Explicit midpoint (RK2); FNC calls this improved Euler (IE2). Here kᵢ are rates.</p></div>
 </div><figure><canvas id="m7p33a" width="440" height="320" aria-label="Construct a trial midpoint"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p33a"),function(g,t,k){drawM7(g,t,k,"midpoint",33,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Explicit midpoint method (RK2)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
 </section>
 
 <!-- ===== 34 ===== -->
@@ -1443,6 +1475,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="ex"><p>ẋ=−2x, x₀=1, h=.2: k₁=−2 → trial=.8 → k₂=−1.6 → x₁=.68.</p></div>
 </div><figure><canvas id="m7p34a" width="440" height="320" aria-label="Advance with the midpoint rate"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p34a"),function(g,t,k){drawM7(g,t,k,"midpoint",34,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Explicit midpoint method (RK2)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
 </section>
 
 <!-- ===== 35 ===== -->
@@ -1458,6 +1491,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct C. Return to the original state.</p></div>
 </div><figure><canvas id="m7p35a" width="440" height="320" aria-label="Your turn: halve the midpoint step"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p35a"),function(g,t,k){drawM7(g,t,k,"midpoint",35,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Explicit midpoint method (RK2)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
 </section>
 
 <!-- ===== 36 ===== -->
@@ -1471,6 +1505,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>Each trial is anchored at the original x.</p></div>
 </div><figure><canvas id="m7p36a" width="440" height="320" aria-label="Classical RK4 evaluates four trial rates"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p36a"),function(g,t,k){drawM7(g,t,k,"rk4",36,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Classical fourth-order Runge–Kutta (RK4)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
 </section>
 
 <!-- ===== 37 ===== -->
@@ -1484,6 +1519,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="ex"><p>ẋ=−2x, x₀=1, h=.2: rates (−2,−1.6,−1.68,−1.328) give x₁=.6704.</p></div>
 </div><figure><canvas id="m7p37a" width="440" height="320" aria-label="Combine the four rates"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p37a"),function(g,t,k){drawM7(g,t,k,"rk4",37,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Classical RK4; weighted stage sum</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
 </section>
 
 <!-- ===== 38 ===== -->
@@ -1499,6 +1535,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct A. Match cost AND interval.</p></div>
 </div><figure><canvas id="m7p38a" width="440" height="320" aria-label="Your turn: compare equal model-call budgets"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p38a"),function(g,t,k){drawM7(g,t,k,"rk4",38,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Function evaluations; order of accuracy</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
 </section>
 
 <!-- ===== 39 ===== -->
@@ -1512,6 +1549,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>Halve h and check convergence; RK4 is not unconditionally stable.</p></div>
 </div><figure><canvas id="m7p39a" width="440" height="320" aria-label="Accuracy improves at a computational price"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p39a"),function(g,t,k){drawM7(g,t,k,"order",39,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Order of accuracy; absolute stability</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · <a href="https://fncbook.com/absstab-diffusion/">[4] FNC §11.3</a></p>
 </section>
 
 <!-- ===== 40 ===== -->
@@ -1525,6 +1563,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>Unforced, undamped motion is the model for this comparison.</p></div>
 </div><figure><canvas id="m7p40a" width="440" height="320" aria-label="The restoring acceleration has a sign"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p40a"),function(g,t,k){drawM7(g,t,k,"pendulum",40,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Simple pendulum; first-order system</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a></p>
 </section>
 
 <!-- ===== 41 ===== -->
@@ -1538,6 +1577,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>The zero of potential energy is a convention; energy differences have meaning.</p></div>
 </div><figure><canvas id="m7p41a" width="440" height="320" aria-label="Mechanical energy is a diagnostic"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p41a"),function(g,t,k){drawM7(g,t,k,"energy",41,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Mechanical energy</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a></p>
 </section>
 
 <!-- ===== 42 ===== -->
@@ -1551,6 +1591,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>The two terms cancel only for the stated unforced, undamped model.</p></div>
 </div><figure><canvas id="m7p42a" width="440" height="320" aria-label="The exact dynamics conserve energy"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p42a"),function(g,t,k){drawM7(g,t,k,"energy",42,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Conservation of mechanical energy</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a></p>
 </section>
 
 <!-- ===== 43 ===== -->
@@ -1566,6 +1607,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct B. Keep state/rate order.</p></div>
 </div><figure><canvas id="m7p43a" width="440" height="320" aria-label="Choose the state and the check first"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p43a"),function(g,t,k){drawM7(g,t,k,"pendulum",43,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Pendulum IVP; numerical integration</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a> · <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
 </section>
 
 <!-- ===== 44 ===== -->
@@ -1581,6 +1623,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct A. Trial velocity need not be zero.</p></div>
 </div><figure class="data-figure"><canvas id="m7p44a" width="440" height="320" aria-label="Compare the first accepted states"></canvas><div class="step answer-table" data-step="1"><table><thead><tr><th>method</th><th>q₁</th><th>v₁</th></tr></thead><tbody><tr><td>Euler</td><td>1.000000</td><td>−.084147</td></tr><tr><td>midpoint</td><td>.995793</td><td>−.084147</td></tr><tr><td>RK4</td><td>.995795</td><td>−.084071</td></tr></tbody></table></div></figure></div>
 <script>m3anim(document.getElementById("m7p44a"),function(g,t,k){drawM7(g,t,k,"phase",44,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Euler and explicit midpoint methods</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
 </section>
 
 <!-- ===== 45 ===== -->
@@ -1596,6 +1639,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct C: keep Nh=T.</p></div>
 </div><figure class="data-figure"><canvas id="m7p45a" width="440" height="320" aria-label="Repeat to the same final time"></canvas><div class="step answer-table" data-step="1"><table><thead><tr><th>h</th><th>Euler ΔE</th><th>RK4 ΔE</th></tr></thead><tbody><tr><td>.2</td><td>1.324213</td><td>−1.46×10⁻⁵</td></tr><tr><td>.1</td><td>.539746</td><td>−4.61×10⁻⁷</td></tr><tr><td>.05</td><td>.232375</td><td>−1.44×10⁻⁸</td></tr></tbody></table></div></figure></div>
 <script>m3anim(document.getElementById("m7p45a"),function(g,t,k){drawM7(g,t,k,"drift",45,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Global error; step refinement</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
 </section>
 
 <!-- ===== 46 ===== -->
@@ -1611,6 +1655,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct B. Energy cannot fix phase.</p></div>
 </div><figure><canvas id="m7p46a" width="440" height="320" aria-label="Compare two energy-matched states"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p46a"),function(g,t,k){drawM7(g,t,k,"equalenergy",46,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Energy level; state error</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a> · Course example</p>
 </section>
 
 <!-- ===== 47 ===== -->
@@ -1626,6 +1671,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct A. Potential falls; kinetic energy is unchanged.</p></div>
 </div><figure><canvas id="m7p47a" width="440" height="320" aria-label="Transfer: a moving pendulum near the top"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p47a"),function(g,t,k){drawM7(g,t,k,"energy",47,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Pendulum IVP; explicit midpoint method</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a> · <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
 </section>
 
 <!-- ===== 48 ===== -->
@@ -1641,6 +1687,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct C. Check state AND invariant.</p></div>
 </div><figure><canvas id="m7p48a" width="440" height="320" aria-label="Choose a complete simulation workflow"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p48a"),function(g,t,k){drawM7(g,t,k,"pipeline",48,true);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Verification; validation; step refinement</span> — <a href="https://www.grc.nasa.gov/www/wind/valid/tutorial/glossary.html">[5] NASA, V&amp;V glossary</a> · <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · Course checklist</p>
 </section>
 
 <!-- ===== 49 ===== -->
@@ -1654,6 +1701,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="teaching-point"><p>A learned field supplies rates; Euler or RK advances the state.</p></div>
 </div><figure><canvas id="m7p49a" width="440" height="320" aria-label="A learned field still needs an integrator"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p49a"),function(g,t,k){drawM7(g,t,k,"field",49,false);},{rest:0.4,seconds:5});</script>
+<p class="cite page-source"><span>Neural ODE; numerical integration</span> — <a href="https://arxiv.org/abs/1806.07366">[6] Chen et al. (2018), §1</a></p>
 </section>
 
 <!-- ===== 50 ===== -->
@@ -1661,7 +1709,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="eyebrow">References</p>
 <h2>References</h2>
 <p class="sub">Sources for models and exact dynamics</p>
-<ol class="refs"><li><a href="https://underactuated.mit.edu/pend.html">Tedrake, R. Underactuated Robotics, ch.2. MIT course notes, 2024.</a></li><li><a href="https://hades.mech.northwestern.edu/index.php/Modern_Robotics">Lynch, K. M. &amp; Park, F. C. Modern Robotics, ch.8. Cambridge, 2017.</a></li><li><a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">Strang, G. Differential Equations and exp(At). MIT 18.06 Lecture 23, 2010.</a></li></ol>
+<ol class="refs"><li><a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, R. Underactuated Robotics, ch.2. MIT notes, 2024.</a></li><li><a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/chapter-8-1-lagrangian-formulation-of-dynamics-part-1-of-2/">[2] Lynch, K. M. &amp; Park, F. C. Modern Robotics, §8.1. Cambridge, 2017; official supplement.</a></li><li><a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, G. Differential Equations and exp(At). MIT 18.06, lecture 23; OCW 2010.</a></li></ol>
 </section>
 
 <!-- ===== 51 ===== -->
@@ -1669,7 +1717,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="eyebrow">References</p>
 <h2>References</h2>
 <p class="sub">Sources for integration and stability</p>
-<ol class="refs"><li><a href="https://www.math.ntnu.no/emner/TMA4130/2022h/html_notes/NumODE_part2.html">Kværnø, A. Numerical Solution of ODEs, part 2. NTNU, 2022.</a></li><li><a href="https://fncbook.com/rk/">Driscoll, T. &amp; Braun, R. Fundamentals of Numerical Computation, §6.4. Online textbook.</a></li></ol>
+<ol class="refs"><li><a href="https://fncbook.com/euler/">[4] Driscoll, T. A. &amp; Braun, R. J. Fundamentals of Numerical Computation. Online text, §§6.1–6.4, 11.3; accessed 2026-10-20.</a></li><li><a href="https://www.grc.nasa.gov/www/wind/valid/tutorial/glossary.html">[5] NASA Glenn. Glossary of Verification and Validation Terms. Online tutorial; accessed 2026-10-20.</a></li><li><a href="https://arxiv.org/abs/1806.07366">[6] Chen, R. T. Q., Rubanova, Y., Bettencourt, J. &amp; Duvenaud, D. Neural Ordinary Differential Equations. NeurIPS, 2018, §1.</a></li></ol>
 </section>
 
 </div>
