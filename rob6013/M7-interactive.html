@@ -401,7 +401,7 @@ body.print #m7break{display:none!important}
 @media print{#m7break{display:none!important}}
 
 /* M7-LAYOUT */
-.slide .cols{gap:26px;align-items:start}.slide .cols>div{min-width:0}.slide .eq{font-size:25px;margin:12px 0}.slide .gloss{font-size:17px;line-height:1.28;margin:8px 0 12px}.slide .gloss dt{font-size:17px}.slide .gloss dd{font-size:17px}.slide .teaching-point p,.slide .ex p,.slide .answer p{font-size:20px;line-height:1.3;margin:10px 0}.slide .q{font-size:20px}.slide .mc-options{font-size:20px;line-height:1.25;margin:8px 0;padding-left:25px}.slide .mc-options li{padding:4px 0}.slide:has(.mc-options) .teaching-point{display:none}.slide:has(.mc-options) .eq{font-size:23px}.slide .answer{border-left:3px solid var(--c-res-ok);padding-left:14px}.slide figure{margin:12px 0}.slide .sub{font-size:26px}.slide .key{font-size:14px;margin-top:7px}.slide.title .tiny{font-size:14px}.slide.title .cols{flex:none;margin-top:20px}.slide.title .teaching-point p{font-size:24px}.slide .concept-route{font-size:21px;line-height:1.25;margin-top:14px}.slide .map-node{font-weight:600;color:var(--c-in);margin:3px 0}.slide .map-edge{margin:3px 0 3px 15px}.slide .map-check{margin-top:8px}.slide .data-figure{position:relative}.slide .data-figure:has(.shown) canvas{visibility:hidden}.slide .answer-table{position:absolute;inset:30px 0 auto}.slide .answer-table table{font-size:20px;width:100%;border-collapse:collapse}.slide .answer-table th,.slide .answer-table td{padding:12px 6px;text-align:right;border-bottom:1px solid var(--c-rule)}.slide .answer-table th:first-child,.slide .answer-table td:first-child{text-align:left}.slide .page-source{position:absolute;left:64px;right:64px;bottom:76px;margin:0;font-size:15px;line-height:1.25;color:inherit}.slide.title .page-source{bottom:80px}.slide .page-source a{color:inherit;text-decoration:underline}.slide .refs{list-style:none;padding-left:0;font-size:24px;line-height:1.5}.slide .refs li{margin:20px 0}
+.slide .cols{gap:26px;align-items:start}.slide .cols>div{min-width:0}.slide .eq{font-size:25px;margin:12px 0}.slide .gloss{font-size:17px;line-height:1.28;margin:8px 0 12px}.slide .gloss dt{font-size:17px}.slide .gloss dd{font-size:17px}.slide .teaching-point p,.slide .ex p,.slide .answer p{font-size:20px;line-height:1.3;margin:10px 0}.slide .q{font-size:20px}.slide .mc-options{font-size:20px;line-height:1.25;margin:8px 0;padding-left:25px}.slide .mc-options li{padding:4px 0}.slide:has(.mc-options) .teaching-point{display:none}.slide:has(.mc-options) .eq{font-size:23px}.slide .answer{border-left:3px solid var(--c-res-ok);padding-left:14px}.slide figure{margin:12px 0}.slide .sub{font-size:26px}.slide .key{font-size:14px;margin-top:7px}.slide.title .tiny{font-size:14px}.slide.title .cols{flex:none;margin-top:20px}.slide.title .teaching-point p{font-size:24px}.slide .concept-route{font-size:21px;line-height:1.25;margin-top:14px}.slide .map-node{font-weight:600;color:var(--c-in);margin:3px 0}.slide .map-edge{margin:3px 0 3px 15px}.slide .map-check{margin-top:8px}.slide .data-figure{position:relative}.slide .data-figure:has(.shown) canvas{visibility:visible}.slide .answer-table{position:relative;inset:auto;margin-top:3px}.slide .answer-table table{font-size:16px;width:100%;border-collapse:collapse}.slide .answer-table th,.slide .answer-table td{padding:4px 6px;text-align:right;border-bottom:1px solid var(--c-rule)}.slide .answer-table th:first-child,.slide .answer-table td:first-child{text-align:left}.slide .page-source{position:absolute;left:64px;right:64px;bottom:76px;margin:0;font-size:15px;line-height:1.25;color:inherit}.slide.title .page-source{bottom:80px}.slide .page-source a{color:inherit;text-decoration:underline}.slide .refs{list-style:none;padding-left:0;font-size:24px;line-height:1.5}.slide .refs li{margin:20px 0}
 </style>
 <script>
 /* ---------------------------------------------------------------------------
@@ -875,6 +875,43 @@ window.drawM7=function(g,t,k,type,page,isActivity){
  function path(points,color,width){for(var i=1;i<points.length;i++)k.seg(points[i-1],points[i],color,width||2);}
  function plot(fun,xmax,ymin,ymax,color){var p=[];for(var i=0;i<=120;i++){var x=xmax*i/120,y=fun(x);p.push([L+(R-L)*x/xmax,B-(B-T)*(y-ymin)/(ymax-ymin)]);}path(p,color);return function(x,y){return[L+(R-L)*x/xmax,B-(B-T)*(y-ymin)/(ymax-ymin)];};}
  if(isActivity&&!k.shown(1)){return;}
+ if(page===7){
+  [1,-1].forEach(function(dir,j){var o=[110+j*220,52],q=.65,len=135,p=[o[0]+len*Math.sin(q),o[1]+len*Math.cos(q)];
+   k.seg(o,[o[0],o[1]+len],c.rule,1,[4,4]);k.seg(o,p,c.ink,3);k.dot(o,4,c.ink);k.dot(p,9,c.dat);
+   var d=[Math.cos(q)*28*dir,-Math.sin(q)*28*dir];k.arrow(p,[p[0]+d[0],p[1]+d[1]],j?c.out:c.in,3);
+   label('q',o[0]+19,o[1]+46,c.dim,18);label(j?'v < 0':'v > 0',o[0]-20,230,j?c.out:c.in,20);
+  });label('same angle; opposite velocities',55,280,c.ink,19);return;
+ }
+ if(type==='state'){
+  label('state x',65,50,c.in,22);label('rate f(x,t)',255,50,c.out,22);
+  var input=page===10?['1','2']:page===11?['q','2']:['q','v'];
+  var output=page===10?['2','.5']:page===11?['2','−1.5']:['v','a'];
+  [70,270].forEach(function(z){k.seg([z,85],[z,205],c.dim,2);k.seg([z,85],[z+12,85],c.dim,2);k.seg([z,205],[z+12,205],c.dim,2);k.seg([z+70,85],[z+70,205],c.dim,2);k.seg([z+58,85],[z+70,85],c.dim,2);k.seg([z+58,205],[z+70,205],c.dim,2);});
+  input.forEach((s,i)=>label(s,94,119+65*i,c.in,27));output.forEach((s,i)=>label(s,290,119+65*i,c.out,27));
+  k.arrow([155,145],[250,145],c.dim,2);label('f',195,127,c.ink,22);
+  label('position rate = velocity',45,250,c.ink,19);label('velocity rate = acceleration',45,280,c.ink,19);return;
+ }
+ if(page===29){
+  var x0=70,x1=W-45,y=[85,155,225];label('step size h',W-140,285,c.dim,17);
+  function open(x,yy,col){g.beginPath();g.arc(x,yy,5,0,2*Math.PI);g.fillStyle=c.bg||c.panel;g.fill();g.strokeStyle=col;g.lineWidth=2;g.stroke();}
+  [['rate −2',1],['rate −8',.25],['both modes',.25]].forEach(function(a,i){label(a[0],40,y[i]-23,i===2?c.out:c.ink,18);k.seg([x0,y[i]],[x1,y[i]],c.rule,1);var xe=x0+(x1-x0)*a[1];k.seg([x0+5,y[i]],[xe-5,y[i]],i===2?c.out:c.in,5);open(x0,y[i],c.in);open(xe,y[i],i===2?c.out:c.in);label('0',x0-5,y[i]+24,c.dim,15);label(a[1]===1?'1':'1/4',xe-10,y[i]+24,c.dim,15);});return;
+ }
+ if(page===36){
+  label('trial state, time → rate',52,28,c.ink,20);
+  ['x, t → k₁','x + h k₁/2, t + h/2 → k₂','x + h k₂/2, t + h/2 → k₃','x + h k₃, t + h → k₄'].forEach(function(s,i){g.fillStyle=c.panel;g.fillRect(24,48+62*i,W-48,45);label(s,36,74+62*i,i===0?c.in:c.ink,19);if(i<3)k.arrow([W/2,97+62*i],[W/2,107+62*i],c.out,2);});
+  label('all trials start from the original x',42,H-10,c.dim,16);return;
+ }
+ if(page===44){
+  var qlo=.994,qhi=1.001,vlo=-.095,vhi=.01;
+  function S44(q,v){return[55+(W-90)*(q-qlo)/(qhi-qlo),H-40-(H-70)*(v-vlo)/(vhi-vlo)];}
+  k.seg([55,H-40],[W-35,H-40],c.dim,1);k.seg([55,28],[55,H-40],c.dim,1);label('q',W-29,H-22,c.dim,16);label('v',35,25,c.dim,16);
+  var initial=S44(1,0),trial=S44(1,-.05*Math.sin(1)),eu=S44(1,-.1*Math.sin(1)),mi=M7.step([1,0],.1,'midpoint'),rk=M7.step([1,0],.1,'RK4');
+  k.arrow(initial,eu,c.res,2);k.seg(initial,S44(mi[0],mi[1]),c.out,2);k.dot(initial,5,c.in);k.dot(trial,4,c.dat);k.dot(eu,5,c.res);k.dot(S44(mi[0],mi[1]),5,c.out);k.dot(S44(rk[0],rk[1]),3,c.in);
+  label('start (1, 0)',initial[0]-112,initial[1]-8,c.in,15);label('trial',trial[0]+8,trial[1],c.dat,14);label('Euler',eu[0]+6,eu[1]+2,c.res,14);label('midpoint / RK4',62,H-11,c.out,15);label('.994',49,H-23,c.dim,13);label('1',initial[0]-4,H-23,c.dim,13);return;
+ }
+ if(page===49){
+  ['current state x, time t','learned field vθ(x,t)','rate for every component','integrator + h → next state'].forEach(function(s,i){g.fillStyle=c.panel;g.fillRect(25,30+65*i,W-50,46);label(s,40,58+65*i,i===0?c.in:i===3?c.out:c.ink,19);if(i<3)k.arrow([W/2,80+65*i],[W/2,92+65*i],c.dim,2);});return;
+ }
  if(type==='diagnosis'){
   label('Same model, two comparisons',48,38,c.ink,20);
   label('Numerical solution',60,88,c.in,21);
@@ -915,9 +952,9 @@ window.drawM7=function(g,t,k,type,page,isActivity){
  }
  if(type==='rotation'||type==='spiral'||type==='phase'||type==='field'||type==='linear'||type==='basis'||type==='shear'){
   var ox=W/2,oy=H/2,scale=65;
-  k.seg([25,oy],[W-20,oy],c.rule,1);k.seg([ox,20],[ox,H-25],c.rule,1);label(type==='phase'?'q':'x₁',W-43,oy+23,c.dim);label(type==='phase'?'v':'x₂',ox+9,25,c.dim);
+  k.seg([25,oy],[W-20,oy],c.rule,1);k.seg([ox,20],[ox,H-25],c.rule,1);label(page===3?'x₁ = q':type==='phase'?'q':'x₁',W-(page===3?80:43),oy+23,c.dim);label(page===3?'x₂ = v':type==='phase'?'v':'x₂',ox+9,25,c.dim);
   function S(p){return[ox+p[0]*scale,oy-p[1]*scale];}
-  if(type==='field'||type==='linear'){for(var a=-2;a<=2;a++)for(var b=-1.5;b<=1.5;b+=.75){var f=type==='linear'?[-a-b,-2*b]:[b,-Math.sin(a)],norm=Math.hypot(f[0],f[1]),fac=.25/Math.max(1,norm);k.arrow(S([a,b]),S([a+fac*f[0],b+fac*f[1]]),c.dim,1.4);}label('arrows scaled for readability',37,H-10,c.dim,13);return;}
+  if(type==='field'||type==='linear'){for(var a=-2;a<=2;a++)for(var b=-1.5;b<=1.5;b+=.75){var f=type==='linear'?[-a-b,-2*b]:[b,-Math.sin(a)],norm=Math.hypot(f[0],f[1]),fac=.25/Math.max(1,norm);k.arrow(S([a,b]),S([a+fac*f[0],b+fac*f[1]]),c.dim,1.4);}if(page===3){[[0,.75],[1,0]].forEach(function(z,j){var f=[z[1],-Math.sin(z[0])],fac=.55;k.dot(S(z),4,j?c.out:c.in);k.arrow(S(z),S([z[0]+fac*f[0],z[1]+fac*f[1]]),j?c.out:c.in,3);label(j?'(1, 0)':'(0, .75)',S(z)[0]+8,S(z)[1]+(j?-10:-14),j?c.out:c.in,16);});label('0',ox-16,oy+19,c.dim,14);label('Directions of f(q, v) = (v, −sin q)',30,H-10,c.dim,15);}else{[[1,0],[0,.75]].forEach(function(z,j){var f=[-z[0]-z[1],-2*z[1]],fac=.4;k.dot(S(z),4,j?c.out:c.in);k.arrow(S(z),S([z[0]+fac*f[0],z[1]+fac*f[1]]),j?c.out:c.in,3);label(j?'(0, .75)':'(1, 0)',S(z)[0]+8,S(z)[1]-12,j?c.out:c.in,16);});label('Directions of A x',37,H-10,c.dim,15);}return;}
   if(type==='basis'){k.arrow(S([0,0]),S([1,0]),c.in,3);k.arrow(S([0,0]),S([1,1]),c.out,3);label('v₁',ox+75,oy,c.in);label('v₂',ox+73,oy-73,c.out);return;}
   if(type==='shear'){path([S([0,1]),S([2,1])],c.in);k.dot(S([2*t,1]),6,c.dat);label('x(t) = (t, 1)',50,H-16,c.ink);return;}
   if(type==='phase'){
@@ -950,7 +987,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
   axes('h','error (schematic)');var S;[1,2,4].forEach(function(p,j){S=plot(h=>Math.pow(h,p),1,0,1,[c.res,c.out,c.in][j]);label('h^'+p,85+j*90,48,[c.res,c.out,c.in][j]);});label('unit leading coefficient for comparison',38,H-11,c.dim,14);return;
  }
  if(type==='amplification'||type==='stability'){
-  axes('step k','state');var vals=[0,-.6,-1.4];vals.forEach(function(a,j){var pts=[];for(var i=0;i<=6;i++){pts.push([L+(R-L)*i/6,(T+B)/2-Math.pow(a,i)*15]);}path(pts,[c.in,c.out,c.res][j]);var ii=Math.floor(6*t);k.dot(pts[ii],5,[c.in,c.out,c.res][j]);label('factor '+a,52+j*120,T,[c.in,c.out,c.res][j],14);});return;
+  axes('step k','state');var vals=page===27?[-1,-.6,-1.4]:[0,-.6,-1.4];k.seg([L,(T+B)/2],[R,(T+B)/2],c.rule,1,[4,4]);label('0',L-18,(T+B)/2+5,c.dim,14);vals.forEach(function(a,j){var pts=[];for(var i=0;i<=6;i++){pts.push([L+(R-L)*i/6,(T+B)/2-Math.pow(a,i)*15]);}path(pts,[c.in,c.out,c.res][j]);var ii=Math.floor(6*t);k.dot(pts[ii],5,[c.in,c.out,c.res][j]);label('factor '+a,52+j*120,T,[c.in,c.out,c.res][j],14);});return;
  }
  if(type==='defective'){
   axes('t','state');var S=plot(x=>x*Math.exp(-x),5,0,1,c.in);plot(x=>Math.exp(-x),5,0,1,c.out);k.dot(S(5*t,5*t*Math.exp(-5*t)),6,c.dat);label('t exp(−t)',100,60,c.in);label('exp(−t)',250,60,c.out);return;
@@ -1621,7 +1658,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="q">Why can midpoint change q when v₀=0?</p>
 <ol class="mc-options" type="A"><li>Nonzero trial velocity.</li><li>Twice the physical time.</li><li>A different initial velocity.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
 <p>Correct A. Trial velocity need not be zero.</p></div>
-</div><figure class="data-figure"><canvas id="m7p44a" width="440" height="320" aria-label="Compare the first accepted states"></canvas><div class="step answer-table" data-step="1"><table><thead><tr><th>method</th><th>q₁</th><th>v₁</th></tr></thead><tbody><tr><td>Euler</td><td>1.000000</td><td>−.084147</td></tr><tr><td>midpoint</td><td>.995793</td><td>−.084147</td></tr><tr><td>RK4</td><td>.995795</td><td>−.084071</td></tr></tbody></table></div></figure></div>
+</div><figure class="data-figure"><canvas id="m7p44a" width="440" height="200" aria-label="Compare the first accepted states"></canvas><div class="step answer-table" data-step="1"><table><thead><tr><th>method</th><th>q₁</th><th>v₁</th></tr></thead><tbody><tr><td>Euler</td><td>1.000000</td><td>−.084147</td></tr><tr><td>midpoint</td><td>.995793</td><td>−.084147</td></tr><tr><td>RK4</td><td>.995795</td><td>−.084071</td></tr></tbody></table></div></figure></div>
 <script>m3anim(document.getElementById("m7p44a"),function(g,t,k){drawM7(g,t,k,"phase",44,true);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Euler and explicit midpoint methods</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
 </section>
@@ -1637,7 +1674,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="q">Halve h: how do we keep the endpoint fixed?</p>
 <ol class="mc-options" type="A"><li>Keep N.</li><li>Stop at equal E.</li><li>Double N.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
 <p>Correct C: keep Nh=T.</p></div>
-</div><figure class="data-figure"><canvas id="m7p45a" width="440" height="320" aria-label="Repeat to the same final time"></canvas><div class="step answer-table" data-step="1"><table><thead><tr><th>h</th><th>Euler ΔE</th><th>RK4 ΔE</th></tr></thead><tbody><tr><td>.2</td><td>1.324213</td><td>−1.46×10⁻⁵</td></tr><tr><td>.1</td><td>.539746</td><td>−4.61×10⁻⁷</td></tr><tr><td>.05</td><td>.232375</td><td>−1.44×10⁻⁸</td></tr></tbody></table></div></figure></div>
+</div><figure class="data-figure"><canvas id="m7p45a" width="440" height="200" aria-label="Repeat to the same final time"></canvas><div class="step answer-table" data-step="1"><table><thead><tr><th>h</th><th>Euler ΔE</th><th>RK4 ΔE</th></tr></thead><tbody><tr><td>.2</td><td>1.324213</td><td>−1.46×10⁻⁵</td></tr><tr><td>.1</td><td>.539746</td><td>−4.61×10⁻⁷</td></tr><tr><td>.05</td><td>.232375</td><td>−1.44×10⁻⁸</td></tr></tbody></table></div></figure></div>
 <script>m3anim(document.getElementById("m7p45a"),function(g,t,k){drawM7(g,t,k,"drift",45,true);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Global error; step refinement</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
 </section>
@@ -1671,7 +1708,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p>Correct A. Potential falls; kinetic energy is unchanged.</p></div>
 </div><figure><canvas id="m7p47a" width="440" height="320" aria-label="Transfer: a moving pendulum near the top"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p47a"),function(g,t,k){drawM7(g,t,k,"energy",47,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Pendulum IVP; explicit midpoint method</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a> · <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
+<p class="cite page-source"><span>Pendulum IVP; explicit Euler method</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a> · <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · Course example</p>
 </section>
 
 <!-- ===== 48 ===== -->
