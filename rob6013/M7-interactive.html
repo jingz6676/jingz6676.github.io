@@ -401,7 +401,7 @@ body.print #m7break{display:none!important}
 @media print{#m7break{display:none!important}}
 
 /* M7-LAYOUT */
-.slide .cols{gap:26px;align-items:start}.slide .cols>div{min-width:0}.slide .eq{font-size:25px;margin:12px 0}.slide .gloss{font-size:17px;line-height:1.28;margin:8px 0 12px}.slide .gloss dt{font-size:17px}.slide .gloss dd{font-size:17px}.slide .teaching-point p,.slide .ex p,.slide .answer p{font-size:20px;line-height:1.3;margin:10px 0}.slide .q{font-size:20px}.slide .mc-options{font-size:20px;line-height:1.25;margin:8px 0;padding-left:25px}.slide .mc-options li{padding:4px 0}.slide:has(.mc-options) .teaching-point{display:none}.slide:has(.mc-options) .eq{font-size:23px}.slide .answer{border-left:3px solid var(--c-res-ok);padding-left:14px}.slide figure{margin:12px 0}.slide .sub{font-size:26px}.slide .key{font-size:14px;margin-top:7px}.slide .refs{font-size:24px;line-height:1.5}.slide .refs li{margin:20px 0}
+.slide .cols{gap:26px;align-items:start}.slide .cols>div{min-width:0}.slide .eq{font-size:25px;margin:12px 0}.slide .gloss{font-size:17px;line-height:1.28;margin:8px 0 12px}.slide .gloss dt{font-size:17px}.slide .gloss dd{font-size:17px}.slide .teaching-point p,.slide .ex p,.slide .answer p{font-size:20px;line-height:1.3;margin:10px 0}.slide .q{font-size:20px}.slide .mc-options{font-size:20px;line-height:1.25;margin:8px 0;padding-left:25px}.slide .mc-options li{padding:4px 0}.slide:has(.mc-options) .teaching-point{display:none}.slide:has(.mc-options) .eq{font-size:23px}.slide .answer{border-left:3px solid var(--c-res-ok);padding-left:14px}.slide figure{margin:12px 0}.slide .sub{font-size:26px}.slide .key{font-size:14px;margin-top:7px}.slide.title .tiny{font-size:14px}.slide.title .cols{flex:none;margin-top:20px}.slide.title .teaching-point p{font-size:24px}.slide .concept-route{font-size:21px;line-height:1.25;margin-top:14px}.slide .map-node{font-weight:600;color:var(--c-in);margin:3px 0}.slide .map-edge{margin:3px 0 3px 15px}.slide .map-check{margin-top:8px}.slide .data-figure{position:relative}.slide .data-figure:has(.shown) canvas{visibility:hidden}.slide .answer-table{position:absolute;inset:30px 0 auto}.slide .answer-table table{font-size:20px;width:100%;border-collapse:collapse}.slide .answer-table th,.slide .answer-table td{padding:12px 6px;text-align:right;border-bottom:1px solid var(--c-rule)}.slide .answer-table th:first-child,.slide .answer-table td:first-child{text-align:left}.slide .refs{font-size:24px;line-height:1.5}.slide .refs li{margin:20px 0}
 </style>
 <script>
 /* ---------------------------------------------------------------------------
@@ -874,12 +874,33 @@ window.drawM7=function(g,t,k,type,page,isActivity){
  function axes(xname,yname){k.seg([L,B],[R,B],c.dim,1);k.seg([L,B],[L,T],c.dim,1);label(xname,R-35,B+25,c.dim);label(yname,L+5,T-15,c.dim);}
  function path(points,color,width){for(var i=1;i<points.length;i++)k.seg(points[i-1],points[i],color,width||2);}
  function plot(fun,xmax,ymin,ymax,color){var p=[];for(var i=0;i<=120;i++){var x=xmax*i/120,y=fun(x);p.push([L+(R-L)*x/xmax,B-(B-T)*(y-ymin)/(ymax-ymin)]);}path(p,color);return function(x,y){return[L+(R-L)*x/xmax,B-(B-T)*(y-ymin)/(ymax-ymin)];};}
- if(isActivity&&!k.shown(1)){
-  label('Known state → model → method',55,85,c.ink,20);
-  k.arrow([65,130],[R-40,130],c.in,3);
-  label('Write your rate and check its units.',55,190,c.dim,17);
-  label('The worked result appears after your attempt.',35,235,c.dim,15);
-  return;
+ if(isActivity&&!k.shown(1)){return;}
+ if(type==='diagnosis'){
+  label('Same model, two comparisons',48,38,c.ink,20);
+  label('Numerical solution',60,88,c.in,21);
+  k.arrow([205,105],[205,140],c.dim,2);label('compare with',225,126,c.dim,15);
+  label('Exact / refined solution',60,166,c.out,20);
+  label('tests the solver and step size',60,190,c.dim,16);
+  k.seg([40,215],[W-30,215],c.rule,1);
+  label('Model prediction ↔ measurements',45,250,c.ink,19);
+  label('tests the physical model',60,278,c.dim,16);return;
+ }
+ if(type==='equalenergy'){
+  var ox=W/2,oy=H/2,sc=100;label('q',R-10,oy+23,c.dim);label('v',ox+8,T,c.dim);
+  k.seg([L,oy],[R,oy],c.rule,1);k.seg([ox,T],[ox,B],c.rule,1);
+  var e=1-Math.cos(1),top=[],bottom=[];
+  for(var j=0;j<=100;j++){var q=-1+2*j/100;var v=Math.sqrt(Math.max(0,2*(e-1+Math.cos(q))));top.push([ox+sc*q,oy-sc*v]);bottom.push([ox+sc*q,oy+sc*v]);}
+  path(top,c.dim,2);path(bottom,c.dim,2);k.dot([ox+sc,oy],6,c.in);k.dot([ox-sc,oy],6,c.out);
+  label('(1, 0)',ox+sc-12,oy+28,c.in,17);label('(−1, 0)',ox-sc-30,oy+28,c.out,17);
+  label('E = 1 − cos 1 at both states',65,H-12,c.ink,18);return;
+ }
+ if(page===38){
+  axes('t','x');var S=plot(x=>Math.exp(-2*x),.1,.8,1.01,c.in);
+  var vals=[1];for(var j=1;j<=4;j++)vals.push(vals[j-1]*.95);
+  var pts=vals.map((x,j)=>S(.025*j,x));path(pts,c.res,2);pts.forEach(z=>k.dot(z,4,c.res));
+  k.dot(S(.1,.818733333333),6,c.out);label('4 Euler steps: .814506',200,42,c.res,17);
+  label('1 RK4 step: .818733',200,68,c.out,17);label('exact: .818731',200,94,c.in,17);
+  label('same interval .1; four calls each',55,H-10,c.dim,16);return;
  }
  if(type==='pendulum'){
   var q=(page===47?.5:1)*Math.cos(t*Math.PI*2),v=-(page===47?.5:1)*Math.sin(t*Math.PI*2),o=[W/2,64],len=150,p=[o[0]+len*Math.sin(q),o[1]+len*Math.cos(q)];
@@ -940,8 +961,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
  }
  if(type==='area'){
   axes('time','rate');var S=plot(x=>-2*Math.exp(-2*x),.3,-2.2,0,c.in);
-  var a=S(0,0),b=S(.2,-2);g.save();g.globalAlpha=.15;g.fillStyle=c.res;g.fillRect(a[0],a[1],b[0]-a[0],b[1]-a[1]);g.restore();
-  label('0',L-15,T,c.dim,13);label('−2.2',L-32,B,c.dim,13);label('rate = −2 exp(−2t)',110,62,c.in,16);label('rectangle uses the starting rate',55,H-10,c.res,14);return;
+  var region=[S(0,0)];for(var jj=0;jj<=60;jj++){var tt=.2*jj/60;region.push(S(tt,-2*Math.exp(-2*tt)));}region.push(S(.2,0));g.save();g.globalAlpha=.15;g.fillStyle=c.in;g.beginPath();region.forEach((z,i)=>i?g.lineTo(z[0],z[1]):g.moveTo(z[0],z[1]));g.closePath();g.fill();g.restore();
+  label('0',L-15,T,c.dim,13);label('−2.2',L-32,B,c.dim,13);label('rate = −2 exp(−2t)',110,62,c.in,16);label('shaded signed area = exact increment',55,H-10,c.res,14);return;
  }
  if(type==='twostarts'){
   axes('t','state');var S=plot(x=>2*Math.exp(-2*x),1,0,2.2,c.out);plot(x=>Math.exp(-2*x),1,0,2.2,c.in);label('starts 2 and 1; rate −2',110,55,c.dim,16);k.dot(S(t,2*Math.exp(-2*t)),6,c.dat);return;
@@ -967,17 +988,17 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 
 
 <!-- ===== 1 ===== -->
-<section class="slide title m3open" data-part="III">
-<p class="eyebrow">Why</p>
+<section class="slide title m3open" data-part="I">
+<p class="eyebrow">Lecture 7 &#183; ODE and Simulation &#183; October 21</p>
 <h2>ODE and Simulation</h2>
 <p class="sub">How does a simulator advance the world?</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=f(x,t),\qquad x(t_0)=x_0$$</div>
 <dl class="gloss"><dt>x</dt><dd>state column</dd><dt>f</dt><dd>rate of change</dd><dt>t</dt><dd>time; t₀ is the start</dd><dt>x₀</dt><dd>known initial state</dd></dl>
-<div class="teaching-point"><p>A model gives a velocity. A simulator must produce a future state.</p></div>
+<div class="teaching-point"><p>A model gives a rate. A simulator produces a future state.</p></div>
 </div><figure><canvas id="m7p01a" width="440" height="320" aria-label="How does a simulator advance the world?"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p01a"),function(g,t,k){drawM7(g,t,k,"decay",1,false);},{rest:0.4,seconds:5});</script>
-<div class="key">Input/state <span class="in">in</span> · model <span class="out">out</span> · error <span class="res">res</span> · data <span class="dat">dat</span></div>
+<p class="tiny" style="margin:auto 0 0">Mathematics for Robotics &#183; ROB-GY 6013 &#183; NYU Tandon &#183; Jing Zhang &#183; Fall 2026</p>
 </section>
 
 <!-- ===== 2 ===== -->
@@ -987,9 +1008,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">A trajectory and its stored samples</p>
 <div class="cols w6040"><div>
 <div class="eq">$$t_k=t_0+kh,\qquad x_k\approx x(t_k)$$</div>
-<dl class="gloss"><dt>h</dt><dd>positive time step</dd><dt>k</dt><dd>integer sample index</dd><dt>x(t)</dt><dd>continuous exact state</dd><dt>xₖ</dt><dd>numerical approximation</dd></dl>
-<div class="teaching-point"><p>The curve belongs to the model; the dots belong to the computation.</p></div>
-</div><figure><canvas id="m7p02a" width="440" height="320" aria-label="A trajectory and its stored samples"></canvas></figure></div>
+<dl class="gloss"><dt>h, k</dt><dd>step size and sample index</dd><dt>x(t), xₖ</dt><dd>exact state and numerical sample</dd></dl>
+<div class="concept-route" role="img" aria-label="Rate model is sampled by a time-stepping method to produce a numerical trajectory. Solver checks compare exact or refined solutions; model checks compare measurements."><div class="map-node">Rate model</div><div class="map-edge">↓ is sampled by</div><div class="map-node">Time-stepping method</div><div class="map-edge">↓ produces</div><div class="map-node">Numerical trajectory</div><div class="map-check">↳ Solver check: exact / refined solution</div><div class="map-check">↳ Model check: measurements</div></div></div><figure><canvas id="m7p02a" width="440" height="320" aria-label="A trajectory and its stored samples"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p02a"),function(g,t,k){drawM7(g,t,k,"decay",2,false);},{rest:0.4,seconds:5});</script>
 </section>
 
@@ -1001,7 +1021,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=f(x,t)\in\mathbb R^d$$</div>
 <dl class="gloss"><dt>x</dt><dd>d-component state column</dd><dt>f(x,t)</dt><dd>d-component state rate</dd><dt>t</dt><dd>time held fixed in a field picture</dd></dl>
-<div class="teaching-point"><p>Arrow direction and magnitude describe instantaneous motion.</p></div>
+<div class="teaching-point"><p>Illustration: x=(q,v)ᵀ and f=(v,−sin q)ᵀ. Arrow lengths are scaled.</p></div>
 </div><figure><canvas id="m7p03a" width="440" height="320" aria-label="An arrow gives a rate, not a destination"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p03a"),function(g,t,k){drawM7(g,t,k,"field",3,false);},{rest:0.4,seconds:5});</script>
 </section>
@@ -1012,8 +1032,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Velocity Fields</h2>
 <p class="sub">One field, different initial states</p>
 <div class="cols w6040"><div>
-<div class="eq">$$\dot x=f(x,t),\quad x(t_0)=x_0$$</div>
-<dl class="gloss"><dt>x₀</dt><dd>chosen start</dd><dt>f</dt><dd>fixed model</dd><dt>x(t)</dt><dd>trajectory determined by the IVP</dd></dl>
+<div class="eq">$$\dot x=-2x,\quad x(0)=1\ \text{or}\ 2$$</div>
+<dl class="gloss"><dt>x(0)</dt><dd>two possible starts</dd><dt>−2x</dt><dd>the same rate model for both</dd></dl>
 <div class="teaching-point"><p>An initial-value problem combines the rule with its starting state.</p></div>
 </div><figure><canvas id="m7p04a" width="440" height="320" aria-label="One field, different initial states"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p04a"),function(g,t,k){drawM7(g,t,k,"twostarts",4,false);},{rest:0.4,seconds:5});</script>
@@ -1105,8 +1125,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Robot State</h2>
 <p class="sub">Your turn: reduce the applied force</p>
 <div class="cols w6040"><div>
-<div class="eq">$$M=2,\ C=0.5,\ g=3,\ \tau=1,\ (q,v)=(1,2)$$</div>
-<dl class="gloss"><dt>M,C,g</dt><dd>fixed at the current state</dd><dt>τ</dt><dd>changed applied force</dd><dt>q,v</dt><dd>unchanged state</dd></dl>
+<div class="eq">$$\begin{gathered}M=2,\ C=.5,\ g=3,\ \tau=1,\ v=2\\ Ma=\tau-Cv-g,\quad\dot x=(v,a)^T\end{gathered}$$</div>
+<dl class="gloss"><dt>a</dt><dd>acceleration</dd><dt>x=(q,v)ᵀ</dt><dd>position then velocity</dd></dl>
 <p class="q">Which state rate follows from the force balance?</p>
 <ol class="mc-options" type="A"><li>(−1.5,2)ᵀ</li><li>(2,−3)ᵀ</li><li>(2,−1.5)ᵀ</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
 <p>Correct C. Velocity, then acceleration.</p></div>
@@ -1122,7 +1142,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=Ax,\qquad A\in\mathbb R^{d\times d}$$</div>
 <dl class="gloss"><dt>A</dt><dd>constant matrix</dd><dt>x</dt><dd>d-component state</dd><dt>Ax</dt><dd>state rate at x</dd></dl>
-<div class="teaching-point"><p>No constant forcing term is hidden in this homogeneous model.</p></div>
+<div class="teaching-point"><p>Illustrated A has rows (−1,−1) and (0,−2); the field is homogeneous.</p></div>
 </div><figure><canvas id="m7p12a" width="440" height="320" aria-label="A constant matrix gives a linear field"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p12a"),function(g,t,k){drawM7(g,t,k,"linear",12,false);},{rest:0.4,seconds:5});</script>
 </section>
@@ -1135,7 +1155,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$AV=V\Lambda,\qquad x=Vc$$</div>
 <dl class="gloss"><dt>V</dt><dd>invertible eigenvector matrix</dd><dt>Λ</dt><dd>eigenvalues in matching order</dd><dt>c</dt><dd>coordinates of x in that basis</dd></dl>
-<div class="teaching-point"><p>Lecture 2: a complete eigenbasis makes the modes independent.</p></div>
+<div class="teaching-point"><p>Illustrated basis: v₁=(1,0)ᵀ, v₂=(1,1)ᵀ. Invertible does not mean orthogonal.</p></div>
 </div><figure><canvas id="m7p13a" width="440" height="320" aria-label="Recall the eigenvector coordinates"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p13a"),function(g,t,k){drawM7(g,t,k,"basis",13,false);},{rest:0.4,seconds:5});</script>
 </section>
@@ -1297,9 +1317,9 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Euler Integration</h2>
 <p class="sub">Local error and accumulated error differ</p>
 <div class="cols w6040"><div>
-<div class="eq">$$x(t+h)=x(t)+h\dot x(t)+\tfrac12h^2\ddot x(t)+O(h^3)$$</div>
-<dl class="gloss"><dt>x</dt><dd>sufficiently smooth exact solution</dd><dt>h</dt><dd>small step</dd><dt>ẍ</dt><dd>change of the velocity along the path</dd></dl>
-<div class="teaching-point"><p>Assume f has continuous derivatives through order two near the finite trajectory; bound them there.</p></div>
+<div class="eq">$$\begin{aligned}x(t+h)&amp;=x+h\dot x+\tfrac12h^2\ddot x+O(h^3)\\\ddot x&amp;=f_t+J_f f\end{aligned}$$</div>
+<dl class="gloss"><dt>x, f</dt><dd>evaluated on the exact path at time t</dd><dt>fₜ, Jf</dt><dd>partial time derivative and state Jacobian</dd></dl>
+<div class="teaching-point"><p>Assume f is C² with bounded derivatives near the finite trajectory.</p></div>
 </div><figure><canvas id="m7p25a" width="440" height="320" aria-label="Local error and accumulated error differ"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p25a"),function(g,t,k){drawM7(g,t,k,"error",25,false);},{rest:0.4,seconds:5});</script>
 </section>
@@ -1336,7 +1356,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Numerical Stability</h2>
 <p class="sub">Predict three step-size regimes</p>
 <div class="cols w6040"><div>
-<div class="eq">$$\lambda=-4,\qquad h\in\{0.25,0.4,0.6\}$$</div>
+<div class="eq">$$\dot x=-4x,\quad h\in\{.25,.4,.6\}$$</div>
 <dl class="gloss"><dt>λ</dt><dd>fixed decay rate</dd><dt>h</dt><dd>candidate steps</dd><dt>x₀</dt><dd>any nonzero start</dd></dl>
 <p class="q">For h=.25, .4, .6, which Euler behaviors occur in order?</p>
 <ol class="mc-options" type="A"><li>Zero; alternating growth; alternating growth</li><li>All decay because the ODE is stable</li><li>Zero; alternating decay; alternating growth</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
@@ -1351,9 +1371,9 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Numerical Stability</h2>
 <p class="sub">Every mode must satisfy the bound</p>
 <div class="cols w6040"><div>
-<div class="eq">$$A=\operatorname{diag}(-2,-8)$$</div>
+<div class="eq">$$\dot x=Ax,\quad A=\operatorname{diag}(-2,-8)$$</div>
 <dl class="gloss"><dt>A</dt><dd>constant state matrix</dd><dt>h</dt><dd>one step used for both modes</dd><dt>x₀</dt><dd>arbitrary initial state</dd></dl>
-<p class="q">Which interval gives decay from EVERY start?</p>
+<p class="q">For Euler, which interval gives decay from EVERY start?</p>
 <ol class="mc-options" type="A"><li>0&lt;h≤1/4</li><li>0&lt;h&lt;1/4</li><li>0&lt;h&lt;1</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
 <p>Correct B. Both strict bounds must hold.</p></div>
 </div><figure><canvas id="m7p29a" width="440" height="320" aria-label="Every mode must satisfy the bound"></canvas></figure></div>
@@ -1366,8 +1386,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Numerical Stability</h2>
 <p class="sub">Euler adds energy to an oscillator</p>
 <div class="cols w6040"><div>
-<div class="eq">$$|1+ih|=\sqrt{1+h^2}&gt;1\quad(h&gt;0)$$</div>
-<dl class="gloss"><dt>±i</dt><dd>exact oscillator eigenvalues</dd><dt>h</dt><dd>positive Euler step</dd><dt>|1+ih|</dt><dd>numerical amplification magnitude</dd></dl>
+<div class="eq">$$\begin{gathered}\dot x=Ax,\quad A=\begin{bmatrix}0&amp;-1\\1&amp;0\end{bmatrix}\\|1+ih|=\sqrt{1+h^2}&gt;1\quad(h&gt;0)\end{gathered}$$</div>
+<dl class="gloss"><dt>±i</dt><dd>eigenvalues of A</dd><dt>h</dt><dd>positive Euler step</dd></dl>
 <div class="teaching-point"><p>A bounded exact orbit can produce an outward numerical spiral.</p></div>
 </div><figure><canvas id="m7p30a" width="440" height="320" aria-label="Euler adds energy to an oscillator"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p30a"),function(g,t,k){drawM7(g,t,k,"spiral",30,false);},{rest:0.4,seconds:5});</script>
@@ -1377,13 +1397,13 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <section class="slide" data-part="III">
 <p class="eyebrow">Recap</p>
 <h2>Numerical Stability</h2>
-<p class="sub">What did the numerical step change?</p>
+<p class="sub">Model validation and solver verification</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\text{model: }e^{\lambda h}\qquad\text{Euler: }1+h\lambda$$</div>
 <dl class="gloss"><dt>λ</dt><dd>continuous rate</dd><dt>h</dt><dd>step size</dd><dt>two factors</dt><dd>exact and numerical evolution over the same interval</dd></dl>
-<div class="teaching-point"><p>A correct model and a correct update formula can still give a poor simulation.</p></div>
-</div><figure><canvas id="m7p31a" width="440" height="320" aria-label="What did the numerical step change?"></canvas></figure></div>
-<script>m3anim(document.getElementById("m7p31a"),function(g,t,k){drawM7(g,t,k,"error",31,false);},{rest:0.4,seconds:5});</script>
+<div class="teaching-point"><p>A solver check tests the approximation. Measurements test the physical model.</p></div>
+</div><figure><canvas id="m7p31a" width="440" height="320" aria-label="Model validation and solver verification"></canvas></figure></div>
+<script>m3anim(document.getElementById("m7p31a"),function(g,t,k){drawM7(g,t,k,"diagnosis",31,false);},{rest:0.4,seconds:5});</script>
 </section>
 
 <!-- ===== 32 ===== -->
@@ -1487,8 +1507,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Runge–Kutta Methods</h2>
 <p class="sub">Accuracy improves at a computational price</p>
 <div class="cols w6040"><div>
-<div class="eq">$$E_{\rm Euler}=O(h),\quad E_{\rm midpoint}=O(h^2),\quad E_{\rm RK4}=O(h^4)$$</div>
-<dl class="gloss"><dt>E</dt><dd>fixed-final-time global error</dd><dt>h</dt><dd>step tending to zero</dd><dt>assumptions</dt><dd>sufficient smoothness and a well-posed finite interval</dd></dl>
+<div class="eq">$$\varepsilon_{\rm Euler}=O(h),\quad\varepsilon_{\rm midpoint}=O(h^2),\quad\varepsilon_{\rm RK4}=O(h^4)$$</div>
+<dl class="gloss"><dt>ε</dt><dd>norm of state error at a fixed final time</dd><dt>h</dt><dd>step tending to zero</dd><dt>assumptions</dt><dd>smooth, well-posed finite-interval problem</dd></dl>
 <div class="teaching-point"><p>Halve h and check convergence; RK4 is not unconditionally stable.</p></div>
 </div><figure><canvas id="m7p39a" width="440" height="320" aria-label="Accuracy improves at a computational price"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p39a"),function(g,t,k){drawM7(g,t,k,"order",39,false);},{rest:0.4,seconds:5});</script>
@@ -1514,7 +1534,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">Mechanical energy is a diagnostic</p>
 <div class="cols w6040"><div>
 <div class="eq">$$E(q,v)=\tfrac12m\ell^2v^2+mg_0\ell(1-\cos q)$$</div>
-<dl class="gloss"><dt>first term</dt><dd>kinetic energy</dd><dt>second term</dt><dd>potential energy above the bottom</dd><dt>m,ℓ,g₀</dt><dd>fixed positive constants</dd></dl>
+<dl class="gloss"><dt>q,v</dt><dd>angle and angular velocity</dd><dt>m,ℓ,g₀</dt><dd>mass, length and gravity</dd><dt>two terms</dt><dd>kinetic and potential energy</dd></dl>
 <div class="teaching-point"><p>The zero of potential energy is a convention; energy differences have meaning.</p></div>
 </div><figure><canvas id="m7p41a" width="440" height="320" aria-label="Mechanical energy is a diagnostic"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p41a"),function(g,t,k){drawM7(g,t,k,"energy",41,false);},{rest:0.4,seconds:5});</script>
@@ -1526,7 +1546,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Pendulum Simulation</h2>
 <p class="sub">The exact dynamics conserve energy</p>
 <div class="cols w6040"><div>
-<div class="eq">$$\dot E=m\ell^2v\dot v+mg_0\ell\sin q\,\dot q=0$$</div>
+<div class="eq">$$\begin{aligned}E&amp;=\tfrac12m\ell^2v^2+mg_0\ell(1-\cos q)\\\dot E&amp;=m\ell^2v\dot v+mg_0\ell\sin q\,\dot q=0\end{aligned}$$</div>
 <dl class="gloss"><dt>q̇=v</dt><dd>kinematic identity</dd><dt>v̇</dt><dd>−(g₀/ℓ)sin q</dd><dt>Ė</dt><dd>rate of mechanical energy</dd></dl>
 <div class="teaching-point"><p>The two terms cancel only for the stated unforced, undamped model.</p></div>
 </div><figure><canvas id="m7p42a" width="440" height="320" aria-label="The exact dynamics conserve energy"></canvas></figure></div>
@@ -1539,8 +1559,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Integrated Pendulum Problem</h2>
 <p class="sub">Choose the state and the check first</p>
 <div class="cols w6040"><div>
-<div class="eq">$$m=\ell=g_0=1,\quad q_0=1,\quad v_0=0$$</div>
-<dl class="gloss"><dt>q₀,v₀</dt><dd>initial angle and angular velocity</dd><dt>m,ℓ,g₀</dt><dd>normalized parameters</dd></dl>
+<div class="eq">$$\ddot q=-\sin q,\quad q_0=1,\quad v_0=0$$</div>
+<dl class="gloss"><dt>q₀,v₀</dt><dd>angle and angular velocity</dd><dt>model</dt><dd>unforced, undamped; m=ℓ=g₀=1</dd></dl>
 <p class="q">Which state and field close this second-order model?</p>
 <ol class="mc-options" type="A"><li>x=q; f=−sin q</li><li>x=(q,v)ᵀ; f=(v,−sin q)ᵀ</li><li>x=(q,v)ᵀ; f=(−sin q,v)ᵀ</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
 <p>Correct B. Keep state/rate order.</p></div>
@@ -1555,11 +1575,11 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">Compare the first accepted states</p>
 <div class="cols w6040"><div>
 <div class="eq">$$x_0=(1,0)^T,\ h=.1,\ f(q,v)=(v,-\sin q)^T$$</div>
-<dl class="gloss"><dt>x₀</dt><dd>shared initial state</dd><dt>h</dt><dd>full accepted step</dd><dt>f</dt><dd>state rate</dd></dl>
-<p class="q">Why can midpoint change q on its FIRST step when v₀=0?</p>
-<ol class="mc-options" type="A"><li>It uses a nonzero trial velocity.</li><li>Its step covers twice the physical time.</li><li>Its initial velocity differs from Euler’s.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<dl class="gloss"><dt>x=(q,v)ᵀ</dt><dd>angle and angular velocity</dd><dt>h</dt><dd>full time step</dd></dl>
+<p class="q">Why can midpoint change q when v₀=0?</p>
+<ol class="mc-options" type="A"><li>Nonzero trial velocity.</li><li>Twice the physical time.</li><li>A different initial velocity.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
 <p>Correct A. Trial velocity need not be zero.</p></div>
-</div><figure><canvas id="m7p44a" width="440" height="320" aria-label="Compare the first accepted states"></canvas></figure></div>
+</div><figure class="data-figure"><canvas id="m7p44a" width="440" height="320" aria-label="Compare the first accepted states"></canvas><div class="step answer-table" data-step="1"><table><thead><tr><th>method</th><th>q₁</th><th>v₁</th></tr></thead><tbody><tr><td>Euler</td><td>1.000000</td><td>−.084147</td></tr><tr><td>midpoint</td><td>.995793</td><td>−.084147</td></tr><tr><td>RK4</td><td>.995795</td><td>−.084071</td></tr></tbody></table></div></figure></div>
 <script>m3anim(document.getElementById("m7p44a"),function(g,t,k){drawM7(g,t,k,"phase",44,true);},{rest:0.4,seconds:5});</script>
 </section>
 
@@ -1569,12 +1589,12 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Integrated Pendulum Problem</h2>
 <p class="sub">Repeat to the same final time</p>
 <div class="cols w6040"><div>
-<div class="eq">$$T=10,\quad h\in\{.2,.1,.05\}$$</div>
-<dl class="gloss"><dt>T</dt><dd>prescribed final time</dd><dt>h</dt><dd>candidate step size</dd></dl>
-<p class="q">When h is halved, how is the final-time comparison kept fair?</p>
-<ol class="mc-options" type="A"><li>Keep the same number of steps.</li><li>Stop when the energies agree.</li><li>Double the steps to keep Nh=T.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
-<p>Correct C. Compare common physical times.</p></div>
-</div><figure><canvas id="m7p45a" width="440" height="320" aria-label="Repeat to the same final time"></canvas></figure></div>
+<div class="eq">$$\dot x=(v,-\sin q)^T,\ x_0=(1,0)^T,\ T=10$$</div>
+<dl class="gloss"><dt>N</dt><dd>step count</dd><dt>E</dt><dd>v²/2+1−cos q</dd><dt>ΔE</dt><dd>E at T minus E at 0</dd></dl>
+<p class="q">Halve h: how do we keep the endpoint fixed?</p>
+<ol class="mc-options" type="A"><li>Keep N.</li><li>Stop at equal E.</li><li>Double N.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct C: keep Nh=T.</p></div>
+</div><figure class="data-figure"><canvas id="m7p45a" width="440" height="320" aria-label="Repeat to the same final time"></canvas><div class="step answer-table" data-step="1"><table><thead><tr><th>h</th><th>Euler ΔE</th><th>RK4 ΔE</th></tr></thead><tbody><tr><td>.2</td><td>1.324213</td><td>−1.46×10⁻⁵</td></tr><tr><td>.1</td><td>.539746</td><td>−4.61×10⁻⁷</td></tr><tr><td>.05</td><td>.232375</td><td>−1.44×10⁻⁸</td></tr></tbody></table></div></figure></div>
 <script>m3anim(document.getElementById("m7p45a"),function(g,t,k){drawM7(g,t,k,"drift",45,true);},{rest:0.4,seconds:5});</script>
 </section>
 
@@ -1590,7 +1610,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <ol class="mc-options" type="A"><li>Their angles and velocities are equal.</li><li>They can still be different states.</li><li>Both numerical trajectories are exact.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
 <p>Correct B. Energy cannot fix phase.</p></div>
 </div><figure><canvas id="m7p46a" width="440" height="320" aria-label="Compare two energy-matched states"></canvas></figure></div>
-<script>m3anim(document.getElementById("m7p46a"),function(g,t,k){drawM7(g,t,k,"phase",46,true);},{rest:0.4,seconds:5});</script>
+<script>m3anim(document.getElementById("m7p46a"),function(g,t,k){drawM7(g,t,k,"equalenergy",46,true);},{rest:0.4,seconds:5});</script>
 </section>
 
 <!-- ===== 47 ===== -->
@@ -1600,8 +1620,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">Transfer: a moving pendulum near the top</p>
 <div class="cols w6040"><div>
 <div class="eq">$$q_0=\pi,\quad v_0=1,\quad h=.1,\quad m=\ell=g_0=1$$</div>
-<dl class="gloss"><dt>q₀,v₀</dt><dd>new angle and nonzero angular velocity</dd><dt>h</dt><dd>positive step size</dd></dl>
-<p class="q">Among Euler, midpoint and RK4, with ONE model call, which claim holds?</p>
+<dl class="gloss"><dt>q₀,v₀</dt><dd>initial angle and angular velocity</dd><dt>f(q,v)</dt><dd>(v,−sin q)ᵀ</dd><dt>E(q,v)</dt><dd>v²/2+1−cos q</dd></dl>
+<p class="q">One call: which method and energy claim is correct?</p>
 <ol class="mc-options" type="A"><li>Euler; this step decreases energy.</li><li>Midpoint; one call is enough.</li><li>Euler; every step increases energy.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
 <p>Correct A. Potential falls; kinetic energy is unchanged.</p></div>
 </div><figure><canvas id="m7p47a" width="440" height="320" aria-label="Transfer: a moving pendulum near the top"></canvas></figure></div>
@@ -1631,7 +1651,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=v_\theta(x,t)$$</div>
 <dl class="gloss"><dt>vθ</dt><dd>a field represented by a learned model</dd><dt>x</dt><dd>generated state</dd><dt>t</dt><dd>continuous evolution coordinate</dd></dl>
-<div class="teaching-point"><p>Later: flow matching supplies a field; Euler or RK advances it.</p></div>
+<div class="teaching-point"><p>A learned field supplies rates; Euler or RK advances the state.</p></div>
 </div><figure><canvas id="m7p49a" width="440" height="320" aria-label="A learned field still needs an integrator"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p49a"),function(g,t,k){drawM7(g,t,k,"field",49,false);},{rest:0.4,seconds:5});</script>
 </section>
