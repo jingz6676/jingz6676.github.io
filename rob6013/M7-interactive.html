@@ -916,6 +916,37 @@ window.drawM7=function(g,t,k,type,page,isActivity){
   function open(x,yy,col){g.beginPath();g.arc(x,yy,5,0,2*Math.PI);g.fillStyle=c.bg||c.panel;g.fill();g.strokeStyle=col;g.lineWidth=2;g.stroke();}
   [['rate −2',1],['rate −8',.25],['both modes',.25]].forEach(function(a,i){label(a[0],40,y[i]-23,i===2?c.out:c.ink,18);k.seg([x0,y[i]],[x1,y[i]],c.rule,1);var xe=x0+(x1-x0)*a[1];k.seg([x0+5,y[i]],[xe-5,y[i]],i===2?c.out:c.in,5);open(x0,y[i],c.in);open(xe,y[i],i===2?c.out:c.in);label('0',x0-5,y[i]+24,c.dim,15);label(a[1]===1?'1':'1/4',xe-10,y[i]+24,c.dim,15);});return;
  }
+ if(page>=32&&page<=35){
+  var h=page===35?.1:.2, trial=1-h, rate2=-2*trial, next=1+h*rate2;
+  var left=55,right=W-35,top=50,bottom=218,low=page===35?.77:.59;
+  function Sm(tm,x){return[left+(right-left)*tm/h,bottom-(bottom-top)*(x-low)/(1.04-low)];}
+  k.seg([left,bottom],[right,bottom],c.dim,1);k.seg([left,bottom],[left,top],c.dim,1);
+  label('Example: ẋ = −2x, h = '+(page===35?'0.1':'0.2'),32,24,c.ink,17);
+  label('x',left-20,top+4,c.dim,16);label('t',right+8,bottom+4,c.dim,16);
+  var pts=[];for(var j=0;j<=100;j++){var tm=h*j/100;pts.push(Sm(tm,Math.exp(-2*tm)));}path(pts,c.in,2);
+  k.seg(Sm(0,1),Sm(h/2,trial),c.dat,3);
+  k.seg(Sm(0,1),Sm(h,next),c.out,3);
+  k.dot(Sm(0,1),5,c.in);k.dot(Sm(h/2,trial),5,c.dat);k.dot(Sm(h,next),5,c.out);
+  k.seg(Sm(h*.34,trial-rate2*h*.16),Sm(h*.66,trial+rate2*h*.16),c.ink,2,[4,3]);
+  label('x₀ = 1',left+5,top+8,c.in,15);
+  label('xtrial',Sm(h/2,trial)[0]+9,Sm(h/2,trial)[1]+21,c.dat,15);
+  label('x₁',right-29,Sm(h,next)[1]-13,c.out,17);
+  [0,.5,1].forEach(function(frac){var x=left+(right-left)*frac;k.seg([x,bottom],[x,bottom+5],c.dim,1);label(frac===0?'0':frac===.5?'h/2':'h',x-(frac===0?2:12),bottom+22,c.dim,15);});
+  label('k₁: slope used for the half-step trial',32,262,c.dat,15);
+  label('k₂: slope evaluated at xtrial',32,283,c.ink,15);
+  label('x₁ = x₀ + h k₂; blue: exact solution',32,305,c.out,15);return;
+ }
+ if(page===37){
+  ['rates: −2, −1.6, −1.68, −1.328',
+   'weighted rate = (k₁+2k₂+2k₃+k₄)/6',
+   'change = h × (−1.648) = −0.3296',
+   'next state = 1 − 0.3296 = 0.6704'].forEach(function(s,i){
+   g.fillStyle=c.panel;g.fillRect(18,30+68*i,W-36,49);
+   label(s,28,59+68*i,i===0?c.in:i===3?c.out:c.ink,17);
+   if(i<3)k.arrow([W/2,82+68*i],[W/2,95+68*i],c.dim,2);
+  });
+  label('one time interval: 0 to h = 0.2',52,311,c.dim,16);return;
+ }
  if(page===36){
   label('trial state, time → rate',52,28,c.ink,20);
   ['x, t → k₁','x + h k₁/2, t + h/2 → k₂','x + h k₂/2, t + h/2 → k₃','x + h k₃, t + h → k₄'].forEach(function(s,i){g.fillStyle=c.panel;g.fillRect(24,48+62*i,W-48,45);label(s,36,74+62*i,i===0?c.in:c.ink,19);if(i<3)k.arrow([W/2,97+62*i],[W/2,107+62*i],c.out,2);});
@@ -1340,7 +1371,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$V=\begin{bmatrix}1&amp;1\\0&amp;1\end{bmatrix},\quad \Lambda=\operatorname{diag}(-1,-2)$$</div>
-<dl class="gloss"><dt>V</dt><dd>eigenvector basis</dd><dt>Λ</dt><dd>matching eigenvalues</dd></dl>
+<dl class="gloss"><dt>V</dt><dd>eigenvector basis</dd><dt>Λ</dt><dd>matching eigenvalues</dd><dt>c₀</dt><dd>coordinates of x₀ in the V basis</dd></dl>
 <p class="q">For NEW x₀=(1,1)ᵀ, which modal description is correct?</p>
 <ol class="mc-options" type="A"><li>c₀=(0,1)ᵀ; only the −2 mode</li><li>c₀=(1,2)ᵀ; both modes</li><li>c₀=(1,1)ᵀ; both modes</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
 <p>Correct A. Use the inverse basis.</p></div>
@@ -1411,8 +1442,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$A=\begin{bmatrix}-1&amp;1\\0&amp;-1\end{bmatrix},\quad x_0=(0,1)^T,\quad x(t)=(te^{-t},e^{-t})^T$$</div>
-<dl class="gloss"><dt>v</dt><dd>eigenvector</dd></dl>
-<div class="teaching-point"><p>Defective: fewer than n independent eigenvectors in ℂⁿ. v lies along (1,0)ᵀ.</p></div>
+<dl class="gloss"><dt>defective</dt><dd>fewer than n independent eigenvectors in ℂⁿ</dd><dt>v</dt><dd>eigenvector; here v lies along (1,0)ᵀ</dd></dl>
 <p class="q">Does x(t) satisfy ẋ=Ax and x(0)=x₀?</p>
 <ol class="mc-options" type="A"><li>No: a defective matrix has no solution.</li><li>No: the factor t forces growth forever.</li><li>Yes: its derivative and initial state both match.</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
 <p>Correct C. Both conditions hold.</p></div>
@@ -1816,11 +1846,11 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">Sample the field inside the step</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\Delta x=\int_{t_k}^{t_k+h}f(x(s),s)\,ds$$</div>
-<dl class="gloss"><dt>Δx</dt><dd>exact increment from the current exact state</dd><dt>f</dt><dd>same velocity model</dd><dt>h</dt><dd>one integration interval</dd></dl>
+<dl class="gloss"><dt>Δx</dt><dd>exact increment from the current exact state</dd><dt>f</dt><dd>state-rate model along the exact trajectory</dd><dt>h</dt><dd>one integration interval</dd></dl>
 <div class="teaching-point"><p>A better slope estimate can improve the same time step.</p></div>
 </div><figure><canvas id="m7p32a" width="440" height="320" aria-label="Sample the field inside the step"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p32a"),function(g,t,k){drawM7(g,t,k,"midpoint",32,false);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Runge–Kutta methods</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
+<p class="cite page-source"><span>Runge–Kutta methods</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course diagram</p>
 </section>
 
 <!-- ===== 33 ===== -->
@@ -1829,12 +1859,12 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Runge–Kutta Methods</h2>
 <p class="sub">Construct a trial midpoint</p>
 <div class="cols w6040"><div>
-<div class="eq">$$k_1=f(x_k,t_k),\qquad k_2=f(x_k+\tfrac h2k_1,t_k+\tfrac h2)$$</div>
-<dl class="gloss"><dt>k₁,k₂</dt><dd>rates, not increments</dd><dt>h k₁/2</dt><dd>trial half-step displacement</dd><dt>tₖ+h/2</dt><dd>midpoint time</dd></dl>
+<div class="eq">$$\begin{aligned}k_1&amp;=f(x_k,t_k),\quad x_{\rm trial}=x_k+\tfrac h2 k_1\\k_2&amp;=f(x_{\rm trial},t_k+\tfrac h2)\end{aligned}$$</div>
+<dl class="gloss"><dt>k₁,k₂</dt><dd>initial and trial-midpoint rates</dd><dt>xtrial</dt><dd>temporary state at tₖ+h/2</dd><dt>h k₁/2</dt><dd>estimated change over half a step</dd></dl>
 <div class="teaching-point"><p>Explicit midpoint: second-order Runge–Kutta (RK2). FNC also calls it improved Euler (IE2).</p></div>
 </div><figure><canvas id="m7p33a" width="440" height="320" aria-label="Construct a trial midpoint"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p33a"),function(g,t,k){drawM7(g,t,k,"midpoint",33,false);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Explicit midpoint method (RK2)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
+<p class="cite page-source"><span>Explicit midpoint method (RK2)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course diagram</p>
 </section>
 
 <!-- ===== 34 ===== -->
@@ -1844,11 +1874,11 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">Advance with the midpoint rate</p>
 <div class="cols w6040"><div>
 <div class="eq">$$x_{k+1}=x_k+h k_2$$</div>
-<dl class="gloss"><dt>xₖ</dt><dd>original current state</dd><dt>k₂</dt><dd>rate at the trial midpoint</dd><dt>h</dt><dd>full step length</dd></dl>
+<dl class="gloss"><dt>xₖ</dt><dd>original current state</dd><dt>k₂</dt><dd>rate evaluated at the temporary midpoint state</dd><dt>h</dt><dd>full step length</dd></dl>
 <div class="ex"><p>ẋ=−2x, x₀=1, h=.2: k₁=−2 → trial=.8 → k₂=−1.6 → x₁=.68.</p></div>
 </div><figure><canvas id="m7p34a" width="440" height="320" aria-label="Advance with the midpoint rate"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p34a"),function(g,t,k){drawM7(g,t,k,"midpoint",34,false);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Explicit midpoint method (RK2)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
+<p class="cite page-source"><span>Explicit midpoint method (RK2)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course diagram</p>
 </section>
 
 <!-- ===== 35 ===== -->
@@ -1858,10 +1888,10 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">Your turn: halve the midpoint step</p>
 <div class="worked-question">
 <div class="cols w6040"><div>
-<div class="eq">$$\dot x=-2x,\quad x_0=1,\quad h=0.1$$</div>
-<dl class="gloss"><dt>k₁,k₂</dt><dd>two model evaluations</dd><dt>h</dt><dd>full step</dd><dt>x₁</dt><dd>accepted next state</dd></dl>
-<p class="q">Which value is the ACCEPTED midpoint state?</p>
-<ol class="mc-options" type="A"><li>.9: the trial midpoint</li><li>.72: trial state plus full increment</li><li>.82: original state plus full increment</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
+<div class="eq">$$\dot x=-2x,\quad x(0)=x_0=1,\quad h=0.1$$</div>
+<dl class="gloss"><dt>xtrial</dt><dd>x₀+(h/2)k₁; temporary midpoint state</dd><dt>k₁,k₂</dt><dd>f(x₀), f(xtrial): rates</dd><dt>h k₂</dt><dd>estimated change over the whole step</dd></dl>
+<p class="q">Explicit midpoint: which x₁ estimates x(0+h)?</p>
+<ol class="mc-options" type="A"><li>.9: xtrial</li><li>.72: xtrial + h k₂</li><li>.82: x₀ + h k₂</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
 <p>Correct C. Return to the original state.</p></div>
 </div><figure><canvas id="m7p35a" width="440" height="320" aria-label="Your turn: halve the midpoint step"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p35a"),function(g,t,k){drawM7(g,t,k,"midpoint",35,true);},{rest:0.4,seconds:5});</script>
@@ -1870,56 +1900,56 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
 <p class="worked-progress">Solution 1 / 5</p>
 <h3>1 · Evaluate the initial rate</h3>
-<p class="worked-variables">k₁,k₂: model rates, with no step factor included · xtrial: temporary midpoint state · x₁: accepted state after h=0.1 · f(x): rate −2x</p>
+<p class="worked-variables">k₁,k₂: rates · xtrial: temporary state at t=0.05 · h k₂: estimated full-step change · x₁: next state at t=0.1</p>
 <ol class="worked-lines">
 <li>Use the original state x₀=1. $$k_1=f(x_0)=-2(1)=-2.$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
 <p class="worked-progress">Solution 2 / 5</p>
 <h3>2 · Build the trial midpoint</h3>
-<p class="worked-variables">k₁,k₂: model rates, with no step factor included · xtrial: temporary midpoint state · x₁: accepted state after h=0.1 · f(x): rate −2x</p>
+<p class="worked-variables">k₁,k₂: rates · xtrial: temporary state at t=0.05 · h k₂: estimated full-step change · x₁: next state at t=0.1</p>
 <ol class="worked-lines">
 <li>Advance only half a step using the initial rate. $$x_{\rm trial}=x_0+\frac h2k_1=1+0.05(-2)=0.9.$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
 <p class="worked-progress">Solution 3 / 5</p>
 <h3>3 · Evaluate the midpoint rate</h3>
-<p class="worked-variables">k₁,k₂: model rates, with no step factor included · xtrial: temporary midpoint state · x₁: accepted state after h=0.1 · f(x): rate −2x</p>
+<p class="worked-variables">k₁,k₂: rates · xtrial: temporary state at t=0.05 · h k₂: estimated full-step change · x₁: next state at t=0.1</p>
 <ol class="worked-lines">
 <li>The second model call uses the trial state. $$k_2=f(x_{\rm trial})=-2(0.9)=-1.8.$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
 <p class="worked-progress">Solution 4 / 5</p>
-<h3>4 · Accept a full step from the original state</h3>
-<p class="worked-variables">k₁,k₂: model rates, with no step factor included · xtrial: temporary midpoint state · x₁: accepted state after h=0.1 · f(x): rate −2x</p>
+<h3>4 · Compute the state at t = 0.1</h3>
+<p class="worked-variables">k₁,k₂: rates · xtrial: temporary state at t=0.05 · h k₂: estimated full-step change · x₁: next state at t=0.1</p>
 <ol class="worked-lines">
-<li>Use the midpoint rate, but return to x₀ as the base of the update. $$x_1=x_0+hk_2=1+0.1(-1.8)=0.82.$$</li>
+<li>The full-step change is $hk_2=0.1(-1.8)=-0.18$. Add it to the original state. $$x_1=x_0+hk_2=1-0.18=0.82.$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
 <p class="worked-progress">Solution 5 / 5</p>
 <h3>Answer · C</h3>
-<p class="worked-variables">k₁,k₂: model rates, with no step factor included · xtrial: temporary midpoint state · x₁: accepted state after h=0.1 · f(x): rate −2x</p>
+<p class="worked-variables">k₁,k₂: rates · xtrial: temporary state at t=0.05 · h k₂: estimated full-step change · x₁: next state at t=0.1</p>
 <ol class="worked-lines">
 <li>A stops at the temporary trial state.</li>
 <li>B adds the final increment to the wrong base state.</li>
 <li>C uses the midpoint rate but updates from the original state.</li>
 </ol></div>
 <span class="worked-finish step" data-step="6" aria-hidden="true"></span>
-</div><p class="cite page-source"><span>Explicit midpoint method (RK2)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
+</div><p class="cite page-source"><span>Explicit midpoint method (RK2)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course diagram</p>
 </section>
 
 <!-- ===== 36 ===== -->
 <section class="slide" data-part="III">
 <p class="eyebrow">Rule</p>
 <h2>Runge–Kutta Methods</h2>
-<p class="sub">Classical RK4 evaluates four trial rates</p>
+<p class="sub">Classical RK4 evaluates four rates</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\begin{aligned}k_1&amp;=f(x,t)\\k_2&amp;=f(x+hk_1/2,t+h/2)\\k_3&amp;=f(x+hk_2/2,t+h/2)\\k_4&amp;=f(x+hk_3,t+h)\end{aligned}$$</div>
 <dl class="gloss"><dt>x,t</dt><dd>current state and time</dd><dt>h</dt><dd>one full step</dd><dt>k₁…k₄</dt><dd>four rates with state/time units</dd></dl>
 <div class="teaching-point"><p>RK4: classical fourth-order Runge–Kutta. Each trial starts from the same x.</p></div>
-</div><figure><canvas id="m7p36a" width="440" height="320" aria-label="Classical RK4 evaluates four trial rates"></canvas></figure></div>
+</div><figure><canvas id="m7p36a" width="440" height="320" aria-label="Classical RK4 evaluates four rates"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p36a"),function(g,t,k){drawM7(g,t,k,"rk4",36,false);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Classical fourth-order Runge–Kutta (RK4)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
+<p class="cite page-source"><span>Classical fourth-order Runge–Kutta (RK4)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course diagram</p>
 </section>
 
 <!-- ===== 37 ===== -->
@@ -1933,7 +1963,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="ex"><p>ẋ=−2x, x₀=1, h=.2: rates (−2,−1.6,−1.68,−1.328) give x₁=.6704.</p></div>
 </div><figure><canvas id="m7p37a" width="440" height="320" aria-label="Combine the four rates"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p37a"),function(g,t,k){drawM7(g,t,k,"rk4",37,false);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Classical RK4; weighted stage sum</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
+<p class="cite page-source"><span>Classical RK4; weighted stage sum</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course diagram</p>
 </section>
 
 <!-- ===== 38 ===== -->
@@ -2051,7 +2081,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$\ddot q=-\sin q,\quad q_0=1,\quad v_0=0$$</div>
 <dl class="gloss"><dt>q₀,v₀</dt><dd>angle and angular velocity</dd><dt>model</dt><dd>unforced, undamped; m=ℓ=g₀=1</dd></dl>
-<p class="q">Which state and field close this second-order model?</p>
+<p class="q">Which state and field give a first-order ODE for this model?</p>
 <ol class="mc-options" type="A"><li>x=q; f=−sin q</li><li>x=(q,v)ᵀ; f=(v,−sin q)ᵀ</li><li>x=(q,v)ᵀ; f=(−sin q,v)ᵀ</li></ol><div class="step answer" data-step="5"><b class="ok step" data-step="5">✓</b>
 <p>Correct B. Keep state/rate order.</p></div>
 </div><figure><canvas id="m7p43a" width="440" height="320" aria-label="Choose the state and the check first"></canvas></figure></div>
@@ -2096,15 +2126,15 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Integrated Pendulum Problem</h2>
-<p class="sub">Compare the first accepted states</p>
+<p class="sub">Compare states at t = 0.1</p>
 <div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$x_0=(1,0)^T,\ h=.1,\ f(q,v)=(v,-\sin q)^T$$</div>
 <dl class="gloss"><dt>x=(q,v)ᵀ</dt><dd>angle and angular velocity</dd><dt>h</dt><dd>full time step</dd></dl>
-<p class="q">Why can midpoint change q when v₀=0?</p>
-<ol class="mc-options" type="A"><li>Nonzero trial velocity.</li><li>Twice the physical time.</li><li>A different initial velocity.</li></ol><div class="step answer" data-step="13"><b class="ok step" data-step="13">✓</b>
+<p class="q">Why can midpoint give q₁≠q₀ even though v₀=0?</p>
+<ol class="mc-options" type="A"><li>Nonzero velocity at the trial midpoint.</li><li>Twice the physical time.</li><li>A different initial velocity.</li></ol><div class="step answer" data-step="13"><b class="ok step" data-step="13">✓</b>
 <p>Correct A. Trial velocity need not be zero.</p></div>
-</div><figure class="data-figure"><canvas id="m7p44a" width="440" height="200" aria-label="Compare the first accepted states"></canvas><div class="step answer-table" data-step="13"><table><thead><tr><th>method</th><th>q₁</th><th>v₁</th></tr></thead><tbody><tr><td>Euler</td><td>1.000000</td><td>−.084147</td></tr><tr><td>midpoint</td><td>.995793</td><td>−.084147</td></tr><tr><td>RK4</td><td>.995795</td><td>−.084071</td></tr></tbody></table></div></figure></div>
+</div><figure class="data-figure"><canvas id="m7p44a" width="440" height="200" aria-label="Compare states at t = 0.1"></canvas><div class="step answer-table" data-step="13"><table><thead><tr><th>method</th><th>q₁</th><th>v₁</th></tr></thead><tbody><tr><td>Euler</td><td>1.000000</td><td>−.084147</td></tr><tr><td>midpoint</td><td>.995793</td><td>−.084147</td></tr><tr><td>RK4</td><td>.995795</td><td>−.084071</td></tr></tbody></table></div></figure></div>
 <script>m3anim(document.getElementById("m7p44a"),function(g,t,k){drawM7(g,t,k,"phase",44,true);},{rest:0.4,seconds:5});</script>
 </div>
 <div class="worked-solutions">
@@ -2205,9 +2235,9 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">Repeat to the same final time</p>
 <div class="worked-question">
 <div class="cols w6040"><div>
-<div class="eq">$$\dot x=(v,-\sin q)^T,\ x_0=(1,0)^T,\ T=10$$</div>
+<div class="eq">$$\dot x=(v,-\sin q)^T,\quad x(0)=(1,0)^T,\quad T=10$$</div>
 <dl class="gloss"><dt>N</dt><dd>step count</dd><dt>E</dt><dd>v²/2+1−cos q</dd><dt>ΔE</dt><dd>E at T minus E at 0</dd></dl>
-<p class="q">Halve h: how do we keep the endpoint fixed?</p>
+<p class="q">Halve h: how do we still end at time T=10?</p>
 <ol class="mc-options" type="A"><li>Keep N.</li><li>Stop at equal E.</li><li>Double N.</li></ol><div class="step answer" data-step="9"><b class="ok step" data-step="9">✓</b>
 <p>Correct C: keep Nh=T.</p></div>
 </div><figure class="data-figure"><canvas id="m7p45a" width="440" height="200" aria-label="Repeat to the same final time"></canvas><div class="step answer-table" data-step="9"><table><thead><tr><th>h</th><th>Euler ΔE</th><th>RK4 ΔE</th></tr></thead><tbody><tr><td>.2</td><td>1.324213</td><td>−1.46×10⁻⁵</td></tr><tr><td>.1</td><td>.539746</td><td>−4.61×10⁻⁷</td></tr><tr><td>.05</td><td>.232375</td><td>−1.44×10⁻⁸</td></tr></tbody></table></div></figure></div>
@@ -2401,15 +2431,15 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Simulation Checklist</h2>
-<p class="sub">Choose a complete simulation workflow</p>
+<p class="sub">Simulation workflow</p>
 <div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=f(x,t),\qquad x(t_0)=x_0$$</div>
-<dl class="gloss"><dt>x</dt><dd>complete state</dd><dt>f</dt><dd>model rate</dd><dt>h</dt><dd>chosen integration step</dd></dl>
+<dl class="gloss"><dt>x</dt><dd>complete state</dd><dt>model</dt><dd>unforced, undamped pendulum; q̈=−sin q</dd><dt>h</dt><dd>chosen integration step</dd></dl>
 <p class="q">For this pendulum simulation, which workflow distinguishes errors?</p>
 <ol class="mc-options" type="A"><li>Use q alone; shrink h until the curve looks smooth.</li><li>Use f as the next state; inspect only energy.</li><li>Use (q,v), integrate rates, compare states and energy.</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
 <p>Correct C. Check state AND invariant.</p></div>
-</div><figure><canvas id="m7p48a" width="440" height="320" aria-label="Choose a complete simulation workflow"></canvas></figure></div>
+</div><figure><canvas id="m7p48a" width="440" height="320" aria-label="Simulation workflow"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p48a"),function(g,t,k){drawM7(g,t,k,"pipeline",48,true);},{rest:0.4,seconds:5});</script>
 </div>
 <div class="worked-solutions">
