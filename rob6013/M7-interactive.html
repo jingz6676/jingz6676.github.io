@@ -1052,7 +1052,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=f(x,t),\qquad x(t_0)=x_0$$</div>
 <dl class="gloss"><dt>x</dt><dd>state column</dd><dt>f</dt><dd>rate of change</dd><dt>t</dt><dd>time; t₀ is the start</dd><dt>x₀</dt><dd>known initial state</dd></dl>
-<div class="teaching-point"><p>A model gives a rate. A simulator produces a future state.</p></div>
+<div class="teaching-point"><p>Ordinary differential equation (ODE): a state’s rate of change with time.</p></div>
 </div><figure><canvas id="m7p01a" width="440" height="320" aria-label="How does a simulator advance the world?"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p01a"),function(g,t,k){drawM7(g,t,k,"decay",1,false);},{rest:0.4,seconds:5});</script>
 <p class="tiny" style="margin:auto 0 0">Mathematics for Robotics &#183; ROB-GY 6013 &#183; NYU Tandon &#183; Jing Zhang &#183; Fall 2026</p><p class="cite page-source"><span>Initial-value problem (IVP)</span> — <a href="https://fncbook.com/basics/">[4] FNC §6.1</a></p>
@@ -1093,7 +1093,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=-2x,\quad x(0)=1\ \text{or}\ 2$$</div>
 <dl class="gloss"><dt>x(0)</dt><dd>two possible starts</dd><dt>−2x</dt><dd>the same rate model for both</dd></dl>
-<div class="teaching-point"><p>An initial-value problem combines the rule with its starting state.</p></div>
+<div class="teaching-point"><p>Initial-value problem (IVP): a differential equation plus a starting state.</p></div>
 </div><figure><canvas id="m7p04a" width="440" height="320" aria-label="One field, different initial states"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p04a"),function(g,t,k){drawM7(g,t,k,"twostarts",4,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Initial condition; solution trajectory</span> — <a href="https://fncbook.com/basics/">[4] FNC §6.1</a> · Course example</p>
@@ -1184,7 +1184,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">The manipulator equation is a force balance</p>
 <div class="cols w6040"><div>
 <div class="eq">$$M(q)\ddot q+C(q,v)v+g(q)=\tau$$</div>
-<dl class="gloss"><dt>M</dt><dd>n×n inertia, positive definite</dd><dt>Cv</dt><dd>velocity-dependent generalized forces</dd><dt>g, τ</dt><dd>gravity and applied generalized forces</dd><dt>q,v</dt><dd>positions and velocities</dd></dl>
+<dl class="gloss"><dt>M</dt><dd>n×n inertia; zᵀMz&gt;0 for every z≠0</dd><dt>Cv</dt><dd>velocity-dependent generalized forces</dd><dt>g, τ</dt><dd>gravity and applied generalized forces</dd><dt>q,v</dt><dd>positions and velocities</dd></dl>
 <div class="teaching-point"><p>The model balances inertial, velocity-dependent and gravitational terms.</p></div>
 </div><figure><canvas id="m7p08a" width="440" height="320" aria-label="The manipulator equation is a force balance"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p08a"),function(g,t,k){drawM7(g,t,k,"forces",8,false);},{rest:0.4,seconds:5});</script>
@@ -1199,7 +1199,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=\begin{bmatrix}v\\M(q)^{-1}[\tau-C(q,v)v-g(q)]\end{bmatrix}$$</div>
 <dl class="gloss"><dt>x</dt><dd>[q;v], a 2n-column</dd><dt>τ</dt><dd>applied generalized force</dd><dt>M⁻¹</dt><dd>exists for positive-definite inertia</dd></dl>
-<div class="teaching-point"><p>Compute acceleration by solving M a = τ − Cv − g.</p></div>
+<div class="teaching-point"><p>First order: only ẋ appears. Solve M a = τ − Cv − g for acceleration.</p></div>
 </div><figure><canvas id="m7p09a" width="440" height="320" aria-label="Rewrite the mechanics as a first-order ODE"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p09a"),function(g,t,k){drawM7(g,t,k,"state",9,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>First-order system; forward dynamics</span> — <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/chapter-8-1-lagrangian-formulation-of-dynamics-part-1-of-2/">[2] Modern Robotics §8.1</a> · <a href="https://fncbook.com/systems/">[4] FNC §6.3</a></p>
@@ -1297,8 +1297,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">Recall the eigenvector coordinates</p>
 <div class="cols w6040"><div>
 <div class="eq">$$AV=V\Lambda,\qquad x=Vc$$</div>
-<dl class="gloss"><dt>V</dt><dd>invertible eigenvector matrix</dd><dt>Λ</dt><dd>eigenvalues in matching order</dd><dt>c</dt><dd>coordinates of x in that basis</dd></dl>
-<div class="teaching-point"><p>Illustrated basis: v₁=(1,0)ᵀ, v₂=(1,1)ᵀ. Invertible does not mean orthogonal.</p></div>
+<dl class="gloss"><dt>V</dt><dd>d independent eigenvectors as columns</dd><dt>Λ</dt><dd>eigenvalues in matching order</dd><dt>c</dt><dd>coordinates of x in that basis</dd></dl>
+<div class="teaching-point"><p>Eigenbasis: d independent eigenvectors spanning the state space. Here v₁=(1,0)ᵀ, v₂=(1,1)ᵀ.</p></div>
 </div><figure><canvas id="m7p13a" width="440" height="320" aria-label="Recall the eigenvector coordinates"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p13a"),function(g,t,k){drawM7(g,t,k,"basis",13,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Diagonalization; modal coordinates</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a></p>
@@ -1311,7 +1311,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">The ODE separates into scalar modes</p>
 <div class="cols w6040"><div>
 <div class="eq">$$V\dot c=AVc=V\Lambda c\quad\Rightarrow\quad\dot c=\Lambda c$$</div>
-<dl class="gloss"><dt>V</dt><dd>constant invertible basis</dd><dt>c</dt><dd>time-dependent coordinates</dd><dt>Λ</dt><dd>diagonal rate matrix</dd></dl>
+<dl class="gloss"><dt>V</dt><dd>constant invertible basis</dd><dt>cᵢ</dt><dd>coefficient of eigenvector i; one mode</dd><dt>Λ</dt><dd>diagonal rate matrix</dd></dl>
 <div class="teaching-point"><p>Multiply on the left by V⁻¹; each coordinate now evolves alone.</p></div>
 </div><figure><canvas id="m7p14a" width="440" height="320" aria-label="The ODE separates into scalar modes"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p14a"),function(g,t,k){drawM7(g,t,k,"modes",14,false);},{rest:0.4,seconds:5});</script>
@@ -1407,15 +1407,16 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Linear Dynamics</h2>
-<p class="sub">Check a candidate for a defective system</p>
+<p class="sub">A defective system</p>
 <div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$A=\begin{bmatrix}-1&amp;1\\0&amp;-1\end{bmatrix},\quad x_0=(0,1)^T,\quad x(t)=(te^{-t},e^{-t})^T$$</div>
-<dl class="gloss"><dt>x(t)</dt><dd>candidate trajectory</dd><dt>A,x₀</dt><dd>given matrix and start</dd></dl>
-<p class="q">Does this trajectory solve the given IVP?</p>
+<dl class="gloss"><dt>v</dt><dd>eigenvector</dd></dl>
+<div class="teaching-point"><p>Defective: fewer than n independent eigenvectors in ℂⁿ. v lies along (1,0)ᵀ.</p></div>
+<p class="q">Does x(t) satisfy ẋ=Ax and x(0)=x₀?</p>
 <ol class="mc-options" type="A"><li>No: a defective matrix has no solution.</li><li>No: the factor t forces growth forever.</li><li>Yes: its derivative and initial state both match.</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
-<p>Correct C. Both IVP checks pass.</p></div>
-</div><figure><canvas id="m7p18a" width="440" height="320" aria-label="Check a candidate for a defective system"></canvas></figure></div>
+<p>Correct C. Both conditions hold.</p></div>
+</div><figure><canvas id="m7p18a" width="440" height="320" aria-label="A defective system"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p18a"),function(g,t,k){drawM7(g,t,k,"defective",18,true);},{rest:0.4,seconds:5});</script>
 </div>
 <div class="worked-solutions">
@@ -1442,10 +1443,11 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 </ol></div>
 <div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
 <p class="worked-progress">Solution 4 / 5</p>
-<h3>4 · Interpret the polynomial factor</h3>
-<p class="worked-variables">A: given constant state matrix · x(t),x₀: candidate trajectory and required initial state · t: continuous time</p>
+<h3>4 · Interpret the solution</h3>
+<p class="worked-variables">A: given constant state matrix · x(t),x₀: candidate trajectory and required initial state · t: continuous time · v: eigenvector · I: identity matrix</p>
 <ol class="worked-lines">
-<li>The exponential eventually dominates the factor t; a defective matrix still defines a valid linear initial-value problem. $$\lim_{t\to\infty}te^{-t}=0.$$</li>
+<li>Here λ=−1 is repeated. Its eigenvectors have only one independent direction. $$(A+I)v=0\ \Rightarrow\ v_2=0\ \Rightarrow\ v=c(1,0)^T,\quad c\ne0.$$</li>
+<li>The exponential eventually dominates t. The matrix exponential gives the solution even without an eigenbasis. $$\lim_{t\to\infty}te^{-t}=0,\qquad x(t)=e^{At}x_0.$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
 <p class="worked-progress">Solution 5 / 5</p>
@@ -1457,7 +1459,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <li>C checks both defining conditions.</li>
 </ol></div>
 <span class="worked-finish step" data-step="6" aria-hidden="true"></span>
-</div><p class="cite page-source"><span>Defective matrix; matrix exponential</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a> · Course example</p>
+</div><p class="cite page-source"><span>Defective matrix; matrix exponential</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a> · <a href="https://dlmf.nist.gov/1.2">[7] NIST DLMF §1.2</a> · Course example</p>
 </section>
 
 <!-- ===== 19 ===== -->
@@ -1630,8 +1632,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">Local error and accumulated error differ</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\begin{aligned}x(t+h)&amp;=x+h\dot x+\tfrac12h^2\ddot x+O(h^3)\\\ddot x&amp;=f_t+J_f f\end{aligned}$$</div>
-<dl class="gloss"><dt>x, f</dt><dd>evaluated on the exact path at time t</dd><dt>fₜ, Jf</dt><dd>partial time derivative and state Jacobian</dd></dl>
-<div class="teaching-point"><p>C² field, bounded derivatives. Local state error = h × FNC’s normalized LTE.</p></div>
+<dl class="gloss"><dt>x, f</dt><dd>evaluated on the exact path at time t</dd><dt>fₜ, Jf</dt><dd>time derivative; (Jf)ᵢⱼ=∂fᵢ/∂xⱼ</dd></dl>
+<div class="teaching-point"><p>C²: continuous derivatives through order 2. O(hᵖ): size ≤ C hᵖ for small h. Local state error = h × normalized local truncation error.</p></div>
 </div><figure><canvas id="m7p25a" width="440" height="320" aria-label="Local error and accumulated error differ"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p25a"),function(g,t,k){drawM7(g,t,k,"error",25,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Local error; global error</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a></p>
@@ -1644,7 +1646,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">A repeated step has a multiplier</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=\lambda x\quad\Rightarrow\quad x_{k+1}=(1+h\lambda)x_k$$</div>
-<dl class="gloss"><dt>λ</dt><dd>constant scalar rate</dd><dt>h</dt><dd>step size</dd><dt>1+hλ</dt><dd>numerical amplification factor</dd></dl>
+<dl class="gloss"><dt>λ</dt><dd>constant scalar rate</dd><dt>h</dt><dd>step size</dd><dt>1+hλ</dt><dd>numerical amplification factor</dd><dt>H</dt><dd>Hessian: second derivatives of the fixed quadratic</dd></dl>
 <div class="teaching-point"><p>Recall Lecture 6: A=−H turns this into the gradient-descent multiplier.</p></div>
 </div><figure><canvas id="m7p26a" width="440" height="320" aria-label="A repeated step has a multiplier"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p26a"),function(g,t,k){drawM7(g,t,k,"amplification",26,false);},{rest:0.4,seconds:5});</script>
@@ -1801,7 +1803,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$\text{model: }e^{\lambda h}\qquad\text{Euler: }1+h\lambda$$</div>
 <dl class="gloss"><dt>λ</dt><dd>continuous rate</dd><dt>h</dt><dd>step size</dd><dt>two factors</dt><dd>exact and numerical evolution over the same interval</dd></dl>
-<div class="teaching-point"><p>A solver check tests the approximation. Measurements test the physical model.</p></div>
+<div class="teaching-point"><p>Invariant: constant along an exact trajectory. Solver verification checks equations; model validation checks measurements.</p></div>
 </div><figure><canvas id="m7p31a" width="440" height="320" aria-label="Model validation and solver verification"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p31a"),function(g,t,k){drawM7(g,t,k,"diagnosis",31,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Verification; validation</span> — <a href="https://www.grc.nasa.gov/www/wind/valid/tutorial/glossary.html">[5] NASA, V&amp;V glossary</a></p>
@@ -1829,7 +1831,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$k_1=f(x_k,t_k),\qquad k_2=f(x_k+\tfrac h2k_1,t_k+\tfrac h2)$$</div>
 <dl class="gloss"><dt>k₁,k₂</dt><dd>rates, not increments</dd><dt>h k₁/2</dt><dd>trial half-step displacement</dd><dt>tₖ+h/2</dt><dd>midpoint time</dd></dl>
-<div class="teaching-point"><p>Explicit midpoint (RK2); FNC calls this improved Euler (IE2). Here kᵢ are rates.</p></div>
+<div class="teaching-point"><p>Explicit midpoint: second-order Runge–Kutta (RK2). FNC also calls it improved Euler (IE2).</p></div>
 </div><figure><canvas id="m7p33a" width="440" height="320" aria-label="Construct a trial midpoint"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p33a"),function(g,t,k){drawM7(g,t,k,"midpoint",33,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Explicit midpoint method (RK2)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
@@ -1914,7 +1916,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$\begin{aligned}k_1&amp;=f(x,t)\\k_2&amp;=f(x+hk_1/2,t+h/2)\\k_3&amp;=f(x+hk_2/2,t+h/2)\\k_4&amp;=f(x+hk_3,t+h)\end{aligned}$$</div>
 <dl class="gloss"><dt>x,t</dt><dd>current state and time</dd><dt>h</dt><dd>one full step</dd><dt>k₁…k₄</dt><dd>four rates with state/time units</dd></dl>
-<div class="teaching-point"><p>Each trial is anchored at the original x.</p></div>
+<div class="teaching-point"><p>RK4: classical fourth-order Runge–Kutta. Each trial starts from the same x.</p></div>
 </div><figure><canvas id="m7p36a" width="440" height="320" aria-label="Classical RK4 evaluates four trial rates"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p36a"),function(g,t,k){drawM7(g,t,k,"rk4",36,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Classical fourth-order Runge–Kutta (RK4)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
@@ -1991,8 +1993,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">Accuracy improves at a computational price</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\varepsilon_{\rm Euler}=O(h),\quad\varepsilon_{\rm midpoint}=O(h^2),\quad\varepsilon_{\rm RK4}=O(h^4)$$</div>
-<dl class="gloss"><dt>ε</dt><dd>norm of state error at a fixed final time</dd><dt>h</dt><dd>step tending to zero</dd><dt>assumptions</dt><dd>smooth, well-posed finite-interval problem</dd></dl>
-<div class="teaching-point"><p>Halve h and check convergence; RK4 is not unconditionally stable.</p></div>
+<dl class="gloss"><dt>ε</dt><dd>norm of state error at a fixed final time</dd><dt>h</dt><dd>step tending to zero</dd><dt>assumptions</dt><dd>bounded derivatives; field locally Lipschitz near solution</dd></dl>
+<div class="teaching-point"><p>Absolute-stability region: hλ values with bounded repeated updates on ẋ=λx. A large RK4 step can fail.</p></div>
 </div><figure><canvas id="m7p39a" width="440" height="320" aria-label="Accuracy improves at a computational price"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p39a"),function(g,t,k){drawM7(g,t,k,"order",39,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Order of accuracy; absolute stability</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · <a href="https://fncbook.com/absstab-diffusion/">[4] FNC §11.3</a></p>
@@ -2459,8 +2461,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">A learned field still needs an integrator</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=v_\theta(x,t)$$</div>
-<dl class="gloss"><dt>vθ</dt><dd>a field represented by a learned model</dd><dt>x</dt><dd>generated state</dd><dt>t</dt><dd>continuous evolution coordinate</dd></dl>
-<div class="teaching-point"><p>A learned field supplies rates; Euler or RK advances the state.</p></div>
+<dl class="gloss"><dt>vθ</dt><dd>rate model with learned parameters θ</dd><dt>x</dt><dd>generated state</dd><dt>t</dt><dd>continuous evolution coordinate</dd></dl>
+<div class="teaching-point"><p>A learned field supplies rates; Euler or Runge–Kutta advances the state.</p></div>
 </div><figure><canvas id="m7p49a" width="440" height="320" aria-label="A learned field still needs an integrator"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p49a"),function(g,t,k){drawM7(g,t,k,"field",49,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Neural ODE; numerical integration</span> — <a href="https://arxiv.org/abs/1806.07366">[6] Chen et al. (2018), §1</a></p>
@@ -2471,7 +2473,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="eyebrow">References</p>
 <h2>References</h2>
 <p class="sub">Sources for models and exact dynamics</p>
-<ol class="refs"><li><a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, R. Underactuated Robotics, ch.2. MIT notes, 2024.</a></li><li><a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/chapter-8-1-lagrangian-formulation-of-dynamics-part-1-of-2/">[2] Lynch, K. M. &amp; Park, F. C. Modern Robotics, §8.1. Cambridge, 2017; official supplement.</a></li><li><a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, G. Differential Equations and exp(At). MIT 18.06, lecture 23; OCW 2010.</a></li></ol>
+<ol class="refs"><li><a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, R. Underactuated Robotics, ch.2. MIT notes, 2024.</a></li><li><a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/chapter-8-1-lagrangian-formulation-of-dynamics-part-1-of-2/">[2] Lynch, K. M. &amp; Park, F. C. Modern Robotics, §8.1. Cambridge, 2017; official supplement.</a></li><li><a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, G. Differential Equations and exp(At). MIT 18.06, lecture 23; OCW 2010.</a></li><li><a href="https://dlmf.nist.gov/1.2">[7] NIST Digital Library of Mathematical Functions, §1.2(vi): defective and nondefective matrices.</a></li></ol>
 </section>
 
 <!-- ===== 51 ===== -->

@@ -978,7 +978,7 @@ window.M8 = (function () {
 <p class="eyebrow">Definition and reasoning</p>
 <h2>PMF and PDF</h2>
 <p class="sub">Why does a continuous event need an area?</p>
-<div class="eq">$$P(a\leq x\leq b)=\int_a^b p(t)\,dt$$</div><dl class="gloss"><dt>$x$</dt><dd>random quantity with density $p$</dd><dt>$a,b$</dt><dd>interval endpoints</dd><dt>$t$</dt><dd>integration variable</dd><dt>$p(t)$</dt><dd>density, inverse units of x</dd></dl><div class="step" data-step="1"><div class="eq">$$P(x=c)=\int_c^c p(t)\,dt=0$$</div><dl class="gloss"><dt>$c$</dt><dd>one fixed value</dd><dt>$P$</dt><dd>probability for a variable with a density</dd></dl></div>
+<div class="eq">$$P(a\leq x\leq b)=\int_a^b p(t)\,dt$$</div><dl class="gloss"><dt>$x$</dt><dd>random quantity with density $p$</dd><dt>$a,b$</dt><dd>interval endpoints</dd><dt>$t$</dt><dd>integration variable</dd><dt>$p(t)$</dt><dd>probability density function (PDF), inverse units of x</dd></dl><div class="step" data-step="1"><div class="eq">$$P(x=c)=\int_c^c p(t)\,dt=0$$</div><dl class="gloss"><dt>$c$</dt><dd>one fixed value</dd><dt>$P$</dt><dd>probability for a variable with a density</dd></dl></div>
 <p class="cite page-source"><span>Probability density function (PDF)</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.3.2</a></p>
 </section>
 
@@ -1097,7 +1097,7 @@ window.M8 = (function () {
 <p class="eyebrow">Definition and reasoning</p>
 <h2>Moments</h2>
 <p class="sub">Why is covariance positive semidefinite?</p>
-<div class="eq">$$a^T\Sigma a=\mathbb E[(a^T(x-\mu))^2]\geq0$$</div><dl class="gloss"><dt>$a$</dt><dd>fixed direction column in Rᵈ</dd><dt>$x,\mu$</dt><dd>random column and population mean</dd><dt>$\Sigma$</dt><dd>population covariance</dd></dl><div class="step" data-step="1"><div class="eq">$$C=\frac{X_c^TX_c}{N-1}\quad(N>1)$$</div><dl class="gloss"><dt>$C$</dt><dd>sample covariance estimate</dd><dt>$X_c$</dt><dd>N centered sample rows</dd><dt>$N$</dt><dd>number of samples</dd></dl></div>
+<div class="eq">$$a^T\Sigma a=\mathbb E[(a^T(x-\mu))^2]\geq0$$</div><dl class="gloss"><dt>$a$</dt><dd>fixed direction column in Rᵈ</dd><dt>$x,\mu$</dt><dd>random column and population mean</dd><dt>$\Sigma$</dt><dd>population covariance: PSD means $a^T\Sigma a\geq0$ for every $a$</dd></dl><div class="step" data-step="1"><div class="eq">$$C=\frac{X_c^TX_c}{N-1}\quad(N>1)$$</div><dl class="gloss"><dt>$C$</dt><dd>sample covariance estimate</dd><dt>$X_c$</dt><dd>N centered sample rows</dd><dt>$N$</dt><dd>number of samples</dd></dl></div>
 <p class="cite page-source"><span>Positive semidefinite covariance</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · Course derivation</p>
 </section>
 
@@ -1106,7 +1106,7 @@ window.M8 = (function () {
 <p class="eyebrow">Definition and reasoning</p>
 <h2>Moments</h2>
 <p class="sub">How do independent signs create correlation?</p>
-<figure style="flex:none"><canvas id="m8p15c" width="1152" height="230" role="img" aria-label="Independent signs transform continuously into correlated coordinates; a varies from zero to one"></canvas></figure><script>m3anim(document.getElementById("m8p15c"),function(g,t,k){var c=k.c;var S=k.plane(470,120,75),alpha=t;k.seg(S([-2,0]),S([2,0]),c.dim,1.5);k.seg(S([0,-1.3]),S([0,1.3]),c.dim,1.5);[-1,1].forEach(function(u){[-1,1].forEach(function(v){var xx=470+u*75,yy=120-(alpha*u+v)*40;k.dot([xx,yy],8,c.dat);});});k.text('x1 = U',[635,140],c.dim,{size:17});k.text('x2 = aU + V',[350,26],c.dim,{size:17});k.text('a = '+alpha.toFixed(2),[780,70],c.in,{size:22});k.text('four equally likely outcomes',[760,115],c.dat,{size:17});k.text('a: 0 to 1 adds the shared sign',[760,155],c.dim,{size:17});k.text('dimensionless coordinates',[350,225],c.dim,{size:17});k.text('1',[555,139],c.dim,{size:15});k.text('-1',[370,139],c.dim,{size:15});k.text('2',[485,46],c.dim,{size:15});k.text('-2',[485,207],c.dim,{size:15});},{seconds:5,hold:1,rest:1});</script><div class="ex"><p>Independent fair signs U,V. Let $x=(U,U+V)^T$.</p><div class="step" data-step="1"><div class="eq">$$\mu=\begin{bmatrix}0\\0\end{bmatrix},\qquad\Sigma=\begin{bmatrix}1&1\\1&2\end{bmatrix}$$</div><dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr auto 1fr;gap:8px 12px"><dt>$U,V$</dt><dd>independent, equally likely ±1</dd><dt>$x,\mu$</dt><dd>random column and mean</dd><dt>$\Sigma$</dt><dd>population covariance</dd></dl></div></div>
+<figure style="flex:none"><canvas id="m8p15c" width="1152" height="230" role="img" aria-label="Independent signs transform continuously into correlated coordinates; a varies from zero to one"></canvas></figure><script>m3anim(document.getElementById("m8p15c"),function(g,t,k){var c=k.c;var S=k.plane(470,120,75),alpha=t;k.seg(S([-2,0]),S([2,0]),c.dim,1.5);k.seg(S([0,-1.3]),S([0,1.3]),c.dim,1.5);[-1,1].forEach(function(u){[-1,1].forEach(function(v){var xx=470+u*75,yy=120-(alpha*u+v)*40;k.dot([xx,yy],8,c.dat);});});k.text('x1 = U',[635,140],c.dim,{size:17});k.text('x2 = aU + V',[350,26],c.dim,{size:17});k.text('a = '+alpha.toFixed(2),[780,70],c.in,{size:22});k.text('four equally likely outcomes',[760,115],c.dat,{size:17});k.text('a: 0 to 1 adds the shared sign',[760,155],c.dim,{size:17});k.text('dimensionless coordinates',[350,225],c.dim,{size:17});k.text('1',[555,139],c.dim,{size:15});k.text('-1',[370,139],c.dim,{size:15});k.text('2',[485,46],c.dim,{size:15});k.text('-2',[485,207],c.dim,{size:15});},{seconds:5,hold:1,rest:1});</script><div class="ex"><p>Independent fair signs U,V: knowing one does not change the other's probabilities. Let $x=(U,U+V)^T$.</p><div class="step" data-step="1"><div class="eq">$$\mu=\begin{bmatrix}0\\0\end{bmatrix},\qquad\Sigma=\begin{bmatrix}1&1\\1&2\end{bmatrix}$$</div><dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr auto 1fr;gap:8px 12px"><dt>$U,V$</dt><dd>independent, equally likely ±1</dd><dt>$x,\mu$</dt><dd>random column and mean</dd><dt>$\Sigma$</dt><dd>population covariance</dd></dl></div></div>
 <p class="cite page-source"><span>Independence; covariance</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.7</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · Course example</p>
 </section>
 
@@ -1170,14 +1170,14 @@ window.M8 = (function () {
 <p class="eyebrow">Definition and reasoning</p>
 <h2>Gaussian geometry</h2>
 <p class="sub">What defines a multivariate Gaussian density?</p>
-<div class="eq">$$p(x)=(2\pi)^{-d/2}|\Sigma|^{-1/2}\exp(-d_M^2/2)$$</div><dl class="gloss"><dt>$x,\mu$</dt><dd>random column and mean in Rᵈ</dd><dt>$d$</dt><dd>dimension</dd><dt>$\Sigma\succ0$</dt><dd>positive definite covariance</dd><dt>$|\Sigma|$</dt><dd>determinant</dd><dt>$p$</dt><dd>density</dd><dt>$d_M^2$</dt><dd>squared Mahalanobis distance</dd></dl><div class="step" data-step="1"><div class="eq">$$d_M^2=(x-\mu)^T\Sigma^{-1}(x-\mu)$$</div><dl class="gloss"><dt>$\Sigma^{-1}$</dt><dd>inverse covariance</dd><dt>$x-\mu$</dt><dd>centered displacement</dd></dl></div>
+<div class="eq">$$p(x)=(2\pi)^{-d/2}|\Sigma|^{-1/2}\exp(-d_M^2/2)$$</div><dl class="gloss"><dt>$x,\mu$</dt><dd>random column and mean in Rᵈ</dd><dt>$d$</dt><dd>dimension</dd><dt>$\Sigma\succ0$</dt><dd>positive variance in every nonzero direction</dd><dt>$|\Sigma|$</dt><dd>determinant</dd><dt>$p$</dt><dd>density</dd><dt>$d_M^2$</dt><dd>squared Mahalanobis distance</dd></dl><div class="step" data-step="1"><div class="eq">$$d_M^2=(x-\mu)^T\Sigma^{-1}(x-\mu)$$</div><dl class="gloss"><dt>$\Sigma^{-1}$</dt><dd>inverse covariance</dd><dt>$x-\mu$</dt><dd>centered displacement</dd></dl></div>
 <p class="cite page-source"><span>Multivariate Gaussian distribution</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.9.3</a></p>
 </section>
 
 <!-- ============ 19 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian geometry</h2><p class="sub">Change basis, then standardize</p>
-<figure style="flex:none"><canvas id="m8p19c" width="1152" height="270" role="img" aria-label="whiten: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p19c"),function(g,t,k){var c=k.c;var S=k.plane(280,130,40),T=k.plane(850,130,40);k.grid(S,-3,3,-2,2,{col:c.rule});k.grid(T,-3,3,-2,2,{col:c.rule});var a=[],b=[];for(var i=0;i<=120;i++){var q=i*Math.PI/60;a.push(S([2*Math.cos(q),Math.sin(q)]));b.push(T([(2-t)*Math.cos(q),Math.sin(q)]));}k.poly(a,c.dat,3);k.poly(b,c.in,3);k.text('centered original coordinates',[150,24],c.dat,{size:17});k.text('divide x1 by its standard deviation',[660,24],c.in,{size:17});k.text('x1',[415,139],c.dim,{size:14});k.text('x2',[288,40],c.dim,{size:14});k.text('z1',[975,139],c.dim,{size:14});k.text('z2',[858,40],c.dim,{size:14});k.dot(S([2,0]),5,c.dat);k.dot(T([2-t,0]),5,c.in);k.text('(2, 0)',[365,164],c.dat,{size:16});k.text(t>.98?'(1, 0)':'x1 scale changing',[890,178],c.in,{size:16});},{seconds:4,hold:.7,rest:1});</script><div class="eq">$$\Sigma=Q\Lambda Q^T,\quad z=\Lambda^{-1/2}Q^T(x-\mu)$$</div><dl class="gloss"><dt></dt><dd>$Q$ eigenvectors; $\Lambda$ positive eigenvalues; $z$ whitened displacement; $x,\mu$ position and mean. Plot: $Q=I$, $\Lambda=\operatorname{diag}(4,1)$.</dd></dl>
+<figure style="flex:none"><canvas id="m8p19c" width="1152" height="270" role="img" aria-label="whiten: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p19c"),function(g,t,k){var c=k.c;var S=k.plane(280,130,40),T=k.plane(850,130,40);k.grid(S,-3,3,-2,2,{col:c.rule});k.grid(T,-3,3,-2,2,{col:c.rule});var a=[],b=[];for(var i=0;i<=120;i++){var q=i*Math.PI/60;a.push(S([2*Math.cos(q),Math.sin(q)]));b.push(T([(2-t)*Math.cos(q),Math.sin(q)]));}k.poly(a,c.dat,3);k.poly(b,c.in,3);k.text('centered original coordinates',[150,24],c.dat,{size:17});k.text('divide x1 by its standard deviation',[660,24],c.in,{size:17});k.text('x1',[415,139],c.dim,{size:14});k.text('x2',[288,40],c.dim,{size:14});k.text('z1',[975,139],c.dim,{size:14});k.text('z2',[858,40],c.dim,{size:14});k.dot(S([2,0]),5,c.dat);k.dot(T([2-t,0]),5,c.in);k.text('(2, 0)',[365,164],c.dat,{size:16});k.text(t>.98?'(1, 0)':'x1 scale changing',[890,178],c.in,{size:16});},{seconds:4,hold:.7,rest:1});</script><div class="eq">$$\Sigma=Q\Lambda Q^T,\quad z=\Lambda^{-1/2}Q^T(x-\mu)$$</div><dl class="gloss"><dt></dt><dd>$Q$ eigenvectors; $\Lambda$ positive eigenvalues; $z$ centered with identity covariance; $x,\mu$ position and mean. Plot: $Q=I$, $\Lambda=\operatorname{diag}(4,1)$.</dd></dl>
 <p class="cite page-source"><span>Whitening; eigendecomposition</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=5">[2] UBC Lec.18 p.5</a> · Course derivation</p>
 </section>
 <!-- ============ 20 ============ -->
@@ -1363,7 +1363,7 @@ window.M8 = (function () {
 <!-- ============ 35 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian conditioning</h2><p class="sub">A correlated block predicts another block</p>
-<div class="eq">$$\mu_{a\mid b}=\mu_a+\Sigma_{ab}\Sigma_{bb}^{-1}(b-\mu_b)$$</div><dl class="gloss"><dt></dt><dd>Jointly Gaussian blocks; invertible $\Sigma_{bb}$. $a\in\mathbb R^p$, $b\in\mathbb R^q$; $\Sigma_{ab}:p\times q$.</dd></dl>
+<div class="eq">$$\mu_{a\mid b}=\mu_a+\Sigma_{ab}\Sigma_{bb}^{-1}(b-\mu_b)$$</div><dl class="gloss"><dt></dt><dd>Jointly Gaussian: every linear combination is normal (possibly constant). Invertible $\Sigma_{bb}$. $a\in\mathbb R^p$, $b\in\mathbb R^q$; $\Sigma_{ab}:p\times q$.</dd></dl>
 <p class="cite page-source"><span>Conditional Gaussian mean</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a></p>
 </section>
 <!-- ============ 36 ============ -->
@@ -1426,7 +1426,7 @@ window.M8 = (function () {
 <!-- ============ 39 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Estimation</h2><p class="sub">Gaussian products become a squared loss</p>
-<div class="eq">$$-\log p(b\mid\theta)=\frac N2\log(2\pi\sigma^2)+\frac{\|b-A\theta\|^2}{2\sigma^2}$$</div><dl class="gloss"><dt></dt><dd>$A$ known; $b$ observed; $\theta$ unknown; errors iid $\mathcal N(0,\sigma^2)$, $\sigma^2&gt;0$.</dd></dl>
+<div class="eq">$$-\log p(b\mid\theta)=\frac N2\log(2\pi\sigma^2)+\frac{\|b-A\theta\|^2}{2\sigma^2}$$</div><dl class="gloss"><dt></dt><dd>$A$ known; $b$ observed; $\theta$ unknown; independent errors, each $\mathcal N(0,\sigma^2)$, $\sigma^2&gt;0$.</dd></dl>
 <p class="cite page-source"><span>Negative log-likelihood; least squares</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.5.1</a> · Course derivation</p>
 </section>
 <!-- ============ 40 ============ -->
@@ -1444,20 +1444,20 @@ window.M8 = (function () {
 <!-- ============ 42 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Estimation</h2><p class="sub">A Gaussian prior sets a penalty scale</p>
-<div class="eq">$$J(\theta)=\tfrac12\|b-A\theta\|^2+\tfrac{\lambda^2}{2}\|\theta-\mu_0\|^2,\quad\lambda^2=\sigma^2/\tau^2$$</div><dl class="gloss"><dt></dt><dd>$\theta\sim\mathcal N(\mu_0,\tau^2I)$ prior; $\sigma^2$ noise variance; $\lambda^2$ relative strength.</dd></dl>
+<div class="eq">$$J(\theta)=\tfrac12\|b-A\theta\|^2+\tfrac{\lambda^2}{2}\|\theta-\mu_0\|^2,\quad\lambda^2=\sigma^2/\tau^2$$</div><dl class="gloss"><dt></dt><dd>$\theta\sim\mathcal N(\mu_0,\tau^2I)$ isotropic prior: variance $\tau^2$ in every unit direction; $\sigma^2$ noise variance; $\lambda^2$ relative strength.</dd></dl>
 <p class="cite page-source"><span>Maximum a posteriori (MAP); quadratic regularization</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6.1</a> · Course derivation</p>
 </section>
 <!-- ============ 43 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Estimation</h2><p class="sub">The prior changes the normal equation</p>
-<div class="eq">$$(A^TA+\lambda^2I)\hat\theta=A^Tb+\lambda^2\mu_0$$</div><dl class="gloss"><dt></dt><dd>Example: $A=\begin{bmatrix}1&amp;0\\1&amp;1\\1&amp;2\end{bmatrix}$, $b=(1,2,2)^T$, $\mu_0=0$, $\lambda^2=1$.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$\hat\theta_{MAP}=\binom{4/5}{3/5},\quad\mathrm{SSE}=\tfrac25$$</div><dl class="gloss"><dt></dt><dd>$\hat\theta_{MAP}$ posterior mode; SSE squared residual.</dd></dl></div></div>
+<div class="eq">$$(A^TA+\lambda^2I)\hat\theta=A^Tb+\lambda^2\mu_0$$</div><dl class="gloss"><dt></dt><dd>Example: $A=\begin{bmatrix}1&amp;0\\1&amp;1\\1&amp;2\end{bmatrix}$, $b=(1,2,2)^T$, $\mu_0=0$, $\lambda^2=1$.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$\hat\theta_{MAP}=\binom{4/5}{3/5},\quad\|b-A\hat\theta\|^2=\tfrac25$$</div><dl class="gloss"><dt></dt><dd>$\hat\theta_{MAP}$ posterior mode; squared residual norm.</dd></dl></div></div>
 <p class="cite page-source"><span>MAP normal equations; ridge regularization</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6.1</a> · <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.1.4</a> · Course derivation</p>
 </section>
 <!-- ===== 44 ===== -->
 <section class="slide has-worked-solutions" data-part="IV" data-mc="44">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Estimation</h2><p class="sub">What makes the MAP estimate unique?</p>
-<div class="worked-question"><p class="q">$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix}$, $b=(1,2)^T$; prior center $0$, $\lambda^2=1$. Why is MAP unique?</p><ol class="opts one"><li><i>A</i>The prior makes the two data columns independent.</li><li><i>B</i>Gaussian noise makes every data fit unique.</li><li><i>C</i>The prior adds curvature along the data null space.<b class="ok step" data-step="6">✓</b></li></ol><div class="ex step" data-step="6"><p class="reveal">LS: $\theta_1+\theta_2=1$. MAP: $(A^TA+I)\theta=A^Tb$ gives $\theta_1=\theta_2=5/11$.</p></div></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix}$, $b=(1,2)^T$; prior center $0$, $\lambda^2=1$. Why is MAP unique?</p><ol class="opts one"><li><i>A</i>The prior makes the two data columns independent.</li><li><i>B</i>Gaussian noise makes every data fit unique.</li><li><i>C</i>The prior adds curvature along the data null space.<b class="ok step" data-step="6">✓</b></li></ol><div class="ex step" data-step="6"><p class="reveal">Least squares: $\theta_1+\theta_2=1$. MAP: $(A^TA+I)\theta=A^Tb$ gives $\theta_1=\theta_2=5/11$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
 <p class="worked-progress">Solution 1 / 5</p>
 <h3>Identify the data null space</h3>
@@ -1501,7 +1501,7 @@ window.M8 = (function () {
 <ol class="worked-lines">
 <li>A is false: A still has identical columns and rank 1.</li>
 <li>B is false: Gaussian noise alone does not identify their separate coefficients.</li>
-<li>C is correct: the proper Gaussian prior supplies curvature in the null direction.</li>
+<li>C is correct: the stated Gaussian prior supplies curvature in the null direction.</li>
 </ol></div>
 <span class="worked-finish step" data-step="6" aria-hidden="true"></span>
 </div>
@@ -1608,7 +1608,7 @@ window.M8 = (function () {
 <section class="slide has-worked-solutions" data-part="IV" data-mc="47">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Intervals</h2><p class="sub">Calibration: confidence coverage</p>
-<div class="worked-question"><div class="cols" style="grid-template-columns:640px 460px;gap:28px;align-items:start"><div><p class="q">Same sensor: $B_i\mid\theta\sim\mathcal N(\theta,1)$ iid. $C(B)=\bar B\pm1.96/\sqrt3$. What does 95% confidence mean?</p><ol class="opts one"><li><i>A</i>This realized interval has 95% posterior mass.</li><li><i>B</i>95% of future individual readings lie inside it.</li><li><i>C</i>Repeated intervals cover fixed $\theta$ 95% of the time.<b class="ok step" data-step="5">✓</b></li></ol><div class="ex step" data-step="5"><p class="reveal">$\sqrt3(\bar B-\theta)\sim\mathcal N(0,1)$; $P_\theta(\theta\in C(B))\approx.95$.</p></div></div><figure class="step" data-step="5" style="align-self:center;flex:none"><canvas id="m8p47c" width="460" height="340" role="img" aria-label="Calibration model after the vote"></canvas></figure><script>m3anim(document.getElementById("m8p47c"),function(g,t,k){var c=k.c;var truth=250;k.seg([truth,37],[truth,270],c.in,2,[4,4]);
+<div class="worked-question"><div class="cols" style="grid-template-columns:640px 460px;gap:28px;align-items:start"><div><p class="q">$B_i\mid\theta\sim\mathcal N(\theta,1)$ independently. $C(B)=\bar B\pm1.96/\sqrt3$. What does 95% confidence mean?</p><ol class="opts one"><li><i>A</i>This realized interval has 95% posterior mass.</li><li><i>B</i>95% of future individual readings lie inside it.</li><li><i>C</i>Repeated intervals cover fixed $\theta$ 95% of the time.<b class="ok step" data-step="5">✓</b></li></ol><div class="ex step" data-step="5"><p class="reveal">$\sqrt3(\bar B-\theta)\sim\mathcal N(0,1)$; $P_\theta(\theta\in C(B))\approx.95$.</p></div></div><figure class="step" data-step="5" style="align-self:center;flex:none"><canvas id="m8p47c" width="460" height="340" role="img" aria-label="Calibration model after the vote"></canvas></figure><script>m3anim(document.getElementById("m8p47c"),function(g,t,k){var c=k.c;var truth=250;k.seg([truth,37],[truth,270],c.in,2,[4,4]);
   k.text('fixed true offset',[truth-67,23],c.in,{size:17});
   [-75,20,62,-40,110,10,-60,40,-10].forEach(function(shift,i){var y=54+24*i,center=truth+shift,col=Math.abs(shift)<=90?c.dat:c.res;k.seg([center-90,y],[center+90,y],col,3);k.dot([center,y],3,col);k.text(String(i+1),[22,y+5],c.dim,{size:14});});
   k.text('repeated datasets',[12,286],c.dim,{size:15});k.text('offset',[354,286],c.dim,{size:15});
@@ -1765,7 +1765,7 @@ window.M8 = (function () {
 <ol class="worked-lines">
 <li>$C$: confidence; mean $2.5$, sampling standard error $1/\sqrt2$.</li>
 <li>$C=2.5\pm1.96/\sqrt2\approx[1.1141,3.8859]$.</li>
-<li>$I$: credible; posterior mean $3$, SD $1/\sqrt3$; $I=3\pm1.96/\sqrt3\approx[1.8684,4.1316]$.</li>
+<li>$I$: credible; posterior mean $3$, standard deviation $1/\sqrt3$; $I=3\pm1.96/\sqrt3\approx[1.8684,4.1316]$.</li>
 </ol></div>
 <div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
 <p class="worked-progress">Solution 5 / 5</p>
@@ -1820,7 +1820,7 @@ window.M8 = (function () {
 <section class="slide has-worked-solutions" data-part="IV" data-mc="52">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Synthesis</h2><p class="sub">Which modeling bridge is valid?</p>
-<div class="worked-question"><p class="q">With iid Gaussian noise and an isotropic Gaussian prior, which modeling chain is valid?</p><ol class="opts one"><li><i>A</i>Independence gives squares; Gaussian noise gives sums.</li><li><i>B</i>Gaussian noise gives squares; independence gives sums.<b class="ok step" data-step="5">✓</b></li><li><i>C</i>A Gaussian prior removes the data residual term.</li></ol><div class="ex step" data-step="5"><p class="reveal">$-\log p(\theta\mid b)=C+\|b-A\theta\|^2/(2\sigma^2)+\|\theta-\mu_0\|^2/(2\tau^2)$.</p></div></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Gaussian noise: independent, equal variance. Gaussian prior: equal variance in every direction. Which chain holds?</p><ol class="opts one"><li><i>A</i>Independence gives squares; Gaussian noise gives sums.</li><li><i>B</i>Gaussian noise gives squares; independence gives sums.<b class="ok step" data-step="5">✓</b></li><li><i>C</i>A Gaussian prior removes the data residual term.</li></ol><div class="ex step" data-step="5"><p class="reveal">$-\log p(\theta\mid b)=C+\|b-A\theta\|^2/(2\sigma^2)+\|\theta-\mu_0\|^2/(2\tau^2)$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
 <p class="worked-progress">Solution 1 / 4</p>
 <h3>State the model and symbols</h3>
