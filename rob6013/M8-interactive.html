@@ -905,7 +905,7 @@ window.M8 = (function () {
 <p class="eyebrow">Why</p>
 <h2>Uncertainty</h2>
 <p class="sub">What does a distribution add to a model?</p>
-<div class="eq">$$z=x+\varepsilon$$</div><dl class="gloss"><dt>$x$</dt><dd>unknown state (m)</dd><dt>$z$</dt><dd>observed reading (m)</dd><dt>$\varepsilon$</dt><dd>random error (m)</dd></dl><figure style="flex:none"><svg viewBox="0 0 1120 220" style="width:100%;height:220px" role="img" aria-label="Probability tools and three inference routes: data likelihood to MLE, prior and likelihood through Bayes to posterior MAP and credibility, repeated sampling to confidence"><g style="font-size:22px"><text style="font-size:20px" x="10" y="28">Tools: random variables · PMF / PDF · moments · Gaussian geometry</text><text style="font-size:20px" x="10" y="86">Data + model</text><text style="font-size:20px" x="400" y="86">Likelihood</text><text style="font-size:20px" x="810" y="86">MLE</text><text style="font-size:20px" x="10" y="140">Prior + likelihood</text><text style="font-size:20px" x="400" y="140">Bayes → posterior</text><text style="font-size:20px" x="810" y="140">MAP / credible interval</text><text style="font-size:20px" x="10" y="194">Repeated data + model</text><text style="font-size:20px" x="400" y="194">Sampling distribution</text><text style="font-size:20px" x="810" y="194">Confidence interval</text></g><g class="stroke" fill="none" stroke-width="2"><path d="M285 80H370l-10-5m10 5l-10 5M655 80H780l-10-5m10 5l-10 5M285 134H370l-10-5m10 5l-10 5M655 134H780l-10-5m10 5l-10 5M285 188H370l-10-5m10 5l-10 5M655 188H780l-10-5m10 5l-10 5"/></g></svg></figure><div class="step" data-step="1"><p class="callout">Uncertainty describes the model, not a moving wall.</p></div>
+<div class="eq">$$z=x+\varepsilon$$</div><dl class="gloss"><dt>$x$</dt><dd>unknown state (m)</dd><dt>$z$</dt><dd>observed reading (m)</dd><dt>$\varepsilon$</dt><dd>random error (m)</dd></dl><figure style="flex:none"><svg viewBox="0 0 1120 220" style="width:100%;height:220px" role="img" aria-label="Probability tools and three inference routes: data likelihood to MLE, prior and likelihood through Bayes to posterior MAP and credibility, repeated sampling to confidence"><g style="font-size:22px"><text style="font-size:20px" x="10" y="28">Tools: random variables · PMF / PDF · moments · Gaussian geometry</text><text style="font-size:20px" x="10" y="86">Data + model</text><text style="font-size:20px" x="400" y="86">Likelihood</text><text style="font-size:20px" x="810" y="86">MLE</text><text style="font-size:20px" x="10" y="140">Prior + likelihood</text><text style="font-size:20px" x="400" y="140">Bayes → posterior</text><text style="font-size:20px" x="810" y="140">MAP / credible interval</text><text style="font-size:20px" x="10" y="194">Repeated data + model</text><text style="font-size:20px" x="400" y="194">Sampling distribution</text><text style="font-size:20px" x="810" y="194">Confidence interval</text></g><g class="stroke" fill="none" stroke-width="2"><path d="M285 80H370l-10-5m10 5l-10 5M655 80H780l-10-5m10 5l-10 5M285 134H370l-10-5m10 5l-10 5M655 134H780l-10-5m10 5l-10 5M285 188H370l-10-5m10 5l-10 5M655 188H780l-10-5m10 5l-10 5"/></g></svg></figure><div class="step" data-step="1"><p class="callout">Estimate the fixed state from noisy readings.</p></div>
 <p class="cite page-source"><span>Probability distribution; uncertainty</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.1</a> · Course concept map</p>
 </section>
 
@@ -1254,14 +1254,14 @@ window.M8 = (function () {
 </section>
 <!-- ============ 27 ============ -->
 <section class="slide" data-part="IV">
-<p class="eyebrow">Lecture 8</p><h2>Bayes</h2><p class="sub">Rare events can lose the positive majority</p>
+<p class="eyebrow">Lecture 8</p><h2>Bayes</h2><p class="sub">Why can most positive alarms be false?</p>
 <figure style="flex:none"><canvas id="m8p27c" width="1152" height="190" role="img" aria-label="bayes: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p27c"),function(g,t,k){var c=k.c;k.text('joint events',[70,35],c.dim,{size:18});k.text('positive +',[410,35],c.dat,{size:18});k.text('negative −',[730,35],c.dim,{size:18});k.text('event H',[70,90],c.in,{size:18});k.text('no event',[70,120],c.dim,{size:18});k.text((k.shown(1)?'90':'?'),[410,90],c.dat,{size:18});k.text((k.shown(1)?'10':'?'),[730,90],c.dim,{size:18});k.text((k.shown(1)?'990':'?'),[410,120],c.dat,{size:18});k.text((k.shown(1)?'8910':'?'),[730,120],c.dim,{size:18});k.seg([380,45],[380,160],c.dat,2);k.seg([700,45],[700,160],c.rule,1);},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$P(H)=.01,\quad P(+\mid H)=.9,\quad P(+\mid\neg H)=.1$$</div><dl class="gloss"><dt></dt><dd>10,000 model trials: 100 event cases and 9,900 non-event cases.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$P(H\mid +)=\frac{90}{90+990}=\frac1{12}$$</div><dl class="gloss"><dt></dt><dd>$H$ event; $+$ positive reading.</dd></dl></div></div>
 <p class="cite page-source"><span>Prior probability; posterior probability</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.11</a> · Course example</p>
 </section>
 <!-- ===== 28 ===== -->
 <section class="slide has-worked-solutions" data-part="IV" data-mc="28">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
-<h2>Bayes</h2><p class="sub">Does a better base rate change the sensor?</p>
+<h2>Bayes</h2><p class="sub">How does prevalence change the chance an alarm is true?</p>
 <div class="worked-question"><p class="q">$P(H)=.1$, $P(+\mid H)=.9$, $P(+\mid\neg H)=.1$. What is $P(H\mid+)$?</p><ol class="opts one"><li><i>A</i>$.9$: sensitivity is the positive predictive value.</li><li><i>B</i>$.1$: an observation cannot change the prior.</li><li><i>C</i>$.5$: true and false positives contribute equally.<b class="ok step" data-step="4">✓</b></li></ol><div class="ex step" data-step="4"><p class="reveal">$P(H\mid+)=\dfrac{.9(.1)}{.9(.1)+.1(.9)}=.5$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
 <p class="worked-progress">Solution 1 / 3</p>
@@ -1375,7 +1375,7 @@ window.M8 = (function () {
 <!-- ===== 37 ===== -->
 <section class="slide has-worked-solutions" data-part="IV" data-mc="37">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
-<h2>Gaussian conditioning</h2><p class="sub">Does the variance of a given b change?</p>
+<h2>Gaussian conditioning</h2><p class="sub">Does the conditional variance change?</p>
 <div class="worked-question"><p class="q">Gaussian $(a,b)^T$: $\mu=(1,2)^T$, $\Sigma=\begin{bmatrix}4&amp;2\\2&amp;9\end{bmatrix}$. Observe $b=-1$ instead of $5$.</p><ol class="opts one"><li><i>A</i>Both conditional mean and variance decrease.</li><li><i>B</i>Mean decreases; conditional variance stays fixed.<b class="ok step" data-step="5">✓</b></li><li><i>C</i>Neither changes because the joint model is fixed.</li></ol><div class="ex step" data-step="5"><p class="reveal">$\mu_{a\mid b}=1+\frac29(-1-2)=\frac13$; $\Sigma_{a\mid b}=4-\frac49=\frac{32}9$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
 <p class="worked-progress">Solution 1 / 4</p>
@@ -1693,7 +1693,7 @@ window.M8 = (function () {
 <section class="slide has-worked-solutions" data-part="IV" data-mc="49">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Intervals</h2><p class="sub">Calibration: why do the intervals differ?</p>
-<div class="worked-question"><p class="q">Prior $\theta\sim\mathcal N(0,1)$. Confidence $C(b)=2\pm1.96/\sqrt3$; credible $I(b)=1.5\pm1.96(.5)$. Why different?</p><ol class="opts one"><li><i>A</i>It must have better repeated-sampling coverage.</li><li><i>B</i>The zero-centered prior adds information.<b class="ok step" data-step="4">✓</b></li><li><i>C</i>The physical sensor became less noisy.</li></ol><div class="ex step" data-step="4"><p class="reveal">$C\approx[.8684,3.1316]$; $I\approx[.5200,2.4800]$. Prior precision $1$ adds to data precision $3$.</p></div></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Prior $\theta\sim\mathcal N(0,1)$. Confidence $C(b)=2\pm1.96/\sqrt3$; credible $I(b)=1.5\pm1.96(.5)$. Why different?</p><ol class="opts one"><li><i>A</i>Narrower credible interval means better coverage.</li><li><i>B</i>The zero-centered prior adds information.<b class="ok step" data-step="4">✓</b></li><li><i>C</i>The physical sensor became less noisy.</li></ol><div class="ex step" data-step="4"><p class="reveal">$C\approx[.8684,3.1316]$; $I\approx[.5200,2.4800]$. Prior precision $1$ adds to data precision $3$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
 <p class="worked-progress">Solution 1 / 3</p>
 <h3>Identify the two information sources</h3>
@@ -1729,7 +1729,7 @@ window.M8 = (function () {
 <!-- ===== 50 ===== -->
 <section class="slide has-worked-solutions" data-part="IV" data-mc="50">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
-<h2>Transfer</h2><p class="sub">Calibration: independent transfer</p>
+<h2>Transfer</h2><p class="sub">Calibration: new data, new prior</p>
 <div class="worked-question"><p class="q">Readings $b=(2,3)^T$ estimate offset $\theta$; iid noise $\mathcal N(0,1)$; prior $\theta\sim\mathcal N(4,1)$. Which is valid?</p><ol class="opts one"><li><i>A</i>The prior changes the data-only MLE.</li><li><i>B</i>The prior center can be ignored in MAP.</li><li><i>C</i>MAP moves above the data mean; MLE stays fixed.<b class="ok step" data-step="6">✓</b></li></ol><div class="ex step" data-step="6"><p class="reveal">$\hat\theta_{MLE}=2.5$, $\theta\mid b\sim\mathcal N(3,1/3)$. $C=2.5\pm1.96/\sqrt2$; $I=3\pm1.96/\sqrt3$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
 <p class="worked-progress">Solution 1 / 5</p>
