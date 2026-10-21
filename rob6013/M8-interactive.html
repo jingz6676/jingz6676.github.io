@@ -399,6 +399,14 @@ body.m8break-on #m8break{display:grid}
 #m8break .ring1{stroke:var(--c-in);transition:stroke-dashoffset .25s linear}
 body.print #m8break{display:none!important}
 @media print{#m8break{display:none!important}}
+
+/* M8-PAGE-SOURCES */
+.slide:has(#m8p04c) .gloss{grid-template-columns:auto 1fr auto 1fr}
+.slide .page-source{position:absolute;left:64px;right:64px;bottom:76px;margin:0;font-size:15px;line-height:1.25;max-width:none}
+.slide.title .page-source{bottom:94px}
+.slide .page-source a{color:inherit;text-decoration:underline}
+.slide.refs .refs{list-style:none;padding-left:0;font-size:21px;line-height:1.35}
+.slide.refs .refs li{margin:17px 0}
 </style>
 <script>
 /* ---------------------------------------------------------------------------
@@ -869,6 +877,7 @@ window.M8 = (function () {
 <p class="sub">Which position should a noisy sensor report?</p>
 <figure style="flex:none"><svg viewBox="0 0 1120 265" style="width:100%;height:245px" role="img" aria-label="readings"><path d="M90 35V215H1010" fill="none" class="stroke" stroke-width="2"/><path d="M90 125H1010" class="in-s" stroke-width="3" stroke-dasharray="8 7"/><circle cx="160" cy="145" r="9" class="dat-f"/><circle cx="310" cy="92" r="9" class="dat-f"/><circle cx="460" cy="136" r="9" class="dat-f"/><circle cx="610" cy="113" r="9" class="dat-f"/><circle cx="760" cy="154" r="9" class="dat-f"/><circle cx="910" cy="101" r="9" class="dat-f"/><text x="25" y="40">m</text><text x="900" y="248">reading index</text><text x="840" y="115">fixed state</text></svg></figure><p class="callout">One stationary object. Several different readings.</p><div class="key"><span class="in">state</span> · <span class="dat">measurements</span> · <span class="ans">inferred answer</span></div><div class="step" data-step="1"><p>Report an estimate and the uncertainty around it.</p></div>
 <p class="tiny" style="margin:auto 0 0">Mathematics for Robotics &#183; ROB-GY 6013 &#183; NYU Tandon &#183; Jing Zhang &#183; Fall 2026</p>
+<p class="cite page-source"><span>Probability model; parameter estimation</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.1</a> · <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.5.1</a> · Course example</p>
 </section>
 
 <!-- ===== 2 ===== -->
@@ -877,6 +886,7 @@ window.M8 = (function () {
 <h2>Uncertainty</h2>
 <p class="sub">What does a distribution add to a model?</p>
 <div class="eq">$$z=x+\varepsilon$$</div><dl class="gloss"><dt>$x$</dt><dd>unknown state (m)</dd><dt>$z$</dt><dd>observed reading (m)</dd><dt>$\varepsilon$</dt><dd>random error (m)</dd></dl><figure style="flex:none"><svg viewBox="0 0 1120 150" style="width:100%;height:150px" role="img" aria-label="Sensor concept map: describe errors, summarize distributions, update with observations, estimate state, quantify intervals"><path d="M150 65H1000" class="stroke" fill="none" stroke-width="2"/><text x="10" y="40">Sensor errors</text><text x="235" y="40">Distribution / moments</text><text x="525" y="40">Conditioning</text><text x="750" y="40">Estimate</text><text x="945" y="40">Interval meaning</text><text x="155" y="95">describe →</text><text x="445" y="95">update →</text><text x="655" y="95">estimate →</text><text x="855" y="95">quantify →</text></svg></figure><div class="step" data-step="1"><p class="callout">Uncertainty describes the model, not a moving wall.</p></div>
+<p class="cite page-source"><span>Probability distribution; uncertainty</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.1</a> · Course concept map</p>
 </section>
 
 <!-- ===== 3 ===== -->
@@ -885,6 +895,7 @@ window.M8 = (function () {
 <h2>Random variables</h2>
 <p class="sub">How does an outcome become a number?</p>
 <div class="eq">$$x:\Omega\to\mathbb R,\qquad x(\omega)\in\{-1,0,2\}$$</div><dl class="gloss"><dt>$\Omega$</dt><dd>possible outcomes</dd><dt>$\omega$</dt><dd>one outcome</dd><dt>$x$</dt><dd>random variable: numerical error (cm)</dd></dl><div class="cols3"><div class="box">Outcome A → −1 cm</div><div class="box">Outcome B → 0 cm</div><div class="box">Outcome C → 2 cm</div></div><div class="step" data-step="1"><p class="callout">The rule is fixed; the outcome is uncertain.</p></div>
+<p class="cite page-source"><span>Random variable; realization</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.2</a></p>
 </section>
 
 <!-- ===== 4 ===== -->
@@ -893,6 +904,7 @@ window.M8 = (function () {
 <h2>PMF and PDF</h2>
 <p class="sub">How do probabilities attach to discrete values?</p>
 <figure style="flex:none"><canvas id="m8p04c" width="1152" height="270" role="img" aria-label="Fixed PMF; selected bar cycles through its value and probability"></canvas></figure><script>m3anim(document.getElementById("m8p04c"),function(g,t,k){var c=k.c;var xs=[-1,0,2],ps=[.25,.5,.25],sel=Math.min(2,Math.floor(t*3));var S=k.plane(280,210,1);k.seg([110,210],[980,210],c.dim,1.5);k.seg([110,30],[110,210],c.dim,1.5);for(var i=0;i<3;i++){var xx=240+i*280,yy=210-ps[i]*300;k.poly([[xx,210],[xx,yy],[xx+85,yy],[xx+85,210]],c.dat,2,c.dat);k.text(String(xs[i]),[xx+35,238],c.dim,{size:18});k.text(String(ps[i]),[xx+20,yy-12],c.dat,{size:18});if(i===sel){k.seg([xx,216],[xx+85,216],c.in,4);}}k.text('probability mass',[120,26],c.dim,{size:17});k.text('error (cm)',[920,238],c.dim,{size:17});k.text('Selected value '+xs[sel]+' has mass '+ps[sel],[640,28],c.in,{size:18});},{seconds:5,hold:1,rest:0});</script><div class="eq">$$p(a)=P(x=a),\qquad p(a)\geq0,\qquad\sum_a p(a)=1$$</div><dl class="gloss"><dt>$x$</dt><dd>discrete random error</dd><dt>$a$</dt><dd>possible value (cm)</dd><dt>$p(a)$</dt><dd>probability mass</dd><dt>$P$</dt><dd>event probability</dd></dl>
+<p class="cite page-source"><span>Probability mass function (PMF)</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.3.1</a></p>
 </section>
 
 <!-- ===== 5 ===== -->
@@ -901,6 +913,7 @@ window.M8 = (function () {
 <h2>PMF and PDF</h2>
 <p class="sub">What does the three-point error model predict?</p>
 <div class="ex"><p>Error values −1, 0, 2 cm; masses ¼, ½, ¼. Find nonnegative-error probability and mean.</p><div class="step" data-step="1"><div class="eq">$$P(x\geq0)=\tfrac12+\tfrac14=\tfrac34,\qquad \mu=(-1)\tfrac14+0\tfrac12+2\tfrac14=\tfrac14$$</div><dl class="gloss"><dt>$P$</dt><dd>event probability</dd><dt>$x$</dt><dd>error (cm)</dd><dt>$\mu$</dt><dd>mean error (cm)</dd></dl></div></div>
+<p class="cite page-source"><span>Discrete probability; expectation</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.3.1</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · Course example</p>
 </section>
 
 <!-- ===== 6 ===== -->
@@ -908,6 +921,7 @@ window.M8 = (function () {
 <p class="eyebrow you" data-min="2">Choose, explain, vote</p>
 <h2>PMF and PDF</h2><p class="sub">Which values belong to the event?</p>
 <p class="q">Errors $-1,0,2$ cm have masses $1/2,1/4,1/4$. What is $P(x\geq0)$?</p><ol class="opts one"><li><i>A</i>$1/4$: count only positive errors.</li><li><i>B</i>$1/2$: include zero and positive errors.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>$2/3$: two of three possible values.</li></ol><div class="ex step" data-step="1"><p class="reveal">$P(x\geq0)=p(0)+p(2)=1/4+1/4=1/2$. Total mass is $1$.</p></div>
+<p class="cite page-source"><span>Event probability; PMF</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.3.1</a> · Course question</p>
 </section>
 
 <!-- ===== 7 ===== -->
@@ -916,6 +930,7 @@ window.M8 = (function () {
 <h2>PMF and PDF</h2>
 <p class="sub">Why does a continuous event need an area?</p>
 <div class="eq">$$P(a\leq x\leq b)=\int_a^b p(t)\,dt$$</div><dl class="gloss"><dt>$x$</dt><dd>random quantity with density $p$</dd><dt>$a,b$</dt><dd>interval endpoints</dd><dt>$t$</dt><dd>integration variable</dd><dt>$p(t)$</dt><dd>density, inverse units of x</dd></dl><div class="step" data-step="1"><div class="eq">$$P(x=c)=\int_c^c p(t)\,dt=0$$</div><dl class="gloss"><dt>$c$</dt><dd>one fixed value</dd><dt>$P$</dt><dd>probability for a variable with a density</dd></dl></div>
+<p class="cite page-source"><span>Probability density function (PDF)</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.3.2</a></p>
 </section>
 
 <!-- ===== 8 ===== -->
@@ -923,7 +938,8 @@ window.M8 = (function () {
 <p class="eyebrow">Definition and reasoning</p>
 <h2>PMF and PDF</h2>
 <p class="sub">Can a valid density be greater than one?</p>
-<figure style="flex:none"><canvas id="m8p08c" width="1152" height="270" role="img" aria-label="Uniform density with a growing interval whose probability is its shaded area"></canvas></figure><script>m3anim(document.getElementById("m8p08c"),function(g,t,k){var c=k.c;var left=160,scale=2600,base=215,top=65,b=.05+.10*t;k.seg([110,base],[1050,base],c.dim,1.5);k.seg([110,35],[110,base],c.dim,1.5);k.poly([[left,base],[left,top],[left+.25*scale,top],[left+.25*scale,base]],c.dat,3);k.poly([[left+.05*scale,base],[left+.05*scale,top],[left+b*scale,top],[left+b*scale,base]],c.out,1,c.out);k.text('density (1/cm)',[115,26],c.dim,{size:17});k.text('4',[79,top+7],c.dat,{size:18});[0,.05,.15,.25].forEach(function(v){k.text(String(v),[left+v*scale-12,240],c.dim,{size:17});});k.text('error (cm)',[930,240],c.dim,{size:17});k.text('moving upper bound b = '+b.toFixed(3),[650,30],c.in,{size:18});k.text('shaded mass = 4(b - .05) = '+(4*(b-.05)).toFixed(3),[670,180],c.out,{size:17});},{seconds:5,hold:1,rest:1});</script><div class="ex"><p class="lbl">uniform error</p><div class="eq">$$p(t)=4\ \ (0\leq t\leq .25),\quad P(.05\leq x\leq .15)=4(.15-.05)=.4$$</div><dl class="gloss"><dt>$t,x$</dt><dd>error (cm)</dd><dt>$p$</dt><dd>density (cm⁻¹)</dd><dt>$P$</dt><dd>interval probability</dd></dl></div>
+<figure style="flex:none"><canvas id="m8p08c" width="1152" height="240" role="img" aria-label="Uniform density with a growing interval whose probability is its shaded area"></canvas></figure><script>m3anim(document.getElementById("m8p08c"),function(g,t,k){var c=k.c;var left=160,scale=2600,base=190,top=55,b=.05+.10*t;k.seg([110,base],[1050,base],c.dim,1.5);k.seg([110,35],[110,base],c.dim,1.5);k.poly([[left,base],[left,top],[left+.25*scale,top],[left+.25*scale,base]],c.dat,3);k.poly([[left+.05*scale,base],[left+.05*scale,top],[left+b*scale,top],[left+b*scale,base]],c.out,1,c.out);k.text('density (1/cm)',[115,26],c.dim,{size:17});k.text('4',[79,top+7],c.dat,{size:18});[0,.05,.15,.25].forEach(function(v){k.text(String(v),[left+v*scale-12,215],c.dim,{size:17});});k.text('error (cm)',[930,215],c.dim,{size:17});k.text('moving upper bound b = '+b.toFixed(3),[650,30],c.in,{size:18});k.text('shaded mass = 4(b - .05) = '+(4*(b-.05)).toFixed(3),[670,160],c.out,{size:17});},{seconds:5,hold:1,rest:1});</script><div class="ex"><p class="lbl">uniform error</p><div class="eq">$$p(t)=4\ \ (0\leq t\leq .25),\quad P(.05\leq x\leq .15)=4(.15-.05)=.4$$</div><dl class="gloss"><dt>$t,x$</dt><dd>error (cm)</dd><dt>$p$</dt><dd>density (cm⁻¹)</dd><dt>$P$</dt><dd>interval probability</dd></dl></div>
+<p class="cite page-source"><span>Uniform density; normalization</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.3.2</a> · Course example</p>
 </section>
 
 <!-- ===== 9 ===== -->
@@ -931,6 +947,7 @@ window.M8 = (function () {
 <p class="eyebrow you" data-min="2">Choose, explain, vote</p>
 <h2>PMF and PDF</h2><p class="sub">Density is height; probability is area</p>
 <p class="q">$x$ is uniform on $[0,.5]$ cm. Which statement is valid?</p><ol class="opts one"><li><i>A</i>Density $2$ cm$^{-1}$; $P(.1\le x\le.3)=.4$.<b class="ok step" data-step="1">✓</b></li><li><i>B</i>Density $2$ means event probability $2$.</li><li><i>C</i>Probability is $.2$, the interval width alone.</li></ol><div class="ex step" data-step="1"><p class="reveal">$h(.5)=1\Rightarrow h=2$; mass $=h(.3-.1)=.4$.</p></div>
+<p class="cite page-source"><span>Density; event probability</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.3.2</a> · Course question</p>
 </section>
 
 <!-- ===== 10 ===== -->
@@ -939,6 +956,7 @@ window.M8 = (function () {
 <h2>Moments</h2>
 <p class="sub">How do we average a function of a random value?</p>
 <div class="eq">$$\mathbb E[g(x)]=\sum_a g(a)p(a)$$</div><dl class="gloss"><dt>$x$</dt><dd>discrete random variable</dd><dt>$a$</dt><dd>support value</dd><dt>$g$</dt><dd>function being averaged</dd><dt>$p$</dt><dd>PMF</dd></dl><div class="step" data-step="1"><div class="eq">$$\mathbb E[g(x)]=\int_{-\infty}^{\infty}g(t)p(t)\,dt$$</div><dl class="gloss"><dt>$x$</dt><dd>continuous random variable</dd><dt>$t$</dt><dd>integration variable</dd><dt>$p$</dt><dd>density</dd><dt>$g$</dt><dd>assume E[|g(x)|] is finite</dd></dl></div>
+<p class="cite page-source"><span>Expectation of a function</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · Course derivation</p>
 </section>
 
 <!-- ===== 11 ===== -->
@@ -946,6 +964,7 @@ window.M8 = (function () {
 <p class="eyebrow you" data-min="2">Choose, explain, vote</p>
 <h2>Moments</h2><p class="sub">What does centering remove?</p>
 <p class="q">$\operatorname{Var}(x)=\mathbb E[(x-\mu)^2]$. Given $\mu=1/4$ cm and $\mathbb E[x^2]=5/4$ cm$^2$, choose the variance.</p><ol class="opts one"><li><i>A</i>$5/4$: the second moment is always variance.</li><li><i>B</i>$1$: subtract the mean, not its square.</li><li><i>C</i>$19/16$: subtract the squared mean.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">$\operatorname{Var}(x)=\mathbb E[x^2]-\mu^2=5/4-1/16=19/16$ cm$^2$.</p></div>
+<p class="cite page-source"><span>Centering; variance</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · Course question</p>
 </section>
 
 <!-- ===== 12 ===== -->
@@ -954,6 +973,7 @@ window.M8 = (function () {
 <h2>Moments</h2>
 <p class="sub">What is the mean of a random column vector?</p>
 <div class="eq">$$x=\begin{bmatrix}x_1\\x_2\end{bmatrix},\qquad\mu=\mathbb E[x]=\begin{bmatrix}\mathbb E[x_1]\\\mathbb E[x_2]\end{bmatrix}$$</div><dl class="gloss"><dt>$x$</dt><dd>random column in R²</dd><dt>$x_i$</dt><dd>component i</dd><dt>$\mu$</dt><dd>mean column in R²</dd></dl><p class="callout">Average corresponding components; preserve the column shape.</p><div class="step" data-step="1"><p>Samples use superscripts: $x^{(s)}$. Components use subscripts: $x_i$.</p></div>
+<p class="cite page-source"><span>Random vector; mean vector</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a></p>
 </section>
 
 <!-- ===== 13 ===== -->
@@ -962,6 +982,7 @@ window.M8 = (function () {
 <h2>Moments</h2>
 <p class="sub">Why does covariance use an outer product?</p>
 <div class="eq">$$\Sigma=\mathbb E[(x-\mu)(x-\mu)^T],\qquad\Sigma_{ij}=\mathbb E[(x_i-\mu_i)(x_j-\mu_j)]$$</div><dl class="gloss"><dt>$x,\mu$</dt><dd>random column and mean in Rᵈ</dd><dt>$\Sigma$</dt><dd>population covariance, d × d</dd><dt>$i,j$</dt><dd>coordinate indices</dd></dl><div class="step" data-step="1"><p class="callout">Diagonal: component variance. Off-diagonal: paired deviations.</p></div>
+<p class="cite page-source"><span>Covariance matrix</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · Course derivation</p>
 </section>
 
 <!-- ===== 14 ===== -->
@@ -970,6 +991,7 @@ window.M8 = (function () {
 <h2>Moments</h2>
 <p class="sub">Why is covariance positive semidefinite?</p>
 <div class="eq">$$a^T\Sigma a=\mathbb E[(a^T(x-\mu))^2]\geq0$$</div><dl class="gloss"><dt>$a$</dt><dd>fixed direction column in Rᵈ</dd><dt>$x,\mu$</dt><dd>random column and population mean</dd><dt>$\Sigma$</dt><dd>population covariance</dd></dl><div class="step" data-step="1"><div class="eq">$$C=\frac{X_c^TX_c}{N-1}\quad(N>1)$$</div><dl class="gloss"><dt>$C$</dt><dd>sample covariance estimate</dd><dt>$X_c$</dt><dd>N centered sample rows</dd><dt>$N$</dt><dd>number of samples</dd></dl></div>
+<p class="cite page-source"><span>Positive semidefinite covariance</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · Course derivation</p>
 </section>
 
 <!-- ===== 15 ===== -->
@@ -977,7 +999,8 @@ window.M8 = (function () {
 <p class="eyebrow">Definition and reasoning</p>
 <h2>Moments</h2>
 <p class="sub">How do independent signs create correlation?</p>
-<figure style="flex:none"><canvas id="m8p15c" width="1152" height="270" role="img" aria-label="Independent signs transform continuously into correlated coordinates; a varies from zero to one"></canvas></figure><script>m3anim(document.getElementById("m8p15c"),function(g,t,k){var c=k.c;var S=k.plane(470,140,75),alpha=t;k.seg(S([-2,0]),S([2,0]),c.dim,1.5);k.seg(S([0,-1.3]),S([0,1.3]),c.dim,1.5);[-1,1].forEach(function(u){[-1,1].forEach(function(v){var xx=470+u*75,yy=140-(alpha*u+v)*48;k.dot([xx,yy],8,c.dat);});});k.text('x1 = U',[635,160],c.dim,{size:17});k.text('x2 = aU + V',[350,26],c.dim,{size:17});k.text('a = '+alpha.toFixed(2),[780,70],c.in,{size:22});k.text('four equally likely outcomes',[760,115],c.dat,{size:17});k.text('a: 0 to 1 adds the shared sign',[760,155],c.dim,{size:17});k.text('dimensionless coordinates',[350,255],c.dim,{size:17});k.text('1',[555,159],c.dim,{size:15});k.text('-1',[370,159],c.dim,{size:15});k.text('2',[485,46],c.dim,{size:15});k.text('-2',[485,242],c.dim,{size:15});},{seconds:5,hold:1,rest:1});</script><div class="ex"><p>Independent fair signs U,V. Let $x=(U,U+V)^T$.</p><div class="step" data-step="1"><div class="eq">$$\mu=\begin{bmatrix}0\\0\end{bmatrix},\qquad\Sigma=\begin{bmatrix}1&1\\1&2\end{bmatrix}$$</div><dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr auto 1fr;gap:8px 12px"><dt>$U,V$</dt><dd>independent, equally likely ±1</dd><dt>$x,\mu$</dt><dd>random column and mean</dd><dt>$\Sigma$</dt><dd>population covariance</dd></dl></div></div>
+<figure style="flex:none"><canvas id="m8p15c" width="1152" height="230" role="img" aria-label="Independent signs transform continuously into correlated coordinates; a varies from zero to one"></canvas></figure><script>m3anim(document.getElementById("m8p15c"),function(g,t,k){var c=k.c;var S=k.plane(470,120,75),alpha=t;k.seg(S([-2,0]),S([2,0]),c.dim,1.5);k.seg(S([0,-1.3]),S([0,1.3]),c.dim,1.5);[-1,1].forEach(function(u){[-1,1].forEach(function(v){var xx=470+u*75,yy=120-(alpha*u+v)*40;k.dot([xx,yy],8,c.dat);});});k.text('x1 = U',[635,140],c.dim,{size:17});k.text('x2 = aU + V',[350,26],c.dim,{size:17});k.text('a = '+alpha.toFixed(2),[780,70],c.in,{size:22});k.text('four equally likely outcomes',[760,115],c.dat,{size:17});k.text('a: 0 to 1 adds the shared sign',[760,155],c.dim,{size:17});k.text('dimensionless coordinates',[350,225],c.dim,{size:17});k.text('1',[555,139],c.dim,{size:15});k.text('-1',[370,139],c.dim,{size:15});k.text('2',[485,46],c.dim,{size:15});k.text('-2',[485,207],c.dim,{size:15});},{seconds:5,hold:1,rest:1});</script><div class="ex"><p>Independent fair signs U,V. Let $x=(U,U+V)^T$.</p><div class="step" data-step="1"><div class="eq">$$\mu=\begin{bmatrix}0\\0\end{bmatrix},\qquad\Sigma=\begin{bmatrix}1&1\\1&2\end{bmatrix}$$</div><dl class="gloss" style="grid-template-columns:auto 1fr auto 1fr auto 1fr;gap:8px 12px"><dt>$U,V$</dt><dd>independent, equally likely ±1</dd><dt>$x,\mu$</dt><dd>random column and mean</dd><dt>$\Sigma$</dt><dd>population covariance</dd></dl></div></div>
+<p class="cite page-source"><span>Independence; covariance</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.7</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · Course example</p>
 </section>
 
 <!-- ===== 16 ===== -->
@@ -985,6 +1008,7 @@ window.M8 = (function () {
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Moments</h2><p class="sub">Independent sources, dependent components</p>
 <p class="q">$U,V$ are independent fair signs. Let $x=(U,2U+V)^T$. What is $\operatorname{Cov}(x_1,x_2)$?</p><ol class="opts one"><li><i>A</i>$2$: both components share $U$.<b class="ok step" data-step="1">✓</b></li><li><i>B</i>$0$: independent sources imply independent outputs.</li><li><i>C</i>$1$: doubling a coefficient has no effect.</li></ol><div class="ex step" data-step="1"><p class="reveal">$\mathbb E[U(2U+V)]=2$; $\Sigma=\begin{bmatrix}1&amp;2\\2&amp;5\end{bmatrix}$, $\det\Sigma=1$.</p></div>
+<p class="cite page-source"><span>Independence; covariance</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.7</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · Course question</p>
 </section>
 
 <!-- ===== 17 ===== -->
@@ -993,6 +1017,7 @@ window.M8 = (function () {
 <h2>Moments</h2>
 <p class="sub">Does zero covariance guarantee independence?</p>
 <div class="ex"><p>x is uniform on {−1,0,1}; y=x². Is y independent of x?</p><div class="step" data-step="1"><div class="eq">$$\operatorname{Cov}(x,y)=0,\qquad P(y=0\mid x=0)=1\ne\tfrac13=P(y=0)$$</div><dl class="gloss"><dt>$x,y$</dt><dd>random scalars</dd><dt>$P$</dt><dd>event probability</dd><dt>$\operatorname{Cov}$</dt><dd>population covariance</dd></dl></div></div>
+<p class="cite page-source"><span>Uncorrelatedness; independence</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=8">[2] UBC Lec.18 p.8</a> · Course example</p>
 </section>
 
 <!-- ===== 18 ===== -->
@@ -1001,148 +1026,176 @@ window.M8 = (function () {
 <h2>Gaussian geometry</h2>
 <p class="sub">What defines a multivariate Gaussian density?</p>
 <div class="eq">$$p(x)=(2\pi)^{-d/2}|\Sigma|^{-1/2}\exp(-d_M^2/2)$$</div><dl class="gloss"><dt>$x,\mu$</dt><dd>random column and mean in Rᵈ</dd><dt>$d$</dt><dd>dimension</dd><dt>$\Sigma\succ0$</dt><dd>positive definite covariance</dd><dt>$|\Sigma|$</dt><dd>determinant</dd><dt>$p$</dt><dd>density</dd><dt>$d_M^2$</dt><dd>squared Mahalanobis distance</dd></dl><div class="step" data-step="1"><div class="eq">$$d_M^2=(x-\mu)^T\Sigma^{-1}(x-\mu)$$</div><dl class="gloss"><dt>$\Sigma^{-1}$</dt><dd>inverse covariance</dd><dt>$x-\mu$</dt><dd>centered displacement</dd></dl></div>
+<p class="cite page-source"><span>Multivariate Gaussian distribution</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.9.3</a></p>
 </section>
 
 <!-- ============ 19 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian geometry</h2><p class="sub">Change basis, then standardize</p>
 <figure style="flex:none"><canvas id="m8p19c" width="1152" height="270" role="img" aria-label="whiten: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p19c"),function(g,t,k){var c=k.c;var S=k.plane(280,130,40),T=k.plane(850,130,40);k.grid(S,-3,3,-2,2,{col:c.rule});k.grid(T,-3,3,-2,2,{col:c.rule});var a=[],b=[];for(var i=0;i<=120;i++){var q=i*Math.PI/60;a.push(S([2*Math.cos(q),Math.sin(q)]));b.push(T([(2-t)*Math.cos(q),Math.sin(q)]));}k.poly(a,c.dat,3);k.poly(b,c.in,3);k.text('centered original coordinates',[150,24],c.dat,{size:17});k.text('divide x1 by its standard deviation',[660,24],c.in,{size:17});k.text('x1',[415,139],c.dim,{size:14});k.text('x2',[288,40],c.dim,{size:14});k.text('z1',[975,139],c.dim,{size:14});k.text('z2',[858,40],c.dim,{size:14});},{seconds:4,hold:.7,rest:1});</script><div class="eq">$$\Sigma=Q\Lambda Q^T,\quad z=\Lambda^{-1/2}Q^T(x-\mu)$$</div><dl class="gloss"><dt></dt><dd>$Q$ eigenvectors; $\Lambda$ positive eigenvalues; $z$ whitened displacement; $x,\mu$ position and mean. Plot: $Q=I$, $\Lambda=\operatorname{diag}(4,1)$.</dd></dl>
+<p class="cite page-source"><span>Whitening; eigendecomposition</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=5">[2] UBC Lec.18 p.5</a> · Course derivation</p>
 </section>
 <!-- ============ 20 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian geometry</h2><p class="sub">A contour radius becomes an ellipse axis</p>
 <figure style="flex:none"><canvas id="m8p20c" width="1152" height="190" role="img" aria-label="ellipse: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p20c"),function(g,t,k){var c=k.c;var S=k.plane(330,95,28); k.grid(S,-5,5,-2.5,2.5,{col:c.rule,step:1}); var pts=[]; for(var i=0;i<=120;i++){var a=i*Math.PI/60,u=Math.sqrt(3)*Math.cos(a),v=Math.sin(a);pts.push(S([(u+v)/Math.sqrt(2),(u-v)/Math.sqrt(2)]));}k.poly(pts,c.in,3);var a=t*2*Math.PI;k.dot(S([(Math.sqrt(3)*Math.cos(a)+Math.sin(a))/Math.sqrt(2),(Math.sqrt(3)*Math.cos(a)-Math.sin(a))/Math.sqrt(2)]),5,c.in);k.text('centered x1',[485,172],c.dim,{size:15});k.text('centered x2',[330,15],c.dim,{size:15});k.text('unit Mahalanobis contour',[640,75],c.in,{size:20});k.text('eigenvalues 3 and 1',[640,110],c.dim,{size:18});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$x=\mu+Q\Lambda^{1/2}z,\qquad \|z\|=c$$</div><dl class="gloss"><dt></dt><dd>$c$ standardized radius; $\sqrt{\lambda_i}$ standard deviation along eigenvector $q_i$. Plot: $c=1$, $\lambda=(3,1)$.</dd></dl>
+<p class="cite page-source"><span>Gaussian density contour</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=5">[2] UBC Lec.18 p.5</a> · Course derivation</p>
 </section>
 <!-- ============ 21 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian geometry</h2><p class="sub">Equal lengths can have unequal surprise</p>
 <figure style="flex:none"><canvas id="m8p21c" width="1152" height="190" role="img" aria-label="ellipse: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p21c"),function(g,t,k){var c=k.c;var S=k.plane(330,95,28); k.grid(S,-5,5,-2.5,2.5,{col:c.rule,step:1}); var pts=[]; for(var i=0;i<=120;i++){var a=i*Math.PI/60,u=Math.sqrt(3)*Math.cos(a),v=Math.sin(a);pts.push(S([(u+v)/Math.sqrt(2),(u-v)/Math.sqrt(2)]));}k.poly(pts,c.in,3);var a=t*2*Math.PI;k.dot(S([(Math.sqrt(3)*Math.cos(a)+Math.sin(a))/Math.sqrt(2),(Math.sqrt(3)*Math.cos(a)-Math.sin(a))/Math.sqrt(2)]),5,c.in);k.text('centered x1',[485,172],c.dim,{size:15});k.text('centered x2',[330,15],c.dim,{size:15});k.text('unit Mahalanobis contour',[640,75],c.in,{size:20});k.text('eigenvalues 3 and 1',[640,110],c.dim,{size:18});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$\Sigma=\begin{bmatrix}2&amp;1\\1&amp;2\end{bmatrix},\quad \mu=\binom1{-1}$$</div><dl class="gloss"><dt></dt><dd>$\Sigma$ covariance; $\mu$ mean; compare $x=(2,0)^T$ and $y=(2,-2)^T$.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$d_M^2(x)=\tfrac23,\qquad d_M^2(y)=2$$</div><dl class="gloss"><dt></dt><dd>$d_M$ covariance-scaled distance.</dd></dl></div></div>
+<p class="cite page-source"><span>Mahalanobis distance</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=5">[2] UBC Lec.18 p.5</a> · Course example</p>
 </section>
 <!-- ===== 22 ===== -->
 <section class="slide" data-part="IV" data-mc="22">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Gaussian geometry</h2><p class="sub">Which direction makes a point less surprising?</p>
 <p class="q">$\mu=0$, $\Sigma=\operatorname{diag}(4,1)$; $u=(2,0)^T$, $v=(0,2)^T$. Compare Gaussian densities.</p><ol class="opts one"><li><i>A</i>$p(u)=p(v)$: their Euclidean lengths agree.</li><li><i>B</i>$p(u)&gt;p(v)$: $u$ is one standard deviation away.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>$p(u)&lt;p(v)$: higher variance always lowers density.</li></ol><div class="ex step" data-step="1"><p class="reveal">$d_M^2(u)=1$, $d_M^2(v)=4$; $p(u)/p(v)=e^{3/2}&gt;1$.</p></div>
+<p class="cite page-source"><span>Mahalanobis distance</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=5">[2] UBC Lec.18 p.5</a> · Course question</p>
 </section>
 <!-- ============ 23 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian geometry</h2><p class="sub">A unit ellipse contains less than half</p>
 <figure style="flex:none"><canvas id="m8p23c" width="1152" height="190" role="img" aria-label="ellipse: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p23c"),function(g,t,k){var c=k.c;var S=k.plane(330,95,28); k.grid(S,-5,5,-2.5,2.5,{col:c.rule,step:1}); var pts=[]; for(var i=0;i<=120;i++){var a=i*Math.PI/60,u=Math.sqrt(3)*Math.cos(a),v=Math.sin(a);pts.push(S([(u+v)/Math.sqrt(2),(u-v)/Math.sqrt(2)]));}k.poly(pts,c.in,3);var a=t*2*Math.PI;k.dot(S([(Math.sqrt(3)*Math.cos(a)+Math.sin(a))/Math.sqrt(2),(Math.sqrt(3)*Math.cos(a)-Math.sin(a))/Math.sqrt(2)]),5,c.in);k.text('centered x1',[485,172],c.dim,{size:15});k.text('centered x2',[330,15],c.dim,{size:15});k.text('unit Mahalanobis contour',[640,75],c.in,{size:20});k.text('eigenvalues 3 and 1',[640,110],c.dim,{size:18});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$P(d_M^2\le c^2)=1-e^{-c^2/2}\quad(d=2)$$</div><dl class="gloss"><dt></dt><dd>$c$ contour radius; $d=2$ dimension; the formula assumes a nonsingular Gaussian. Example: $\lambda_1=3,\lambda_2=1$.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$c_{.95}=\sqrt{-2\log .05}\approx2.44775$$</div><dl class="gloss"><dt></dt><dd>$c_{.95}$ radius enclosing 95%.</dd></dl></div></div>
+<p class="cite page-source"><span>Chi-square distribution; Gaussian probability region</span> — <a href="https://www.itl.nist.gov/div898/handbook/eda/section3/eda3666.htm">[3] NIST §1.3.6.6.6</a> · <a href="https://itl.nist.gov/div898/handbook/eda/section3/eda3674.htm">[3] NIST χ² table</a> · Course derivation</p>
 </section>
 <!-- ============ 24 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Bayes</h2><p class="sub">Which population does a positive select?</p>
 <figure style="flex:none"><canvas id="m8p24c" width="1152" height="190" role="img" aria-label="bayes: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p24c"),function(g,t,k){var c=k.c;k.text('joint events',[70,35],c.dim,{size:18});k.text('positive +',[410,35],c.dat,{size:18});k.text('negative −',[730,35],c.dim,{size:18});k.text('event H',[70,90],c.in,{size:18});k.text('no event',[70,120],c.dim,{size:18});k.text('H and +',[410,90],c.dat,{size:18});k.text('H and −',[730,90],c.dim,{size:18});k.text('not H and +',[410,120],c.dat,{size:18});k.text('not H and −',[730,120],c.dim,{size:18});k.seg([380,45],[380,160],c.dat,2);k.seg([700,45],[700,160],c.rule,1);},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$P(H\mid +)\ \text{need not equal}\ P(+\mid H)$$</div><dl class="gloss"><dt></dt><dd>$H$ event of interest; $+$ positive sensor result; the bar restricts the population.</dd></dl>
+<p class="cite page-source"><span>Conditional probability</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.4–3.5</a> · Course example</p>
 </section>
 <!-- ============ 25 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Bayes</h2><p class="sub">Write the joint event in two ways</p>
 <div class="eq">$$P(H\mid +)=\frac{P(+\mid H)P(H)}{P(+)}$$</div><dl class="gloss"><dt></dt><dd>$P(H)$ prior; $P(+\mid H)$ likelihood; $P(+)&gt;0$ evidence. $H$: event; $+$: positive reading.</dd></dl>
+<p class="cite page-source"><span>Bayes’ rule</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.11</a> · Course derivation</p>
 </section>
 <!-- ============ 26 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Bayes</h2><p class="sub">Normalize over both sources of positives</p>
 <div class="eq">$$P(+)=P(+\mid H)P(H)+P(+\mid \neg H)P(\neg H)$$</div><dl class="gloss"><dt></dt><dd>$\neg H$ complement; the two joint events are disjoint and exhaustive. $H$: event; $+$: positive reading.</dd></dl>
+<p class="cite page-source"><span>Law of total probability; evidence</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.4–3.5</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.11</a> · Course derivation</p>
 </section>
 <!-- ============ 27 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Bayes</h2><p class="sub">Rare events can lose the positive majority</p>
 <figure style="flex:none"><canvas id="m8p27c" width="1152" height="190" role="img" aria-label="bayes: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p27c"),function(g,t,k){var c=k.c;k.text('joint events',[70,35],c.dim,{size:18});k.text('positive +',[410,35],c.dat,{size:18});k.text('negative −',[730,35],c.dim,{size:18});k.text('event H',[70,90],c.in,{size:18});k.text('no event',[70,120],c.dim,{size:18});k.text((k.shown(1)?'90':'?'),[410,90],c.dat,{size:18});k.text((k.shown(1)?'10':'?'),[730,90],c.dim,{size:18});k.text((k.shown(1)?'990':'?'),[410,120],c.dat,{size:18});k.text((k.shown(1)?'8910':'?'),[730,120],c.dim,{size:18});k.seg([380,45],[380,160],c.dat,2);k.seg([700,45],[700,160],c.rule,1);},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$P(H)=.01,\quad P(+\mid H)=.9,\quad P(+\mid\neg H)=.1$$</div><dl class="gloss"><dt></dt><dd>10,000 model trials: 100 event cases and 9,900 non-event cases.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$P(H\mid +)=\frac{90}{90+990}=\frac1{12}$$</div><dl class="gloss"><dt></dt><dd>$H$ event; $+$ positive reading.</dd></dl></div></div>
+<p class="cite page-source"><span>Prior probability; posterior probability</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.11</a> · Course example</p>
 </section>
 <!-- ===== 28 ===== -->
 <section class="slide" data-part="IV" data-mc="28">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Bayes</h2><p class="sub">Does a better base rate change the sensor?</p>
 <p class="q">$P(H)=.1$, $P(+\mid H)=.9$, $P(+\mid\neg H)=.1$. What is $P(H\mid+)$?</p><ol class="opts one"><li><i>A</i>$.9$: sensitivity is the positive predictive value.</li><li><i>B</i>$.1$: an observation cannot change the prior.</li><li><i>C</i>$.5$: true and false positives contribute equally.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">$P(H\mid+)=\dfrac{.9(.1)}{.9(.1)+.1(.9)}=.5$.</p></div>
+<p class="cite page-source"><span>Prior probability; posterior probability</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.11</a> · Course question</p>
 </section>
 <!-- ============ 29 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Break</h2><p class="sub">Pause: three different kinds of probability</p>
 <div class="eq">$$P(X\in A),\qquad p(x),\qquad P(H\mid +)$$</div><dl class="gloss"><dt></dt><dd>$A$ event; $p$ density; conditioning changes the reference population.</dd></dl>
+<p class="cite page-source"><span>Event probability; density; conditional probability</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.3.2</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.4–3.5</a> · Course recap</p>
 </section>
 <!-- ============ 30 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian conditioning</h2><p class="sub">A numeric reading updates a curve</p>
 <figure style="flex:none"><canvas id="m8p30c" width="1152" height="190" role="img" aria-label="fusion: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p30c"),function(g,t,k){var c=k.c;var S=k.plane(110,160,1);k.seg([110,160],[1040,160],c.dim,1);var curves=[{m:0,v:4,col:c.in},{m:3,v:1,col:c.dat}];curves.forEach(function(o){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-o.m)*(x-o.m)/(2*o.v))/Math.sqrt(2*Math.PI*o.v);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,o.col,2.5);});k.text('x (state units)',[860,180],c.dim,{size:16});k.text('density',[115,30],c.dim,{size:16});k.text('prior N(0,4)',[370,30],c.in,{size:17});k.text('likelihood shape at z=3, R=1',[670,30],c.dat,{size:17});var x=-4+10*t;k.seg(S([(x+4)*90,0]),S([(x+4)*90,110]),c.rule,1,[4,4]);},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$x\sim\mathcal N(\mu_0,P_0),\quad z=x+\varepsilon,\quad\varepsilon\sim\mathcal N(0,R)$$</div><dl class="gloss"><dt></dt><dd>$x$ uncertain state; $z$ observed value; $P_0,R&gt;0$ variances; independent noise.</dd></dl>
+<p class="cite page-source"><span>Gaussian prior; Gaussian likelihood</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a></p>
 </section>
 <!-- ============ 31 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian conditioning</h2><p class="sub">Add precisions, then complete the square</p>
 <div class="eq">$$J(x)=\frac{(x-\mu_0)^2}{2P_0}+\frac{(z-x)^2}{2R},\quad P_1^{-1}=P_0^{-1}+R^{-1},\quad\mu_1=P_1(\mu_0/P_0+z/R)$$</div><dl class="gloss"><dt></dt><dd>$P_1,\mu_1$ posterior variance and mean; inverse variance is precision.</dd></dl>
+<p class="cite page-source"><span>Gaussian posterior; precision</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.9.3</a> · Course derivation</p>
 </section>
 <!-- ============ 32 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian conditioning</h2><p class="sub">The gain weights the innovation</p>
 <figure style="flex:none"><canvas id="m8p32c" width="1152" height="190" role="img" aria-label="fusion: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p32c"),function(g,t,k){var c=k.c;var S=k.plane(110,160,1);k.seg([110,160],[1040,160],c.dim,1);var curves=[{m:0,v:4,col:c.in},{m:3,v:1,col:c.dat}];curves.forEach(function(o){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-o.m)*(x-o.m)/(2*o.v))/Math.sqrt(2*Math.PI*o.v);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,o.col,2.5);});k.text('x (state units)',[860,180],c.dim,{size:16});k.text('density',[115,30],c.dim,{size:16});k.text('prior N(0,4)',[370,30],c.in,{size:17});k.text('likelihood shape at z=3, R=1',[670,30],c.dat,{size:17});var x=-4+10*t;k.seg(S([(x+4)*90,0]),S([(x+4)*90,110]),c.rule,1,[4,4]);},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$\mu_1=\frac{R\mu_0+P_0z}{P_0+R}=\mu_0+K(z-\mu_0),\quad K=\frac{P_0}{P_0+R},\quad P_1=(1-K)P_0$$</div><dl class="gloss"><dt></dt><dd>$K$ gain; $z-\mu_0$ innovation; $0&lt;K&lt;1$ for positive variances.</dd></dl>
+<p class="cite page-source"><span>Kalman gain; measurement innovation</span> — <a href="https://www.cs.utexas.edu/~pstone/Courses/393Rfall11/readings/Welch%2BBishop-TR-95.pdf#page=3">[5] Welch–Bishop §1</a> · <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · Course derivation</p>
 </section>
 <!-- ============ 33 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian conditioning</h2><p class="sub">Fuse a prior and a precise reading</p>
 <figure style="flex:none"><canvas id="m8p33c" width="1152" height="190" role="img" aria-label="fusion: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p33c"),function(g,t,k){var c=k.c;var S=k.plane(110,160,1);k.seg([110,160],[1040,160],c.dim,1);var curves=[{m:0,v:4,col:c.in},{m:3,v:1,col:c.dat}];curves.forEach(function(o){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-o.m)*(x-o.m)/(2*o.v))/Math.sqrt(2*Math.PI*o.v);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,o.col,2.5);});k.text('x (state units)',[860,180],c.dim,{size:16});k.text('density',[115,30],c.dim,{size:16});k.text('prior N(0,4)',[370,30],c.in,{size:17});k.text('likelihood shape at z=3, R=1',[670,30],c.dat,{size:17});var x=-4+10*t;k.seg(S([(x+4)*90,0]),S([(x+4)*90,110]),c.rule,1,[4,4]);if(k.shown(1)){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-2.4)*(x-2.4)/(2*0.8))/Math.sqrt(2*Math.PI*0.8);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,c.ans,3);k.text('posterior N(2.4,0.8)',[430,65],c.ans,{size:17});}},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$\mu_0=0,\quad P_0=4,\quad z=3,\quad R=1$$</div><dl class="gloss"><dt></dt><dd>$P_0,R$ are variances, not standard deviations.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$K=\tfrac45,\qquad\mu_1=2.4,\qquad P_1=.8$$</div><dl class="gloss"><dt></dt><dd>$K$ gain; $\mu_1,P_1$ posterior mean, variance.</dd></dl></div></div>
+<p class="cite page-source"><span>Gaussian conditioning</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · Course example</p>
 </section>
 <!-- ===== 34 ===== -->
 <section class="slide" data-part="IV" data-mc="34">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Gaussian conditioning</h2><p class="sub">What does a noisier reading change?</p>
 <p class="q">Prior $\mathcal N(0,4)$, reading $z=3$. Noise variance rises from $R=1$ to $R=4$. What changes?</p><ol class="opts one"><li><i>A</i>Mean moves toward $0$; posterior variance increases.<b class="ok step" data-step="1">✓</b></li><li><i>B</i>Mean moves toward $3$; posterior variance decreases.</li><li><i>C</i>Only the mean changes; variance ignores sensor noise.</li></ol><div class="ex step" data-step="1"><p class="reveal">$K=4/(4+4)=1/2$; $\mu_1=1.5$, $P_1=2$ (before: $2.4,.8$).</p></div>
+<p class="cite page-source"><span>Gaussian conditioning</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · Course question</p>
 </section>
 <!-- ============ 35 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian conditioning</h2><p class="sub">A correlated block predicts another block</p>
 <div class="eq">$$\mu_{a\mid b}=\mu_a+\Sigma_{ab}\Sigma_{bb}^{-1}(b-\mu_b)$$</div><dl class="gloss"><dt></dt><dd>Jointly Gaussian blocks; invertible $\Sigma_{bb}$. $a\in\mathbb R^p$, $b\in\mathbb R^q$; $\Sigma_{ab}:p\times q$.</dd></dl>
+<p class="cite page-source"><span>Conditional Gaussian mean</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a></p>
 </section>
 <!-- ============ 36 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian conditioning</h2><p class="sub">Conditioning removes predictable variance</p>
 <figure style="flex:none"><canvas id="m8p36c" width="1152" height="160" role="img" aria-label="slice: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p36c"),function(g,t,k){var c=k.c;k.seg([100,125],[660,125],c.dim,1);[{m:5/3,col:c.in},{m:1,col:c.dat}].forEach(function(o){var pts=[];for(var i=0;i<=200;i++){var x=-5+12*i/200,y=Math.exp(-(x-o.m)*(x-o.m)/(2*32/9))/Math.sqrt(2*Math.PI*32/9);pts.push([100+(x+5)*45,125-y*340]);}k.poly(pts,o.col,3);});k.text('conditional density',[110,22],c.dim,{size:17});k.text('b = 5: mean 5/3',[760,25],c.in,{size:17});k.text('b = 2: mean 1',[760,52],c.dat,{size:17});k.text('both variances 32/9',[760,79],c.dim,{size:17});k.text('a',[640,150],c.dim,{size:17});[-4,0,4].forEach(function(x){k.text(String(x),[100+(x+5)*45,148],c.dim,{size:16});});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$\Sigma_{a\mid b}=\Sigma_{aa}-\Sigma_{ab}\Sigma_{bb}^{-1}\Sigma_{ba}$$</div><dl class="gloss"><dt></dt><dd>Joint Gaussian; $\Sigma_{bb}\succ0$, $\Sigma_{ba}=\Sigma_{ab}^T$. Plot: $\mu=(1,2)^T$, $\Sigma=\begin{bmatrix}4&amp;2\\2&amp;9\end{bmatrix}$.</dd></dl>
+<p class="cite page-source"><span>Conditional Gaussian covariance</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a></p>
 </section>
 <!-- ===== 37 ===== -->
 <section class="slide" data-part="IV" data-mc="37">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Gaussian conditioning</h2><p class="sub">Does the slice width change?</p>
 <p class="q">Gaussian $(a,b)^T$: $\mu=(1,2)^T$, $\Sigma=\begin{bmatrix}4&amp;2\\2&amp;9\end{bmatrix}$. Observe $b=-1$ instead of $5$.</p><ol class="opts one"><li><i>A</i>Both conditional mean and variance decrease.</li><li><i>B</i>Mean decreases; conditional variance stays fixed.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>Neither changes because the joint model is fixed.</li></ol><div class="ex step" data-step="1"><p class="reveal">$\mu_{a\mid b}=1+\frac29(-1-2)=\frac13$; $\Sigma_{a\mid b}=4-\frac49=\frac{32}9$.</p></div>
+<p class="cite page-source"><span>Conditional Gaussian distribution</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · Course question</p>
 </section>
 <!-- ============ 38 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Estimation</h2><p class="sub">Choose a parameter to explain fixed data</p>
 <div class="eq">$$b=A\theta+\varepsilon,\qquad\varepsilon\sim\mathcal N(0,\sigma^2 I)$$</div><dl class="gloss"><dt></dt><dd>$b\in\mathbb R^N$ data; $A\in\mathbb R^{N\times p}$ known design; $\theta\in\mathbb R^p$ unknown; $\sigma^2&gt;0$ known noise variance.</dd></dl>
+<p class="cite page-source"><span>Gaussian linear regression; maximum likelihood</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.5.1</a></p>
 </section>
 <!-- ============ 39 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Estimation</h2><p class="sub">Gaussian products become a squared loss</p>
 <div class="eq">$$-\log p(b\mid\theta)=\frac N2\log(2\pi\sigma^2)+\frac{\|b-A\theta\|^2}{2\sigma^2}$$</div><dl class="gloss"><dt></dt><dd>$A$ known; $b$ observed; $\theta$ unknown; errors iid $\mathcal N(0,\sigma^2)$, $\sigma^2&gt;0$.</dd></dl>
+<p class="cite page-source"><span>Negative log-likelihood; least squares</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.5.1</a> · Course derivation</p>
 </section>
 <!-- ============ 40 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Estimation</h2><p class="sub">The familiar normal equation returns</p>
 <div class="eq">$$A^TA\hat\theta=A^Tb,\qquad A^T(b-A\hat\theta)=0$$</div><dl class="gloss"><dt></dt><dd>$\hat\theta$ MLE; full column rank gives uniqueness; residual is orthogonal to columns.</dd></dl>
+<p class="cite page-source"><span>Normal equations; least squares</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.1.4</a> · Course derivation</p>
 </section>
 <!-- ============ 41 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Estimation</h2><p class="sub">Fit three readings with two coefficients</p>
 <div class="eq">$$A=\begin{bmatrix}1&amp;0\\1&amp;1\\1&amp;2\end{bmatrix},\quad b=\begin{bmatrix}1\\2\\2\end{bmatrix}$$</div><dl class="gloss"><dt></dt><dd>$\theta=(\text{intercept},\text{slope})^T$; $r=b-A\hat\theta$.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$\hat\theta=\binom{7/6}{1/2},\quad r=\begin{bmatrix}-1/6\\1/3\\-1/6\end{bmatrix}$$</div><dl class="gloss"><dt></dt><dd>$\hat\theta$ estimate; $r$ observed minus fitted.</dd></dl></div></div>
+<p class="cite page-source"><span>Least-squares estimate</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.1.4</a> · Course example</p>
 </section>
 <!-- ============ 42 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Estimation</h2><p class="sub">A Gaussian prior sets a penalty scale</p>
 <div class="eq">$$J(\theta)=\tfrac12\|b-A\theta\|^2+\tfrac{\lambda^2}{2}\|\theta-\mu_0\|^2,\quad\lambda^2=\sigma^2/\tau^2$$</div><dl class="gloss"><dt></dt><dd>$\theta\sim\mathcal N(\mu_0,\tau^2I)$ prior; $\sigma^2$ noise variance; $\lambda^2$ relative strength.</dd></dl>
+<p class="cite page-source"><span>Maximum a posteriori (MAP); quadratic regularization</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6.1</a> · Course derivation</p>
 </section>
 <!-- ============ 43 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Estimation</h2><p class="sub">The prior changes the normal equation</p>
 <div class="eq">$$(A^TA+\lambda^2I)\hat\theta=A^Tb+\lambda^2\mu_0$$</div><dl class="gloss"><dt></dt><dd>Example: $A=\begin{bmatrix}1&amp;0\\1&amp;1\\1&amp;2\end{bmatrix}$, $b=(1,2,2)^T$, $\mu_0=0$, $\lambda^2=1$.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$\hat\theta_{MAP}=\binom{4/5}{3/5},\quad\mathrm{SSE}=\tfrac25$$</div><dl class="gloss"><dt></dt><dd>$\hat\theta_{MAP}$ posterior mode; SSE squared residual.</dd></dl></div></div>
+<p class="cite page-source"><span>MAP normal equations; ridge regularization</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6.1</a> · <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.1.4</a> · Course derivation</p>
 </section>
 <!-- ===== 44 ===== -->
 <section class="slide" data-part="IV" data-mc="44">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Estimation</h2><p class="sub">What makes the MAP estimate unique?</p>
 <p class="q">$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix}$, $b=(1,2)^T$; prior center $0$, $\lambda^2=1$. Why is MAP unique?</p><ol class="opts one"><li><i>A</i>The prior makes the two data columns independent.</li><li><i>B</i>Gaussian noise makes every data fit unique.</li><li><i>C</i>The prior adds curvature along the data null space.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">LS: $\theta_1+\theta_2=1$. MAP: $(A^TA+I)\theta=A^Tb$ gives $\theta_1=\theta_2=5/11$.</p></div>
+<p class="cite page-source"><span>MAP estimate; positive definiteness</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6.1</a> · Course question</p>
 </section>
 <!-- ===== 45 ===== -->
 <section class="slide" data-part="IV" data-mc="45">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Integrated board</h2><p class="sub">Calibration: choose the likelihood</p>
 <p class="q">$b=(1,2,3)^T$, $b_i=\theta+\varepsilon_i$, $\varepsilon_i\overset{iid}{\sim}\mathcal N(0,1)$. Which data objective fits this model?</p><ol class="opts one"><li><i>A</i>$\frac12\sum_i(b_i-\theta)^2$<b class="ok step" data-step="1">✓</b></li><li><i>B</i>$\sum_i|b_i-\theta|$</li><li><i>C</i>$\frac12\sum_i(b_i-\theta)^2+\frac12\theta^2$</li></ol><div class="ex step" data-step="1"><p class="reveal">$-\log p(b\mid\theta)=C+\frac12\sum_i(b_i-\theta)^2$; $\hat\theta_{MLE}=\bar b=2$.</p></div>
+<p class="cite page-source"><span>Gaussian likelihood; maximum likelihood</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.5.1</a> · Course example</p>
 </section>
 <!-- ===== 46 ===== -->
 <section class="slide" data-part="IV" data-mc="46">
@@ -1156,6 +1209,7 @@ window.M8 = (function () {
   curves.forEach(function(o,j){var pts=[];for(var i=0;i<=180;i++){var x=-2+7*i/180,y=Math.exp(-(x-o.m)*(x-o.m)/(2*o.v))/Math.sqrt(2*Math.PI*o.v);pts.push([left+(x+2)*sx,base-y*sy]);}k.poly(pts,o.col,2.5);k.text(o.label,[12,22+j*23],o.col,{size:15});});
   [-2,0,2,4].forEach(function(x){k.text(String(x),[left+(x+2)*sx-4,303],c.dim,{size:14});});
   k.text('offset theta',[320,325],c.dim,{size:16});k.text('density',[45,91],c.dim,{size:14});},{seconds:4,rest:0});</script></div>
+<p class="cite page-source"><span>Gaussian posterior; MAP estimate</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6.1</a> · Course example</p>
 </section>
 <!-- ===== 47 ===== -->
 <section class="slide" data-part="IV" data-mc="47">
@@ -1166,41 +1220,47 @@ window.M8 = (function () {
   [-75,20,62,-40,110,10,-60,40,-10].forEach(function(shift,i){var y=54+24*i,center=truth+shift,col=Math.abs(shift)<=90?c.dat:c.res;k.seg([center-90,y],[center+90,y],col,3);k.dot([center,y],3,col);k.text(String(i+1),[22,y+5],c.dim,{size:14});});
   k.text('repeated datasets',[12,286],c.dim,{size:15});k.text('offset',[354,286],c.dim,{size:15});
   k.text('Illustration, not measured coverage',[35,321],c.dim,{size:16});},{seconds:4,rest:0});</script></div>
+<p class="cite page-source"><span>Confidence interval; coverage probability</span> — <a href="https://itl.nist.gov/div898/handbook/prc/section1/prc14.htm">[3] NIST §7.1.4</a> · Course example</p>
 </section>
 <!-- ===== 48 ===== -->
 <section class="slide" data-part="IV" data-mc="48">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Intervals</h2><p class="sub">Calibration: what does credibility describe?</p>
 <p class="q">Observed $b=(1,2,3)^T$; $\theta\mid b\sim\mathcal N(1.5,.25)$. A 95% credible interval describes which probability?</p><ol class="opts one"><li><i>A</i>95% posterior mass for $\theta$, with $b$ fixed.<b class="ok step" data-step="1">✓</b></li><li><i>B</i>95% coverage for every fixed true offset.</li><li><i>C</i>95% probability for a future noisy reading.</li></ol><div class="ex step" data-step="1"><p class="reveal">$I(b)=1.5\pm1.96(.5)$; $P(\theta\in I(b)\mid b)\approx.95$.</p></div>
+<p class="cite page-source"><span>Posterior credible interval</span> — <a href="https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_class16-prep-b.pdf">[4] MIT 18.05 §2</a> · Course example</p>
 </section>
 <!-- ===== 49 ===== -->
 <section class="slide" data-part="IV" data-mc="49">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Intervals</h2><p class="sub">Calibration: why do the intervals differ?</p>
 <p class="q">Same data: $C(b)=2\pm1.96/\sqrt3$; $I(b)=1.5\pm1.96(.5)$. Why is $I$ shifted and narrower?</p><ol class="opts one"><li><i>A</i>It must have better repeated-sampling coverage.</li><li><i>B</i>The zero-centered prior adds information.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>The physical sensor became less noisy.</li></ol><div class="ex step" data-step="1"><p class="reveal">$C\approx[.8684,3.1316]$; $I\approx[.5200,2.4800]$. Prior precision $1$ adds to data precision $3$.</p></div>
+<p class="cite page-source"><span>Confidence interval; credible interval</span> — <a href="https://itl.nist.gov/div898/handbook/prc/section1/prc14.htm">[3] NIST §7.1.4</a> · <a href="https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_class16-prep-b.pdf">[4] MIT 18.05 §2</a> · <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6.1</a> · Course comparison</p>
 </section>
 <!-- ===== 50 ===== -->
 <section class="slide" data-part="IV" data-mc="50">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Transfer</h2><p class="sub">Calibration: independent transfer</p>
 <p class="q">New readings $b=(2,3)^T$; iid noise $\mathcal N(0,1)$; prior $\theta\sim\mathcal N(4,1)$. Which conclusion is valid?</p><ol class="opts one"><li><i>A</i>The prior changes the data-only MLE.</li><li><i>B</i>The prior center can be ignored in MAP.</li><li><i>C</i>MAP moves above the data mean; MLE stays fixed.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">$\hat\theta_{MLE}=2.5$, $\theta\mid b\sim\mathcal N(3,1/3)$. $C=2.5\pm1.96/\sqrt2$; $I=3\pm1.96/\sqrt3$.</p></div>
+<p class="cite page-source"><span>MLE; MAP; confidence and credible intervals</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §§5.5–5.6</a> · <a href="https://itl.nist.gov/div898/handbook/prc/section1/prc14.htm">[3] NIST §7.1.4</a> · <a href="https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_class16-prep-b.pdf">[4] MIT 18.05 §2</a> · Course question</p>
 </section>
 <!-- ===== 51 ===== -->
 <section class="slide" data-part="IV" data-mc="51">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Intervals</h2><p class="sub">What does the sensor promise?</p>
 <p class="q">A specification says “$\pm2$ cm, 95%.” Which conclusion is justified without another definition?</p><ol class="opts one"><li><i>A</i>It is a confidence interval for the offset.</li><li><i>B</i>It is a credible interval for the offset.</li><li><i>C</i>None: ask what quantity and probability model it describes.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">Offset uncertainty, future-reading error and repeated coverage are different claims.</p></div>
+<p class="cite page-source"><span>Confidence; credibility; predictive uncertainty</span> — <a href="https://itl.nist.gov/div898/handbook/prc/section1/prc14.htm">[3] NIST §7.1.4</a> · <a href="https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_class16-prep-b.pdf">[4] MIT 18.05 §2</a> · <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6, Eq.5.68</a> · Course question</p>
 </section>
 <!-- ===== 52 ===== -->
 <section class="slide" data-part="IV" data-mc="52">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Synthesis</h2><p class="sub">Which modeling bridge is valid?</p>
 <p class="q">With iid Gaussian noise and an independent isotropic Gaussian prior, which modeling chain is valid?</p><ol class="opts one"><li><i>A</i>Independence gives squares; Gaussian noise gives sums.</li><li><i>B</i>Gaussian noise gives squares; independence gives sums.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>A Gaussian prior removes the data residual term.</li></ol><div class="ex step" data-step="1"><p class="reveal">$-\log p(\theta\mid b)=C+\|b-A\theta\|^2/(2\sigma^2)+\|\theta-\mu_0\|^2/(2\tau^2)$.</p></div>
+<p class="cite page-source"><span>Gaussian likelihood; independence; MAP regularization</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §§5.5–5.6</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.7</a> · Course question</p>
 </section>
 <!-- ============ 53 ============ -->
 <section class="slide nofoot refs" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>References</h2><p class="sub">Sources and optional extensions</p>
-<ol class="refs"><li><a href="https://www.deeplearningbook.org/contents/prob.html">Textbook · Goodfellow et al., ch.3</a></li><li><a href="https://www.deeplearningbook.org/contents/ml.html">Textbook · Goodfellow et al., §5.5–5.6</a></li><li><a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf">Course notes · UBC Gaussian, pp.5,7–8</a></li><li><a href="https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm">NIST · Confidence intervals</a></li><li><a href="https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/">Optional course · MIT probability</a></li></ol>
+<ol class="refs"><li><a href="https://www.deeplearningbook.org/">[1] Goodfellow et al. Deep Learning. MIT Press, 2016.</a></li><li><a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf">[2] UBC CS340. Multivariate Gaussian Distributions and LDA. 2011.</a></li><li><a href="https://www.itl.nist.gov/div898/handbook/">[3] NIST/SEMATECH. e-Handbook of Statistical Methods.</a></li><li><a href="https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_class16-prep-b.pdf">[4] Orloff &amp; Bloom. Probability Intervals. MIT 18.05, 2022.</a></li><li><a href="https://www.cs.utexas.edu/~pstone/Courses/393Rfall11/readings/Welch%2BBishop-TR-95.pdf">[5] Welch &amp; Bishop. An Introduction to the Kalman Filter. 2004.</a></li></ol>
 </section>
 
 </div>
