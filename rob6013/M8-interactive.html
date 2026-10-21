@@ -903,11 +903,10 @@ window.M8 = (function () {
 </section>
 
 <!-- ===== 6 ===== -->
-<section class="slide" data-part="I">
-<p class="eyebrow you" data-min="2">Try, compare, explain</p>
-<h2>PMF and PDF</h2>
-<p class="sub">Can you recompute an event after weights change?</p>
-<p>Same errors −1, 0, 2 cm; new masses ½, ¼, ¼.</p><p>Check normalization. Find the probability of nonnegative error.</p><div class="step" data-step="1"><b class="ok step" data-step="1">Check</b><div class="eq">$$\tfrac12+\tfrac14+\tfrac14=1,\qquad P(x\geq0)=\tfrac14+\tfrac14=\tfrac12$$</div><dl class="gloss"><dt>$x$</dt><dd>error (cm)</dd><dt>$P$</dt><dd>probability under the new masses</dd></dl></div>
+<section class="slide" data-part="IV" data-mc="6">
+<p class="eyebrow you" data-min="2">Choose, explain, vote</p>
+<h2>PMF and PDF</h2><p class="sub">Which values belong to the event?</p>
+<p class="q">Errors $-1,0,2$ cm have masses $1/2,1/4,1/4$. What is $P(x\geq0)$?</p><ol class="opts one"><li><i>A</i>$1/4$: count only positive errors.</li><li><i>B</i>$1/2$: include zero and positive errors.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>$2/3$: two of three possible values.</li></ol><div class="ex step" data-step="1"><p class="reveal">$P(x\geq0)=p(0)+p(2)=1/4+1/4=1/2$. Total mass is $1$.</p></div>
 </section>
 
 <!-- ===== 7 ===== -->
@@ -927,11 +926,10 @@ window.M8 = (function () {
 </section>
 
 <!-- ===== 9 ===== -->
-<section class="slide" data-part="I">
-<p class="eyebrow you" data-min="2">Try, compare, explain</p>
-<h2>PMF and PDF</h2>
-<p class="sub">What changes when the uniform interval doubles?</p>
-<p>Uniform error on [0, .5] cm. Find the density and P(.1 ≤ x ≤ .3).</p><div class="step" data-step="1"><b class="ok step" data-step="1">Check</b><div class="eq">$$p(t)=\frac1{.5}=2,\qquad P(.1\leq x\leq .3)=2(.3-.1)=.4$$</div><dl class="gloss"><dt>$x,t$</dt><dd>error (cm)</dd><dt>$p(t)$</dt><dd>density (cm⁻¹)</dd><dt>$P$</dt><dd>event probability</dd></dl></div>
+<section class="slide" data-part="IV" data-mc="9">
+<p class="eyebrow you" data-min="2">Choose, explain, vote</p>
+<h2>PMF and PDF</h2><p class="sub">Density is height; probability is area</p>
+<p class="q">$x$ is uniform on $[0,.5]$ cm. Which statement is valid?</p><ol class="opts one"><li><i>A</i>Density $2$ cm$^{-1}$; $P(.1\le x\le.3)=.4$.<b class="ok step" data-step="1">✓</b></li><li><i>B</i>Density $2$ means event probability $2$.</li><li><i>C</i>Probability is $.2$, the interval width alone.</li></ol><div class="ex step" data-step="1"><p class="reveal">$h(.5)=1\Rightarrow h=2$; mass $=h(.3-.1)=.4$.</p></div>
 </section>
 
 <!-- ===== 10 ===== -->
@@ -943,11 +941,10 @@ window.M8 = (function () {
 </section>
 
 <!-- ===== 11 ===== -->
-<section class="slide" data-part="I">
-<p class="eyebrow you" data-min="2">Try, compare, explain</p>
-<h2>Moments</h2>
-<p class="sub">Variance or second moment?</p>
-<div class="eq">$$\operatorname{Var}(x)=\mathbb E[(x-\mu)^2]=\mathbb E[x^2]-\mu^2$$</div><dl class="gloss"><dt>$x$</dt><dd>random error (cm)</dd><dt>$\mu=\mathbb E[x]$</dt><dd>mean (cm)</dd><dt>$\operatorname{Var}(x)$</dt><dd>variance (cm²)</dd></dl><div class="ex"><p class="lbl">E3 / T3</p><p>Values −1,0,2 cm. E3: ¼,½,¼; T3: ½,¼,¼. Find μ and variance.</p><div class="step" data-step="1"><b class="ok step" data-step="1">Check</b><div class="eq">$$\text{E3: }\frac54-\left(\frac14\right)^2=\frac{19}{16};\qquad\text{T3: }\mu=0,\ \operatorname{Var}(x)=\frac32$$</div><dl class="gloss"><dt>E3, T3</dt><dd>two mass models</dd></dl></div></div>
+<section class="slide" data-part="IV" data-mc="11">
+<p class="eyebrow you" data-min="2">Choose, explain, vote</p>
+<h2>Moments</h2><p class="sub">What does centering remove?</p>
+<p class="q">For an error $x$, $\mu=1/4$ cm and $\mathbb E[x^2]=5/4$ cm$^2$. Which variance is correct?</p><ol class="opts one"><li><i>A</i>$5/4$: the second moment is always variance.</li><li><i>B</i>$1$: subtract the mean, not its square.</li><li><i>C</i>$19/16$: subtract the squared mean.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">$\operatorname{Var}(x)=\mathbb E[x^2]-\mu^2=5/4-1/16=19/16$ cm$^2$.</p></div>
 </section>
 
 <!-- ===== 12 ===== -->
@@ -983,11 +980,10 @@ window.M8 = (function () {
 </section>
 
 <!-- ===== 16 ===== -->
-<section class="slide" data-part="I">
-<p class="eyebrow you" data-min="3">Try, compare, explain</p>
-<h2>Moments</h2>
-<p class="sub">What changes when the shared sign is doubled?</p>
-<p>Independent fair signs U,V; $x=(U,2U+V)^T$. Find the mean and covariance.</p><div class="step" data-step="1"><b class="ok step" data-step="1">Check</b><div class="eq">$$\mu=0,\quad\Sigma=\begin{bmatrix}1&2\\2&5\end{bmatrix},\quad\det\Sigma=1$$</div><dl class="gloss"><dt>$U,V$</dt><dd>independent, equally likely ±1</dd><dt>$x$</dt><dd>random column in R²</dd><dt>$\mu,\Sigma$</dt><dd>population mean and covariance</dd></dl></div>
+<section class="slide" data-part="IV" data-mc="16">
+<p class="eyebrow you" data-min="3">Choose, explain, vote</p>
+<h2>Moments</h2><p class="sub">Independent sources, dependent components</p>
+<p class="q">$U,V$ are independent fair signs. Let $x=(U,2U+V)^T$. What is $\operatorname{Cov}(x_1,x_2)$?</p><ol class="opts one"><li><i>A</i>$2$: both components share $U$.<b class="ok step" data-step="1">✓</b></li><li><i>B</i>$0$: independent sources imply independent outputs.</li><li><i>C</i>$1$: doubling a coefficient has no effect.</li></ol><div class="ex step" data-step="1"><p class="reveal">$\mathbb E[U(2U+V)]=2$; $\Sigma=\begin{bmatrix}1&amp;2\\2&amp;5\end{bmatrix}$, $\det\Sigma=1$.</p></div>
 </section>
 
 <!-- ===== 17 ===== -->
@@ -1021,10 +1017,11 @@ window.M8 = (function () {
 <p class="eyebrow">Lecture 8 · Gaussian geometry</p><h2>Gaussian geometry</h2><p class="sub">Equal lengths can have unequal surprise</p>
 <figure style="flex:none"><canvas id="m8p21c" width="1152" height="190" role="img" aria-label="ellipse: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p21c"),function(g,t,k){var c=k.c;var S=k.plane(330,95,28); k.grid(S,-5,5,-2.5,2.5,{col:c.rule,step:1}); var pts=[]; for(var i=0;i<=120;i++){var a=i*Math.PI/60,u=Math.sqrt(3)*Math.cos(a),v=Math.sin(a);pts.push(S([(u+v)/Math.sqrt(2),(u-v)/Math.sqrt(2)]));}k.poly(pts,c.in,3);var a=t*2*Math.PI;k.dot(S([(Math.sqrt(3)*Math.cos(a)+Math.sin(a))/Math.sqrt(2),(Math.sqrt(3)*Math.cos(a)-Math.sin(a))/Math.sqrt(2)]),5,c.in);k.text('centered x1',[485,172],c.dim,{size:15});k.text('centered x2',[330,15],c.dim,{size:15});k.text('unit Mahalanobis contour',[640,75],c.in,{size:20});k.text('eigenvalues 3 and 1',[640,110],c.dim,{size:18});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$\Sigma=\begin{bmatrix}2&amp;1\\1&amp;2\end{bmatrix},\quad \mu=\binom1{-1}$$</div><dl class="gloss"><dt>Symbols</dt><dd>$\Sigma$ covariance; $\mu$ mean; compare $x=(2,0)^T$ and $y=(2,-2)^T$.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Worked example</p><div class="eq">$$d_M^2(x)=\tfrac23,\qquad d_M^2(y)=2$$</div><dl class="gloss"><dt>Result</dt><dd>$d_M$ covariance-scaled distance.</dd></dl></div></div>
 </section>
-<!-- ============ 22 ============ -->
-<section class="slide" data-part="IV">
-<p class="eyebrow you" data-min="3">Try, compare, explain</p><h2>Gaussian geometry</h2><p class="sub">Try two directions with one covariance</p>
-<div class="eq">$$\mu=0,\quad\Sigma=\operatorname{diag}(4,1),\quad u=\binom20,\ v=\binom02$$</div><dl class="gloss"><dt>Symbols</dt><dd>Find both $d_M^2$ values and the density ratio $p(u)/p(v)$.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Solution</p><div class="eq">$$d_M^2(u)=1,\quad d_M^2(v)=4,\quad p(u)/p(v)=e^{3/2}$$</div><dl class="gloss"><dt>Result</dt><dd>$p$ Gaussian density; $d_M$ scaled distance.</dd></dl><b class="ok step" data-step="1">Check</b></div></div>
+<!-- ===== 22 ===== -->
+<section class="slide" data-part="IV" data-mc="22">
+<p class="eyebrow you" data-min="3">Choose, explain, vote</p>
+<h2>Gaussian geometry</h2><p class="sub">Which direction makes a point less surprising?</p>
+<p class="q">$\mu=0$, $\Sigma=\operatorname{diag}(4,1)$; $u=(2,0)^T$, $v=(0,2)^T$. Compare Gaussian densities.</p><ol class="opts one"><li><i>A</i>$p(u)=p(v)$: their Euclidean lengths agree.</li><li><i>B</i>$p(u)&gt;p(v)$: $u$ is one standard deviation away.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>$p(u)&lt;p(v)$: higher variance always lowers density.</li></ol><div class="ex step" data-step="1"><p class="reveal">$d_M^2(u)=1$, $d_M^2(v)=4$; $p(u)/p(v)=e^{3/2}&gt;1$.</p></div>
 </section>
 <!-- ============ 23 ============ -->
 <section class="slide" data-part="IV">
@@ -1051,10 +1048,11 @@ window.M8 = (function () {
 <p class="eyebrow">Lecture 8 · Bayes</p><h2>Bayes</h2><p class="sub">Rare events can lose the positive majority</p>
 <figure style="flex:none"><canvas id="m8p27c" width="1152" height="190" role="img" aria-label="bayes: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p27c"),function(g,t,k){var c=k.c;var w=950*t;k.text('all model trials: 10,000',[70,35],c.dat,{size:19});k.seg([70,80],[1020,80],c.dim,28);k.seg([70,80],[79.5,80],c.in,28);k.text('event 100',[70,120],c.in,{size:18});k.text('non-event 9,900',[630,120],c.dim,{size:18});k.seg([70,80],[70+w,80],c.dat,3);k.text('Conditioning selects a new denominator',[70,165],c.dim,{size:20});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$P(H)=.01,\quad P(+\mid H)=.9,\quad P(+\mid\neg H)=.1$$</div><dl class="gloss"><dt>Symbols</dt><dd>10,000 model trials: 100 event cases and 9,900 non-event cases.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Worked example</p><div class="eq">$$P(H\mid +)=\frac{90}{90+990}=\frac1{12}$$</div><dl class="gloss"><dt>Result</dt><dd>$H$ event; $+$ positive reading.</dd></dl></div></div>
 </section>
-<!-- ============ 28 ============ -->
-<section class="slide" data-part="IV">
-<p class="eyebrow you" data-min="3">Try, compare, explain</p><h2>Bayes</h2><p class="sub">Change the base rate, keep the sensor</p>
-<div class="eq">$$P(H)=.1,\quad P(+\mid H)=.9,\quad P(+\mid\neg H)=.1$$</div><dl class="gloss"><dt>Symbols</dt><dd>Use 10,000 model trials again. Find $P(H\mid +)$.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Solution</p><div class="eq">$$P(H\mid +)=\frac{900}{900+900}=\frac12$$</div><dl class="gloss"><dt>Result</dt><dd>$H$ event; $+$ positive reading.</dd></dl><b class="ok step" data-step="1">Check</b></div></div>
+<!-- ===== 28 ===== -->
+<section class="slide" data-part="IV" data-mc="28">
+<p class="eyebrow you" data-min="3">Choose, explain, vote</p>
+<h2>Bayes</h2><p class="sub">Does a better base rate change the sensor?</p>
+<p class="q">$P(H)=.1$, $P(+\mid H)=.9$, $P(+\mid\neg H)=.1$. What is $P(H\mid+)$?</p><ol class="opts one"><li><i>A</i>$.9$: sensitivity is the positive predictive value.</li><li><i>B</i>$.1$: an observation cannot change the prior.</li><li><i>C</i>$.5$: true and false positives contribute equally.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">$P(H\mid+)=\dfrac{.9(.1)}{.9(.1)+.1(.9)}=.5$.</p></div>
 </section>
 <!-- ============ 29 ============ -->
 <section class="slide" data-part="IV">
@@ -1081,10 +1079,11 @@ window.M8 = (function () {
 <p class="eyebrow">Lecture 8 · Gaussian conditioning</p><h2>Gaussian conditioning</h2><p class="sub">Fuse a prior and a precise reading</p>
 <figure style="flex:none"><canvas id="m8p33c" width="1152" height="190" role="img" aria-label="fusion: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p33c"),function(g,t,k){var c=k.c;var S=k.plane(110,160,1);k.seg([110,160],[1040,160],c.dim,1);var curves=[{m:0,v:4,col:c.in},{m:3,v:1,col:c.dat}];curves.forEach(function(o){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-o.m)*(x-o.m)/(2*o.v))/Math.sqrt(2*Math.PI*o.v);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,o.col,2.5);});k.text('x (state units)',[860,180],c.dim,{size:16});k.text('density',[115,30],c.dim,{size:16});k.text('prior N(0,4)',[370,30],c.in,{size:17});k.text('likelihood shape at z=3, R=1',[670,30],c.dat,{size:17});var x=-4+10*t;k.seg(S([(x+4)*90,0]),S([(x+4)*90,110]),c.rule,1,[4,4]);if(k.shown(1)){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-2.4)*(x-2.4)/(2*0.8))/Math.sqrt(2*Math.PI*0.8);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,c.ans,3);k.text('posterior N(2.4,0.8)',[430,65],c.ans,{size:17});}},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$\mu_0=0,\quad P_0=4,\quad z=3,\quad R=1$$</div><dl class="gloss"><dt>Symbols</dt><dd>$P_0,R$ are variances, not standard deviations.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Worked example</p><div class="eq">$$K=\tfrac45,\qquad\mu_1=2.4,\qquad P_1=.8$$</div><dl class="gloss"><dt>Result</dt><dd>$K$ gain; $\mu_1,P_1$ posterior mean, variance.</dd></dl></div></div>
 </section>
-<!-- ============ 34 ============ -->
-<section class="slide" data-part="IV">
-<p class="eyebrow you" data-min="3">Try, compare, explain</p><h2>Gaussian conditioning</h2><p class="sub">What if the same reading is noisier?</p>
-<div class="eq">$$\mu_0=0,\quad P_0=4,\quad z=3,\quad R=4$$</div><dl class="gloss"><dt>Symbols</dt><dd>Predict the direction of change, then compute $K,\mu_1,P_1$.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Solution</p><div class="eq">$$K=\tfrac12,\quad\mu_1=1.5,\quad P_1=2$$</div><dl class="gloss"><dt>Result</dt><dd>$K$ gain; $\mu_1,P_1$ posterior mean, variance.</dd></dl><b class="ok step" data-step="1">Check</b></div></div>
+<!-- ===== 34 ===== -->
+<section class="slide" data-part="IV" data-mc="34">
+<p class="eyebrow you" data-min="3">Choose, explain, vote</p>
+<h2>Gaussian conditioning</h2><p class="sub">What does a noisier reading change?</p>
+<p class="q">Prior $\mathcal N(0,4)$, reading $z=3$. Noise variance rises from $R=1$ to $R=4$. What changes?</p><ol class="opts one"><li><i>A</i>Mean moves toward $0$; posterior variance increases.<b class="ok step" data-step="1">✓</b></li><li><i>B</i>Mean moves toward $3$; posterior variance decreases.</li><li><i>C</i>Only the mean changes; variance ignores sensor noise.</li></ol><div class="ex step" data-step="1"><p class="reveal">$K=4/(4+4)=1/2$; $\mu_1=1.5$, $P_1=2$ (before: $2.4,.8$).</p></div>
 </section>
 <!-- ============ 35 ============ -->
 <section class="slide" data-part="IV">
@@ -1096,10 +1095,11 @@ window.M8 = (function () {
 <p class="eyebrow">Lecture 8 · Gaussian conditioning</p><h2>Gaussian conditioning</h2><p class="sub">Conditioning removes predictable variance</p>
 <figure style="flex:none"><canvas id="m8p36c" width="1152" height="190" role="img" aria-label="slice: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p36c"),function(g,t,k){var c=k.c;var S=k.plane(380,95,24),pts=[];k.grid(S,-5,5,-3,3,{col:c.rule});for(var i=0;i<=160;i++){var u=2*Math.cos(i*Math.PI/80),v=Math.cos(i*Math.PI/80)+Math.sqrt(8)*Math.sin(i*Math.PI/80);pts.push(S([v,u]));}k.poly(pts,c.in,3);var b=-2+4*t;k.seg(S([b,-3]),S([b,3]),c.dat,2);k.text('b minus its mean',[570,170],c.dat,{size:16});k.text('a minus its mean',[350,15],c.in,{size:16});k.text('slice fixes b; a remains uncertain',[710,90],c.dim,{size:19});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$\Sigma_{a\mid b}=\Sigma_{aa}-\Sigma_{ab}\Sigma_{bb}^{-1}\Sigma_{ba}$$</div><dl class="gloss"><dt>Symbols</dt><dd>$\Sigma_{aa}$ marginal covariance; $\Sigma_{ba}=\Sigma_{ab}^T$; joint Gaussian, invertible $\Sigma_{bb}$.</dd></dl>
 </section>
-<!-- ============ 37 ============ -->
-<section class="slide" data-part="IV">
-<p class="eyebrow you" data-min="3">Try, compare, explain</p><h2>Gaussian conditioning</h2><p class="sub">Slice the same Gaussian at two readings</p>
-<figure style="flex:none"><canvas id="m8p37c" width="1152" height="150" role="img" aria-label="slice: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p37c"),function(g,t,k){var c=k.c;var S=k.plane(380,70,18),pts=[];k.grid(S,-5,5,-3,3,{col:c.rule});for(var i=0;i<=160;i++){var u=2*Math.cos(i*Math.PI/80),v=Math.cos(i*Math.PI/80)+Math.sqrt(8)*Math.sin(i*Math.PI/80);pts.push(S([v,u]));}k.poly(pts,c.in,3);var b=k.shown(1)?-3:3;k.seg(S([b,-3]),S([b,3]),c.dat,2);k.text('b minus its mean',[570,140],c.dat,{size:16});k.text('a minus its mean',[350,15],c.in,{size:16});k.text('slice fixes b; a remains uncertain',[710,70],c.dim,{size:19});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$\mu=\binom12,\quad\Sigma=\begin{bmatrix}4&amp;2\\2&amp;9\end{bmatrix},\quad b=5$$</div><dl class="gloss"><dt>Symbols</dt><dd>$a,b$ scalar blocks. For $b=-1$, find the conditional mean and variance.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Solution</p><div class="eq">$$b=-1:\quad\mu_{a\mid b}=\tfrac13,\quad\Sigma_{a\mid b}=\tfrac{32}9$$</div><dl class="gloss"><dt>Result</dt><dd>$\mu_{a|b},\Sigma_{a|b}$ conditional mean, variance.</dd></dl><b class="ok step" data-step="1">Check</b></div></div>
+<!-- ===== 37 ===== -->
+<section class="slide" data-part="IV" data-mc="37">
+<p class="eyebrow you" data-min="3">Choose, explain, vote</p>
+<h2>Gaussian conditioning</h2><p class="sub">Does the slice width change?</p>
+<p class="q">Gaussian $(a,b)^T$: $\mu=(1,2)^T$, $\Sigma=\begin{bmatrix}4&amp;2\\2&amp;9\end{bmatrix}$. Observe $b=-1$ instead of $5$.</p><ol class="opts one"><li><i>A</i>Both conditional mean and variance decrease.</li><li><i>B</i>Mean decreases; conditional variance stays fixed.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>Neither changes because the joint model is fixed.</li></ol><div class="ex step" data-step="1"><p class="reveal">$\mu_{a\mid b}=1+\frac29(-1-2)=\frac13$; $\Sigma_{a\mid b}=4-\frac49=\frac{32}9$.</p></div>
 </section>
 <!-- ============ 38 ============ -->
 <section class="slide" data-part="IV">
@@ -1131,50 +1131,70 @@ window.M8 = (function () {
 <p class="eyebrow">Lecture 8 · Estimation</p><h2>Estimation</h2><p class="sub">The prior changes the normal equation</p>
 <div class="eq">$$(A^TA+\lambda^2I)\hat\theta=A^Tb+\lambda^2\mu_0$$</div><dl class="gloss"><dt>Symbols</dt><dd>$\lambda^2&gt;0$ gives a unique MAP; use the previous fit with $\mu_0=0,\lambda^2=1$.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Worked example</p><div class="eq">$$\hat\theta_{MAP}=\binom{4/5}{3/5},\quad\mathrm{SSE}=\tfrac25$$</div><dl class="gloss"><dt>Result</dt><dd>$\hat\theta_{MAP}$ posterior mode; SSE squared residual.</dd></dl></div></div>
 </section>
-<!-- ============ 44 ============ -->
-<section class="slide" data-part="IV">
-<p class="eyebrow you" data-min="3">Try, compare, explain</p><h2>Estimation</h2><p class="sub">A proper prior resolves an ambiguous fit</p>
-<div class="eq">$$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix},\quad b=\binom12,\quad\mu_0=0,\ \lambda^2=1$$</div><dl class="gloss"><dt>Task</dt><dd>Find all least-squares fits, then the unique MAP estimate.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Solution</p><div class="eq">$$\theta_{LS,1}+\theta_{LS,2}=1;\quad\begin{bmatrix}6&5\\5&6\end{bmatrix}\theta=\binom55\quad\Rightarrow\quad\theta_{MAP}=\binom{5/11}{5/11}$$</div><dl class="gloss"><dt>Result</dt><dd>$\theta_{LS}$ least-squares solution.</dd></dl><b class="ok step" data-step="1">✓</b></div></div>
+<!-- ===== 44 ===== -->
+<section class="slide" data-part="IV" data-mc="44">
+<p class="eyebrow you" data-min="3">Choose, explain, vote</p>
+<h2>Estimation</h2><p class="sub">What makes the MAP estimate unique?</p>
+<p class="q">$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix}$, $b=(1,2)^T$; prior center $0$, $\lambda^2=1$. Why is MAP unique?</p><ol class="opts one"><li><i>A</i>The prior makes the two data columns independent.</li><li><i>B</i>Gaussian noise makes every data fit unique.</li><li><i>C</i>The prior adds curvature along the data null space.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">LS: $\theta_1+\theta_2=1$. MAP: $(A^TA+I)\theta=A^Tb$ gives $\theta_1=\theta_2=5/11$.</p></div>
 </section>
-<!-- ============ 45 ============ -->
-<section class="slide" data-part="IV">
-<p class="eyebrow">Lecture 8 · Integrated board</p><h2>Integrated board</h2><p class="sub">Calibrate one offset from three readings</p>
-<div class="eq">$$b=(1,2,3)^T,\quad b_i=\theta+\varepsilon_i,\quad\varepsilon_i\overset{iid}{\sim}\mathcal N(0,1)$$</div><dl class="gloss"><dt>Symbols</dt><dd>$\theta$ offset; prior $\mathcal N(0,1)$. Find MLE, posterior, CI and credible interval.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Worked example</p><div class="eq">$$J_{data}=\tfrac12(3\theta^2-12\theta+14),\quad\hat\theta_{MLE}=2$$</div><dl class="gloss"><dt>Result</dt><dd>$J_{data}$ squared-error objective; MLE its minimizer.</dd></dl></div></div>
+<!-- ===== 45 ===== -->
+<section class="slide" data-part="IV" data-mc="45">
+<p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
+<h2>Integrated board</h2><p class="sub">Calibration: choose the likelihood</p>
+<p class="q">$b=(1,2,3)^T$, $b_i=\theta+\varepsilon_i$, $\varepsilon_i\overset{iid}{\sim}\mathcal N(0,1)$. Which data objective fits this model?</p><ol class="opts one"><li><i>A</i>$\frac12\sum_i(b_i-\theta)^2$<b class="ok step" data-step="1">✓</b></li><li><i>B</i>$\sum_i|b_i-\theta|$</li><li><i>C</i>$\frac12\sum_i(b_i-\theta)^2+\frac12\theta^2$</li></ol><div class="ex step" data-step="1"><p class="reveal">$-\log p(b\mid\theta)=C+\frac12\sum_i(b_i-\theta)^2$; $\hat\theta_{MLE}=\bar b=2$.</p></div>
 </section>
-<!-- ============ 46 ============ -->
-<section class="slide" data-part="IV">
-<p class="eyebrow">Lecture 8 · Integrated board</p><h2>Integrated board</h2><p class="sub">Complete the posterior square</p>
-<figure style="flex:none"><canvas id="m8p46c" width="1152" height="190" role="img" aria-label="fusion: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p46c"),function(g,t,k){var c=k.c;var S=k.plane(110,160,1);k.seg([110,160],[1040,160],c.dim,1);var curves=[{m:0,v:1,col:c.in},{m:2,v:1/3,col:c.dat}];curves.forEach(function(o){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-o.m)*(x-o.m)/(2*o.v))/Math.sqrt(2*Math.PI*o.v);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,o.col,2.5);});k.text('θ (offset units)',[860,180],c.dim,{size:16});k.text('density',[115,30],c.dim,{size:16});k.text('prior N(0,1)',[370,30],c.in,{size:17});k.text('data likelihood: mean 2, variance 1/3',[670,30],c.dat,{size:17});var x=-4+10*t;k.seg(S([(x+4)*90,0]),S([(x+4)*90,110]),c.rule,1,[4,4]);if(k.shown(1)){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-1.5)*(x-1.5)/(2*0.25))/Math.sqrt(2*Math.PI*0.25);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,c.ans,3);k.text('posterior N(1.5,0.25)',[430,65],c.ans,{size:17});}},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$J_{post}=\tfrac12(4\theta^2-12\theta+14)=2(\theta-1.5)^2+2.5$$</div><dl class="gloss"><dt>Symbols</dt><dd>$J_{post}$ negative log posterior up to a constant; Gaussian exponent uses $1/(2P)$.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Worked example</p><div class="eq">$$\theta\mid b\sim\mathcal N(1.5,.25),\qquad\theta_{MAP}=1.5$$</div><dl class="gloss"><dt>Result</dt><dd>$\theta_{MAP}$ posterior mode.</dd></dl></div></div>
+<!-- ===== 46 ===== -->
+<section class="slide" data-part="IV" data-mc="46">
+<p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
+<h2>Integrated board</h2><p class="sub">Calibration: combine data and prior</p>
+<div class="cols" style="grid-template-columns:640px 460px;gap:28px;align-items:start"><div><p class="q">Same readings $(1,2,3)$; noise variance $1$; prior $\theta\sim\mathcal N(0,1)$. How does the posterior compare with the MLE?</p><ol class="opts one"><li><i>A</i>Center stays at $2$; prior changes only uncertainty.</li><li><i>B</i>Center moves toward $0$; precision becomes $4$.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>Center moves toward $0$; variances add to $4$.</li></ol><div class="ex step" data-step="1"><p class="reveal">$J_{post}=2(\theta-1.5)^2+2.5$; $\theta\mid b\sim\mathcal N(1.5,1/4)$.</p></div></div><figure class="step" data-step="1" style="align-self:center;flex:none"><canvas id="m8p46c" width="460" height="340" role="img" aria-label="Calibration model after the vote"></canvas></figure><script>m3anim(document.getElementById("m8p46c"),function(g,t,k){var c=k.c;var left=42,base=285,sx=53,sy=230;
+  k.seg([left,base],[435,base],c.dim,1);k.seg([left,base],[left,70],c.dim,1);
+  var curves=[{m:0,v:1,col:c.in,label:'prior: mean 0, variance 1'},
+   {m:2,v:1/3,col:c.dat,label:'likelihood shape (unit area)'},
+   {m:1.5,v:.25,col:c.ans,label:'posterior: mean 1.5, variance 1/4'}];
+  curves.forEach(function(o,j){var pts=[];for(var i=0;i<=180;i++){var x=-2+7*i/180,y=Math.exp(-(x-o.m)*(x-o.m)/(2*o.v))/Math.sqrt(2*Math.PI*o.v);pts.push([left+(x+2)*sx,base-y*sy]);}k.poly(pts,o.col,2.5);k.text(o.label,[12,22+j*23],o.col,{size:15});});
+  [-2,0,2,4].forEach(function(x){k.text(String(x),[left+(x+2)*sx-4,303],c.dim,{size:14});});
+  k.text('offset theta',[320,325],c.dim,{size:16});k.text('density',[45,91],c.dim,{size:14});},{seconds:4,rest:0});</script></div>
 </section>
-<!-- ============ 47 ============ -->
-<section class="slide" data-part="IV">
-<p class="eyebrow">Lecture 8 · Intervals</p><h2>Intervals</h2><p class="sub">Confidence belongs to a repeated procedure</p>
-<figure style="flex:none"><canvas id="m8p47c" width="1152" height="270" role="img" aria-label="ci: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p47c"),function(g,t,k){var c=k.c;k.text('fixed true offset',[660,24],c.in,{size:17});k.seg([650,35],[650,220],c.in,2,[4,4]);for(var i=0;i<9;i++){var u=((i*37+11)%97)/97;var shift=(u-.5)*210;var y=45+i*20;var center=650+shift;var col=(Math.abs(shift)<=90)?c.dat:c.res;k.seg([center-90,y],[center+90,y],col,3);k.dot([center,y],3,col);}var y=45+Math.floor(t*8)*20;k.seg([420,y],[440,y],c.dim,3);k.text('illustrative repeated intervals (not a coverage estimate)',[170,252],c.dim,{size:17});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$P_\theta\!\left(\theta\in C(B)\right)=.95,\quad C(B)=\bar B\pm1.95996\,\sigma/\sqrt N$$</div><dl class="gloss"><dt>Symbols</dt><dd>$\theta$ fixed; $B$ repeated random data; $C(B)$ random interval; normal independent noise, known $\sigma$.</dd></dl>
+<!-- ===== 47 ===== -->
+<section class="slide" data-part="IV" data-mc="47">
+<p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
+<h2>Intervals</h2><p class="sub">Calibration: confidence coverage</p>
+<div class="cols" style="grid-template-columns:640px 460px;gap:28px;align-items:start"><div><p class="q">Same sensor: $B_i\mid\theta\sim\mathcal N(\theta,1)$ iid. $C(B)=\bar B\pm1.96/\sqrt3$. What does 95% confidence mean?</p><ol class="opts one"><li><i>A</i>This realized interval has 95% posterior mass.</li><li><i>B</i>95% of future individual readings lie inside it.</li><li><i>C</i>Repeated intervals cover fixed $\theta$ 95% of the time.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">$\sqrt3(\bar B-\theta)\sim\mathcal N(0,1)$; $P_\theta(\theta\in C(B))\approx.95$.</p></div></div><figure class="step" data-step="1" style="align-self:center;flex:none"><canvas id="m8p47c" width="460" height="340" role="img" aria-label="Calibration model after the vote"></canvas></figure><script>m3anim(document.getElementById("m8p47c"),function(g,t,k){var c=k.c;var truth=250;k.seg([truth,37],[truth,270],c.in,2,[4,4]);
+  k.text('fixed true offset',[truth-67,23],c.in,{size:17});
+  [-75,20,62,-40,110,10,-60,40,-10].forEach(function(shift,i){var y=54+24*i,center=truth+shift,col=Math.abs(shift)<=90?c.dat:c.res;k.seg([center-90,y],[center+90,y],col,3);k.dot([center,y],3,col);k.text(String(i+1),[22,y+5],c.dim,{size:14});});
+  k.text('repeated datasets',[12,286],c.dim,{size:15});k.text('offset',[354,286],c.dim,{size:15});
+  k.text('Illustration, not measured coverage',[35,321],c.dim,{size:16});},{seconds:4,rest:0});</script></div>
 </section>
-<!-- ============ 48 ============ -->
-<section class="slide" data-part="IV">
-<p class="eyebrow">Lecture 8 · Intervals</p><h2>Intervals</h2><p class="sub">Credibility belongs to the posterior</p>
-<div class="eq">$$P\!\left(\theta\in I(b)\mid b\right)=.95$$</div><dl class="gloss"><dt>Symbols</dt><dd>$b$ observed and fixed; $\theta\mid b$ posterior random variable; prior and likelihood specified.</dd></dl>
+<!-- ===== 48 ===== -->
+<section class="slide" data-part="IV" data-mc="48">
+<p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
+<h2>Intervals</h2><p class="sub">Calibration: what does credibility describe?</p>
+<p class="q">Observed $b=(1,2,3)^T$; $\theta\mid b\sim\mathcal N(1.5,.25)$. A 95% credible interval describes which probability?</p><ol class="opts one"><li><i>A</i>95% posterior mass for $\theta$, with $b$ fixed.<b class="ok step" data-step="1">✓</b></li><li><i>B</i>95% coverage for every fixed true offset.</li><li><i>C</i>95% probability for a future noisy reading.</li></ol><div class="ex step" data-step="1"><p class="reveal">$I(b)=1.5\pm1.96(.5)$; $P(\theta\in I(b)\mid b)\approx.95$.</p></div>
 </section>
-<!-- ============ 49 ============ -->
-<section class="slide" data-part="IV">
-<p class="eyebrow">Lecture 8 · Intervals</p><h2>Intervals</h2><p class="sub">The same readings yield different intervals</p>
-<div class="eq">$$C(b)=2\pm1.95996/\sqrt3,\quad I(b)=1.5\pm1.95996(.5)$$</div><dl class="gloss"><dt>Symbols</dt><dd>$C$ known-noise confidence interval; $I$ equal-tail posterior credible interval.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Worked example</p><div class="eq">$$C=[.8684,3.1316],\qquad I=[.5200,2.4800]$$</div><dl class="gloss"><dt>Result</dt><dd>$C$ confidence; $I$ credible.</dd></dl></div></div>
+<!-- ===== 49 ===== -->
+<section class="slide" data-part="IV" data-mc="49">
+<p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
+<h2>Intervals</h2><p class="sub">Calibration: why do the intervals differ?</p>
+<p class="q">Same data: $C(b)=2\pm1.96/\sqrt3$; $I(b)=1.5\pm1.96(.5)$. Why is $I$ shifted and narrower?</p><ol class="opts one"><li><i>A</i>It must have better repeated-sampling coverage.</li><li><i>B</i>The zero-centered prior adds information.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>The physical sensor became less noisy.</li></ol><div class="ex step" data-step="1"><p class="reveal">$C\approx[.8684,3.1316]$; $I\approx[.5200,2.4800]$. Prior precision $1$ adds to data precision $3$.</p></div>
 </section>
-<!-- ============ 50 ============ -->
-<section class="slide" data-part="IV">
-<p class="eyebrow you" data-min="6">Try, compare, explain</p><h2>Transfer</h2><p class="sub">Calibrate new data independently</p>
-<div class="eq">$$b=(2,3)^T,\quad\sigma^2=1,\quad\theta\sim\mathcal N(1,1)$$</div><dl class="gloss"><dt>Task</dt><dd>Find MLE, posterior and both 95% intervals. Interpret each.</dd></dl><div class="ex"><div class="step" data-step="1"><p class="lbl">Solution</p><div class="eq">$$\begin{aligned}\hat\theta_{MLE}&=2.5,\quad\hat\theta_{MAP}=2,\quad\theta\mid b\sim\mathcal N(2,\tfrac13)\\ C(b)&=2.5\pm1.95996/\sqrt2\\ I(b)&=2\pm1.95996/\sqrt3\end{aligned}$$</div><dl class="gloss"><dt>Result</dt><dd>$C$ confidence; $I$ credible.</dd></dl><b class="ok step" data-step="1">✓</b></div></div>
+<!-- ===== 50 ===== -->
+<section class="slide" data-part="IV" data-mc="50">
+<p class="eyebrow you" data-min="3">Choose, explain, vote</p>
+<h2>Transfer</h2><p class="sub">Calibration: independent transfer</p>
+<p class="q">New readings $b=(2,3)^T$; iid noise $\mathcal N(0,1)$; prior $\theta\sim\mathcal N(4,1)$. Which conclusion is valid?</p><ol class="opts one"><li><i>A</i>The prior changes the data-only MLE.</li><li><i>B</i>The prior center can be ignored in MAP.</li><li><i>C</i>MAP moves above the data mean; MLE stays fixed.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">$\hat\theta_{MLE}=2.5$, $\theta\mid b\sim\mathcal N(3,1/3)$. $C=2.5\pm1.96/\sqrt2$; $I=3\pm1.96/\sqrt3$.</p></div>
 </section>
-<!-- ============ 51 ============ -->
-<section class="slide" data-part="IV">
-<p class="eyebrow">Lecture 8 · Intervals</p><h2>Intervals</h2><p class="sub">What does a sensor specification promise?</p>
-<div class="eq">$$\text{“}\pm2\text{ cm, }95\%\text{”}$$</div><dl class="gloss"><dt>Symbols</dt><dd>Coverage? Posterior mass? A future reading? Manufacturing tolerance?</dd></dl>
+<!-- ===== 51 ===== -->
+<section class="slide" data-part="IV" data-mc="51">
+<p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
+<h2>Intervals</h2><p class="sub">What does the sensor promise?</p>
+<p class="q">A specification says “$\pm2$ cm, 95%.” Which conclusion is justified without another definition?</p><ol class="opts one"><li><i>A</i>It is a confidence interval for the offset.</li><li><i>B</i>It is a credible interval for the offset.</li><li><i>C</i>None: ask what quantity and probability model it describes.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">Offset uncertainty, future-reading error and repeated coverage are different claims.</p></div>
 </section>
-<!-- ============ 52 ============ -->
-<section class="slide" data-part="IV">
-<p class="eyebrow">Lecture 8 · Synthesis</p><h2>Synthesis</h2><p class="sub">Explain the bridge without a formula sheet</p>
-<div class="eq">$$\operatorname{Var}(X)=E[X^2]-E[X]^2,\qquad p(\theta\mid b)\propto p(b\mid\theta)p(\theta)$$</div><dl class="gloss"><dt>Symbols</dt><dd>Connect moments → geometry → evidence → least squares → intervals.</dd></dl>
+<!-- ===== 52 ===== -->
+<section class="slide" data-part="IV" data-mc="52">
+<p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
+<h2>Synthesis</h2><p class="sub">Which modeling bridge is valid?</p>
+<p class="q">With iid Gaussian noise and an independent isotropic Gaussian prior, which modeling chain is valid?</p><ol class="opts one"><li><i>A</i>Independence gives squares; Gaussian noise gives sums.</li><li><i>B</i>Gaussian noise gives squares; independence gives sums.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>A Gaussian prior removes the data residual term.</li></ol><div class="ex step" data-step="1"><p class="reveal">$-\log p(\theta\mid b)=C+\|b-A\theta\|^2/(2\sigma^2)+\|\theta-\mu_0\|^2/(2\tau^2)$.</p></div>
 </section>
 <!-- ============ 53 ============ -->
 <section class="slide nofoot refs" data-part="IV">

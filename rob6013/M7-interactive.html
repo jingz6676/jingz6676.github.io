@@ -401,7 +401,7 @@ body.print #m7break{display:none!important}
 @media print{#m7break{display:none!important}}
 
 /* M7-LAYOUT */
-.slide .cols{gap:26px;align-items:start}.slide .cols>div{min-width:0}.slide .eq{font-size:25px;margin:12px 0}.slide .gloss{font-size:17px;line-height:1.28;margin:8px 0 12px}.slide .gloss dt{font-size:17px}.slide .gloss dd{font-size:17px}.slide .teaching-point p,.slide .ex p,.slide .answer p{font-size:20px;line-height:1.3;margin:10px 0}.slide .q{font-size:20px}.slide .answer{border-left:3px solid var(--c-res-ok);padding-left:14px}.slide figure{margin:12px 0}.slide .sub{font-size:26px}.slide .key{font-size:14px;margin-top:7px}.slide .refs{font-size:24px;line-height:1.5}.slide .refs li{margin:20px 0}
+.slide .cols{gap:26px;align-items:start}.slide .cols>div{min-width:0}.slide .eq{font-size:25px;margin:12px 0}.slide .gloss{font-size:17px;line-height:1.28;margin:8px 0 12px}.slide .gloss dt{font-size:17px}.slide .gloss dd{font-size:17px}.slide .teaching-point p,.slide .ex p,.slide .answer p{font-size:20px;line-height:1.3;margin:10px 0}.slide .q{font-size:20px}.slide .mc-options{font-size:20px;line-height:1.25;margin:8px 0;padding-left:25px}.slide .mc-options li{padding:4px 0}.slide:has(.mc-options) .teaching-point{display:none}.slide:has(.mc-options) .eq{font-size:23px}.slide .answer{border-left:3px solid var(--c-res-ok);padding-left:14px}.slide figure{margin:12px 0}.slide .sub{font-size:26px}.slide .key{font-size:14px;margin-top:7px}.slide .refs{font-size:24px;line-height:1.5}.slide .refs li{margin:20px 0}
 </style>
 <script>
 /* ---------------------------------------------------------------------------
@@ -904,6 +904,21 @@ window.drawM7=function(g,t,k,type,page,isActivity){
   }
   var pts=[];for(var i=0;i<=150;i++){var angle=type==='spiral'?i*Math.atan(.1):i*2*Math.PI/150,rad=type==='spiral'?Math.pow(1.01,i/2):1;pts.push(S([rad*Math.cos(angle),rad*Math.sin(angle)]));}path(pts,c.in);k.dot(pts[Math.min(150,Math.floor(150*t))],7,c.dat);label(type==='spiral'?'Euler, h = .1; 150 discrete updates':'Exact unit-circle oscillator',30,H-12,c.dim,14);return;
  }
+ if(type==='energy'&&page===47){
+  // This transfer has v=1 unchanged by its Euler step; compare total energies.
+  var qlo=Math.PI-.16,qhi=Math.PI+.25,elo=2.46,ehi=2.505;
+  function S47(q,e){return[L+(R-L)*(q-qlo)/(qhi-qlo),B-(B-T)*(e-elo)/(ehi-elo)];}
+  axes('q','E(q, 1)');var pts47=[];
+  for(var j47=0;j47<=100;j47++){var q47=qlo+(qhi-qlo)*j47/100;pts47.push(S47(q47,1.5-Math.cos(q47)));}
+  path(pts47,c.ink,2);
+  var before47=S47(Math.PI,2.5),after47=S47(Math.PI+.1,1.5+Math.cos(.1));
+  k.dot(before47,6,c.in);k.dot(after47,6,c.out);
+  label('q₀ = π',before47[0]-50,before47[1]-16,c.in,16);
+  label('q₁ = π + .1',after47[0]+8,after47[1]+23,c.out,16);
+  k.seg([after47[0],before47[1]],after47,c.res,2);
+  label('E₁ < E₀; v = 1 at both states',48,H-10,c.ink,16);
+  return;
+ }
  if(type==='energy'){
   axes('q','energy');plot(q=>1-Math.cos(q),3,0,2,c.out);label('Potential, v = 0',130,55,c.out);label('m = ℓ = g₀ = 1; add v²/2',75,90,c.dim,16);return;
  }
@@ -1025,12 +1040,9 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=-3x,\qquad x(0)=2$$</div>
 <dl class="gloss"><dt>x</dt><dd>scalar state</dd><dt>−3</dt><dd>fixed decay rate</dd><dt>2</dt><dd>initial value</dd></dl>
-<div class="teaching-point"><p>Find x(t), then check the differential equation and the start.</p></div>
-<p class="q">What function satisfies both conditions?</p>
-<div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
-<div class="eq">$$x(t)=2e^{-3t},\quad\dot x=-6e^{-3t}=-3x,\quad x(0)=2$$</div>
-<dl class="gloss"><dt>result</dt><dd>computed from the given model</dd></dl>
-<p>At t=1: x≈0.099574.</p></div>
+<p class="q">Which trajectory satisfies BOTH the rate and the start?</p>
+<ol class="mc-options" type="A"><li>exp(−3t)</li><li>2 exp(−3t)</li><li>2 exp(3t)</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct B. Check start AND rate.</p></div>
 </div><figure><canvas id="m7p06a" width="440" height="320" aria-label="Your turn: a changed decay rate"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p06a"),function(g,t,k){drawM7(g,t,k,"decay",6,true);},{rest:0.4,seconds:5});</script>
 </section>
@@ -1089,18 +1101,15 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 
 <!-- ===== 11 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow you" data-min="2">Your turn</p>
+<p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Robot State</h2>
 <p class="sub">Your turn: reduce the applied force</p>
 <div class="cols w6040"><div>
 <div class="eq">$$M=2,\ C=0.5,\ g=3,\ \tau=1,\ (q,v)=(1,2)$$</div>
 <dl class="gloss"><dt>M,C,g</dt><dd>fixed at the current state</dd><dt>τ</dt><dd>changed applied force</dd><dt>q,v</dt><dd>unchanged state</dd></dl>
-<div class="teaching-point"><p>Find both components of the state derivative.</p></div>
-<p class="q">What is the full derivative at this state?</p>
-<div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
-<div class="eq">$$a=(1-1-3)/2=-1.5,\quad\dot x=(2,-1.5)^T$$</div>
-<dl class="gloss"><dt>result</dt><dd>computed from the given model</dd></dl>
-<p>The joint still moves forward but its velocity is decreasing.</p></div>
+<p class="q">Which state rate follows from the force balance?</p>
+<ol class="mc-options" type="A"><li>(−1.5,2)ᵀ</li><li>(2,−3)ᵀ</li><li>(2,−1.5)ᵀ</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct C. Velocity, then acceleration.</p></div>
 </div><figure><canvas id="m7p11a" width="440" height="320" aria-label="Your turn: reduce the applied force"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p11a"),function(g,t,k){drawM7(g,t,k,"state",11,true);},{rest:0.4,seconds:5});</script>
 </section>
@@ -1163,14 +1172,11 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Linear Dynamics</h2>
 <p class="sub">Return from modal coordinates</p>
 <div class="cols w6040"><div>
-<div class="eq">$$x(t)=Ve^{\Lambda t}V^{-1}x_0=\begin{bmatrix}e^{-t}+e^{-2t}\\e^{-2t}\end{bmatrix}$$</div>
-<dl class="gloss"><dt>V</dt><dd>[[1,1],[0,1]]</dd><dt>Λ</dt><dd>diag(−1,−2)</dd><dt>V⁻¹x₀</dt><dd>(1,1): initial modal coordinates</dd></dl>
-<div class="ex"><p>A=[[-1,−1],[0,−2]], x₀=(2,1).</p></div>
-<p class="q">Change x₀ to (1,1). Find its modal coordinates and trajectory.</p>
-<div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
-<div class="eq">$$c_0=(0,1)^T,\quad x(t)=(e^{-2t},e^{-2t})^T$$</div>
-<dl class="gloss"><dt>result</dt><dd>computed from the given model</dd></dl>
-<p>Check x(0)=(1,1).</p></div>
+<div class="eq">$$V=\begin{bmatrix}1&amp;1\\0&amp;1\end{bmatrix},\quad \Lambda=\operatorname{diag}(-1,-2)$$</div>
+<dl class="gloss"><dt>V</dt><dd>eigenvector basis</dd><dt>Λ</dt><dd>matching eigenvalues</dd></dl>
+<p class="q">For NEW x₀=(1,1)ᵀ, which modal description is correct?</p>
+<ol class="mc-options" type="A"><li>c₀=(0,1)ᵀ; only the −2 mode</li><li>c₀=(1,2)ᵀ; both modes</li><li>c₀=(1,1)ᵀ; both modes</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct A. Use the inverse basis.</p></div>
 </div><figure><canvas id="m7p16a" width="440" height="320" aria-label="Return from modal coordinates"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p16a"),function(g,t,k){drawM7(g,t,k,"modes",16,true);},{rest:0.4,seconds:5});</script>
 </section>
@@ -1190,19 +1196,16 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 
 <!-- ===== 18 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow you" data-min="2">Your turn</p>
+<p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Linear Dynamics</h2>
-<p class="sub">A defective matrix still has a solution</p>
+<p class="sub">Check a candidate for a defective system</p>
 <div class="cols w6040"><div>
-<div class="eq">$$A=\begin{bmatrix}-1&amp;1\\0&amp;-1\end{bmatrix},\quad x_0=(0,1)^T$$</div>
-<dl class="gloss"><dt>A</dt><dd>one eigenvector direction</dd><dt>x₀</dt><dd>known initial state</dd><dt>t</dt><dd>elapsed time</dd></dl>
-<div class="teaching-point"><p>Verify x(t) = (t e⁻ᵗ, e⁻ᵗ)ᵀ.</p></div>
-<p class="q">Does the proposed trajectory satisfy the IVP?</p>
-<div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
-<div class="eq">$$\dot x=((1-t)e^{-t},-e^{-t})^T=Ax$$</div>
-<dl class="gloss"><dt>result</dt><dd>computed from the given model</dd></dl>
-<p>Yes. The t factor does not prevent decay as t grows.</p></div>
-</div><figure><canvas id="m7p18a" width="440" height="320" aria-label="A defective matrix still has a solution"></canvas></figure></div>
+<div class="eq">$$A=\begin{bmatrix}-1&amp;1\\0&amp;-1\end{bmatrix},\quad x_0=(0,1)^T,\quad x(t)=(te^{-t},e^{-t})^T$$</div>
+<dl class="gloss"><dt>x(t)</dt><dd>candidate trajectory</dd><dt>A,x₀</dt><dd>given matrix and start</dd></dl>
+<p class="q">Does this trajectory solve the given IVP?</p>
+<ol class="mc-options" type="A"><li>No: a defective matrix has no solution.</li><li>No: the factor t forces growth forever.</li><li>Yes: its derivative and initial state both match.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct C. Both IVP checks pass.</p></div>
+</div><figure><canvas id="m7p18a" width="440" height="320" aria-label="Check a candidate for a defective system"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p18a"),function(g,t,k){drawM7(g,t,k,"defective",18,true);},{rest:0.4,seconds:5});</script>
 </section>
 
@@ -1221,18 +1224,15 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 
 <!-- ===== 20 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow you" data-min="1.5">Your turn</p>
+<p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Linear Dynamics</h2>
 <p class="sub">Zero real parts need a closer look</p>
 <div class="cols w6040"><div>
 <div class="eq">$$A=\begin{bmatrix}0&amp;1\\0&amp;0\end{bmatrix},\qquad x_0=(0,1)^T$$</div>
 <dl class="gloss"><dt>A</dt><dd>both eigenvalues zero</dd><dt>x₀</dt><dd>chosen initial state</dd><dt>x(t)</dt><dd>state to determine</dd></dl>
-<div class="teaching-point"><p>Do zero eigenvalues guarantee a bounded trajectory?</p></div>
-<p class="q">What happens from the given start?</p>
-<div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
-<div class="eq">$$x_2(t)=1,\quad x_1(t)=t$$</div>
-<dl class="gloss"><dt>result</dt><dd>computed from the given model</dd></dl>
-<p>The trajectory grows although both eigenvalues are zero.</p></div>
+<p class="q">What does this zero-eigenvalue example do?</p>
+<ol class="mc-options" type="A"><li>x(t)=(0,1)ᵀ: fixed</li><li>x(t)=(t,1)ᵀ: unbounded</li><li>x(t)=(exp(t),1)ᵀ: exponential growth</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct B. Coupling gives linear growth.</p></div>
 </div><figure><canvas id="m7p20a" width="440" height="320" aria-label="Zero real parts need a closer look"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p20a"),function(g,t,k){drawM7(g,t,k,"shear",20,true);},{rest:0.4,seconds:5});</script>
 </section>
@@ -1278,18 +1278,15 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 
 <!-- ===== 24 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow you" data-min="2">Your turn</p>
+<p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Euler Integration</h2>
 <p class="sub">Your turn: two larger steps</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=-2x,\quad x_0=1,\quad h=0.2$$</div>
 <dl class="gloss"><dt>h</dt><dd>fixed time step</dd><dt>x₀</dt><dd>initial numerical state</dd><dt>x₂</dt><dd>approximation at t=0.4</dd></dl>
-<div class="teaching-point"><p>Compute x₁ and x₂. Compare x₂ with the exact state at the same time.</p></div>
-<p class="q">Which states result after one and two steps?</p>
-<div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
-<div class="eq">$$x_1=1(.6)=.6,\quad x_2=.6^2=.36,\quad x(.4)=e^{-.8}$$</div>
-<dl class="gloss"><dt>result</dt><dd>computed from the given model</dd></dl>
-<p>Each step multiplies the current state by 0.6.</p></div>
+<p class="q">Which Euler pair uses a fresh rate at each step?</p>
+<ol class="mc-options" type="A"><li>x₁=.6, x₂=.36</li><li>x₁=.6, x₂=.2</li><li>x₁=.8, x₂=.64</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct A. Reevaluate the rate.</p></div>
 </div><figure><canvas id="m7p24a" width="440" height="320" aria-label="Your turn: two larger steps"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p24a"),function(g,t,k){drawM7(g,t,k,"euler",24,true);},{rest:0.4,seconds:5});</script>
 </section>
@@ -1335,36 +1332,30 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 
 <!-- ===== 28 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow you" data-min="1.5">Your turn</p>
+<p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Numerical Stability</h2>
 <p class="sub">Predict three step-size regimes</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\lambda=-4,\qquad h\in\{0.25,0.4,0.6\}$$</div>
 <dl class="gloss"><dt>λ</dt><dd>fixed decay rate</dd><dt>h</dt><dd>candidate steps</dd><dt>x₀</dt><dd>any nonzero start</dd></dl>
-<div class="teaching-point"><p>Classify each Euler sequence: zero, alternating decay, or growth.</p></div>
-<p class="q">What does each numerical trajectory do?</p>
-<div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
-<div class="eq">$$1-4h\in\{0,-0.6,-1.4\}$$</div>
-<dl class="gloss"><dt>result</dt><dd>computed from the given model</dd></dl>
-<p>Factors: 0 gives zero; −0.6 alternates and decays; −1.4 alternates and grows.</p></div>
+<p class="q">For h=.25, .4, .6, which Euler behaviors occur in order?</p>
+<ol class="mc-options" type="A"><li>Zero; alternating growth; alternating growth</li><li>All decay because the ODE is stable</li><li>Zero; alternating decay; alternating growth</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct C. Magnitude decides decay.</p></div>
 </div><figure><canvas id="m7p28a" width="440" height="320" aria-label="Predict three step-size regimes"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p28a"),function(g,t,k){drawM7(g,t,k,"amplification",28,true);},{rest:0.4,seconds:5});</script>
 </section>
 
 <!-- ===== 29 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow you" data-min="2">Your turn</p>
+<p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Numerical Stability</h2>
 <p class="sub">Every mode must satisfy the bound</p>
 <div class="cols w6040"><div>
 <div class="eq">$$A=\operatorname{diag}(-2,-8)$$</div>
 <dl class="gloss"><dt>A</dt><dd>constant state matrix</dd><dt>h</dt><dd>one step used for both modes</dd><dt>x₀</dt><dd>arbitrary initial state</dd></dl>
-<div class="teaching-point"><p>Require decay from every start.</p></div>
-<p class="q">Which condition works from every initial state?</p>
-<div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
-<div class="eq">$$0&lt;h&lt;1,\quad0&lt;h&lt;\tfrac14\quad\Rightarrow\quad0&lt;h&lt;\tfrac14$$</div>
-<dl class="gloss"><dt>result</dt><dd>computed from the given model</dd></dl>
-<p>At h=1/4, the second multiplier is −1 and does not decay.</p></div>
+<p class="q">Which interval gives decay from EVERY start?</p>
+<ol class="mc-options" type="A"><li>0&lt;h≤1/4</li><li>0&lt;h&lt;1/4</li><li>0&lt;h&lt;1</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct B. Both strict bounds must hold.</p></div>
 </div><figure><canvas id="m7p29a" width="440" height="320" aria-label="Every mode must satisfy the bound"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p29a"),function(g,t,k){drawM7(g,t,k,"modes",29,true);},{rest:0.4,seconds:5});</script>
 </section>
@@ -1436,18 +1427,15 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 
 <!-- ===== 35 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow you" data-min="2">Your turn</p>
+<p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Runge–Kutta Methods</h2>
 <p class="sub">Your turn: halve the midpoint step</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=-2x,\quad x_0=1,\quad h=0.1$$</div>
 <dl class="gloss"><dt>k₁,k₂</dt><dd>two model evaluations</dd><dt>h</dt><dd>full step</dd><dt>x₁</dt><dd>accepted next state</dd></dl>
-<div class="teaching-point"><p>Write both stages and the accepted state.</p></div>
-<p class="q">What is the accepted midpoint result?</p>
-<div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
-<div class="eq">$$k_1=-2,\quad k_2=-1.8,\quad x_1=0.82$$</div>
-<dl class="gloss"><dt>result</dt><dd>computed from the given model</dd></dl>
-<p>The trial midpoint is .9; it is not the accepted result.</p></div>
+<p class="q">Which value is the ACCEPTED midpoint state?</p>
+<ol class="mc-options" type="A"><li>.9: the trial midpoint</li><li>.72: trial state plus full increment</li><li>.82: original state plus full increment</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct C. Return to the original state.</p></div>
 </div><figure><canvas id="m7p35a" width="440" height="320" aria-label="Your turn: halve the midpoint step"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p35a"),function(g,t,k){drawM7(g,t,k,"midpoint",35,true);},{rest:0.4,seconds:5});</script>
 </section>
@@ -1480,19 +1468,16 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 
 <!-- ===== 38 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow you" data-min="2">Your turn</p>
+<p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Runge–Kutta Methods</h2>
-<p class="sub">Your turn: RK4 and model-call cost</p>
+<p class="sub">Your turn: compare equal model-call budgets</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=-2x,\quad x_0=1,\quad h=0.1$$</div>
-<dl class="gloss"><dt>h</dt><dd>full step</dd><dt>k₁…k₄</dt><dd>rates to compute</dd><dt>cost</dt><dd>number of calls to f</dd></dl>
-<div class="teaching-point"><p>Compute four rates and count calls.</p></div>
-<p class="q">What does one step return, at what model-call cost?</p>
-<div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
-<div class="eq">$$\begin{aligned}(k_1,k_2,k_3,k_4)&amp;=(-2,-1.8,-1.82,-1.636)\\x_1&amp;=1+.1(-10.876)/6\approx.8187333\end{aligned}$$</div>
-<dl class="gloss"><dt>result</dt><dd>computed from the given model</dd></dl>
-<p>Four calls over one step.</p></div>
-</div><figure><canvas id="m7p38a" width="440" height="320" aria-label="Your turn: RK4 and model-call cost"></canvas></figure></div>
+<dl class="gloss"><dt>h</dt><dd>one RK4 step interval</dd><dt>cost</dt><dd>number of calls to f</dd></dl>
+<p class="q">How many Euler substeps match ONE RK4 step in model calls?</p>
+<ol class="mc-options" type="A"><li>Four, each h/4, over the same interval</li><li>One, with step h</li><li>Four, each h, over the same interval</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct A. Match cost AND interval.</p></div>
+</div><figure><canvas id="m7p38a" width="440" height="320" aria-label="Your turn: compare equal model-call budgets"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p38a"),function(g,t,k){drawM7(g,t,k,"rk4",38,true);},{rest:0.4,seconds:5});</script>
 </section>
 
@@ -1550,89 +1535,91 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 
 <!-- ===== 43 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow">Integrated board</p>
+<p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Integrated Pendulum Problem</h2>
 <p class="sub">Choose the state and the check first</p>
 <div class="cols w6040"><div>
-<div class="eq">$$m=\ell=g_0=1,\quad x_0=(1,0)^T,\quad h=0.1$$</div>
-<dl class="gloss"><dt>q₀</dt><dd>one radian</dd><dt>v₀</dt><dd>zero</dd><dt>h</dt><dd>one time step</dd><dt>E</dt><dd>v²/2+1−cos q</dd></dl>
-<div class="teaching-point"><p>Find one numerical step, then test its energy.</p></div>
+<div class="eq">$$m=\ell=g_0=1,\quad q_0=1,\quad v_0=0$$</div>
+<dl class="gloss"><dt>q₀,v₀</dt><dd>initial angle and angular velocity</dd><dt>m,ℓ,g₀</dt><dd>normalized parameters</dd></dl>
+<p class="q">Which state and field close this second-order model?</p>
+<ol class="mc-options" type="A"><li>x=q; f=−sin q</li><li>x=(q,v)ᵀ; f=(v,−sin q)ᵀ</li><li>x=(q,v)ᵀ; f=(−sin q,v)ᵀ</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct B. Keep state/rate order.</p></div>
 </div><figure><canvas id="m7p43a" width="440" height="320" aria-label="Choose the state and the check first"></canvas></figure></div>
-<script>m3anim(document.getElementById("m7p43a"),function(g,t,k){drawM7(g,t,k,"pendulum",43,false);},{rest:0.4,seconds:5});</script>
+<script>m3anim(document.getElementById("m7p43a"),function(g,t,k){drawM7(g,t,k,"pendulum",43,true);},{rest:0.4,seconds:5});</script>
 </section>
 
 <!-- ===== 44 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow">Worked example</p>
+<p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Integrated Pendulum Problem</h2>
 <p class="sub">Compare the first accepted states</p>
 <div class="cols w6040"><div>
-<div class="eq">$$\begin{array}{c|rr}\text{method}&amp;q_1&amp;v_1\\\hline\text{Euler}&amp;1&amp;-0.08414710\\\text{midpoint}&amp;0.99579265&amp;-0.08414710\\\text{RK4}&amp;0.99579454&amp;-0.08407114\end{array}$$</div>
-<dl class="gloss"><dt>q₁,v₁</dt><dd>accepted state after h=.1</dd><dt>all methods</dt><dd>same model and initial state</dd></dl>
-<div class="ex"><p>Euler leaves q unchanged on its first step because v₀=0.</p></div>
+<div class="eq">$$x_0=(1,0)^T,\ h=.1,\ f(q,v)=(v,-\sin q)^T$$</div>
+<dl class="gloss"><dt>x₀</dt><dd>shared initial state</dd><dt>h</dt><dd>full accepted step</dd><dt>f</dt><dd>state rate</dd></dl>
+<p class="q">Why can midpoint change q on its FIRST step when v₀=0?</p>
+<ol class="mc-options" type="A"><li>It uses a nonzero trial velocity.</li><li>Its step covers twice the physical time.</li><li>Its initial velocity differs from Euler’s.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct A. Trial velocity need not be zero.</p></div>
 </div><figure><canvas id="m7p44a" width="440" height="320" aria-label="Compare the first accepted states"></canvas></figure></div>
-<script>m3anim(document.getElementById("m7p44a"),function(g,t,k){drawM7(g,t,k,"phase",44,false);},{rest:0.4,seconds:5});</script>
+<script>m3anim(document.getElementById("m7p44a"),function(g,t,k){drawM7(g,t,k,"phase",44,true);},{rest:0.4,seconds:5});</script>
 </section>
 
 <!-- ===== 45 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow">Experiment</p>
+<p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Integrated Pendulum Problem</h2>
 <p class="sub">Repeat to the same final time</p>
 <div class="cols w6040"><div>
-<div class="eq">$$\begin{array}{c|rr}h&amp;\Delta E_{\rm Euler}&amp;\Delta E_{\rm RK4}\\\hline .2&amp;1.324213&amp;-1.46\!\times\!10^{-5}\\ .1&amp;.539746&amp;-4.61\!\times\!10^{-7}\\ .05&amp;.232375&amp;-1.44\!\times\!10^{-8}\end{array}$$</div>
-<dl class="gloss"><dt>ΔE</dt><dd>E(xN)−E(x₀)</dd><dt>T</dt><dd>10, fixed for every run</dd><dt>N</dt><dd>T/h steps</dd></dl>
-<div class="teaching-point"><p>Same initial state, same dynamics, same endpoint; only method and h change.</p></div>
+<div class="eq">$$T=10,\quad h\in\{.2,.1,.05\}$$</div>
+<dl class="gloss"><dt>T</dt><dd>prescribed final time</dd><dt>h</dt><dd>candidate step size</dd></dl>
+<p class="q">When h is halved, how is the final-time comparison kept fair?</p>
+<ol class="mc-options" type="A"><li>Keep the same number of steps.</li><li>Stop when the energies agree.</li><li>Double the steps to keep Nh=T.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct C. Compare common physical times.</p></div>
 </div><figure><canvas id="m7p45a" width="440" height="320" aria-label="Repeat to the same final time"></canvas></figure></div>
-<script>m3anim(document.getElementById("m7p45a"),function(g,t,k){drawM7(g,t,k,"drift",45,false);},{rest:0.4,seconds:5});</script>
+<script>m3anim(document.getElementById("m7p45a"),function(g,t,k){drawM7(g,t,k,"drift",45,true);},{rest:0.4,seconds:5});</script>
 </section>
 
 <!-- ===== 46 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow">Interpretation</p>
+<p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Integrated Pendulum Problem</h2>
-<p class="sub">Energy error does not measure phase error</p>
+<p class="sub">Compare two energy-matched states</p>
 <div class="cols w6040"><div>
-<div class="eq">$$E(x_k)\approx E(x_0)\ \not\Rightarrow\ x_k\approx x(t_k)$$</div>
-<dl class="gloss"><dt>E</dt><dd>one scalar diagnostic</dd><dt>xₖ</dt><dd>two-component numerical state</dd><dt>x(tₖ)</dt><dd>exact state at the same time</dd></dl>
-<div class="teaching-point"><p>Compare angle, velocity and energy; then halve the step.</p></div>
-</div><figure><canvas id="m7p46a" width="440" height="320" aria-label="Energy error does not measure phase error"></canvas></figure></div>
-<script>m3anim(document.getElementById("m7p46a"),function(g,t,k){drawM7(g,t,k,"phase",46,false);},{rest:0.4,seconds:5});</script>
+<div class="eq">$$E(q,v)=v^2/2+1-\cos q$$</div>
+<dl class="gloss"><dt>q,v</dt><dd>angle and angular velocity</dd><dt>E</dt><dd>energy</dd></dl>
+<p class="q">What does equal energy of two pendulum states establish?</p>
+<ol class="mc-options" type="A"><li>Their angles and velocities are equal.</li><li>They can still be different states.</li><li>Both numerical trajectories are exact.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct B. Energy cannot fix phase.</p></div>
+</div><figure><canvas id="m7p46a" width="440" height="320" aria-label="Compare two energy-matched states"></canvas></figure></div>
+<script>m3anim(document.getElementById("m7p46a"),function(g,t,k){drawM7(g,t,k,"phase",46,true);},{rest:0.4,seconds:5});</script>
 </section>
 
 <!-- ===== 47 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow you" data-min="3">Your turn</p>
+<p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Independent Transfer</h2>
-<p class="sub">A different angle, the same method choice</p>
+<p class="sub">Transfer: a moving pendulum near the top</p>
 <div class="cols w6040"><div>
-<div class="eq">$$q_0=0.5,\quad v_0=0,\quad h=0.1,\quad m=\ell=g_0=1$$</div>
-<dl class="gloss"><dt>q₀</dt><dd>new angle in radians</dd><dt>v₀</dt><dd>zero angular velocity</dd><dt>h</dt><dd>positive time step</dd></dl>
-<div class="teaching-point"><p>One model call. Choose a method, then compute the step.</p></div>
-<p class="q">Is energy conserved?</p>
-<div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
-<div class="eq">$$x_1=(.5,-.1\sin .5)^T,\quad\Delta E=\tfrac12(.1\sin .5)^2\approx.00114924$$</div>
-<dl class="gloss"><dt>result</dt><dd>computed from the given model</dd></dl>
-<p>Fixed potential; kinetic energy rises.</p></div>
-</div><figure><canvas id="m7p47a" width="440" height="320" aria-label="A different angle, the same method choice"></canvas></figure></div>
-<script>m3anim(document.getElementById("m7p47a"),function(g,t,k){drawM7(g,t,k,"pendulum",47,true);},{rest:0.4,seconds:5});</script>
+<div class="eq">$$q_0=\pi,\quad v_0=1,\quad h=.1,\quad m=\ell=g_0=1$$</div>
+<dl class="gloss"><dt>q₀,v₀</dt><dd>new angle and nonzero angular velocity</dd><dt>h</dt><dd>positive step size</dd></dl>
+<p class="q">Among Euler, midpoint and RK4, with ONE model call, which claim holds?</p>
+<ol class="mc-options" type="A"><li>Euler; this step decreases energy.</li><li>Midpoint; one call is enough.</li><li>Euler; every step increases energy.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct A. Potential falls; kinetic energy is unchanged.</p></div>
+</div><figure><canvas id="m7p47a" width="440" height="320" aria-label="Transfer: a moving pendulum near the top"></canvas></figure></div>
+<script>m3anim(document.getElementById("m7p47a"),function(g,t,k){drawM7(g,t,k,"energy",47,true);},{rest:0.4,seconds:5});</script>
 </section>
 
 <!-- ===== 48 ===== -->
 <section class="slide" data-part="III">
-<p class="eyebrow you" data-min="2">Your turn</p>
+<p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Simulation Checklist</h2>
-<p class="sub">Cold-write a complete simulation step</p>
+<p class="sub">Choose a complete simulation workflow</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=f(x,t),\qquad x(t_0)=x_0$$</div>
 <dl class="gloss"><dt>x</dt><dd>complete state</dd><dt>f</dt><dd>model rate</dd><dt>h</dt><dd>chosen integration step</dd></dl>
-<div class="teaching-point"><p>Name the state, update, stability question and diagnostic.</p></div>
-<p class="q">What four checks make the result interpretable?</p>
-<div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
-<div class="eq">$$x_{k+1}=x_k+h f(x_k,t_k)$$</div>
-<dl class="gloss"><dt>result</dt><dd>computed from the given model</dd></dl>
-<p>Check model/units, initial state, step sensitivity and an appropriate invariant.</p></div>
-</div><figure><canvas id="m7p48a" width="440" height="320" aria-label="Cold-write a complete simulation step"></canvas></figure></div>
+<p class="q">For this pendulum simulation, which workflow distinguishes errors?</p>
+<ol class="mc-options" type="A"><li>Use q alone; shrink h until the curve looks smooth.</li><li>Use f as the next state; inspect only energy.</li><li>Use (q,v), integrate rates, compare states and energy.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<p>Correct C. Check state AND invariant.</p></div>
+</div><figure><canvas id="m7p48a" width="440" height="320" aria-label="Choose a complete simulation workflow"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p48a"),function(g,t,k){drawM7(g,t,k,"pipeline",48,true);},{rest:0.4,seconds:5});</script>
 </section>
 
