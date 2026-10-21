@@ -143,6 +143,26 @@ td.num{font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-num
 /* ---------- fragments ---------- */
 .step{opacity:0;transition:opacity .22s ease}
 .step.shown{opacity:1}
+/* Worked exercise screens use the same arrow-key reveal sequence as the deck.
+   A fresh page shows only the question; the final step restores its visual. */
+.worked-question{display:contents}
+.worked-panel{display:none;position:absolute;left:64px;right:64px;top:190px;bottom:82px;
+  font-size:24px;line-height:1.42}
+.worked-panel.shown{display:block}
+.worked-panel.shown:has(~ .worked-panel.shown){display:none}
+.has-worked-solutions:has(.worked-panel.shown):not(:has(.worked-finish.shown)) .worked-question{display:none}
+.has-worked-solutions:has(.worked-finish.shown) .worked-panel{display:none}
+.worked-finish{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+.worked-panel .worked-progress{font:500 14px/1.2 ui-monospace,Menlo,monospace;color:var(--dim);margin:0 0 7px}
+.worked-panel h3{font-size:28px;line-height:1.2;margin:0 0 14px}
+.worked-panel .worked-variables{font-size:21px;line-height:1.4;color:var(--dim);max-width:none;
+  margin:0 0 18px;padding-bottom:12px;border-bottom:1px solid var(--rule)}
+.worked-panel .worked-lines{padding-left:30px;margin:0;max-width:none}
+.worked-panel .worked-lines li{margin:0 0 14px;padding-left:5px}
+.worked-panel .katex{font-size:1.05em}
+body.print .worked-solutions{display:none}
+body.print .worked-question{display:contents!important}
+@media print{.worked-solutions{display:none}.worked-question{display:contents!important}}
 body.noanim .step{transition:none}
 @media (prefers-reduced-motion:reduce){.step{transition:none}}
 
@@ -1094,19 +1114,53 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 </section>
 
 <!-- ===== 6 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Vector Fields</h2>
 <p class="sub">Your turn: a changed decay rate</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=-3x,\qquad x(0)=2$$</div>
 <dl class="gloss"><dt>x</dt><dd>scalar state</dd><dt>−3</dt><dd>fixed decay rate</dd><dt>2</dt><dd>initial value</dd></dl>
 <p class="q">Which trajectory satisfies BOTH the rate and the start?</p>
-<ol class="mc-options" type="A"><li>exp(−3t)</li><li>2 exp(−3t)</li><li>2 exp(3t)</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>exp(−3t)</li><li>2 exp(−3t)</li><li>2 exp(3t)</li></ol><div class="step answer" data-step="5"><b class="ok step" data-step="5">✓</b>
 <p>Correct B. Check start AND rate.</p></div>
 </div><figure><canvas id="m7p06a" width="440" height="320" aria-label="Your turn: a changed decay rate"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p06a"),function(g,t,k){drawM7(g,t,k,"decay",6,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Exponential decay</span> — <a href="https://fncbook.com/basics/">[4] FNC §6.1</a> · Course example</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
+<p class="worked-progress">Solution 1 / 4</p>
+<h3>1 · Solve the rate equation</h3>
+<p class="worked-variables">x(t): scalar state at time t · c: constant set by the initial value</p>
+<ol class="worked-lines">
+<li>For a constant decay rate −3, the exponential family is $$x(t)=ce^{-3t},\qquad \dot x(t)=-3ce^{-3t}=-3x(t).$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
+<p class="worked-progress">Solution 2 / 4</p>
+<h3>2 · Impose the initial value</h3>
+<p class="worked-variables">x(t): scalar state at time t · c: constant set by the initial value</p>
+<ol class="worked-lines">
+<li>At time zero the exponential is one, so the constant must be two. $$x(0)=ce^0=c=2\quad\Longrightarrow\quad x(t)=2e^{-3t}.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
+<p class="worked-progress">Solution 3 / 4</p>
+<h3>3 · Verify both conditions</h3>
+<p class="worked-variables">x(t): scalar state at time t · c: constant set by the initial value</p>
+<ol class="worked-lines">
+<li>The chosen trajectory starts at two and has the required derivative. $$x(0)=2,\qquad \dot x(t)=-6e^{-3t}=-3x(t).$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
+<p class="worked-progress">Solution 4 / 4</p>
+<h3>Answer · B</h3>
+<p class="worked-variables">x(t): scalar state at time t · c: constant set by the initial value</p>
+<ol class="worked-lines">
+<li>A starts at one, not two.</li>
+<li>B has the correct initial value and decay rate.</li>
+<li>C reverses the sign of the rate.</li>
+</ol></div>
+<span class="worked-finish step" data-step="5" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Exponential decay</span> — <a href="https://fncbook.com/basics/">[4] FNC §6.1</a> · Course example</p>
 </section>
 
 <!-- ===== 7 ===== -->
@@ -1166,19 +1220,60 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 </section>
 
 <!-- ===== 11 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Robot State</h2>
 <p class="sub">Your turn: reduce the applied force</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$\begin{gathered}M=2,\ C=.5,\ g=3,\ \tau=1,\ v=2\\ Ma=\tau-Cv-g,\quad\dot x=(v,a)^T\end{gathered}$$</div>
 <dl class="gloss"><dt>a</dt><dd>acceleration</dd><dt>x=(q,v)ᵀ</dt><dd>position then velocity</dd></dl>
 <p class="q">Which state rate follows from the force balance?</p>
-<ol class="mc-options" type="A"><li>(−1.5,2)ᵀ</li><li>(2,−3)ᵀ</li><li>(2,−1.5)ᵀ</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>(−1.5,2)ᵀ</li><li>(2,−3)ᵀ</li><li>(2,−1.5)ᵀ</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
 <p>Correct C. Velocity, then acceleration.</p></div>
 </div><figure><canvas id="m7p11a" width="440" height="320" aria-label="Your turn: reduce the applied force"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p11a"),function(g,t,k){drawM7(g,t,k,"state",11,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Forward dynamics</span> — <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/chapter-8-1-lagrangian-formulation-of-dynamics-part-1-of-2/">[2] Modern Robotics §8.1</a> · Course example</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
+<p class="worked-progress">Solution 1 / 5</p>
+<h3>1 · Compute the velocity force</h3>
+<p class="worked-variables">q,v,a: position, velocity and acceleration · M,C: inertia and velocity-force coefficient · τ,g: applied force and gravity force</p>
+<ol class="worked-lines">
+<li>The given coefficient is 0.5 and the velocity is 2. $$Cv=0.5\times2=1.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
+<p class="worked-progress">Solution 2 / 5</p>
+<h3>2 · Apply force balance</h3>
+<p class="worked-variables">q,v,a: position, velocity and acceleration · M,C: inertia and velocity-force coefficient · τ,g: applied force and gravity force</p>
+<ol class="worked-lines">
+<li>Subtract the velocity force and gravity from the applied force. $$Ma=\tau-Cv-g=1-1-3=-3.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
+<p class="worked-progress">Solution 3 / 5</p>
+<h3>3 · Divide by inertia</h3>
+<p class="worked-variables">q,v,a: position, velocity and acceleration · M,C: inertia and velocity-force coefficient · τ,g: applied force and gravity force</p>
+<ol class="worked-lines">
+<li>Acceleration is net force divided by inertia; it is not the net force itself. $$a=\frac{-3}{2}=-1.5.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
+<p class="worked-progress">Solution 4 / 5</p>
+<h3>4 · Keep the state order</h3>
+<p class="worked-variables">q,v,a: position, velocity and acceleration · M,C: inertia and velocity-force coefficient · τ,g: applied force and gravity force</p>
+<ol class="worked-lines">
+<li>Position differentiates to velocity; velocity differentiates to acceleration. $$x=(q,v)^T\quad\Longrightarrow\quad\dot x=(v,a)^T=(2,-1.5)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
+<p class="worked-progress">Solution 5 / 5</p>
+<h3>Answer · C</h3>
+<p class="worked-variables">q,v,a: position, velocity and acceleration · M,C: inertia and velocity-force coefficient · τ,g: applied force and gravity force</p>
+<ol class="worked-lines">
+<li>A swaps velocity and acceleration.</li>
+<li>B omits division by inertia two.</li>
+<li>C preserves component order and divides net force by inertia.</li>
+</ol></div>
+<span class="worked-finish step" data-step="6" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Forward dynamics</span> — <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/chapter-8-1-lagrangian-formulation-of-dynamics-part-1-of-2/">[2] Modern Robotics §8.1</a> · Course example</p>
 </section>
 
 <!-- ===== 12 ===== -->
@@ -1238,19 +1333,60 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 </section>
 
 <!-- ===== 16 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Linear Dynamics</h2>
 <p class="sub">Return from modal coordinates</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$V=\begin{bmatrix}1&amp;1\\0&amp;1\end{bmatrix},\quad \Lambda=\operatorname{diag}(-1,-2)$$</div>
 <dl class="gloss"><dt>V</dt><dd>eigenvector basis</dd><dt>Λ</dt><dd>matching eigenvalues</dd></dl>
 <p class="q">For NEW x₀=(1,1)ᵀ, which modal description is correct?</p>
-<ol class="mc-options" type="A"><li>c₀=(0,1)ᵀ; only the −2 mode</li><li>c₀=(1,2)ᵀ; both modes</li><li>c₀=(1,1)ᵀ; both modes</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>c₀=(0,1)ᵀ; only the −2 mode</li><li>c₀=(1,2)ᵀ; both modes</li><li>c₀=(1,1)ᵀ; both modes</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
 <p>Correct A. Use the inverse basis.</p></div>
 </div><figure><canvas id="m7p16a" width="440" height="320" aria-label="Return from modal coordinates"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p16a"),function(g,t,k){drawM7(g,t,k,"modes",16,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Change of basis; matrix exponential</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a> · Course derivation</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
+<p class="worked-progress">Solution 1 / 5</p>
+<h3>1 · Invert the coordinate map</h3>
+<p class="worked-variables">x₀: new initial state (1,1)ᵀ · V,Λ: eigenvector matrix and matching eigenvalues · c₀,c(t): initial and evolving modal coordinates</p>
+<ol class="worked-lines">
+<li>Because x=Vc, solve for c using the inverse, not the transpose. $$V=\begin{bmatrix}1&amp;1\\0&amp;1\end{bmatrix},\quad V^{-1}=\begin{bmatrix}1&amp;-1\\0&amp;1\end{bmatrix}.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
+<p class="worked-progress">Solution 2 / 5</p>
+<h3>2 · Transform the new start</h3>
+<p class="worked-variables">x₀: new initial state (1,1)ᵀ · V,Λ: eigenvector matrix and matching eigenvalues · c₀,c(t): initial and evolving modal coordinates</p>
+<ol class="worked-lines">
+<li>Multiply each row of the inverse by the initial column. $$c_0=V^{-1}\begin{bmatrix}1\\1\end{bmatrix}=\begin{bmatrix}1-1\\1\end{bmatrix}=\begin{bmatrix}0\\1\end{bmatrix}.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
+<p class="worked-progress">Solution 3 / 5</p>
+<h3>3 · Evolve the active mode</h3>
+<p class="worked-variables">x₀: new initial state (1,1)ᵀ · V,Λ: eigenvector matrix and matching eigenvalues · c₀,c(t): initial and evolving modal coordinates</p>
+<ol class="worked-lines">
+<li>The coefficient of the −1 mode is zero; only the −2 mode remains. $$c(t)=\begin{bmatrix}0e^{-t}\\1e^{-2t}\end{bmatrix}=\begin{bmatrix}0\\e^{-2t}\end{bmatrix}.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
+<p class="worked-progress">Solution 4 / 5</p>
+<h3>4 · Return to state coordinates</h3>
+<p class="worked-variables">x₀: new initial state (1,1)ᵀ · V,Λ: eigenvector matrix and matching eigenvalues · c₀,c(t): initial and evolving modal coordinates</p>
+<ol class="worked-lines">
+<li>Both state components are equal even though only one modal coordinate is active. $$x(t)=Vc(t)=\begin{bmatrix}e^{-2t}\\e^{-2t}\end{bmatrix},\qquad x(0)=\begin{bmatrix}1\\1\end{bmatrix}.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
+<p class="worked-progress">Solution 5 / 5</p>
+<h3>Answer · A</h3>
+<p class="worked-variables">x₀: new initial state (1,1)ᵀ · V,Λ: eigenvector matrix and matching eigenvalues · c₀,c(t): initial and evolving modal coordinates</p>
+<ol class="worked-lines">
+<li>A recognizes the second eigenvector.</li>
+<li>B uses the transpose instead of the inverse of a nonorthogonal basis.</li>
+<li>C copies state coordinates without changing basis.</li>
+</ol></div>
+<span class="worked-finish step" data-step="6" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Change of basis; matrix exponential</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a> · Course derivation</p>
 </section>
 
 <!-- ===== 17 ===== -->
@@ -1268,19 +1404,60 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 </section>
 
 <!-- ===== 18 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Linear Dynamics</h2>
 <p class="sub">Check a candidate for a defective system</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$A=\begin{bmatrix}-1&amp;1\\0&amp;-1\end{bmatrix},\quad x_0=(0,1)^T,\quad x(t)=(te^{-t},e^{-t})^T$$</div>
 <dl class="gloss"><dt>x(t)</dt><dd>candidate trajectory</dd><dt>A,x₀</dt><dd>given matrix and start</dd></dl>
 <p class="q">Does this trajectory solve the given IVP?</p>
-<ol class="mc-options" type="A"><li>No: a defective matrix has no solution.</li><li>No: the factor t forces growth forever.</li><li>Yes: its derivative and initial state both match.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>No: a defective matrix has no solution.</li><li>No: the factor t forces growth forever.</li><li>Yes: its derivative and initial state both match.</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
 <p>Correct C. Both IVP checks pass.</p></div>
 </div><figure><canvas id="m7p18a" width="440" height="320" aria-label="Check a candidate for a defective system"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p18a"),function(g,t,k){drawM7(g,t,k,"defective",18,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Defective matrix; matrix exponential</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a> · Course example</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
+<p class="worked-progress">Solution 1 / 5</p>
+<h3>1 · Differentiate the candidate</h3>
+<p class="worked-variables">A: given constant state matrix · x(t),x₀: candidate trajectory and required initial state · t: continuous time</p>
+<ol class="worked-lines">
+<li>Use the product rule for the first component. $$\frac{d}{dt}(te^{-t})=e^{-t}-te^{-t}=(1-t)e^{-t},\quad\frac{d}{dt}e^{-t}=-e^{-t}.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
+<p class="worked-progress">Solution 2 / 5</p>
+<h3>2 · Compute the model rate</h3>
+<p class="worked-variables">A: given constant state matrix · x(t),x₀: candidate trajectory and required initial state · t: continuous time</p>
+<ol class="worked-lines">
+<li>Multiply A by the candidate and compare component by component. $$Ax=\begin{bmatrix}-1&amp;1\\0&amp;-1\end{bmatrix}\begin{bmatrix}te^{-t}\\e^{-t}\end{bmatrix}=\begin{bmatrix}(1-t)e^{-t}\\-e^{-t}\end{bmatrix}=\dot x.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
+<p class="worked-progress">Solution 3 / 5</p>
+<h3>3 · Check the start</h3>
+<p class="worked-variables">A: given constant state matrix · x(t),x₀: candidate trajectory and required initial state · t: continuous time</p>
+<ol class="worked-lines">
+<li>The candidate satisfies the initial value as well as the differential equation. $$x(0)=\begin{bmatrix}0e^0\\e^0\end{bmatrix}=\begin{bmatrix}0\\1\end{bmatrix}=x_0.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
+<p class="worked-progress">Solution 4 / 5</p>
+<h3>4 · Interpret the polynomial factor</h3>
+<p class="worked-variables">A: given constant state matrix · x(t),x₀: candidate trajectory and required initial state · t: continuous time</p>
+<ol class="worked-lines">
+<li>The exponential eventually dominates the factor t; a defective matrix still defines a valid linear initial-value problem. $$\lim_{t\to\infty}te^{-t}=0.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
+<p class="worked-progress">Solution 5 / 5</p>
+<h3>Answer · C</h3>
+<p class="worked-variables">A: given constant state matrix · x(t),x₀: candidate trajectory and required initial state · t: continuous time</p>
+<ol class="worked-lines">
+<li>A confuses an incomplete eigenbasis with absence of a solution.</li>
+<li>B ignores the exponential decay multiplying t.</li>
+<li>C checks both defining conditions.</li>
+</ol></div>
+<span class="worked-finish step" data-step="6" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Defective matrix; matrix exponential</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a> · Course example</p>
 </section>
 
 <!-- ===== 19 ===== -->
@@ -1298,19 +1475,60 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 </section>
 
 <!-- ===== 20 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Linear Dynamics</h2>
 <p class="sub">Zero real parts need a closer look</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$A=\begin{bmatrix}0&amp;1\\0&amp;0\end{bmatrix},\qquad x_0=(0,1)^T$$</div>
 <dl class="gloss"><dt>A</dt><dd>both eigenvalues zero</dd><dt>x₀</dt><dd>chosen initial state</dd><dt>x(t)</dt><dd>state to determine</dd></dl>
 <p class="q">What does this zero-eigenvalue example do?</p>
-<ol class="mc-options" type="A"><li>x(t)=(0,1)ᵀ: fixed</li><li>x(t)=(t,1)ᵀ: unbounded</li><li>x(t)=(exp(t),1)ᵀ: exponential growth</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>x(t)=(0,1)ᵀ: fixed</li><li>x(t)=(t,1)ᵀ: unbounded</li><li>x(t)=(exp(t),1)ᵀ: exponential growth</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
 <p>Correct B. Coupling gives linear growth.</p></div>
 </div><figure><canvas id="m7p20a" width="440" height="320" aria-label="Zero real parts need a closer look"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p20a"),function(g,t,k){drawM7(g,t,k,"shear",20,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Boundedness; asymptotic decay</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a></p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
+<p class="worked-progress">Solution 1 / 5</p>
+<h3>1 · Read the component equations</h3>
+<p class="worked-variables">x₁(t),x₂(t): first and second coordinates; subscripts here label coordinates · A: given matrix coupling coordinate 2 into coordinate 1 · s: integration variable</p>
+<ol class="worked-lines">
+<li>Matrix multiplication gives one constant coordinate and one driven coordinate. $$\dot x=Ax\quad\Longrightarrow\quad\dot x_1=x_2,\quad\dot x_2=0.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
+<p class="worked-progress">Solution 2 / 5</p>
+<h3>2 · Solve the second coordinate</h3>
+<p class="worked-variables">x₁(t),x₂(t): first and second coordinates; subscripts here label coordinates · A: given matrix coupling coordinate 2 into coordinate 1 · s: integration variable</p>
+<ol class="worked-lines">
+<li>Zero derivative means constant; its initial value is one. $$x_2(t)=x_2(0)+\int_0^t0\,ds=1.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
+<p class="worked-progress">Solution 3 / 5</p>
+<h3>3 · Integrate the first coordinate</h3>
+<p class="worked-variables">x₁(t),x₂(t): first and second coordinates; subscripts here label coordinates · A: given matrix coupling coordinate 2 into coordinate 1 · s: integration variable</p>
+<ol class="worked-lines">
+<li>The first coordinate starts at zero and has constant derivative one. $$x_1(t)=x_1(0)+\int_0^t1\,ds=0+t=t.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
+<p class="worked-progress">Solution 4 / 5</p>
+<h3>4 · Classify the result</h3>
+<p class="worked-variables">x₁(t),x₂(t): first and second coordinates; subscripts here label coordinates · A: given matrix coupling coordinate 2 into coordinate 1 · s: integration variable</p>
+<ol class="worked-lines">
+<li>The state grows linearly, despite both eigenvalues being zero. $$x(t)=(t,1)^T,\qquad\|x(t)\|_2=\sqrt{t^2+1}\to\infty.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
+<p class="worked-progress">Solution 5 / 5</p>
+<h3>Answer · B</h3>
+<p class="worked-variables">x₁(t),x₂(t): first and second coordinates; subscripts here label coordinates · A: given matrix coupling coordinate 2 into coordinate 1 · s: integration variable</p>
+<ol class="worked-lines">
+<li>A ignores coupling between coordinates.</li>
+<li>B integrates the constant second coordinate into linear growth.</li>
+<li>C invents an exponential where growth is linear.</li>
+</ol></div>
+<span class="worked-finish step" data-step="6" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Boundedness; asymptotic decay</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a></p>
 </section>
 
 <!-- ===== 21 ===== -->
@@ -1356,19 +1574,53 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 </section>
 
 <!-- ===== 24 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Euler&#x27;s Method</h2>
 <p class="sub">Your turn: two larger steps</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=-2x,\quad x_0=1,\quad h=0.2$$</div>
 <dl class="gloss"><dt>h</dt><dd>fixed time step</dd><dt>x₀</dt><dd>initial numerical state</dd><dt>x₂</dt><dd>approximation at t=0.4</dd></dl>
 <p class="q">Which Euler pair uses a fresh rate at each step?</p>
-<ol class="mc-options" type="A"><li>x₁=.6, x₂=.36</li><li>x₁=.6, x₂=.2</li><li>x₁=.8, x₂=.64</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>x₁=.6, x₂=.36</li><li>x₁=.6, x₂=.2</li><li>x₁=.8, x₂=.64</li></ol><div class="step answer" data-step="5"><b class="ok step" data-step="5">✓</b>
 <p>Correct A. Reevaluate the rate.</p></div>
 </div><figure><canvas id="m7p24a" width="440" height="320" aria-label="Your turn: two larger steps"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p24a"),function(g,t,k){drawM7(g,t,k,"euler",24,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Explicit Euler method</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · Course example</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
+<p class="worked-progress">Solution 1 / 4</p>
+<h3>1 · Write the Euler update</h3>
+<p class="worked-variables">xₖ: accepted numerical state after k steps · h,tₖ: step size 0.2 and time tₖ=kh · f(x): state rate −2x</p>
+<ol class="worked-lines">
+<li>Each step uses the rate at the current accepted state. $$x_{k+1}=x_k+hf(x_k)=x_k+0.2(-2x_k)=0.6x_k.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
+<p class="worked-progress">Solution 2 / 4</p>
+<h3>2 · Take the first step</h3>
+<p class="worked-variables">xₖ: accepted numerical state after k steps · h,tₖ: step size 0.2 and time tₖ=kh · f(x): state rate −2x</p>
+<ol class="worked-lines">
+<li>At x₀=1, the rate is −2. $$f(x_0)=-2,\qquad x_1=1+0.2(-2)=0.6.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
+<p class="worked-progress">Solution 3 / 4</p>
+<h3>3 · Recompute the second rate</h3>
+<p class="worked-variables">xₖ: accepted numerical state after k steps · h,tₖ: step size 0.2 and time tₖ=kh · f(x): state rate −2x</p>
+<ol class="worked-lines">
+<li>The current state is now 0.6, so the rate changes to −1.2. $$f(x_1)=-2(0.6)=-1.2,\qquad x_2=0.6+0.2(-1.2)=0.36.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
+<p class="worked-progress">Solution 4 / 4</p>
+<h3>Answer · A</h3>
+<p class="worked-variables">xₖ: accepted numerical state after k steps · h,tₖ: step size 0.2 and time tₖ=kh · f(x): state rate −2x</p>
+<ol class="worked-lines">
+<li>A reevaluates the rate at the new state.</li>
+<li>B freezes the initial rate for both steps.</li>
+<li>C uses half the given step size.</li>
+</ol></div>
+<span class="worked-finish step" data-step="5" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Explicit Euler method</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · Course example</p>
 </section>
 
 <!-- ===== 25 ===== -->
@@ -1414,35 +1666,117 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 </section>
 
 <!-- ===== 28 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Numerical Stability</h2>
 <p class="sub">Predict three step-size regimes</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=-4x,\quad h\in\{.25,.4,.6\}$$</div>
 <dl class="gloss"><dt>λ</dt><dd>fixed decay rate</dd><dt>h</dt><dd>candidate steps</dd><dt>x₀</dt><dd>any nonzero start</dd></dl>
 <p class="q">For h=.25, .4, .6, which Euler behaviors occur in order?</p>
-<ol class="mc-options" type="A"><li>Zero; alternating growth; alternating growth</li><li>All decay because the ODE is stable</li><li>Zero; alternating decay; alternating growth</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>Zero; alternating growth; alternating growth</li><li>All decay because the ODE is stable</li><li>Zero; alternating decay; alternating growth</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
 <p>Correct C. Magnitude decides decay.</p></div>
 </div><figure><canvas id="m7p28a" width="440" height="320" aria-label="Predict three step-size regimes"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p28a"),function(g,t,k){drawM7(g,t,k,"amplification",28,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Step-size restriction; asymptotic decay</span> — <a href="https://fncbook.com/absstab-diffusion/">[4] FNC §11.3</a> · Course example</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
+<p class="worked-progress">Solution 1 / 5</p>
+<h3>1 · Derive the multiplier</h3>
+<p class="worked-variables">h: positive time step · a: Euler multiplier · xₖ: accepted numerical state; x₀≠0</p>
+<ol class="worked-lines">
+<li>Its sign controls sign changes; its magnitude controls decay or growth. $$x_{k+1}=x_k+h(-4x_k)=ax_k,\quad a=1-4h,\quad x_k=a^kx_0.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
+<p class="worked-progress">Solution 2 / 5</p>
+<h3>2 · Test h = 0.25</h3>
+<p class="worked-variables">h: positive time step · a: Euler multiplier · xₖ: accepted numerical state; x₀≠0</p>
+<ol class="worked-lines">
+<li>A zero multiplier sends the state to zero in one step. $$a=1-4(0.25)=0\quad\Longrightarrow\quad x_1=0.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
+<p class="worked-progress">Solution 3 / 5</p>
+<h3>3 · Test h = 0.4</h3>
+<p class="worked-variables">h: positive time step · a: Euler multiplier · xₖ: accepted numerical state; x₀≠0</p>
+<ol class="worked-lines">
+<li>The negative sign alternates; the magnitude below one makes the states decay. $$a=1-4(0.4)=-0.6,\qquad |a|=0.6&lt;1.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
+<p class="worked-progress">Solution 4 / 5</p>
+<h3>4 · Test h = 0.6</h3>
+<p class="worked-variables">h: positive time step · a: Euler multiplier · xₖ: accepted numerical state; x₀≠0</p>
+<ol class="worked-lines">
+<li>The negative sign still alternates, but the magnitude above one now causes growth. $$a=1-4(0.6)=-1.4,\qquad |a|=1.4&gt;1.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
+<p class="worked-progress">Solution 5 / 5</p>
+<h3>Answer · C</h3>
+<p class="worked-variables">h: positive time step · a: Euler multiplier · xₖ: accepted numerical state; x₀≠0</p>
+<ol class="worked-lines">
+<li>A confuses a negative multiplier with growth.</li>
+<li>B assumes physical stability guarantees numerical stability.</li>
+<li>C checks the three multiplier magnitudes: zero, point six and one point four.</li>
+</ol></div>
+<span class="worked-finish step" data-step="6" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Step-size restriction; asymptotic decay</span> — <a href="https://fncbook.com/absstab-diffusion/">[4] FNC §11.3</a> · Course example</p>
 </section>
 
 <!-- ===== 29 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Numerical Stability</h2>
 <p class="sub">Every mode must satisfy the bound</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=Ax,\quad A=\operatorname{diag}(-2,-8)$$</div>
 <dl class="gloss"><dt>A</dt><dd>constant state matrix</dd><dt>h</dt><dd>one step used for both modes</dd><dt>x₀</dt><dd>arbitrary initial state</dd></dl>
 <p class="q">For Euler, which interval gives decay from EVERY start?</p>
-<ol class="mc-options" type="A"><li>0&lt;h≤1/4</li><li>0&lt;h&lt;1/4</li><li>0&lt;h&lt;1</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>0&lt;h≤1/4</li><li>0&lt;h&lt;1/4</li><li>0&lt;h&lt;1</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
 <p>Correct B. Both strict bounds must hold.</p></div>
 </div><figure><canvas id="m7p29a" width="440" height="320" aria-label="Every mode must satisfy the bound"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p29a"),function(g,t,k){drawM7(g,t,k,"modes",29,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Stability of a linear system</span> — <a href="https://fncbook.com/absstab-diffusion/">[4] FNC §11.3</a> · Course example</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
+<p class="worked-progress">Solution 1 / 5</p>
+<h3>1 · Require both modes to decay</h3>
+<p class="worked-variables">λ₁,λ₂: modal rates −2 and −8 · h: shared positive step size · aᵢ: Euler multiplier 1+hλᵢ for mode i</p>
+<ol class="worked-lines">
+<li>An arbitrary initial state can contain either mode, so both multiplier magnitudes must be below one. $$|1+h\lambda_i|&lt;1\quad\Longleftrightarrow\quad-1&lt;1+h\lambda_i&lt;1.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
+<p class="worked-progress">Solution 2 / 5</p>
+<h3>2 · Bound the slow mode</h3>
+<p class="worked-variables">λ₁,λ₂: modal rates −2 and −8 · h: shared positive step size · aᵢ: Euler multiplier 1+hλᵢ for mode i</p>
+<ol class="worked-lines">
+<li>Subtract one, divide by −2, and reverse both inequalities. $$-1&lt;1-2h&lt;1\ \Longrightarrow\ -2&lt;-2h&lt;0\ \Longrightarrow\ 0&lt;h&lt;1.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
+<p class="worked-progress">Solution 3 / 5</p>
+<h3>3 · Bound the fast mode</h3>
+<p class="worked-variables">λ₁,λ₂: modal rates −2 and −8 · h: shared positive step size · aᵢ: Euler multiplier 1+hλᵢ for mode i</p>
+<ol class="worked-lines">
+<li>The same calculation with −8 gives the more restrictive bound. $$-1&lt;1-8h&lt;1\ \Longrightarrow\ -2&lt;-8h&lt;0\ \Longrightarrow\ 0&lt;h&lt;\tfrac14.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
+<p class="worked-progress">Solution 4 / 5</p>
+<h3>4 · Intersect and check the endpoint</h3>
+<p class="worked-variables">λ₁,λ₂: modal rates −2 and −8 · h: shared positive step size · aᵢ: Euler multiplier 1+hλᵢ for mode i</p>
+<ol class="worked-lines">
+<li>The endpoint is excluded: its fast mode alternates with unchanged magnitude. $$(0,1)\cap(0,\tfrac14)=(0,\tfrac14),\qquad h=\tfrac14\Rightarrow a_2=-1.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
+<p class="worked-progress">Solution 5 / 5</p>
+<h3>Answer · B</h3>
+<p class="worked-variables">λ₁,λ₂: modal rates −2 and −8 · h: shared positive step size · aᵢ: Euler multiplier 1+hλᵢ for mode i</p>
+<ol class="worked-lines">
+<li>A includes a multiplier minus one, so decay fails.</li>
+<li>B intersects both strict modal bounds.</li>
+<li>C ignores the restrictive fast mode.</li>
+</ol></div>
+<span class="worked-finish step" data-step="6" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Stability of a linear system</span> — <a href="https://fncbook.com/absstab-diffusion/">[4] FNC §11.3</a> · Course example</p>
 </section>
 
 <!-- ===== 30 ===== -->
@@ -1516,19 +1850,60 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 </section>
 
 <!-- ===== 35 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Runge–Kutta Methods</h2>
 <p class="sub">Your turn: halve the midpoint step</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=-2x,\quad x_0=1,\quad h=0.1$$</div>
 <dl class="gloss"><dt>k₁,k₂</dt><dd>two model evaluations</dd><dt>h</dt><dd>full step</dd><dt>x₁</dt><dd>accepted next state</dd></dl>
 <p class="q">Which value is the ACCEPTED midpoint state?</p>
-<ol class="mc-options" type="A"><li>.9: the trial midpoint</li><li>.72: trial state plus full increment</li><li>.82: original state plus full increment</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>.9: the trial midpoint</li><li>.72: trial state plus full increment</li><li>.82: original state plus full increment</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
 <p>Correct C. Return to the original state.</p></div>
 </div><figure><canvas id="m7p35a" width="440" height="320" aria-label="Your turn: halve the midpoint step"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p35a"),function(g,t,k){drawM7(g,t,k,"midpoint",35,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Explicit midpoint method (RK2)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
+<p class="worked-progress">Solution 1 / 5</p>
+<h3>1 · Evaluate the initial rate</h3>
+<p class="worked-variables">k₁,k₂: model rates, with no step factor included · xtrial: temporary midpoint state · x₁: accepted state after h=0.1 · f(x): rate −2x</p>
+<ol class="worked-lines">
+<li>Use the original state x₀=1. $$k_1=f(x_0)=-2(1)=-2.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
+<p class="worked-progress">Solution 2 / 5</p>
+<h3>2 · Build the trial midpoint</h3>
+<p class="worked-variables">k₁,k₂: model rates, with no step factor included · xtrial: temporary midpoint state · x₁: accepted state after h=0.1 · f(x): rate −2x</p>
+<ol class="worked-lines">
+<li>Advance only half a step using the initial rate. $$x_{\rm trial}=x_0+\frac h2k_1=1+0.05(-2)=0.9.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
+<p class="worked-progress">Solution 3 / 5</p>
+<h3>3 · Evaluate the midpoint rate</h3>
+<p class="worked-variables">k₁,k₂: model rates, with no step factor included · xtrial: temporary midpoint state · x₁: accepted state after h=0.1 · f(x): rate −2x</p>
+<ol class="worked-lines">
+<li>The second model call uses the trial state. $$k_2=f(x_{\rm trial})=-2(0.9)=-1.8.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
+<p class="worked-progress">Solution 4 / 5</p>
+<h3>4 · Accept a full step from the original state</h3>
+<p class="worked-variables">k₁,k₂: model rates, with no step factor included · xtrial: temporary midpoint state · x₁: accepted state after h=0.1 · f(x): rate −2x</p>
+<ol class="worked-lines">
+<li>Use the midpoint rate, but return to x₀ as the base of the update. $$x_1=x_0+hk_2=1+0.1(-1.8)=0.82.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
+<p class="worked-progress">Solution 5 / 5</p>
+<h3>Answer · C</h3>
+<p class="worked-variables">k₁,k₂: model rates, with no step factor included · xtrial: temporary midpoint state · x₁: accepted state after h=0.1 · f(x): rate −2x</p>
+<ol class="worked-lines">
+<li>A stops at the temporary trial state.</li>
+<li>B adds the final increment to the wrong base state.</li>
+<li>C uses the midpoint rate but updates from the original state.</li>
+</ol></div>
+<span class="worked-finish step" data-step="6" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Explicit midpoint method (RK2)</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
 </section>
 
 <!-- ===== 36 ===== -->
@@ -1560,19 +1935,53 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 </section>
 
 <!-- ===== 38 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Runge–Kutta Methods</h2>
 <p class="sub">Your turn: compare equal model-call budgets</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=-2x,\quad x_0=1,\quad h=0.1$$</div>
 <dl class="gloss"><dt>h</dt><dd>one RK4 step interval</dd><dt>cost</dt><dd>number of calls to f</dd></dl>
 <p class="q">How many Euler substeps match ONE RK4 step in model calls?</p>
-<ol class="mc-options" type="A"><li>Four, each h/4, over the same interval</li><li>One, with step h</li><li>Four, each h, over the same interval</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>Four, each h/4, over the same interval</li><li>One, with step h</li><li>Four, each h, over the same interval</li></ol><div class="step answer" data-step="5"><b class="ok step" data-step="5">✓</b>
 <p>Correct A. Match cost AND interval.</p></div>
 </div><figure><canvas id="m7p38a" width="440" height="320" aria-label="Your turn: compare equal model-call budgets"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p38a"),function(g,t,k){drawM7(g,t,k,"rk4",38,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Function evaluations; order of accuracy</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
+<p class="worked-progress">Solution 1 / 4</p>
+<h3>1 · Match the call budget</h3>
+<p class="worked-variables">h: physical interval of one RK4 step; h=0.1 · nE,hE: Euler substep count and substep size · model call: one evaluation of f(x)=−2x · x4,E: state after four Euler substeps</p>
+<ol class="worked-lines">
+<li>Classical RK4 needs four model calls per step; Euler needs one. $$n_E\times1=4\quad\Longrightarrow\quad n_E=4.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
+<p class="worked-progress">Solution 2 / 4</p>
+<h3>2 · Match the physical interval</h3>
+<p class="worked-variables">h: physical interval of one RK4 step; h=0.1 · nE,hE: Euler substep count and substep size · model call: one evaluation of f(x)=−2x · x4,E: state after four Euler substeps</p>
+<ol class="worked-lines">
+<li>The four Euler substeps must add up to the same total time h. $$4h_E=h\quad\Longrightarrow\quad h_E=h/4=0.025.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
+<p class="worked-progress">Solution 3 / 4</p>
+<h3>3 · Verify the resulting Euler run</h3>
+<p class="worked-variables">h: physical interval of one RK4 step; h=0.1 · nE,hE: Euler substep count and substep size · model call: one evaluation of f(x)=−2x · x4,E: state after four Euler substeps</p>
+<ol class="worked-lines">
+<li>For this scalar model, each substep multiplies the state by 0.95. $$x_{4,E}=(1-2h_E)^4x_0=(1-0.05)^4(1)=0.95^4=0.81450625.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
+<p class="worked-progress">Solution 4 / 4</p>
+<h3>Answer · A</h3>
+<p class="worked-variables">h: physical interval of one RK4 step; h=0.1 · nE,hE: Euler substep count and substep size · model call: one evaluation of f(x)=−2x · x4,E: state after four Euler substeps</p>
+<ol class="worked-lines">
+<li>A matches both cost and interval.</li>
+<li>B matches the interval but uses only one call.</li>
+<li>C matches cost but advances four times as far.</li>
+</ol></div>
+<span class="worked-finish step" data-step="5" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Function evaluations; order of accuracy</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a></p>
 </section>
 
 <!-- ===== 39 ===== -->
@@ -1632,99 +2041,415 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 </section>
 
 <!-- ===== 43 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Integrated Pendulum Problem</h2>
 <p class="sub">Choose the state and the check first</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$\ddot q=-\sin q,\quad q_0=1,\quad v_0=0$$</div>
 <dl class="gloss"><dt>q₀,v₀</dt><dd>angle and angular velocity</dd><dt>model</dt><dd>unforced, undamped; m=ℓ=g₀=1</dd></dl>
 <p class="q">Which state and field close this second-order model?</p>
-<ol class="mc-options" type="A"><li>x=q; f=−sin q</li><li>x=(q,v)ᵀ; f=(v,−sin q)ᵀ</li><li>x=(q,v)ᵀ; f=(−sin q,v)ᵀ</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>x=q; f=−sin q</li><li>x=(q,v)ᵀ; f=(v,−sin q)ᵀ</li><li>x=(q,v)ᵀ; f=(−sin q,v)ᵀ</li></ol><div class="step answer" data-step="5"><b class="ok step" data-step="5">✓</b>
 <p>Correct B. Keep state/rate order.</p></div>
 </div><figure><canvas id="m7p43a" width="440" height="320" aria-label="Choose the state and the check first"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p43a"),function(g,t,k){drawM7(g,t,k,"pendulum",43,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Pendulum IVP; numerical integration</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a> · <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
+<p class="worked-progress">Solution 1 / 4</p>
+<h3>1 · Introduce velocity</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x: complete column state · f(x): state derivative for normalized undamped dynamics</p>
+<ol class="worked-lines">
+<li>A second-order equation needs both position and velocity to determine the future. $$v=\dot q,\qquad\ddot q=-\sin q\quad\Longrightarrow\quad\dot v=-\sin q.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
+<p class="worked-progress">Solution 2 / 4</p>
+<h3>2 · Stack the state and its rates</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x: complete column state · f(x): state derivative for normalized undamped dynamics</p>
+<ol class="worked-lines">
+<li>Use the same coordinate order in x and f. $$\begin{gathered}x=\begin{bmatrix}q\\v\end{bmatrix},\\\dot x=f(x)=\begin{bmatrix}\dot q\\\dot v\end{bmatrix}=\begin{bmatrix}v\\-\sin q\end{bmatrix}.\end{gathered}$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
+<p class="worked-progress">Solution 3 / 4</p>
+<h3>3 · Apply the given initial state</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x: complete column state · f(x): state derivative for normalized undamped dynamics</p>
+<ol class="worked-lines">
+<li>The pendulum starts at angle one with zero angular velocity. $$x_0=(1,0)^T,\qquad f(x_0)=(0,-\sin1)^T\approx(0,-0.84147098)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
+<p class="worked-progress">Solution 4 / 4</p>
+<h3>Answer · B</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x: complete column state · f(x): state derivative for normalized undamped dynamics</p>
+<ol class="worked-lines">
+<li>A omits velocity and mistakes acceleration for angle rate.</li>
+<li>B carries both state coordinates and returns their rates in order.</li>
+<li>C swaps the rate components.</li>
+</ol></div>
+<span class="worked-finish step" data-step="5" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Pendulum IVP; numerical integration</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a> · <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
 </section>
 
 <!-- ===== 44 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Integrated Pendulum Problem</h2>
 <p class="sub">Compare the first accepted states</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$x_0=(1,0)^T,\ h=.1,\ f(q,v)=(v,-\sin q)^T$$</div>
 <dl class="gloss"><dt>x=(q,v)ᵀ</dt><dd>angle and angular velocity</dd><dt>h</dt><dd>full time step</dd></dl>
 <p class="q">Why can midpoint change q when v₀=0?</p>
-<ol class="mc-options" type="A"><li>Nonzero trial velocity.</li><li>Twice the physical time.</li><li>A different initial velocity.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>Nonzero trial velocity.</li><li>Twice the physical time.</li><li>A different initial velocity.</li></ol><div class="step answer" data-step="13"><b class="ok step" data-step="13">✓</b>
 <p>Correct A. Trial velocity need not be zero.</p></div>
-</div><figure class="data-figure"><canvas id="m7p44a" width="440" height="200" aria-label="Compare the first accepted states"></canvas><div class="step answer-table" data-step="1"><table><thead><tr><th>method</th><th>q₁</th><th>v₁</th></tr></thead><tbody><tr><td>Euler</td><td>1.000000</td><td>−.084147</td></tr><tr><td>midpoint</td><td>.995793</td><td>−.084147</td></tr><tr><td>RK4</td><td>.995795</td><td>−.084071</td></tr></tbody></table></div></figure></div>
+</div><figure class="data-figure"><canvas id="m7p44a" width="440" height="200" aria-label="Compare the first accepted states"></canvas><div class="step answer-table" data-step="13"><table><thead><tr><th>method</th><th>q₁</th><th>v₁</th></tr></thead><tbody><tr><td>Euler</td><td>1.000000</td><td>−.084147</td></tr><tr><td>midpoint</td><td>.995793</td><td>−.084147</td></tr><tr><td>RK4</td><td>.995795</td><td>−.084071</td></tr></tbody></table></div></figure></div>
 <script>m3anim(document.getElementById("m7p44a"),function(g,t,k){drawM7(g,t,k,"phase",44,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Euler and explicit midpoint methods</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 12">
+<p class="worked-progress">Solution 1 / 12</p>
+<h3>1 · Evaluate the initial rate</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
+<ol class="worked-lines">
+<li>The initial angle rate is zero, but the acceleration is nonzero. $$k_1=f(x_0)=(0,-\sin1)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 12">
+<p class="worked-progress">Solution 2 / 12</p>
+<h3>2 · Form the trial state</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
+<ol class="worked-lines">
+<li>The half-step changes velocity even though the trial angle remains one. $$x_{\rm mid}=x_0+\tfrac h2k_1=(1,-0.05\sin1)^T\approx(1,-0.04207355)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 12">
+<p class="worked-progress">Solution 3 / 12</p>
+<h3>3 · Evaluate the trial rate</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
+<ol class="worked-lines">
+<li>The trial velocity becomes the nonzero first component of the new rate. $$k_2=f(x_{\rm mid})=(-0.05\sin1,-\sin1)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 12">
+<p class="worked-progress">Solution 4 / 12</p>
+<h3>4 · Accept the midpoint update</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
+<ol class="worked-lines">
+<li>Start from x₀ and advance one full step using k₂. $$x_1=x_0+0.1k_2=(1-0.005\sin1,-0.1\sin1)^T\approx(0.99579265,-0.08414710)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 12">
+<p class="worked-progress">Solution 5 / 12</p>
+<h3>5 · Compare with Euler</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
+<ol class="worked-lines">
+<li>Euler uses the zero initial velocity for the angle update; midpoint uses the nonzero trial velocity. $$q_{1,E}=1+0.1(0)=1,\qquad q_{1,\rm mid}=1-0.005\sin1&lt;1.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="6" data-solution-page="6" aria-label="Solution 6 of 12">
+<p class="worked-progress">Solution 6 / 12</p>
+<h3>6 · RK4 first two stages</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
+<ol class="worked-lines">
+<li>For RK4, define a new set of stage rates k₁,…,k₄. Each z is an internal trial state. $$k_1\approx(0,-0.8414709848)^T,\quad z_2=x_0+0.05k_1\approx(1,-0.04207354924)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="7" data-solution-page="7" aria-label="Solution 7 of 12">
+<p class="worked-progress">Solution 7 / 12</p>
+<h3>7 · RK4 second and third rates</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
+<ol class="worked-lines">
+<li>Evaluate the same field at each trial state. $$k_2=f(z_2)\approx(-0.04207354924,-0.8414709848)^T.\quad z_3=x_0+0.05k_2\approx(0.9978963225,-0.04207354924)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="8" data-solution-page="8" aria-label="Solution 8 of 12">
+<p class="worked-progress">Solution 8 / 12</p>
+<h3>8 · RK4 final trial</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
+<ol class="worked-lines">
+<li>Use the third rate to build the full-step trial. $$k_3=f(z_3)\approx(-0.04207354924,-0.8403325019)^T,\quad z_4=x_0+0.1k_3\approx(0.9957926451,-0.08403325019)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="9" data-solution-page="9" aria-label="Solution 9 of 12">
+<p class="worked-progress">Solution 9 / 12</p>
+<h3>9 · RK4 final rate</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
+<ol class="worked-lines">
+<li>The fourth rate is evaluated at the full-step trial, not the accepted state. $$k_4=f(z_4)\approx(-0.08403325019,-0.8391903002)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="10" data-solution-page="10" aria-label="Solution 10 of 12">
+<p class="worked-progress">Solution 10 / 12</p>
+<h3>10 · Weight the four rates</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
+<ol class="worked-lines">
+<li>The two midpoint rates each receive weight two. $$k_1+2k_2+2k_3+k_4\approx(-0.2523274472,-5.044268259)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="11" data-solution-page="11" aria-label="Solution 11 of 12">
+<p class="worked-progress">Solution 11 / 12</p>
+<h3>11 · Accept the RK4 state</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
+<ol class="worked-lines">
+<li>Scale the weighted rate sum by h/6, then add it to the original state. $$x_{1,\mathrm{RK4}}=x_0+\frac{0.1}{6}(k_1+2k_2+2k_3+k_4)\approx(0.9957945425,-0.08407113764)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="12" data-solution-page="12" aria-label="Solution 12 of 12">
+<p class="worked-progress">Solution 12 / 12</p>
+<h3>Answer · A</h3>
+<p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
+<ol class="worked-lines">
+<li>A uses acceleration to form a trial velocity and hence a nonzero angle rate.</li>
+<li>B mistakes an internal trial for an extra time interval.</li>
+<li>C changes the data; all methods share the same start.</li>
+</ol></div>
+<span class="worked-finish step" data-step="13" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Euler and explicit midpoint methods</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
 </section>
 
 <!-- ===== 45 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Integrated Pendulum Problem</h2>
 <p class="sub">Repeat to the same final time</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=(v,-\sin q)^T,\ x_0=(1,0)^T,\ T=10$$</div>
 <dl class="gloss"><dt>N</dt><dd>step count</dd><dt>E</dt><dd>v²/2+1−cos q</dd><dt>ΔE</dt><dd>E at T minus E at 0</dd></dl>
 <p class="q">Halve h: how do we keep the endpoint fixed?</p>
-<ol class="mc-options" type="A"><li>Keep N.</li><li>Stop at equal E.</li><li>Double N.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>Keep N.</li><li>Stop at equal E.</li><li>Double N.</li></ol><div class="step answer" data-step="9"><b class="ok step" data-step="9">✓</b>
 <p>Correct C: keep Nh=T.</p></div>
-</div><figure class="data-figure"><canvas id="m7p45a" width="440" height="200" aria-label="Repeat to the same final time"></canvas><div class="step answer-table" data-step="1"><table><thead><tr><th>h</th><th>Euler ΔE</th><th>RK4 ΔE</th></tr></thead><tbody><tr><td>.2</td><td>1.324213</td><td>−1.46×10⁻⁵</td></tr><tr><td>.1</td><td>.539746</td><td>−4.61×10⁻⁷</td></tr><tr><td>.05</td><td>.232375</td><td>−1.44×10⁻⁸</td></tr></tbody></table></div></figure></div>
+</div><figure class="data-figure"><canvas id="m7p45a" width="440" height="200" aria-label="Repeat to the same final time"></canvas><div class="step answer-table" data-step="9"><table><thead><tr><th>h</th><th>Euler ΔE</th><th>RK4 ΔE</th></tr></thead><tbody><tr><td>.2</td><td>1.324213</td><td>−1.46×10⁻⁵</td></tr><tr><td>.1</td><td>.539746</td><td>−4.61×10⁻⁷</td></tr><tr><td>.05</td><td>.232375</td><td>−1.44×10⁻⁸</td></tr></tbody></table></div></figure></div>
 <script>m3anim(document.getElementById("m7p45a"),function(g,t,k){drawM7(g,t,k,"drift",45,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Global error; step refinement</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 8">
+<p class="worked-progress">Solution 1 / 8</p>
+<h3>1 · Express the endpoint</h3>
+<p class="worked-variables">T: common final time, 10 · h,N: step size and integer step count · E,ΔE: energy and its change · kᵢ: RK4 stage rates; x=(q,v)ᵀ</p>
+<ol class="worked-lines">
+<li>For constant steps, final time is step count times step size. $$T=Nh\quad\Longrightarrow\quad N=T/h.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 8">
+<p class="worked-progress">Solution 2 / 8</p>
+<h3>2 · Halve the step</h3>
+<p class="worked-variables">T: common final time, 10 · h,N: step size and integer step count · E,ΔE: energy and its change · kᵢ: RK4 stage rates; x=(q,v)ᵀ</p>
+<ol class="worked-lines">
+<li>Keeping T fixed forces the new step count to double. $$h_{\rm new}=h/2,\qquad N_{\rm new}=\frac{T}{h/2}=2\frac Th=2N.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 8">
+<p class="worked-progress">Solution 3 / 8</p>
+<h3>3 · Check with numbers</h3>
+<p class="worked-variables">T: common final time, 10 · h,N: step size and integer step count · E,ΔE: energy and its change · kᵢ: RK4 stage rates; x=(q,v)ᵀ</p>
+<ol class="worked-lines">
+<li>All three runs end at the same physical time. $$\begin{array}{c|ccc}h&amp;0.2&amp;0.1&amp;0.05\\N=10/h&amp;50&amp;100&amp;200\end{array}$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 8">
+<p class="worked-progress">Solution 4 / 8</p>
+<h3>4 · Separate the comparison from its diagnostic</h3>
+<p class="worked-variables">T: common final time, 10 · h,N: step size and integer step count · E,ΔE: energy and its change · kᵢ: RK4 stage rates; x=(q,v)ᵀ</p>
+<ol class="worked-lines">
+<li>Compute energy error at the prescribed endpoint; stopping at equal energy would compare different times. $$\Delta E_N=E(x_N)-E(x_0),\qquad t_N=T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 8">
+<p class="worked-progress">Solution 5 / 8</p>
+<h3>5 · Reproduce the Euler column</h3>
+<p class="worked-variables">T: common final time, 10 · h,N: step size and integer step count · E,ΔE: energy and its change · kᵢ: RK4 stage rates; x=(q,v)ᵀ</p>
+<ol class="worked-lines">
+<li>Start at x₀=(1,0)ᵀ. For k=0,…,N−1, use both components from the old state. $$q_{k+1}=q_k+hv_k,\qquad v_{k+1}=v_k-h\sin q_k.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="6" data-solution-page="6" aria-label="Solution 6 of 8">
+<p class="worked-progress">Solution 6 / 8</p>
+<h3>6 · Reproduce the RK4 column</h3>
+<p class="worked-variables">T: common final time, 10 · h,N: step size and integer step count · E,ΔE: energy and its change · kᵢ: RK4 stage rates; x=(q,v)ᵀ</p>
+<ol class="worked-lines">
+<li>At every step, evaluate f(q,v)=(v,−sin q)ᵀ at the four stage states. $$k_1=f(x_k),\quad k_2=f(x_k+hk_1/2),\quad k_3=f(x_k+hk_2/2),\quad k_4=f(x_k+hk_3).$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="7" data-solution-page="7" aria-label="Solution 7 of 8">
+<p class="worked-progress">Solution 7 / 8</p>
+<h3>7 · Finish each run and evaluate the diagnostic</h3>
+<p class="worked-variables">T: common final time, 10 · h,N: step size and integer step count · E,ΔE: energy and its change · kᵢ: RK4 stage rates; x=(q,v)ᵀ</p>
+<ol class="worked-lines">
+<li>Repeat the update N=T/h times. The table reports this numerical iteration, not a closed-form trajectory. $$x_{k+1}=x_k+\frac h6(k_1+2k_2+2k_3+k_4),\quad\Delta E_N=\frac{v_N^2}{2}+1-\cos q_N-(1-\cos1).$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="8" data-solution-page="8" aria-label="Solution 8 of 8">
+<p class="worked-progress">Solution 8 / 8</p>
+<h3>Answer · C</h3>
+<p class="worked-variables">T: common final time, 10 · h,N: step size and integer step count · E,ΔE: energy and its change · kᵢ: RK4 stage rates; x=(q,v)ᵀ</p>
+<ol class="worked-lines">
+<li>A halves the endpoint time.</li>
+<li>B replaces the prescribed time with a diagnostic-dependent endpoint.</li>
+<li>C preserves the physical final time.</li>
+</ol></div>
+<span class="worked-finish step" data-step="9" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Global error; step refinement</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course example</p>
 </section>
 
 <!-- ===== 46 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Integrated Pendulum Problem</h2>
 <p class="sub">Compare two energy-matched states</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$E(q,v)=v^2/2+1-\cos q$$</div>
 <dl class="gloss"><dt>q,v</dt><dd>angle and angular velocity</dd><dt>E</dt><dd>energy</dd></dl>
 <p class="q">What does equal energy of two pendulum states establish?</p>
-<ol class="mc-options" type="A"><li>Their angles and velocities are equal.</li><li>They can still be different states.</li><li>Both numerical trajectories are exact.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>Their angles and velocities are equal.</li><li>They can still be different states.</li><li>Both numerical trajectories are exact.</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
 <p>Correct B. Energy cannot fix phase.</p></div>
 </div><figure><canvas id="m7p46a" width="440" height="320" aria-label="Compare two energy-matched states"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p46a"),function(g,t,k){drawM7(g,t,k,"equalenergy",46,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Energy level; state error</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a> · Course example</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
+<p class="worked-progress">Solution 1 / 5</p>
+<h3>1 · Choose different states</h3>
+<p class="worked-variables">q,v: angle and angular velocity · E: energy v²/2+1−cos q · xa,xb: two test states · xₖ,x(tₖ): numerical and exact states at time tₖ</p>
+<ol class="worked-lines">
+<li>Use opposite angles and zero velocities. $$x_a=(1,0)^T,\qquad x_b=(-1,0)^T,\qquad x_a\ne x_b.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
+<p class="worked-progress">Solution 2 / 5</p>
+<h3>2 · Evaluate both energies</h3>
+<p class="worked-variables">q,v: angle and angular velocity · E: energy v²/2+1−cos q · xa,xb: two test states · xₖ,x(tₖ): numerical and exact states at time tₖ</p>
+<ol class="worked-lines">
+<li>Cosine is even, so opposite angles give identical potential energy. $$E(x_a)=1-\cos1,\qquad E(x_b)=1-\cos(-1)=1-\cos1.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
+<p class="worked-progress">Solution 3 / 5</p>
+<h3>3 · Test the claimed implication</h3>
+<p class="worked-variables">q,v: angle and angular velocity · E: energy v²/2+1−cos q · xa,xb: two test states · xₖ,x(tₖ): numerical and exact states at time tₖ</p>
+<ol class="worked-lines">
+<li>One counterexample disproves the claim that equal energy forces equal states. $$E(x_a)=E(x_b)\quad\text{but}\quad\|x_a-x_b\|_2=\|(2,0)^T\|_2=2.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
+<p class="worked-progress">Solution 4 / 5</p>
+<h3>4 · State what the check can establish</h3>
+<p class="worked-variables">q,v: angle and angular velocity · E: energy v²/2+1−cos q · xa,xb: two test states · xₖ,x(tₖ): numerical and exact states at time tₖ</p>
+<ol class="worked-lines">
+<li>Energy is one useful diagnostic. State accuracy also needs comparison at common physical times. $$E(x_k)\approx E(x_0)\ \not\Rightarrow\ x_k\approx x(t_k).$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
+<p class="worked-progress">Solution 5 / 5</p>
+<h3>Answer · B</h3>
+<p class="worked-variables">q,v: angle and angular velocity · E: energy v²/2+1−cos q · xa,xb: two test states · xₖ,x(tₖ): numerical and exact states at time tₖ</p>
+<ol class="worked-lines">
+<li>A treats one scalar as a complete state.</li>
+<li>B allows opposite angles with zero velocity.</li>
+<li>C mistakes one invariant check for proof of accuracy.</li>
+</ol></div>
+<span class="worked-finish step" data-step="6" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Energy level; state error</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a> · Course example</p>
 </section>
 
 <!-- ===== 47 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Independent Transfer</h2>
 <p class="sub">Transfer: a moving pendulum near the top</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$q_0=\pi,\quad v_0=1,\quad h=.1,\quad m=\ell=g_0=1$$</div>
 <dl class="gloss"><dt>q₀,v₀</dt><dd>initial angle and angular velocity</dd><dt>f(q,v)</dt><dd>(v,−sin q)ᵀ</dd><dt>E(q,v)</dt><dd>v²/2+1−cos q</dd></dl>
 <p class="q">One call: which method and energy claim is correct?</p>
-<ol class="mc-options" type="A"><li>Euler; this step decreases energy.</li><li>Midpoint; one call is enough.</li><li>Euler; every step increases energy.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>Euler; this step decreases energy.</li><li>Midpoint; one call is enough.</li><li>Euler; every step increases energy.</li></ol><div class="step answer" data-step="7"><b class="ok step" data-step="7">✓</b>
 <p>Correct A. Potential falls; kinetic energy is unchanged.</p></div>
 </div><figure><canvas id="m7p47a" width="440" height="320" aria-label="Transfer: a moving pendulum near the top"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p47a"),function(g,t,k){drawM7(g,t,k,"energy",47,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Pendulum IVP; explicit Euler method</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a> · <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · Course example</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 6">
+<p class="worked-progress">Solution 1 / 6</p>
+<h3>1 · Select the affordable method</h3>
+<p class="worked-variables">q₀,v₀: initial angle π and angular velocity 1 · h: step size 0.1 · E,ΔE: total energy and its change · x₀,x₁: initial and accepted state</p>
+<ol class="worked-lines">
+<li>Euler uses one model call; midpoint uses two; RK4 uses four. Only Euler fits this budget. $$1\le1,\qquad2&gt;1,\qquad4&gt;1.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 6">
+<p class="worked-progress">Solution 2 / 6</p>
+<h3>2 · Evaluate the rate and update</h3>
+<p class="worked-variables">q₀,v₀: initial angle π and angular velocity 1 · h: step size 0.1 · E,ΔE: total energy and its change · x₀,x₁: initial and accepted state</p>
+<ol class="worked-lines">
+<li>At the top, sine is zero, so the instantaneous acceleration is zero. $$f(x_0)=(1,-\sin\pi)^T=(1,0)^T,\qquad x_1=x_0+0.1f(x_0)=(\pi+0.1,1)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 6">
+<p class="worked-progress">Solution 3 / 6</p>
+<h3>3 · Compute the initial energy</h3>
+<p class="worked-variables">q₀,v₀: initial angle π and angular velocity 1 · h: step size 0.1 · E,ΔE: total energy and its change · x₀,x₁: initial and accepted state</p>
+<ol class="worked-lines">
+<li>Kinetic energy is one half; potential energy is two. $$E_0=\tfrac12(1)^2+1-\cos\pi=\tfrac12+2=\tfrac52.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 6">
+<p class="worked-progress">Solution 4 / 6</p>
+<h3>4 · Compute the new energy</h3>
+<p class="worked-variables">q₀,v₀: initial angle π and angular velocity 1 · h: step size 0.1 · E,ΔE: total energy and its change · x₀,x₁: initial and accepted state</p>
+<ol class="worked-lines">
+<li>The velocity is unchanged; use cos(π+a)=−cos(a) for the potential term. $$E_1=\tfrac12+1-\cos(\pi+0.1)=\tfrac32+\cos(0.1).$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 6">
+<p class="worked-progress">Solution 5 / 6</p>
+<h3>5 · Subtract and determine the sign</h3>
+<p class="worked-variables">q₀,v₀: initial angle π and angular velocity 1 · h: step size 0.1 · E,ΔE: total energy and its change · x₀,x₁: initial and accepted state</p>
+<ol class="worked-lines">
+<li>Since 0&lt;0.1&lt;2π, cosine is strictly below one. This particular Euler step loses energy. $$\Delta E=E_1-E_0=\cos(0.1)-1\approx-0.004995835&lt;0.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="6" data-solution-page="6" aria-label="Solution 6 of 6">
+<p class="worked-progress">Solution 6 / 6</p>
+<h3>Answer · A</h3>
+<p class="worked-variables">q₀,v₀: initial angle π and angular velocity 1 · h: step size 0.1 · E,ΔE: total energy and its change · x₀,x₁: initial and accepted state</p>
+<ol class="worked-lines">
+<li>A uses Euler and the potential drops while kinetic energy stays fixed.</li>
+<li>B requires two calls, exceeding this budget.</li>
+<li>C incorrectly generalizes the earlier zero-velocity example.</li>
+</ol></div>
+<span class="worked-finish step" data-step="7" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Pendulum IVP; explicit Euler method</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a> · <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · Course example</p>
 </section>
 
 <!-- ===== 48 ===== -->
-<section class="slide" data-part="III">
+<section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1.5">Your turn</p>
 <h2>Simulation Checklist</h2>
 <p class="sub">Choose a complete simulation workflow</p>
+<div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=f(x,t),\qquad x(t_0)=x_0$$</div>
 <dl class="gloss"><dt>x</dt><dd>complete state</dd><dt>f</dt><dd>model rate</dd><dt>h</dt><dd>chosen integration step</dd></dl>
 <p class="q">For this pendulum simulation, which workflow distinguishes errors?</p>
-<ol class="mc-options" type="A"><li>Use q alone; shrink h until the curve looks smooth.</li><li>Use f as the next state; inspect only energy.</li><li>Use (q,v), integrate rates, compare states and energy.</li></ol><div class="step answer" data-step="1"><b class="ok step" data-step="1">✓</b>
+<ol class="mc-options" type="A"><li>Use q alone; shrink h until the curve looks smooth.</li><li>Use f as the next state; inspect only energy.</li><li>Use (q,v), integrate rates, compare states and energy.</li></ol><div class="step answer" data-step="6"><b class="ok step" data-step="6">✓</b>
 <p>Correct C. Check state AND invariant.</p></div>
 </div><figure><canvas id="m7p48a" width="440" height="320" aria-label="Choose a complete simulation workflow"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p48a"),function(g,t,k){drawM7(g,t,k,"pipeline",48,true);},{rest:0.4,seconds:5});</script>
-<p class="cite page-source"><span>Verification; validation; step refinement</span> — <a href="https://www.grc.nasa.gov/www/wind/valid/tutorial/glossary.html">[5] NASA, V&amp;V glossary</a> · <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · Course checklist</p>
+</div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
+<p class="worked-progress">Solution 1 / 5</p>
+<h3>1 · Choose a complete state</h3>
+<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=kh</p>
+<ol class="worked-lines">
+<li>Angle alone omits velocity; the same angle can lead to different future motion. $$x=(q,v)^T,\qquad f(x)=(v,-\sin q)^T.$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
+<p class="worked-progress">Solution 2 / 5</p>
+<h3>2 · Integrate the rate</h3>
+<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=kh</p>
+<ol class="worked-lines">
+<li>For example, Euler integrates the current rate over one step: multiply the rate by h, then add it to the old state. $$x_{k+1}=x_k+hf(x_k,t_k).$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
+<p class="worked-progress">Solution 3 / 5</p>
+<h3>3 · Compare states at common times</h3>
+<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=kh</p>
+<ol class="worked-lines">
+<li>Reduce the step and compare against an exact solution or a suitably refined calculation. A smooth curve alone is not an accuracy test. $$t_k=kh=2k(h/2).$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
+<p class="worked-progress">Solution 4 / 5</p>
+<h3>4 · Use a complementary invariant check</h3>
+<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=kh</p>
+<ol class="worked-lines">
+<li>For this undamped, unforced model, exact energy stays constant. Also inspect the full state: equal energy need not imply equal state. $$E(q,v)=v^2/2+1-\cos q,\qquad\Delta E_k=E(x_k)-E(x_0).$$</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
+<p class="worked-progress">Solution 5 / 5</p>
+<h3>Answer · C</h3>
+<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=kh</p>
+<ol class="worked-lines">
+<li>A omits velocity, which a smaller step cannot repair.</li>
+<li>B confuses rates with states and energy with full accuracy.</li>
+<li>C separates representation, update and complementary diagnostics.</li>
+</ol></div>
+<span class="worked-finish step" data-step="6" aria-hidden="true"></span>
+</div><p class="cite page-source"><span>Verification; validation; step refinement</span> — <a href="https://www.grc.nasa.gov/www/wind/valid/tutorial/glossary.html">[5] NASA, V&amp;V glossary</a> · <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · Course checklist</p>
 </section>
 
 <!-- ===== 49 ===== -->

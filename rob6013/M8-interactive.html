@@ -143,6 +143,26 @@ td.num{font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-num
 /* ---------- fragments ---------- */
 .step{opacity:0;transition:opacity .22s ease}
 .step.shown{opacity:1}
+/* Worked exercise screens use the same arrow-key reveal sequence as the deck.
+   A fresh page shows only the question; the final step restores its visual. */
+.worked-question{display:contents}
+.worked-panel{display:none;position:absolute;left:64px;right:64px;top:190px;bottom:82px;
+  font-size:24px;line-height:1.42}
+.worked-panel.shown{display:block}
+.worked-panel.shown:has(~ .worked-panel.shown){display:none}
+.has-worked-solutions:has(.worked-panel.shown):not(:has(.worked-finish.shown)) .worked-question{display:none}
+.has-worked-solutions:has(.worked-finish.shown) .worked-panel{display:none}
+.worked-finish{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+.worked-panel .worked-progress{font:500 14px/1.2 ui-monospace,Menlo,monospace;color:var(--dim);margin:0 0 7px}
+.worked-panel h3{font-size:28px;line-height:1.2;margin:0 0 14px}
+.worked-panel .worked-variables{font-size:21px;line-height:1.4;color:var(--dim);max-width:none;
+  margin:0 0 18px;padding-bottom:12px;border-bottom:1px solid var(--rule)}
+.worked-panel .worked-lines{padding-left:30px;margin:0;max-width:none}
+.worked-panel .worked-lines li{margin:0 0 14px;padding-left:5px}
+.worked-panel .katex{font-size:1.05em}
+body.print .worked-solutions{display:none}
+body.print .worked-question{display:contents!important}
+@media print{.worked-solutions{display:none}.worked-question{display:contents!important}}
 body.noanim .step{transition:none}
 @media (prefers-reduced-motion:reduce){.step{transition:none}}
 
@@ -917,10 +937,39 @@ window.M8 = (function () {
 </section>
 
 <!-- ===== 6 ===== -->
-<section class="slide" data-part="IV" data-mc="6">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="6">
 <p class="eyebrow you" data-min="2">Choose, explain, vote</p>
 <h2>PMF and PDF</h2><p class="sub">Which values belong to the event?</p>
-<p class="q">Errors $-1,0,2$ cm have masses $1/2,1/4,1/4$. What is $P(x\geq0)$?</p><ol class="opts one"><li><i>A</i>$1/4$: count only positive errors.</li><li><i>B</i>$1/2$: include zero and positive errors.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>$2/3$: two of three possible values.</li></ol><div class="ex step" data-step="1"><p class="reveal">$P(x\geq0)=p(0)+p(2)=1/4+1/4=1/2$. Total mass is $1$.</p></div>
+<div class="worked-question"><p class="q">Errors $-1,0,2$ cm have masses $1/2,1/4,1/4$. What is $P(x\geq0)$?</p><ol class="opts one"><li><i>A</i>$1/4$: count only positive errors.</li><li><i>B</i>$1/2$: include zero and positive errors.<b class="ok step" data-step="4">✓</b></li><li><i>C</i>$2/3$: two of three possible values.</li></ol><div class="ex step" data-step="4"><p class="reveal">$P(x\geq0)=p(0)+p(2)=1/4+1/4=1/2$. Total mass is $1$.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
+<p class="worked-progress">Solution 1 / 3</p>
+<h3>Identify the event</h3>
+<p class="worked-variables">$x$: error (cm); $p(a)=P(x=a)$: probability mass at value $a$.</p>
+<ol class="worked-lines">
+<li>$x$: error in cm; $p(a)=P(x=a)$: probability mass at $a$.</li>
+<li>Possible values: $-1,0,2$; masses: $1/2,1/4,1/4$.</li>
+<li>Nonnegative means $x\geq0$, so include $0$ and $2$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
+<p class="worked-progress">Solution 2 / 3</p>
+<h3>Add the included masses</h3>
+<p class="worked-variables">$x$: error (cm); $p(a)=P(x=a)$: probability mass at value $a$.</p>
+<ol class="worked-lines">
+<li>$P(x\geq0)=P(x=0)+P(x=2)$.</li>
+<li>$=1/4+1/4=2/4=1/2$.</li>
+<li>Check: $P(x&lt;0)+P(x\geq0)=1/2+1/2=1$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
+<p class="worked-progress">Solution 3 / 3</p>
+<h3>Choose B</h3>
+<p class="worked-variables">$x$: error (cm); $p(a)=P(x=a)$: probability mass at value $a$.</p>
+<ol class="worked-lines">
+<li>A excludes zero and answers a different event.</li>
+<li>B includes both nonnegative values and their masses.</li>
+<li>C treats unequal masses as equal. Count probability, not values.</li>
+</ol></div>
+<span class="worked-finish step" data-step="4" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Event probability; PMF</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.3.1</a> · Course question</p>
 </section>
 
@@ -943,10 +992,39 @@ window.M8 = (function () {
 </section>
 
 <!-- ===== 9 ===== -->
-<section class="slide" data-part="IV" data-mc="9">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="9">
 <p class="eyebrow you" data-min="2">Choose, explain, vote</p>
 <h2>PMF and PDF</h2><p class="sub">Density is height; probability is area</p>
-<p class="q">$x$ is uniform on $[0,.5]$ cm. Which statement is valid?</p><ol class="opts one"><li><i>A</i>Density $2$ cm$^{-1}$; $P(.1\le x\le.3)=.4$.<b class="ok step" data-step="1">✓</b></li><li><i>B</i>Density $2$ means event probability $2$.</li><li><i>C</i>Probability is $.2$, the interval width alone.</li></ol><div class="ex step" data-step="1"><p class="reveal">$h(.5)=1\Rightarrow h=2$; mass $=h(.3-.1)=.4$.</p></div>
+<div class="worked-question"><p class="q">$x$ is uniform on $[0,.5]$ cm. Which statement is valid?</p><ol class="opts one"><li><i>A</i>Density $2$ cm$^{-1}$; $P(.1\le x\le.3)=.4$.<b class="ok step" data-step="4">✓</b></li><li><i>B</i>Density $2$ means event probability $2$.</li><li><i>C</i>Probability is $.2$, the interval width alone.</li></ol><div class="ex step" data-step="4"><p class="reveal">$h(.5)=1\Rightarrow h=2$; mass $=h(.3-.1)=.4$.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
+<p class="worked-progress">Solution 1 / 3</p>
+<h3>Normalize the density</h3>
+<p class="worked-variables">$x$: error (cm); $h$: uniform density; $t$: integration variable (cm).</p>
+<ol class="worked-lines">
+<li>$x$: error in cm; $h$: constant density on $[0,.5]$.</li>
+<li>Total probability is area: $h(.5-0)=1$.</li>
+<li>$h=1/.5=2\ \mathrm{cm}^{-1}$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
+<p class="worked-progress">Solution 2 / 3</p>
+<h3>Integrate over the requested interval</h3>
+<p class="worked-variables">$x$: error (cm); $h$: uniform density; $t$: integration variable (cm).</p>
+<ol class="worked-lines">
+<li>$P(.1\leq x\leq.3)=\int_{.1}^{.3}h\,dt$.</li>
+<li>$=2(.3-.1)=2(.2)=.4$.</li>
+<li>Density times width has units $\mathrm{cm}^{-1}\mathrm{cm}=1$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
+<p class="worked-progress">Solution 3 / 3</p>
+<h3>Choose A</h3>
+<p class="worked-variables">$x$: error (cm); $h$: uniform density; $t$: integration variable (cm).</p>
+<ol class="worked-lines">
+<li>A gives both the normalized density and event probability.</li>
+<li>B confuses density height with probability; probabilities cannot exceed 1.</li>
+<li>C omits the height: width alone is not the area.</li>
+</ol></div>
+<span class="worked-finish step" data-step="4" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Density; event probability</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.3.2</a> · Course question</p>
 </section>
 
@@ -960,10 +1038,39 @@ window.M8 = (function () {
 </section>
 
 <!-- ===== 11 ===== -->
-<section class="slide" data-part="IV" data-mc="11">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="11">
 <p class="eyebrow you" data-min="2">Choose, explain, vote</p>
 <h2>Moments</h2><p class="sub">What does centering remove?</p>
-<p class="q">$\operatorname{Var}(x)=\mathbb E[(x-\mu)^2]$. Given $\mu=1/4$ cm and $\mathbb E[x^2]=5/4$ cm$^2$, choose the variance.</p><ol class="opts one"><li><i>A</i>$5/4$: the second moment is always variance.</li><li><i>B</i>$1$: subtract the mean, not its square.</li><li><i>C</i>$19/16$: subtract the squared mean.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">$\operatorname{Var}(x)=\mathbb E[x^2]-\mu^2=5/4-1/16=19/16$ cm$^2$.</p></div>
+<div class="worked-question"><p class="q">$\operatorname{Var}(x)=\mathbb E[(x-\mu)^2]$. Given $\mu=1/4$ cm and $\mathbb E[x^2]=5/4$ cm$^2$, choose the variance.</p><ol class="opts one"><li><i>A</i>$5/4$: the second moment is always variance.</li><li><i>B</i>$1$: subtract the mean, not its square.</li><li><i>C</i>$19/16$: subtract the squared mean.<b class="ok step" data-step="4">✓</b></li></ol><div class="ex step" data-step="4"><p class="reveal">$\operatorname{Var}(x)=\mathbb E[x^2]-\mu^2=5/4-1/16=19/16$ cm$^2$.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
+<p class="worked-progress">Solution 1 / 3</p>
+<h3>Expand the centered square</h3>
+<p class="worked-variables">$x$: error; $\mathbb E$: expectation; $\mu=\mathbb E[x]$: mean; $\operatorname{Var}$: variance.</p>
+<ol class="worked-lines">
+<li>$x$: error; $\mu=\mathbb E[x]=1/4$ cm.</li>
+<li>$\mathbb E[x^2]=5/4$ cm$^2$ is the second moment.</li>
+<li>$(x-\mu)^2=x^2-2\mu x+\mu^2$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
+<p class="worked-progress">Solution 2 / 3</p>
+<h3>Take expectation, then substitute</h3>
+<p class="worked-variables">$x$: error; $\mathbb E$: expectation; $\mu=\mathbb E[x]$: mean; $\operatorname{Var}$: variance.</p>
+<ol class="worked-lines">
+<li>$\operatorname{Var}(x)=\mathbb E[x^2]-2\mu\mathbb E[x]+\mu^2$.</li>
+<li>$\mathbb E[x]=\mu\ \Rightarrow\ \operatorname{Var}(x)=\mathbb E[x^2]-\mu^2$.</li>
+<li>$=5/4-(1/4)^2=20/16-1/16=19/16$ cm$^2$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
+<p class="worked-progress">Solution 3 / 3</p>
+<h3>Choose C</h3>
+<p class="worked-variables">$x$: error; $\mathbb E$: expectation; $\mu=\mathbb E[x]$: mean; $\operatorname{Var}$: variance.</p>
+<ol class="worked-lines">
+<li>A leaves the squared mean inside the second moment.</li>
+<li>B subtracts a length from a squared length; its units do not match.</li>
+<li>C subtracts the squared mean and measures spread around the mean.</li>
+</ol></div>
+<span class="worked-finish step" data-step="4" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Centering; variance</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · Course question</p>
 </section>
 
@@ -1004,10 +1111,48 @@ window.M8 = (function () {
 </section>
 
 <!-- ===== 16 ===== -->
-<section class="slide" data-part="IV" data-mc="16">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="16">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Moments</h2><p class="sub">Independent sources, dependent components</p>
-<p class="q">$U,V$ are independent fair signs. Let $x=(U,2U+V)^T$. What is $\operatorname{Cov}(x_1,x_2)$?</p><ol class="opts one"><li><i>A</i>$2$: both components share $U$.<b class="ok step" data-step="1">✓</b></li><li><i>B</i>$0$: independent sources imply independent outputs.</li><li><i>C</i>$1$: doubling a coefficient has no effect.</li></ol><div class="ex step" data-step="1"><p class="reveal">$\mathbb E[U(2U+V)]=2$; $\Sigma=\begin{bmatrix}1&amp;2\\2&amp;5\end{bmatrix}$, $\det\Sigma=1$.</p></div>
+<div class="worked-question"><p class="q">$U,V$ are independent fair signs. Let $x=(U,2U+V)^T$. What is $\operatorname{Cov}(x_1,x_2)$?</p><ol class="opts one"><li><i>A</i>$2$: both components share $U$.<b class="ok step" data-step="5">✓</b></li><li><i>B</i>$0$: independent sources imply independent outputs.</li><li><i>C</i>$1$: doubling a coefficient has no effect.</li></ol><div class="ex step" data-step="5"><p class="reveal">$\mathbb E[U(2U+V)]=2$; $\Sigma=\begin{bmatrix}1&amp;2\\2&amp;5\end{bmatrix}$, $\det\Sigma=1$.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
+<p class="worked-progress">Solution 1 / 4</p>
+<h3>Separate sources from components</h3>
+<p class="worked-variables">$U,V$: independent fair signs; $x=(U,2U+V)^T$; $\Sigma_{ij}=\operatorname{Cov}(x_i,x_j)$.</p>
+<ol class="worked-lines">
+<li>$U,V$: independent signs, each equally likely $-1$ or $1$.</li>
+<li>$\mathbb E[U]=\mathbb E[V]=(-1+1)/2=0$; hence $\mathbb E[x_1]=\mathbb E[x_2]=0$.</li>
+<li>$\mathbb E[U^2]=\mathbb E[V^2]=1$; $\mathbb E[UV]=\mathbb E[U]\mathbb E[V]=0$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
+<p class="worked-progress">Solution 2 / 4</p>
+<h3>Compute cross-covariance</h3>
+<p class="worked-variables">$U,V$: independent fair signs; $x=(U,2U+V)^T$; $\Sigma_{ij}=\operatorname{Cov}(x_i,x_j)$.</p>
+<ol class="worked-lines">
+<li>$\Sigma_{12}=\operatorname{Cov}(x_1,x_2)=\mathbb E[x_1x_2]$.</li>
+<li>$=\mathbb E[U(2U+V)]=2\mathbb E[U^2]+\mathbb E[UV]$.</li>
+<li>$=2(1)+0=2$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
+<p class="worked-progress">Solution 3 / 4</p>
+<h3>Check the complete covariance</h3>
+<p class="worked-variables">$U,V$: independent fair signs; $x=(U,2U+V)^T$; $\Sigma_{ij}=\operatorname{Cov}(x_i,x_j)$.</p>
+<ol class="worked-lines">
+<li>$\Sigma_{11}=\mathbb E[U^2]=1$.</li>
+<li>$\Sigma_{22}=\mathbb E[(2U+V)^2]=4(1)+4(0)+1=5$.</li>
+<li>$\Sigma=\begin{bmatrix}1&amp;2\\2&amp;5\end{bmatrix}$; $\det\Sigma=1(5)-2(2)=1$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
+<p class="worked-progress">Solution 4 / 4</p>
+<h3>Choose A</h3>
+<p class="worked-variables">$U,V$: independent fair signs; $x=(U,2U+V)^T$; $\Sigma_{ij}=\operatorname{Cov}(x_i,x_j)$.</p>
+<ol class="worked-lines">
+<li>A retains the shared source U.</li>
+<li>B confuses independence of U and V with independence of their outputs.</li>
+<li>C ignores the coefficient 2 in the shared contribution.</li>
+</ol></div>
+<span class="worked-finish step" data-step="5" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Independence; covariance</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.7</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · Course question</p>
 </section>
 
@@ -1048,10 +1193,39 @@ window.M8 = (function () {
 <p class="cite page-source"><span>Mahalanobis distance</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=5">[2] UBC Lec.18 p.5</a> · Course example</p>
 </section>
 <!-- ===== 22 ===== -->
-<section class="slide" data-part="IV" data-mc="22">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="22">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Gaussian geometry</h2><p class="sub">Which direction makes a point less surprising?</p>
-<p class="q">$\mu=0$, $\Sigma=\operatorname{diag}(4,1)$; $u=(2,0)^T$, $v=(0,2)^T$. Compare Gaussian densities.</p><ol class="opts one"><li><i>A</i>$p(u)=p(v)$: their Euclidean lengths agree.</li><li><i>B</i>$p(u)&gt;p(v)$: $u$ is one standard deviation away.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>$p(u)&lt;p(v)$: higher variance always lowers density.</li></ol><div class="ex step" data-step="1"><p class="reveal">$d_M^2(u)=1$, $d_M^2(v)=4$; $p(u)/p(v)=e^{3/2}&gt;1$.</p></div>
+<div class="worked-question"><p class="q">$\mu=0$, $\Sigma=\operatorname{diag}(4,1)$; $u=(2,0)^T$, $v=(0,2)^T$. Compare Gaussian densities.</p><ol class="opts one"><li><i>A</i>$p(u)=p(v)$: their Euclidean lengths agree.</li><li><i>B</i>$p(u)&gt;p(v)$: $u$ is one standard deviation away.<b class="ok step" data-step="4">✓</b></li><li><i>C</i>$p(u)&lt;p(v)$: higher variance always lowers density.</li></ol><div class="ex step" data-step="4"><p class="reveal">$d_M^2(u)=1$, $d_M^2(v)=4$; $p(u)/p(v)=e^{3/2}&gt;1$.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
+<p class="worked-progress">Solution 1 / 3</p>
+<h3>Use the covariance-scaled distance</h3>
+<p class="worked-variables">$\mu$: mean; $\Sigma$: covariance; $p$: density; $d_M$: covariance-scaled distance.</p>
+<ol class="worked-lines">
+<li>$\mu=0$: mean; $\Sigma=\operatorname{diag}(4,1)$: covariance.</li>
+<li>$u=(2,0)^T$, $v=(0,2)^T$ are points in the same Gaussian.</li>
+<li>$d_M^2(x)=(x-\mu)^T\Sigma^{-1}(x-\mu)=x_1^2/4+x_2^2$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
+<p class="worked-progress">Solution 2 / 3</p>
+<h3>Compare exponents</h3>
+<p class="worked-variables">$\mu$: mean; $\Sigma$: covariance; $p$: density; $d_M$: covariance-scaled distance.</p>
+<ol class="worked-lines">
+<li>$d_M^2(u)=2^2/4+0^2=1$; $d_M^2(v)=0^2/4+2^2=4$.</li>
+<li>$p(x)=c\exp(-d_M^2(x)/2)$; the normalization $c$ is shared.</li>
+<li>$p(u)/p(v)=e^{-1/2}/e^{-4/2}=e^{3/2}&gt;1$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
+<p class="worked-progress">Solution 3 / 3</p>
+<h3>Choose B</h3>
+<p class="worked-variables">$\mu$: mean; $\Sigma$: covariance; $p$: density; $d_M$: covariance-scaled distance.</p>
+<ol class="worked-lines">
+<li>A uses ordinary distance and ignores different directional variances.</li>
+<li>B: u is one standard deviation away; v is two.</li>
+<li>C confuses changing covariance with comparing points in one fixed model.</li>
+</ol></div>
+<span class="worked-finish step" data-step="4" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Mahalanobis distance</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=5">[2] UBC Lec.18 p.5</a> · Course question</p>
 </section>
 <!-- ============ 23 ============ -->
@@ -1085,10 +1259,39 @@ window.M8 = (function () {
 <p class="cite page-source"><span>Prior probability; posterior probability</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.11</a> · Course example</p>
 </section>
 <!-- ===== 28 ===== -->
-<section class="slide" data-part="IV" data-mc="28">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="28">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Bayes</h2><p class="sub">Does a better base rate change the sensor?</p>
-<p class="q">$P(H)=.1$, $P(+\mid H)=.9$, $P(+\mid\neg H)=.1$. What is $P(H\mid+)$?</p><ol class="opts one"><li><i>A</i>$.9$: sensitivity is the positive predictive value.</li><li><i>B</i>$.1$: an observation cannot change the prior.</li><li><i>C</i>$.5$: true and false positives contribute equally.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">$P(H\mid+)=\dfrac{.9(.1)}{.9(.1)+.1(.9)}=.5$.</p></div>
+<div class="worked-question"><p class="q">$P(H)=.1$, $P(+\mid H)=.9$, $P(+\mid\neg H)=.1$. What is $P(H\mid+)$?</p><ol class="opts one"><li><i>A</i>$.9$: sensitivity is the positive predictive value.</li><li><i>B</i>$.1$: an observation cannot change the prior.</li><li><i>C</i>$.5$: true and false positives contribute equally.<b class="ok step" data-step="4">✓</b></li></ol><div class="ex step" data-step="4"><p class="reveal">$P(H\mid+)=\dfrac{.9(.1)}{.9(.1)+.1(.9)}=.5$.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
+<p class="worked-progress">Solution 1 / 3</p>
+<h3>Name the conditional populations</h3>
+<p class="worked-variables">$H$: event; $\neg H$: no event; $+$: positive reading; $P$: probability.</p>
+<ol class="worked-lines">
+<li>$H$: event; $\neg H$: no event; $+$: positive test.</li>
+<li>$P(H)=.1$, $P(\neg H)=1-.1=.9$.</li>
+<li>$P(+\mid H)=.9$; $P(+\mid\neg H)=.1$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
+<p class="worked-progress">Solution 2 / 3</p>
+<h3>Find all positives, then normalize</h3>
+<p class="worked-variables">$H$: event; $\neg H$: no event; $+$: positive reading; $P$: probability.</p>
+<ol class="worked-lines">
+<li>$P(H\cap+)=P(+\mid H)P(H)=.9(.1)=.09$.</li>
+<li>$P(\neg H\cap+)=P(+\mid\neg H)P(\neg H)=.1(.9)=.09$.</li>
+<li>$P(+)=.09+.09=.18$; $P(H\mid+)=.09/.18=.5$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
+<p class="worked-progress">Solution 3 / 3</p>
+<h3>Choose C</h3>
+<p class="worked-variables">$H$: event; $\neg H$: no event; $+$: positive reading; $P$: probability.</p>
+<ol class="worked-lines">
+<li>A reverses the conditioning: sensitivity starts with event cases.</li>
+<li>B uses the prior and ignores the positive observation.</li>
+<li>C: true and false positives have equal probability mass.</li>
+</ol></div>
+<span class="worked-finish step" data-step="4" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Prior probability; posterior probability</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.11</a> · Course question</p>
 </section>
 <!-- ============ 29 ============ -->
@@ -1122,10 +1325,39 @@ window.M8 = (function () {
 <p class="cite page-source"><span>Gaussian conditioning</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · Course example</p>
 </section>
 <!-- ===== 34 ===== -->
-<section class="slide" data-part="IV" data-mc="34">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="34">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Gaussian conditioning</h2><p class="sub">What does a noisier reading change?</p>
-<p class="q">Prior $\mathcal N(0,4)$, reading $z=3$. Noise variance rises from $R=1$ to $R=4$. What changes?</p><ol class="opts one"><li><i>A</i>Mean moves toward $0$; posterior variance increases.<b class="ok step" data-step="1">✓</b></li><li><i>B</i>Mean moves toward $3$; posterior variance decreases.</li><li><i>C</i>Only the mean changes; variance ignores sensor noise.</li></ol><div class="ex step" data-step="1"><p class="reveal">$K=4/(4+4)=1/2$; $\mu_1=1.5$, $P_1=2$ (before: $2.4,.8$).</p></div>
+<div class="worked-question"><p class="q">Prior $\mathcal N(0,4)$, reading $z=3$. Noise variance rises from $R=1$ to $R=4$. What changes?</p><ol class="opts one"><li><i>A</i>Mean moves toward $0$; posterior variance increases.<b class="ok step" data-step="4">✓</b></li><li><i>B</i>Mean moves toward $3$; posterior variance decreases.</li><li><i>C</i>Only the mean changes; variance ignores sensor noise.</li></ol><div class="ex step" data-step="4"><p class="reveal">$K=4/(4+4)=1/2$; $\mu_1=1.5$, $P_1=2$ (before: $2.4,.8$).</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
+<p class="worked-progress">Solution 1 / 3</p>
+<h3>State the scalar measurement model</h3>
+<p class="worked-variables">$\mu_0,P_0$: prior mean/variance; $\mu_1,P_1$: posterior mean/variance; $K$: measurement gain.</p>
+<ol class="worked-lines">
+<li>$x\sim\mathcal N(\mu_0,P_0)$ with $\mu_0=0$, $P_0=4$.</li>
+<li>$z=x+\varepsilon=3$; independent noise $\varepsilon\sim\mathcal N(0,R)$.</li>
+<li>$K=P_0/(P_0+R)$; $\mu_1=\mu_0+K(z-\mu_0)$; $P_1=(1-K)P_0$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
+<p class="worked-progress">Solution 2 / 3</p>
+<h3>Compare the two noise variances</h3>
+<p class="worked-variables">$\mu_0,P_0$: prior mean/variance; $\mu_1,P_1$: posterior mean/variance; $K$: measurement gain.</p>
+<ol class="worked-lines">
+<li>Old $R=1$: $K=4/5$, $\mu_1=0+(4/5)3=2.4$, $P_1=(1/5)4=.8$.</li>
+<li>New $R=4$: $K=4/8=1/2$, $\mu_1=0+(1/2)3=1.5$.</li>
+<li>New $P_1=(1-1/2)4=2$; precision check: $P_1^{-1}=1/4+1/4=1/2$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
+<p class="worked-progress">Solution 3 / 3</p>
+<h3>Choose A</h3>
+<p class="worked-variables">$\mu_0,P_0$: prior mean/variance; $\mu_1,P_1$: posterior mean/variance; $K$: measurement gain.</p>
+<ol class="worked-lines">
+<li>A: the mean is closer to 0 and posterior variance rises from .8 to 2.</li>
+<li>B reverses both changes: a noisier reading carries less information.</li>
+<li>C ignores R in the posterior variance. The sensor value z did not change.</li>
+</ol></div>
+<span class="worked-finish step" data-step="4" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Gaussian conditioning</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · Course question</p>
 </section>
 <!-- ============ 35 ============ -->
@@ -1141,10 +1373,48 @@ window.M8 = (function () {
 <p class="cite page-source"><span>Conditional Gaussian covariance</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a></p>
 </section>
 <!-- ===== 37 ===== -->
-<section class="slide" data-part="IV" data-mc="37">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="37">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Gaussian conditioning</h2><p class="sub">Does the slice width change?</p>
-<p class="q">Gaussian $(a,b)^T$: $\mu=(1,2)^T$, $\Sigma=\begin{bmatrix}4&amp;2\\2&amp;9\end{bmatrix}$. Observe $b=-1$ instead of $5$.</p><ol class="opts one"><li><i>A</i>Both conditional mean and variance decrease.</li><li><i>B</i>Mean decreases; conditional variance stays fixed.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>Neither changes because the joint model is fixed.</li></ol><div class="ex step" data-step="1"><p class="reveal">$\mu_{a\mid b}=1+\frac29(-1-2)=\frac13$; $\Sigma_{a\mid b}=4-\frac49=\frac{32}9$.</p></div>
+<div class="worked-question"><p class="q">Gaussian $(a,b)^T$: $\mu=(1,2)^T$, $\Sigma=\begin{bmatrix}4&amp;2\\2&amp;9\end{bmatrix}$. Observe $b=-1$ instead of $5$.</p><ol class="opts one"><li><i>A</i>Both conditional mean and variance decrease.</li><li><i>B</i>Mean decreases; conditional variance stays fixed.<b class="ok step" data-step="5">✓</b></li><li><i>C</i>Neither changes because the joint model is fixed.</li></ol><div class="ex step" data-step="5"><p class="reveal">$\mu_{a\mid b}=1+\frac29(-1-2)=\frac13$; $\Sigma_{a\mid b}=4-\frac49=\frac{32}9$.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
+<p class="worked-progress">Solution 1 / 4</p>
+<h3>Read the Gaussian blocks</h3>
+<p class="worked-variables">$a,b$: scalar components; $\mu$: means; $\Sigma$: covariance blocks; $a\mid b$: a conditioned on b.</p>
+<ol class="worked-lines">
+<li>$a$: unobserved scalar; $b$: observed scalar.</li>
+<li>$\mu_a=1$, $\mu_b=2$; $\Sigma_{aa}=4$, $\Sigma_{ab}=\Sigma_{ba}=2$, $\Sigma_{bb}=9$.</li>
+<li>$\mu_{a\mid b}=\mu_a+\Sigma_{ab}\Sigma_{bb}^{-1}(b-\mu_b)$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
+<p class="worked-progress">Solution 2 / 4</p>
+<h3>Update the center</h3>
+<p class="worked-variables">$a,b$: scalar components; $\mu$: means; $\Sigma$: covariance blocks; $a\mid b$: a conditioned on b.</p>
+<ol class="worked-lines">
+<li>Old $b=5$: $\mu_{a\mid b}=1+(2/9)(5-2)=1+2/3=5/3$.</li>
+<li>New $b=-1$: $\mu_{a\mid b}=1+(2/9)(-1-2)=1-2/3=1/3$.</li>
+<li>The innovation $b-\mu_b$ changed; the mean decreases.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
+<p class="worked-progress">Solution 3 / 4</p>
+<h3>Compute the unchanged variance</h3>
+<p class="worked-variables">$a,b$: scalar components; $\mu$: means; $\Sigma$: covariance blocks; $a\mid b$: a conditioned on b.</p>
+<ol class="worked-lines">
+<li>$\Sigma_{a\mid b}=\Sigma_{aa}-\Sigma_{ab}\Sigma_{bb}^{-1}\Sigma_{ba}$.</li>
+<li>$=4-2(1/9)2=36/9-4/9=32/9$.</li>
+<li>This expression contains covariance blocks, not the observed value b.</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
+<p class="worked-progress">Solution 4 / 4</p>
+<h3>Choose B</h3>
+<p class="worked-variables">$a,b$: scalar components; $\mu$: means; $\Sigma$: covariance blocks; $a\mid b$: a conditioned on b.</p>
+<ol class="worked-lines">
+<li>A wrongly changes the width when only the observed value changes.</li>
+<li>B changes the mean and keeps the conditional variance fixed.</li>
+<li>C ignores the changed innovation. Constant width here uses joint Gaussianity.</li>
+</ol></div>
+<span class="worked-finish step" data-step="5" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Conditional Gaussian distribution</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · Course question</p>
 </section>
 <!-- ============ 38 ============ -->
@@ -1184,77 +1454,411 @@ window.M8 = (function () {
 <p class="cite page-source"><span>MAP normal equations; ridge regularization</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6.1</a> · <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.1.4</a> · Course derivation</p>
 </section>
 <!-- ===== 44 ===== -->
-<section class="slide" data-part="IV" data-mc="44">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="44">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Estimation</h2><p class="sub">What makes the MAP estimate unique?</p>
-<p class="q">$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix}$, $b=(1,2)^T$; prior center $0$, $\lambda^2=1$. Why is MAP unique?</p><ol class="opts one"><li><i>A</i>The prior makes the two data columns independent.</li><li><i>B</i>Gaussian noise makes every data fit unique.</li><li><i>C</i>The prior adds curvature along the data null space.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">LS: $\theta_1+\theta_2=1$. MAP: $(A^TA+I)\theta=A^Tb$ gives $\theta_1=\theta_2=5/11$.</p></div>
+<div class="worked-question"><p class="q">$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix}$, $b=(1,2)^T$; prior center $0$, $\lambda^2=1$. Why is MAP unique?</p><ol class="opts one"><li><i>A</i>The prior makes the two data columns independent.</li><li><i>B</i>Gaussian noise makes every data fit unique.</li><li><i>C</i>The prior adds curvature along the data null space.<b class="ok step" data-step="6">✓</b></li></ol><div class="ex step" data-step="6"><p class="reveal">LS: $\theta_1+\theta_2=1$. MAP: $(A^TA+I)\theta=A^Tb$ gives $\theta_1=\theta_2=5/11$.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
+<p class="worked-progress">Solution 1 / 5</p>
+<h3>Identify the data null space</h3>
+<p class="worked-variables">$\theta$: parameter column; $A$: data matrix; $b$: data column; $r=b-A\theta$; $I$: $2\times2$ identity.</p>
+<ol class="worked-lines">
+<li>$\theta=(\theta_1,\theta_2)^T$: parameters; $b=(1,2)^T$: readings.</li>
+<li>$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix}$; $r=b-A\theta$: residual.</li>
+<li>$A\theta=(\theta_1+\theta_2)(1,2)^T$; zero residual requires $\theta_1+\theta_2=1$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
+<p class="worked-progress">Solution 2 / 5</p>
+<h3>Add the stated prior penalty</h3>
+<p class="worked-variables">$\theta$: parameter column; $A$: data matrix; $b$: data column; $r=b-A\theta$; $I$: $2\times2$ identity.</p>
+<ol class="worked-lines">
+<li>$J$: scaled negative-log posterior; $J=\tfrac12\|r\|^2+\tfrac12\|\theta\|^2$, with $\lambda^2=\sigma^2/\tau^2=1$.</li>
+<li>$\nabla J=A^T(A\theta-b)+\theta=0$.</li>
+<li>$A^TA=\begin{bmatrix}5&amp;5\\5&amp;5\end{bmatrix}$, $A^Tb=(5,5)^T$; hence $(A^TA+I)\theta=A^Tb$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
+<p class="worked-progress">Solution 3 / 5</p>
+<h3>Solve the two equations</h3>
+<p class="worked-variables">$\theta$: parameter column; $A$: data matrix; $b$: data column; $r=b-A\theta$; $I$: $2\times2$ identity.</p>
+<ol class="worked-lines">
+<li>$6\theta_1+5\theta_2=5$; $5\theta_1+6\theta_2=5$.</li>
+<li>Subtract: $\theta_1-\theta_2=0$; substitute: $11\theta_1=5$.</li>
+<li>$\hat\theta_{MAP}=(5/11,5/11)^T$; $r=(1/11,2/11)^T$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
+<p class="worked-progress">Solution 4 / 5</p>
+<h3>Why the minimizer is unique</h3>
+<p class="worked-variables">$\theta$: parameter column; $A$: data matrix; $b$: data column; $r=b-A\theta$; $I$: $2\times2$ identity.</p>
+<ol class="worked-lines">
+<li>For any nonzero column $v$, $v^T(A^TA+I)v=\|Av\|^2+\|v\|^2&gt;0$.</li>
+<li>For the data-null direction $v=(1,-1)^T$, $Av=0$ but $\|v\|^2=2$.</li>
+<li>Thus the total objective has positive curvature even where the data loss is flat.</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
+<p class="worked-progress">Solution 5 / 5</p>
+<h3>Choose C</h3>
+<p class="worked-variables">$\theta$: parameter column; $A$: data matrix; $b$: data column; $r=b-A\theta$; $I$: $2\times2$ identity.</p>
+<ol class="worked-lines">
+<li>A is false: A still has identical columns and rank 1.</li>
+<li>B is false: Gaussian noise alone does not identify their separate coefficients.</li>
+<li>C is correct: the proper Gaussian prior supplies curvature in the null direction.</li>
+</ol></div>
+<span class="worked-finish step" data-step="6" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>MAP estimate; positive definiteness</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6.1</a> · Course question</p>
 </section>
 <!-- ===== 45 ===== -->
-<section class="slide" data-part="IV" data-mc="45">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="45">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Integrated board</h2><p class="sub">Calibration: choose the likelihood</p>
-<p class="q">$b=(1,2,3)^T$, $b_i=\theta+\varepsilon_i$, $\varepsilon_i\overset{iid}{\sim}\mathcal N(0,1)$. Which data objective fits this model?</p><ol class="opts one"><li><i>A</i>$\frac12\sum_i(b_i-\theta)^2$<b class="ok step" data-step="1">✓</b></li><li><i>B</i>$\sum_i|b_i-\theta|$</li><li><i>C</i>$\frac12\sum_i(b_i-\theta)^2+\frac12\theta^2$</li></ol><div class="ex step" data-step="1"><p class="reveal">$-\log p(b\mid\theta)=C+\frac12\sum_i(b_i-\theta)^2$; $\hat\theta_{MLE}=\bar b=2$.</p></div>
+<div class="worked-question"><p class="q">$b=(1,2,3)^T$, $b_i=\theta+\varepsilon_i$, $\varepsilon_i\overset{iid}{\sim}\mathcal N(0,1)$. Which data objective fits this model?</p><ol class="opts one"><li><i>A</i>$\frac12\sum_i(b_i-\theta)^2$<b class="ok step" data-step="5">✓</b></li><li><i>B</i>$\sum_i|b_i-\theta|$</li><li><i>C</i>$\frac12\sum_i(b_i-\theta)^2+\frac12\theta^2$</li></ol><div class="ex step" data-step="5"><p class="reveal">$-\log p(b\mid\theta)=C+\frac12\sum_i(b_i-\theta)^2$; $\hat\theta_{MLE}=\bar b=2$.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
+<p class="worked-progress">Solution 1 / 4</p>
+<h3>Define the calibration model</h3>
+<p class="worked-variables">$b_i$: reading $i$; $\theta$: offset; $\varepsilon_i$: noise; $J_{data}$: data objective; $C$: constant in $\theta$.</p>
+<ol class="worked-lines">
+<li>$b=(1,2,3)^T$: observed readings; $\theta$: unknown common offset.</li>
+<li>$b_i=\theta+\varepsilon_i$; independent $\varepsilon_i\sim\mathcal N(0,1)$.</li>
+<li>$p(b_i\mid\theta)=(2\pi)^{-1/2}\exp[-(b_i-\theta)^2/2]$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
+<p class="worked-progress">Solution 2 / 4</p>
+<h3>From likelihood to objective</h3>
+<p class="worked-variables">$b_i$: reading $i$; $\theta$: offset; $\varepsilon_i$: noise; $J_{data}$: data objective; $C$: constant in $\theta$.</p>
+<ol class="worked-lines">
+<li>Independence: $p(b\mid\theta)=\prod_{i=1}^3p(b_i\mid\theta)$.</li>
+<li>$-\log p(b\mid\theta)=C+\tfrac12\sum_{i=1}^3(b_i-\theta)^2$.</li>
+<li>$C$ is independent of $\theta$; minimizing leaves $J_{data}=\tfrac12\sum_i(b_i-\theta)^2$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
+<p class="worked-progress">Solution 3 / 4</p>
+<h3>Expand every square</h3>
+<p class="worked-variables">$b_i$: reading $i$; $\theta$: offset; $\varepsilon_i$: noise; $J_{data}$: data objective; $C$: constant in $\theta$.</p>
+<ol class="worked-lines">
+<li>$2J_{data}=(1-\theta)^2+(2-\theta)^2+(3-\theta)^2$.</li>
+<li>$=(1-2\theta+\theta^2)+(4-4\theta+\theta^2)+(9-6\theta+\theta^2)$.</li>
+<li>$=3\theta^2-12\theta+14$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
+<p class="worked-progress">Solution 4 / 4</p>
+<h3>Minimize and choose A</h3>
+<p class="worked-variables">$b_i$: reading $i$; $\theta$: offset; $\varepsilon_i$: noise; $J_{data}$: data objective; $C$: constant in $\theta$.</p>
+<ol class="worked-lines">
+<li>$J_{data}^{\prime}=3\theta-6=0\Rightarrow\hat\theta_{MLE}=2$; $J_{data}^{\prime\prime}=3&gt;0$.</li>
+<li>A follows from independent Gaussian noise.</li>
+<li>B uses absolute residuals, a different noise model. C already adds a prior penalty.</li>
+</ol></div>
+<span class="worked-finish step" data-step="5" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Gaussian likelihood; maximum likelihood</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.5.1</a> · Course example</p>
 </section>
 <!-- ===== 46 ===== -->
-<section class="slide" data-part="IV" data-mc="46">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="46">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Integrated board</h2><p class="sub">Calibration: combine data and prior</p>
-<div class="cols" style="grid-template-columns:640px 460px;gap:28px;align-items:start"><div><p class="q">Same readings $(1,2,3)$; noise variance $1$; prior $\theta\sim\mathcal N(0,1)$. How does the posterior compare with the MLE?</p><ol class="opts one"><li><i>A</i>Center stays at $2$; prior changes only uncertainty.</li><li><i>B</i>Center moves toward $0$; precision becomes $4$.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>Center moves toward $0$; variances add to $4$.</li></ol><div class="ex step" data-step="1"><p class="reveal">$J_{post}=2(\theta-1.5)^2+2.5$; $\theta\mid b\sim\mathcal N(1.5,1/4)$.</p></div></div><figure class="step" data-step="1" style="align-self:center;flex:none"><canvas id="m8p46c" width="460" height="340" role="img" aria-label="Calibration model after the vote"></canvas></figure><script>m3anim(document.getElementById("m8p46c"),function(g,t,k){var c=k.c;var left=42,base=285,sx=53,sy=230;
+<div class="worked-question"><div class="cols" style="grid-template-columns:640px 460px;gap:28px;align-items:start"><div><p class="q">Same readings $(1,2,3)$; noise variance $1$; prior $\theta\sim\mathcal N(0,1)$. How does the posterior compare with the MLE?</p><ol class="opts one"><li><i>A</i>Center stays at $2$; prior changes only uncertainty.</li><li><i>B</i>Center moves toward $0$; precision becomes $4$.<b class="ok step" data-step="5">✓</b></li><li><i>C</i>Center moves toward $0$; variances add to $4$.</li></ol><div class="ex step" data-step="5"><p class="reveal">$J_{post}=2(\theta-1.5)^2+2.5$; $\theta\mid b\sim\mathcal N(1.5,1/4)$.</p></div></div><figure class="step" data-step="5" style="align-self:center;flex:none"><canvas id="m8p46c" width="460" height="340" role="img" aria-label="Calibration model after the vote"></canvas></figure><script>m3anim(document.getElementById("m8p46c"),function(g,t,k){var c=k.c;var left=42,base=285,sx=53,sy=230;
   k.seg([left,base],[435,base],c.dim,1);k.seg([left,base],[left,70],c.dim,1);
   var curves=[{m:0,v:1,col:c.in,label:'prior: mean 0, variance 1'},
    {m:2,v:1/3,col:c.dat,label:'likelihood shape (unit area)'},
    {m:1.5,v:.25,col:c.ans,label:'posterior: mean 1.5, variance 1/4'}];
   curves.forEach(function(o,j){var pts=[];for(var i=0;i<=180;i++){var x=-2+7*i/180,y=Math.exp(-(x-o.m)*(x-o.m)/(2*o.v))/Math.sqrt(2*Math.PI*o.v);pts.push([left+(x+2)*sx,base-y*sy]);}k.poly(pts,o.col,2.5);k.text(o.label,[12,22+j*23],o.col,{size:15});});
   [-2,0,2,4].forEach(function(x){k.text(String(x),[left+(x+2)*sx-4,303],c.dim,{size:14});});
-  k.text('offset theta',[320,325],c.dim,{size:16});k.text('density',[45,91],c.dim,{size:14});},{seconds:4,rest:0});</script></div>
+  k.text('offset theta',[320,325],c.dim,{size:16});k.text('density',[45,91],c.dim,{size:14});},{seconds:4,rest:0});</script></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
+<p class="worked-progress">Solution 1 / 4</p>
+<h3>Keep the data and state the prior</h3>
+<p class="worked-variables">$\theta$: offset; $J_{post}$: posterior objective; $\mu_1,P_1$: posterior mean/variance; precision $=1/P_1$.</p>
+<ol class="worked-lines">
+<li>$b=(1,2,3)^T$; independent noise variance $1$; $\theta$: offset.</li>
+<li>$J_{data}=\tfrac12(3\theta^2-12\theta+14)$; $\theta\sim\mathcal N(0,1)$.</li>
+<li>Negative log prior adds $\theta^2/2$, up to a constant.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
+<p class="worked-progress">Solution 2 / 4</p>
+<h3>Collect the posterior quadratic</h3>
+<p class="worked-variables">$\theta$: offset; $J_{post}$: posterior objective; $\mu_1,P_1$: posterior mean/variance; precision $=1/P_1$.</p>
+<ol class="worked-lines">
+<li>$J_{post}=\tfrac12(3\theta^2-12\theta+14)+\tfrac12\theta^2$.</li>
+<li>$=2\theta^2-6\theta+7=2(\theta^2-3\theta)+7$.</li>
+<li>$\theta^2-3\theta=(\theta-3/2)^2-9/4$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
+<p class="worked-progress">Solution 3 / 4</p>
+<h3>Complete the square and read variance</h3>
+<p class="worked-variables">$\theta$: offset; $J_{post}$: posterior objective; $\mu_1,P_1$: posterior mean/variance; precision $=1/P_1$.</p>
+<ol class="worked-lines">
+<li>$J_{post}=2(\theta-3/2)^2-9/2+7=2(\theta-1.5)^2+2.5$.</li>
+<li>Gaussian quadratic: $(\theta-\mu_1)^2/(2P_1)$; hence $\mu_1=1.5$, $1/(2P_1)=2$.</li>
+<li>$P_1=1/4$; precision $P_1^{-1}=4$; $\theta\mid b\sim\mathcal N(1.5,1/4)$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
+<p class="worked-progress">Solution 4 / 4</p>
+<h3>Choose B and check the weights</h3>
+<p class="worked-variables">$\theta$: offset; $J_{post}$: posterior objective; $\mu_1,P_1$: posterior mean/variance; precision $=1/P_1$.</p>
+<ol class="worked-lines">
+<li>Data precision $3$ plus prior precision $1$ gives $4$.</li>
+<li>Posterior mean $=(3\cdot2+1\cdot0)/4=1.5$; MAP equals this Gaussian mean.</li>
+<li>B is correct. A ignores the prior shift. C adds variances instead of precisions.</li>
+</ol></div>
+<span class="worked-finish step" data-step="5" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Gaussian posterior; MAP estimate</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6.1</a> · Course example</p>
 </section>
 <!-- ===== 47 ===== -->
-<section class="slide" data-part="IV" data-mc="47">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="47">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Intervals</h2><p class="sub">Calibration: confidence coverage</p>
-<div class="cols" style="grid-template-columns:640px 460px;gap:28px;align-items:start"><div><p class="q">Same sensor: $B_i\mid\theta\sim\mathcal N(\theta,1)$ iid. $C(B)=\bar B\pm1.96/\sqrt3$. What does 95% confidence mean?</p><ol class="opts one"><li><i>A</i>This realized interval has 95% posterior mass.</li><li><i>B</i>95% of future individual readings lie inside it.</li><li><i>C</i>Repeated intervals cover fixed $\theta$ 95% of the time.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">$\sqrt3(\bar B-\theta)\sim\mathcal N(0,1)$; $P_\theta(\theta\in C(B))\approx.95$.</p></div></div><figure class="step" data-step="1" style="align-self:center;flex:none"><canvas id="m8p47c" width="460" height="340" role="img" aria-label="Calibration model after the vote"></canvas></figure><script>m3anim(document.getElementById("m8p47c"),function(g,t,k){var c=k.c;var truth=250;k.seg([truth,37],[truth,270],c.in,2,[4,4]);
+<div class="worked-question"><div class="cols" style="grid-template-columns:640px 460px;gap:28px;align-items:start"><div><p class="q">Same sensor: $B_i\mid\theta\sim\mathcal N(\theta,1)$ iid. $C(B)=\bar B\pm1.96/\sqrt3$. What does 95% confidence mean?</p><ol class="opts one"><li><i>A</i>This realized interval has 95% posterior mass.</li><li><i>B</i>95% of future individual readings lie inside it.</li><li><i>C</i>Repeated intervals cover fixed $\theta$ 95% of the time.<b class="ok step" data-step="5">✓</b></li></ol><div class="ex step" data-step="5"><p class="reveal">$\sqrt3(\bar B-\theta)\sim\mathcal N(0,1)$; $P_\theta(\theta\in C(B))\approx.95$.</p></div></div><figure class="step" data-step="5" style="align-self:center;flex:none"><canvas id="m8p47c" width="460" height="340" role="img" aria-label="Calibration model after the vote"></canvas></figure><script>m3anim(document.getElementById("m8p47c"),function(g,t,k){var c=k.c;var truth=250;k.seg([truth,37],[truth,270],c.in,2,[4,4]);
   k.text('fixed true offset',[truth-67,23],c.in,{size:17});
   [-75,20,62,-40,110,10,-60,40,-10].forEach(function(shift,i){var y=54+24*i,center=truth+shift,col=Math.abs(shift)<=90?c.dat:c.res;k.seg([center-90,y],[center+90,y],col,3);k.dot([center,y],3,col);k.text(String(i+1),[22,y+5],c.dim,{size:14});});
   k.text('repeated datasets',[12,286],c.dim,{size:15});k.text('offset',[354,286],c.dim,{size:15});
-  k.text('Illustration, not measured coverage',[35,321],c.dim,{size:16});},{seconds:4,rest:0});</script></div>
+  k.text('Illustration, not measured coverage',[35,321],c.dim,{size:16});},{seconds:4,rest:0});</script></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
+<p class="worked-progress">Solution 1 / 4</p>
+<h3>Define the random interval</h3>
+<p class="worked-variables">$B$: random data; $\bar B$: sample mean; $\theta$: fixed offset; $C(B)$: confidence interval; $Z$: standardized mean.</p>
+<ol class="worked-lines">
+<li>$\theta$: fixed true offset; $B_i$: random reading before observation.</li>
+<li>$B_i\mid\theta\sim\mathcal N(\theta,1)$ independently; $\bar B=(B_1+B_2+B_3)/3$.</li>
+<li>$C(B)$: confidence interval computed anew for each random dataset.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
+<p class="worked-progress">Solution 2 / 4</p>
+<h3>Standardize the sample mean</h3>
+<p class="worked-variables">$B$: random data; $\bar B$: sample mean; $\theta$: fixed offset; $C(B)$: confidence interval; $Z$: standardized mean.</p>
+<ol class="worked-lines">
+<li>$\mathbb E_\theta[\bar B]=\theta$; $\operatorname{Var}_\theta(\bar B)=(1+1+1)/9=1/3$.</li>
+<li>$Z=(\bar B-\theta)/(1/\sqrt3)\sim\mathcal N(0,1)$.</li>
+<li>$P_\theta(-1.96\leq Z\leq1.96)\approx.95$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
+<p class="worked-progress">Solution 3 / 4</p>
+<h3>Rearrange to isolate the fixed offset</h3>
+<p class="worked-variables">$B$: random data; $\bar B$: sample mean; $\theta$: fixed offset; $C(B)$: confidence interval; $Z$: standardized mean.</p>
+<ol class="worked-lines">
+<li>$-1.96/\sqrt3\leq\bar B-\theta\leq1.96/\sqrt3$.</li>
+<li>$\bar B-1.96/\sqrt3\leq\theta\leq\bar B+1.96/\sqrt3$.</li>
+<li>Thus $C(B)=\bar B\pm1.96/\sqrt3$ and $P_\theta(\theta\in C(B))\approx.95$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
+<p class="worked-progress">Solution 4 / 4</p>
+<h3>Choose C</h3>
+<p class="worked-variables">$B$: random data; $\bar B$: sample mean; $\theta$: fixed offset; $C(B)$: confidence interval; $Z$: standardized mean.</p>
+<ol class="worked-lines">
+<li>C: repeated random intervals cover the same fixed offset about 95% of the time.</li>
+<li>A needs a posterior distribution; confidence alone provides none.</li>
+<li>B concerns individual future readings, whose noise variance is 1, not 1/3.</li>
+</ol></div>
+<span class="worked-finish step" data-step="5" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Confidence interval; coverage probability</span> — <a href="https://itl.nist.gov/div898/handbook/prc/section1/prc14.htm">[3] NIST §7.1.4</a> · Course example</p>
 </section>
 <!-- ===== 48 ===== -->
-<section class="slide" data-part="IV" data-mc="48">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="48">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Intervals</h2><p class="sub">Calibration: what does credibility describe?</p>
-<p class="q">Observed $b=(1,2,3)^T$; $\theta\mid b\sim\mathcal N(1.5,.25)$. A 95% credible interval describes which probability?</p><ol class="opts one"><li><i>A</i>95% posterior mass for $\theta$, with $b$ fixed.<b class="ok step" data-step="1">✓</b></li><li><i>B</i>95% coverage for every fixed true offset.</li><li><i>C</i>95% probability for a future noisy reading.</li></ol><div class="ex step" data-step="1"><p class="reveal">$I(b)=1.5\pm1.96(.5)$; $P(\theta\in I(b)\mid b)\approx.95$.</p></div>
+<div class="worked-question"><p class="q">Observed $b=(1,2,3)^T$; $\theta\mid b\sim\mathcal N(1.5,.25)$. A 95% credible interval describes which probability?</p><ol class="opts one"><li><i>A</i>95% posterior mass for $\theta$, with $b$ fixed.<b class="ok step" data-step="4">✓</b></li><li><i>B</i>95% coverage for every fixed true offset.</li><li><i>C</i>95% probability for a future noisy reading.</li></ol><div class="ex step" data-step="4"><p class="reveal">$I(b)=1.5\pm1.96(.5)$; $P(\theta\in I(b)\mid b)\approx.95$.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
+<p class="worked-progress">Solution 1 / 3</p>
+<h3>Fix the data and use the posterior</h3>
+<p class="worked-variables">$b$: fixed data; $\theta$: offset; $\mu_1,P_1$: posterior mean/variance; $I(b)$: credible interval; $Z$: standardized offset.</p>
+<ol class="worked-lines">
+<li>$b=(1,2,3)^T$: observed data, now fixed; $\theta$: offset.</li>
+<li>$\theta\mid b\sim\mathcal N(\mu_1,P_1)$ with $\mu_1=1.5$, $P_1=.25$.</li>
+<li>Posterior standard deviation $\sqrt{P_1}=\sqrt{.25}=.5$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
+<p class="worked-progress">Solution 2 / 3</p>
+<h3>Standardize, then undo the scaling</h3>
+<p class="worked-variables">$b$: fixed data; $\theta$: offset; $\mu_1,P_1$: posterior mean/variance; $I(b)$: credible interval; $Z$: standardized offset.</p>
+<ol class="worked-lines">
+<li>$Z=(\theta-1.5)/.5\mid b\sim\mathcal N(0,1)$.</li>
+<li>$P(-1.96\leq Z\leq1.96\mid b)\approx.95$.</li>
+<li>$1.5-1.96(.5)\leq\theta\leq1.5+1.96(.5)$ gives $I(b)=[.52,2.48]$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
+<p class="worked-progress">Solution 3 / 3</p>
+<h3>Choose A</h3>
+<p class="worked-variables">$b$: fixed data; $\theta$: offset; $\mu_1,P_1$: posterior mean/variance; $I(b)$: credible interval; $Z$: standardized offset.</p>
+<ol class="worked-lines">
+<li>A: $P(\theta\in I(b)\mid b)\approx.95$ under this posterior.</li>
+<li>B is a repeated-sampling claim for every fixed offset; it does not follow here.</li>
+<li>C includes new measurement noise; this interval describes the offset only.</li>
+</ol></div>
+<span class="worked-finish step" data-step="4" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Posterior credible interval</span> — <a href="https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_class16-prep-b.pdf">[4] MIT 18.05 §2</a> · Course example</p>
 </section>
 <!-- ===== 49 ===== -->
-<section class="slide" data-part="IV" data-mc="49">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="49">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Intervals</h2><p class="sub">Calibration: why do the intervals differ?</p>
-<p class="q">Same data: $C(b)=2\pm1.96/\sqrt3$; $I(b)=1.5\pm1.96(.5)$. Why is $I$ shifted and narrower?</p><ol class="opts one"><li><i>A</i>It must have better repeated-sampling coverage.</li><li><i>B</i>The zero-centered prior adds information.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>The physical sensor became less noisy.</li></ol><div class="ex step" data-step="1"><p class="reveal">$C\approx[.8684,3.1316]$; $I\approx[.5200,2.4800]$. Prior precision $1$ adds to data precision $3$.</p></div>
+<div class="worked-question"><p class="q">Same data: $C(b)=2\pm1.96/\sqrt3$; $I(b)=1.5\pm1.96(.5)$. Why is $I$ shifted and narrower?</p><ol class="opts one"><li><i>A</i>It must have better repeated-sampling coverage.</li><li><i>B</i>The zero-centered prior adds information.<b class="ok step" data-step="4">✓</b></li><li><i>C</i>The physical sensor became less noisy.</li></ol><div class="ex step" data-step="4"><p class="reveal">$C\approx[.8684,3.1316]$; $I\approx[.5200,2.4800]$. Prior precision $1$ adds to data precision $3$.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
+<p class="worked-progress">Solution 1 / 3</p>
+<h3>Identify the two information sources</h3>
+<p class="worked-variables">$C$: confidence interval; $I$: credible interval; $\bar b$: sample mean; precision: inverse variance.</p>
+<ol class="worked-lines">
+<li>$b=(1,2,3)^T$; $\bar b=2$; noise variance $1$; prior $\mathcal N(0,1)$.</li>
+<li>$C$: confidence interval; sampling standard error $1/\sqrt3$.</li>
+<li>$I$: credible interval; posterior mean $(3\cdot2+1\cdot0)/4=1.5$, variance $1/4$.</li>
+<li>Data precision $=1/(1/3)=3$; prior precision $=1/1=1$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
+<p class="worked-progress">Solution 2 / 3</p>
+<h3>Compute and compare endpoints</h3>
+<p class="worked-variables">$C$: confidence interval; $I$: credible interval; $\bar b$: sample mean; precision: inverse variance.</p>
+<ol class="worked-lines">
+<li>$C=2\pm1.96/\sqrt3\approx2\pm1.1316=[.8684,3.1316]$.</li>
+<li>$I=1.5\pm1.96\sqrt{1/4}=1.5\pm.98=[.52,2.48]$.</li>
+<li>$1.5&lt;2$ and $.98&lt;1.1316$: the prior shifts the center and reduces posterior width.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
+<p class="worked-progress">Solution 3 / 3</p>
+<h3>Choose B</h3>
+<p class="worked-variables">$C$: confidence interval; $I$: credible interval; $\bar b$: sample mean; precision: inverse variance.</p>
+<ol class="worked-lines">
+<li>B: one unit of prior precision adds to three units from the data.</li>
+<li>A: narrower does not prove better repeated-sampling coverage.</li>
+<li>C: the physical noise variance remains 1; only the information used changed.</li>
+</ol></div>
+<span class="worked-finish step" data-step="4" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Confidence interval; credible interval</span> — <a href="https://itl.nist.gov/div898/handbook/prc/section1/prc14.htm">[3] NIST §7.1.4</a> · <a href="https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_class16-prep-b.pdf">[4] MIT 18.05 §2</a> · <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6.1</a> · Course comparison</p>
 </section>
 <!-- ===== 50 ===== -->
-<section class="slide" data-part="IV" data-mc="50">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="50">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Transfer</h2><p class="sub">Calibration: independent transfer</p>
-<p class="q">New readings $b=(2,3)^T$; iid noise $\mathcal N(0,1)$; prior $\theta\sim\mathcal N(4,1)$. Which conclusion is valid?</p><ol class="opts one"><li><i>A</i>The prior changes the data-only MLE.</li><li><i>B</i>The prior center can be ignored in MAP.</li><li><i>C</i>MAP moves above the data mean; MLE stays fixed.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">$\hat\theta_{MLE}=2.5$, $\theta\mid b\sim\mathcal N(3,1/3)$. $C=2.5\pm1.96/\sqrt2$; $I=3\pm1.96/\sqrt3$.</p></div>
+<div class="worked-question"><p class="q">New readings $b=(2,3)^T$; iid noise $\mathcal N(0,1)$; prior $\theta\sim\mathcal N(4,1)$. Which conclusion is valid?</p><ol class="opts one"><li><i>A</i>The prior changes the data-only MLE.</li><li><i>B</i>The prior center can be ignored in MAP.</li><li><i>C</i>MAP moves above the data mean; MLE stays fixed.<b class="ok step" data-step="6">✓</b></li></ol><div class="ex step" data-step="6"><p class="reveal">$\hat\theta_{MLE}=2.5$, $\theta\mid b\sim\mathcal N(3,1/3)$. $C=2.5\pm1.96/\sqrt2$; $I=3\pm1.96/\sqrt3$.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
+<p class="worked-progress">Solution 1 / 5</p>
+<h3>Set up the new data-only problem</h3>
+<p class="worked-variables">$\theta$: offset; $J$: objective; $\mu_1,P_1$: posterior mean/variance; $C$: confidence; $I$: credible interval.</p>
+<ol class="worked-lines">
+<li>$b=(2,3)^T$; $\theta$: offset; independent noise variance $1$.</li>
+<li>$J_{data}=\tfrac12[(2-\theta)^2+(3-\theta)^2]$.</li>
+<li>$=\tfrac12[(4-4\theta+\theta^2)+(9-6\theta+\theta^2)]=\tfrac12(2\theta^2-10\theta+13)$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
+<p class="worked-progress">Solution 2 / 5</p>
+<h3>Minimize, then add the new prior</h3>
+<p class="worked-variables">$\theta$: offset; $J$: objective; $\mu_1,P_1$: posterior mean/variance; $C$: confidence; $I$: credible interval.</p>
+<ol class="worked-lines">
+<li>$J_{data}^{\prime}=2\theta-5=0\Rightarrow\hat\theta_{MLE}=2.5$; $J_{data}^{\prime\prime}=2&gt;0$.</li>
+<li>Prior $\mathcal N(4,1)$ adds $\tfrac12(\theta-4)^2=\tfrac12(\theta^2-8\theta+16)$.</li>
+<li>$J_{post}=\tfrac12(3\theta^2-18\theta+29)$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
+<p class="worked-progress">Solution 3 / 5</p>
+<h3>Complete the posterior square</h3>
+<p class="worked-variables">$\theta$: offset; $J$: objective; $\mu_1,P_1$: posterior mean/variance; $C$: confidence; $I$: credible interval.</p>
+<ol class="worked-lines">
+<li>$3\theta^2-18\theta+29=3(\theta^2-6\theta)+29$.</li>
+<li>$=3[(\theta-3)^2-9]+29=3(\theta-3)^2+2$.</li>
+<li>$J_{post}=\tfrac32(\theta-3)^2+1$; $\mu_1=3$, $1/(2P_1)=3/2\Rightarrow P_1=1/3$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
+<p class="worked-progress">Solution 4 / 5</p>
+<h3>Compute both interval constructions</h3>
+<p class="worked-variables">$\theta$: offset; $J$: objective; $\mu_1,P_1$: posterior mean/variance; $C$: confidence; $I$: credible interval.</p>
+<ol class="worked-lines">
+<li>$C$: confidence; mean $2.5$, sampling standard error $1/\sqrt2$.</li>
+<li>$C=2.5\pm1.96/\sqrt2\approx[1.1141,3.8859]$.</li>
+<li>$I$: credible; posterior mean $3$, SD $1/\sqrt3$; $I=3\pm1.96/\sqrt3\approx[1.8684,4.1316]$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
+<p class="worked-progress">Solution 5 / 5</p>
+<h3>Choose C</h3>
+<p class="worked-variables">$\theta$: offset; $J$: objective; $\mu_1,P_1$: posterior mean/variance; $C$: confidence; $I$: credible interval.</p>
+<ol class="worked-lines">
+<li>C: $\hat\theta_{MAP}=3&gt;2.5$, while the data-only MLE remains $2.5$.</li>
+<li>A incorrectly puts prior information into the data-only MLE.</li>
+<li>B drops the prior center 4 and its linear term. Confidence and credibility retain different meanings.</li>
+</ol></div>
+<span class="worked-finish step" data-step="6" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>MLE; MAP; confidence and credible intervals</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §§5.5–5.6</a> · <a href="https://itl.nist.gov/div898/handbook/prc/section1/prc14.htm">[3] NIST §7.1.4</a> · <a href="https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_class16-prep-b.pdf">[4] MIT 18.05 §2</a> · Course question</p>
 </section>
 <!-- ===== 51 ===== -->
-<section class="slide" data-part="IV" data-mc="51">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="51">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Intervals</h2><p class="sub">What does the sensor promise?</p>
-<p class="q">A specification says “$\pm2$ cm, 95%.” Which conclusion is justified without another definition?</p><ol class="opts one"><li><i>A</i>It is a confidence interval for the offset.</li><li><i>B</i>It is a credible interval for the offset.</li><li><i>C</i>None: ask what quantity and probability model it describes.<b class="ok step" data-step="1">✓</b></li></ol><div class="ex step" data-step="1"><p class="reveal">Offset uncertainty, future-reading error and repeated coverage are different claims.</p></div>
+<div class="worked-question"><p class="q">A specification says “$\pm2$ cm, 95%.” Which conclusion is justified without another definition?</p><ol class="opts one"><li><i>A</i>It is a confidence interval for the offset.</li><li><i>B</i>It is a credible interval for the offset.</li><li><i>C</i>None: ask what quantity and probability model it describes.<b class="ok step" data-step="4">✓</b></li></ol><div class="ex step" data-step="4"><p class="reveal">Offset uncertainty, future-reading error and repeated coverage are different claims.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
+<p class="worked-progress">Solution 1 / 3</p>
+<h3>Identify what the specification omits</h3>
+<p class="worked-variables">$C(B)$: confidence interval; $I(b)$: credible interval; $\varepsilon_{new}$: future-reading error.</p>
+<ol class="worked-lines">
+<li>The statement “$\pm2$ cm, 95%” supplies a width and a percentage.</li>
+<li>$\theta$: offset; $B$: repeated random dataset; $b$: observed dataset.</li>
+<li>No target quantity or probability construction is specified.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
+<p class="worked-progress">Solution 2 / 3</p>
+<h3>Compare three possible meanings</h3>
+<p class="worked-variables">$C(B)$: confidence interval; $I(b)$: credible interval; $\varepsilon_{new}$: future-reading error.</p>
+<ol class="worked-lines">
+<li>Confidence: $P_\theta(\theta\in C(B))\approx.95$ for a stated repeated-data procedure.</li>
+<li>Credibility: $P(\theta\in I(b)\mid b)\approx.95$ under a stated posterior.</li>
+<li>Future-error bound: $P(|\varepsilon_{new}|\leq2\ \mathrm{cm})\approx.95$ under a stated error model.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
+<p class="worked-progress">Solution 3 / 3</p>
+<h3>Choose C</h3>
+<p class="worked-variables">$C(B)$: confidence interval; $I(b)$: credible interval; $\varepsilon_{new}$: future-reading error.</p>
+<ol class="worked-lines">
+<li>A assumes an unstated repeated-sampling procedure.</li>
+<li>B assumes an unstated prior and posterior.</li>
+<li>C: ask which quantity is bounded and which model or procedure supplies 95%.</li>
+</ol></div>
+<span class="worked-finish step" data-step="4" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Confidence; credibility; predictive uncertainty</span> — <a href="https://itl.nist.gov/div898/handbook/prc/section1/prc14.htm">[3] NIST §7.1.4</a> · <a href="https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_class16-prep-b.pdf">[4] MIT 18.05 §2</a> · <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6, Eq.5.68</a> · Course question</p>
 </section>
 <!-- ===== 52 ===== -->
-<section class="slide" data-part="IV" data-mc="52">
+<section class="slide has-worked-solutions" data-part="IV" data-mc="52">
 <p class="eyebrow you" data-min="0.75">Choose, explain, vote</p>
 <h2>Synthesis</h2><p class="sub">Which modeling bridge is valid?</p>
-<p class="q">With iid Gaussian noise and an independent isotropic Gaussian prior, which modeling chain is valid?</p><ol class="opts one"><li><i>A</i>Independence gives squares; Gaussian noise gives sums.</li><li><i>B</i>Gaussian noise gives squares; independence gives sums.<b class="ok step" data-step="1">✓</b></li><li><i>C</i>A Gaussian prior removes the data residual term.</li></ol><div class="ex step" data-step="1"><p class="reveal">$-\log p(\theta\mid b)=C+\|b-A\theta\|^2/(2\sigma^2)+\|\theta-\mu_0\|^2/(2\tau^2)$.</p></div>
+<div class="worked-question"><p class="q">With iid Gaussian noise and an independent isotropic Gaussian prior, which modeling chain is valid?</p><ol class="opts one"><li><i>A</i>Independence gives squares; Gaussian noise gives sums.</li><li><i>B</i>Gaussian noise gives squares; independence gives sums.<b class="ok step" data-step="5">✓</b></li><li><i>C</i>A Gaussian prior removes the data residual term.</li></ol><div class="ex step" data-step="5"><p class="reveal">$-\log p(\theta\mid b)=C+\|b-A\theta\|^2/(2\sigma^2)+\|\theta-\mu_0\|^2/(2\tau^2)$.</p></div></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
+<p class="worked-progress">Solution 1 / 4</p>
+<h3>State the model and symbols</h3>
+<p class="worked-variables">$i$: reading index; $I$: identity matrix; $C$: constant in $\theta$; $J$: negative-log posterior, up to constants.</p>
+<ol class="worked-lines">
+<li>$b=A\theta+\varepsilon$: data column $b$, design matrix $A$, parameter column $\theta$.</li>
+<li>$\varepsilon_i$ are independent $\mathcal N(0,\sigma^2)$ noises; $r=b-A\theta$: residual.</li>
+<li>Prior $\theta\sim\mathcal N(\mu_0,\tau^2I)$; $\mu_0$: prior mean; $\sigma^2,\tau^2&gt;0$: variances.</li>
+</ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
+<p class="worked-progress">Solution 2 / 4</p>
+<h3>Separate the square from the sum</h3>
+<p class="worked-variables">$i$: reading index; $I$: identity matrix; $C$: constant in $\theta$; $J$: negative-log posterior, up to constants.</p>
+<ol class="worked-lines">
+<li>One Gaussian factor: $p(b_i\mid\theta)=(2\pi\sigma^2)^{-1/2}e^{-r_i^2/(2\sigma^2)}$.</li>
+<li>Independence gives $p(b\mid\theta)=\prod_i p(b_i\mid\theta)$.</li>
+<li>$-\log p(b\mid\theta)=C+\sum_i r_i^2/(2\sigma^2)=C+\|b-A\theta\|^2/(2\sigma^2)$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
+<p class="worked-progress">Solution 3 / 4</p>
+<h3>Add the prior through Bayes rule</h3>
+<p class="worked-variables">$i$: reading index; $I$: identity matrix; $C$: constant in $\theta$; $J$: negative-log posterior, up to constants.</p>
+<ol class="worked-lines">
+<li>$p(\theta\mid b)\propto p(b\mid\theta)p(\theta)$; logarithms turn this product into a sum.</li>
+<li>$J=\|b-A\theta\|^2/(2\sigma^2)+\|\theta-\mu_0\|^2/(2\tau^2)$.</li>
+<li>Multiply all of $J$ by $\sigma^2$: $\tfrac12\|r\|^2+\tfrac{\lambda^2}{2}\|\theta-\mu_0\|^2$, where $\lambda^2=\sigma^2/\tau^2$.</li>
+</ol></div>
+<div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
+<p class="worked-progress">Solution 4 / 4</p>
+<h3>Choose B</h3>
+<p class="worked-variables">$i$: reading index; $I$: identity matrix; $C$: constant in $\theta$; $J$: negative-log posterior, up to constants.</p>
+<ol class="worked-lines">
+<li>B: the Gaussian exponent supplies squares; independence and logarithms supply the sum.</li>
+<li>A reverses the two reasons.</li>
+<li>C discards the likelihood. A prior adds a penalty while retaining the residual term.</li>
+</ol></div>
+<span class="worked-finish step" data-step="5" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Gaussian likelihood; independence; MAP regularization</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §§5.5–5.6</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.7</a> · Course question</p>
 </section>
 <!-- ============ 53 ============ -->
