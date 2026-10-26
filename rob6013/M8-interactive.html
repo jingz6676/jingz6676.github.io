@@ -427,6 +427,16 @@ body.print #m8break{display:none!important}
 .slide .page-source a{color:inherit;text-decoration:underline}
 .slide.refs .refs{list-style:none;padding-left:0;font-size:21px;line-height:1.35}
 .slide.refs .refs li{margin:17px 0}
+
+
+body.print .whitening-derivation .worked-solutions{display:block!important}
+body.print .whitening-derivation .worked-question{display:none!important}
+body.print .whitening-derivation .worked-panel{display:block!important;opacity:1!important}
+@media print{
+.whitening-derivation .worked-solutions{display:block!important}
+.whitening-derivation .worked-question{display:none!important}
+.whitening-derivation .worked-panel{display:block!important;opacity:1!important}
+}
 </style>
 <script>
 /* ---------------------------------------------------------------------------
@@ -1175,15 +1185,29 @@ window.M8 = (function () {
 </section>
 
 <!-- ============ 19 ============ -->
-<section class="slide" data-part="IV">
+<section class="slide has-worked-solutions whitening-derivation" data-derivation="whitening" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian geometry</h2><p class="sub">Change basis, then standardize</p>
-<figure style="flex:none"><canvas id="m8p19c" width="1152" height="270" role="img" aria-label="whiten: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p19c"),function(g,t,k){var c=k.c;var S=k.plane(280,130,40),T=k.plane(850,130,40);k.grid(S,-3,3,-2,2,{col:c.rule});k.grid(T,-3,3,-2,2,{col:c.rule});var a=[],b=[];for(var i=0;i<=120;i++){var q=i*Math.PI/60;a.push(S([2*Math.cos(q),Math.sin(q)]));b.push(T([(2-t)*Math.cos(q),Math.sin(q)]));}k.poly(a,c.dat,3);k.poly(b,c.in,3);k.text('centered original coordinates',[150,24],c.dat,{size:17});k.text('divide x1 by its standard deviation',[660,24],c.in,{size:17});k.text('x1',[415,139],c.dim,{size:14});k.text('x2',[288,40],c.dim,{size:14});k.text('z1',[975,139],c.dim,{size:14});k.text('z2',[858,40],c.dim,{size:14});k.dot(S([2,0]),5,c.dat);k.dot(T([2-t,0]),5,c.in);k.text('(2, 0)',[365,164],c.dat,{size:16});k.text(t>.98?'(1, 0)':'x1 scale changing',[890,178],c.in,{size:16});},{seconds:4,hold:.7,rest:1});</script><div class="eq">$$\Sigma=Q\Lambda Q^T,\quad z=\Lambda^{-1/2}Q^T(x-\mu)$$</div><dl class="gloss"><dt></dt><dd>$Q$ eigenvectors; $\Lambda$ positive eigenvalues; $z$ centered with identity covariance; $x,\mu$ position and mean. Plot: $Q=I$, $\Lambda=\operatorname{diag}(4,1)$.</dd></dl>
+<div class="worked-question">
+<figure style="flex:none"><canvas id="m8p19c" width="1152" height="270" role="img" aria-label="whiten: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p19c"),function(g,t,k){var c=k.c;var S=k.plane(280,130,40),T=k.plane(850,130,40);k.grid(S,-3,3,-2,2,{col:c.rule});k.grid(T,-3,3,-2,2,{col:c.rule});var a=[],b=[];for(var i=0;i<=120;i++){var q=i*Math.PI/60;a.push(S([2*Math.cos(q),Math.sin(q)]));b.push(T([(2-t)*Math.cos(q),Math.sin(q)]));}k.poly(a,c.dat,3);k.poly(b,c.in,3);k.text('centered original coordinates',[150,24],c.dat,{size:17});k.text('divide x1 by its standard deviation',[660,24],c.in,{size:17});k.text('x1',[415,139],c.dim,{size:14});k.text('x2',[288,40],c.dim,{size:14});k.text('z1',[975,139],c.dim,{size:14});k.text('z2',[858,40],c.dim,{size:14});k.dot(S([2,0]),5,c.dat);k.dot(T([2-t,0]),5,c.in);k.text('(2, 0)',[365,164],c.dat,{size:16});k.text(t>.98?'(1, 0)':'x1 scale changing',[890,178],c.in,{size:16});},{seconds:4,hold:.7,rest:1});</script><div class="eq">$$\Sigma=Q\Lambda Q^T,\quad z=\Lambda^{-1/2}Q^T(x-\mu)$$</div><dl class="gloss"><dt></dt><dd>$Q$ orthonormal eigenvectors; $\Lambda$ positive eigenvalues; $x,\mu$ position and mean. Result: $\mathbb E[z]=0$, $\operatorname{Cov}(z)=I$. Plot: $Q=I$, $\Lambda=\operatorname{diag}(4,1)$.</dd></dl></div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Whitening covariance derivation">
+<p class="worked-progress">Derivation</p>
+<h3>Derive the mean and covariance</h3>
+<p class="worked-variables">$\mu=\mathbb E[x]$; $\Sigma=\operatorname{Cov}(x)=Q\Lambda Q^T\succ0$; $Q^TQ=I$; $\Lambda$ positive diagonal. Fixed whitening map $W=\Lambda^{-1/2}Q^T$; $z=W(x-\mu)$; $I$: identity.</p>
+<ol class="worked-lines">
+<li>$\mathbb E[z]=W(\mathbb E[x]-\mu)=0$ by linearity.</li>
+<li>$\operatorname{Cov}(z)=\mathbb E[zz^T]=W\,\mathbb E[(x-\mu)(x-\mu)^T]\,W^T=W\Sigma W^T$.</li>
+<li>$=\Lambda^{-1/2}Q^T(Q\Lambda Q^T)Q\Lambda^{-1/2}=\Lambda^{-1/2}\Lambda\Lambda^{-1/2}=I$.</li>
+<li>Fixed matrices pass through expectation; $Q^TQ=I$ cancels the basis changes.</li>
+</ol></div>
+<span class="worked-finish step" data-step="2" aria-hidden="true"></span>
+</div>
 <p class="cite page-source"><span>Whitening; eigendecomposition</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=5">[2] UBC Lec.18 p.5</a> · Course derivation</p>
 </section>
 <!-- ============ 20 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian geometry</h2><p class="sub">A contour radius becomes an ellipse axis</p>
-<figure style="flex:none"><canvas id="m8p20c" width="1152" height="190" role="img" aria-label="ellipse: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p20c"),function(g,t,k){var c=k.c;var S=k.plane(330,95,28); k.grid(S,-5,5,-2.5,2.5,{col:c.rule,step:1}); var pts=[]; for(var i=0;i<=120;i++){var a=i*Math.PI/60,u=Math.sqrt(3)*Math.cos(a),v=Math.sin(a);pts.push(S([(u+v)/Math.sqrt(2),(u-v)/Math.sqrt(2)]));}k.poly(pts,c.in,3);var a=t*2*Math.PI;k.dot(S([(Math.sqrt(3)*Math.cos(a)+Math.sin(a))/Math.sqrt(2),(Math.sqrt(3)*Math.cos(a)-Math.sin(a))/Math.sqrt(2)]),5,c.in);k.text('centered x1',[485,172],c.dim,{size:15});k.text('centered x2',[330,15],c.dim,{size:15});k.text('unit Mahalanobis contour',[640,75],c.in,{size:20});k.text('eigenvalues 3 and 1',[640,110],c.dim,{size:18});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$x=\mu+Q\Lambda^{1/2}z,\qquad \|z\|=c$$</div><dl class="gloss"><dt></dt><dd>$c$ standardized radius; $\sqrt{\lambda_i}$ standard deviation along eigenvector $q_i$. Plot: $c=1$, $\lambda=(3,1)$.</dd></dl>
+<figure style="flex:none"><canvas id="m8p20c" width="1152" height="190" role="img" aria-label="ellipse: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p20c"),function(g,t,k){var c=k.c;var S=k.plane(330,95,28); k.grid(S,-5,5,-2.5,2.5,{col:c.rule,step:1}); var pts=[]; for(var i=0;i<=120;i++){var a=i*Math.PI/60,u=Math.sqrt(3)*Math.cos(a),v=Math.sin(a);pts.push(S([(u+v)/Math.sqrt(2),(u-v)/Math.sqrt(2)]));}k.poly(pts,c.in,3);var a=t*2*Math.PI;k.dot(S([(Math.sqrt(3)*Math.cos(a)+Math.sin(a))/Math.sqrt(2),(Math.sqrt(3)*Math.cos(a)-Math.sin(a))/Math.sqrt(2)]),5,c.in);k.text('centered x1',[485,172],c.dim,{size:15});k.text('centered x2',[330,15],c.dim,{size:15});k.text('unit Mahalanobis contour',[640,75],c.in,{size:20});k.text('eigenvalues 3 and 1',[640,110],c.dim,{size:18});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$x=\mu+Q\Lambda^{1/2}z,\qquad \|z\|=c$$</div><dl class="gloss"><dt></dt><dd>$c$ standardized radius; $q_i$: unit eigenvectors (columns of $Q$); $\sqrt{\lambda_i}$: axis scale. Plot of $x-\mu$: $c=1$, $\lambda=(3,1)$, $q_1=(1,1)^T/\sqrt2$, $q_2=(1,-1)^T/\sqrt2$.</dd></dl>
 <p class="cite page-source"><span>Gaussian density contour</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=5">[2] UBC Lec.18 p.5</a> · Course derivation</p>
 </section>
 <!-- ============ 21 ============ -->
@@ -1297,7 +1321,7 @@ window.M8 = (function () {
 <!-- ============ 29 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Break</h2><p class="sub">Pause: probability, density, and conditioning</p>
-<div class="eq">$$P(X\in A),\qquad p(x),\qquad P(H\mid +)$$</div><dl class="gloss"><dt></dt><dd>$A$ event; $p$ density; conditioning changes the reference population.</dd></dl>
+<div class="eq">$$P(X\in A),\qquad p(x),\qquad P(H\mid +)$$</div><dl class="gloss"><dt></dt><dd>$X$ random quantity; $x$ evaluation value; $A$ event; $p$ density. $H$: event of interest; $+$: positive reading. Conditioning changes the reference population.</dd></dl>
 <p class="cite page-source"><span>Event probability; density; conditional probability</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.3.2</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.4–3.5</a> · Course recap</p>
 </section>
 <!-- ============ 30 ============ -->
@@ -1309,7 +1333,7 @@ window.M8 = (function () {
 <!-- ============ 31 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Gaussian conditioning</h2><p class="sub">Add precisions, then complete the square</p>
-<div class="eq">$$J(x)=\frac{(x-\mu_0)^2}{2P_0}+\frac{(z-x)^2}{2R},\quad P_1^{-1}=P_0^{-1}+R^{-1},\quad\mu_1=P_1(\mu_0/P_0+z/R)$$</div><dl class="gloss"><dt></dt><dd>$x$: state; $z$: fixed reading. $\mu_0,P_0$: prior mean/variance; $R$: noise variance. $\mu_1,P_1$: posterior mean/variance; precision $=1/P_1$.</dd></dl>
+<div class="eq">$$J(x)=\frac{(x-\mu_0)^2}{2P_0}+\frac{(z-x)^2}{2R},\quad P_1^{-1}=P_0^{-1}+R^{-1},\quad\mu_1=P_1(\mu_0/P_0+z/R)$$</div><dl class="gloss"><dt></dt><dd>$J$: negative log posterior, up to a constant. Independent Gaussian prior/noise; $P_0,R>0$. $x$: state; $z$: reading. $\mu_0,P_0$: prior mean/variance; $R$: noise variance; $\mu_1,P_1$: posterior mean/variance.</dd></dl>
 <p class="cite page-source"><span>Gaussian posterior; precision</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.9.3</a> · Course derivation</p>
 </section>
 <!-- ============ 32 ============ -->
@@ -1432,7 +1456,7 @@ window.M8 = (function () {
 <!-- ============ 40 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Lecture 8</p><h2>Estimation</h2><p class="sub">The familiar normal equation returns</p>
-<div class="eq">$$A^TA\hat\theta=A^Tb,\qquad A^T(b-A\hat\theta)=0$$</div><dl class="gloss"><dt></dt><dd>$\hat\theta$ MLE; full column rank gives uniqueness; residual is orthogonal to columns.</dd></dl>
+<div class="eq">$$A^TA\hat\theta=A^Tb,\qquad A^T(b-A\hat\theta)=0$$</div><dl class="gloss"><dt></dt><dd>$A\in\mathbb R^{N\times p}$: known design; $b\in\mathbb R^N$: data; $\theta\in\mathbb R^p$: parameters. Independent equal-variance Gaussian errors make $\hat\theta$ the MLE. Full column rank gives uniqueness; residual is orthogonal to columns.</dd></dl>
 <p class="cite page-source"><span>Normal equations; least squares</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.1.4</a> · Course derivation</p>
 </section>
 <!-- ============ 41 ============ -->
@@ -1457,7 +1481,7 @@ window.M8 = (function () {
 <section class="slide has-worked-solutions" data-part="IV" data-mc="44">
 <p class="eyebrow you" data-min="3">Choose, explain, vote</p>
 <h2>Estimation</h2><p class="sub">What makes the MAP estimate unique?</p>
-<div class="worked-question"><p class="q">$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix}$, $b=(1,2)^T$; Prior adds $\|\theta\|^2/2$. Why is MAP unique?</p><ol class="opts one"><li><i>A</i>The prior makes the two data columns independent.</li><li><i>B</i>Gaussian noise makes every data fit unique.</li><li><i>C</i>The prior adds curvature along the data null space.<b class="ok step" data-step="6">✓</b></li></ol><div class="ex step" data-step="6"><p class="reveal">Least squares: $\theta_1+\theta_2=1$. MAP: $(A^TA+I)\theta=A^Tb$ gives $\theta_1=\theta_2=5/11$.</p></div></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix}$, $b=(1,2)^T$; $J=\tfrac12\|b-A\theta\|^2+\tfrac12\|\theta\|^2$.</p><ol class="opts one"><li><i>A</i>The prior makes the two data columns independent.</li><li><i>B</i>Gaussian noise makes every data fit unique.</li><li><i>C</i>The prior adds curvature along the data null space.<b class="ok step" data-step="6">✓</b></li></ol><div class="ex step" data-step="6"><p class="reveal">Least squares: $\theta_1+\theta_2=1$. MAP: $(A^TA+I)\theta=A^Tb$ gives $\theta_1=\theta_2=5/11$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
 <p class="worked-progress">Solution 1 / 5</p>
 <h3>Identify the data null space</h3>
