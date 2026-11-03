@@ -911,11 +911,242 @@ window.M8 = (function () {
 </section>
 
 <!-- ===== 2 ===== -->
-<section class="slide" data-part="I">
+<section class="slide p2-story" data-part="I">
 <p class="eyebrow">Lecture roadmap</p>
 <h2>From Readings to Estimates</h2>
 <p class="sub">How does the lecture fit together?</p>
-<div class="eq">$$z=x+\varepsilon$$</div><dl class="gloss"><dt>$x$</dt><dd>unknown state (m)</dd><dt>$z$</dt><dd>observed reading (m)</dd><dt>$\varepsilon$</dt><dd>random error (m)</dd></dl><figure style="flex:none"><svg viewBox="0 0 1120 220" style="width:100%;height:220px" role="img" aria-label="Lecture roadmap: describe error, update with observations, compare point estimates, and interpret uncertainty"><g style="font-size:20px"><text x="10" y="40">1. Model error</text><text x="410" y="40">Assign probabilities</text><text x="810" y="40">Describe spread</text><text x="10" y="90">2. Use observations</text><text x="410" y="90">Combine information</text><text x="810" y="90">Update uncertainty</text><text x="10" y="140">3. Estimate parameters</text><text x="410" y="140">Compare methods</text><text x="810" y="140">Point estimate</text><text x="10" y="190">4. Report uncertainty</text><text x="410" y="190">Compare intervals</text><text x="810" y="190">Interpret 95%</text></g><g class="stroke" fill="none" stroke-width="2"><path d="M300 34H380l-10-5m10 5l-10 5M700 34H780l-10-5m10 5l-10 5"/><path d="M300 84H380l-10-5m10 5l-10 5M700 84H780l-10-5m10 5l-10 5"/><path d="M300 134H380l-10-5m10 5l-10 5M700 134H780l-10-5m10 5l-10 5"/><path d="M300 184H380l-10-5m10 5l-10 5M700 184H780l-10-5m10 5l-10 5"/></g></svg></figure><div class="step" data-step="1"><p class="callout">Estimate the fixed state from noisy readings.</p></div>
+<figure class="p2-story-figure">
+  <canvas id="m8p02story" width="1152" height="320" role="img" aria-label="A stationary wall produces possible noisy readings. An error model describes the variation. A new reading updates earlier information, producing an estimate and an uncertainty interval."></canvas>
+</figure>
+<div class="p2-story-controls" role="group" aria-label="Measurement story playback">
+  <button type="button" data-story-play aria-label="Pause the measurement story">Pause</button>
+  <button type="button" data-story-restart>Restart</button>
+  <span class="p2-story-sep" aria-hidden="true"></span>
+  <button type="button" data-story-scene="0" aria-pressed="true">Readings</button>
+  <button type="button" data-story-scene="1" aria-pressed="false">Error</button>
+  <button type="button" data-story-scene="2" aria-pressed="false">Update</button>
+  <button type="button" data-story-scene="3" aria-pressed="false">Estimate</button>
+  <span class="p2-story-time" aria-hidden="true">0:00 / 0:20</span>
+</div>
+<div class="step" data-step="1"><p class="callout p2-story-goal">What should we report? How sure are we?</p></div>
+<style>
+.p2-story .p2-story-figure{height:320px;flex:none;margin-top:0}
+.p2-story #m8p02story{width:1152px;height:320px;max-width:100%;border-radius:8px}
+.p2-story-controls{display:flex;align-items:center;gap:8px;flex:none;margin:8px 0 0;min-height:30px}
+.p2-story-controls button{font:500 14px/1.1 ui-monospace,Menlo,monospace;color:var(--dim);background:var(--bg);border:1px solid var(--rule);border-radius:5px;padding:6px 12px;cursor:pointer}
+.p2-story-controls button:hover,.p2-story-controls button:focus-visible{border-color:var(--acc);color:var(--acc);outline:2px solid transparent}
+.p2-story-controls button[aria-pressed="true"]{background:var(--panel);border-color:var(--acc);color:var(--acc)}
+.p2-story-controls [data-story-play]{min-width:76px;color:var(--ink)}
+.p2-story-sep{width:1px;height:19px;background:var(--rule);margin:0 5px}
+.p2-story-time{font:12px/1 ui-monospace,Menlo,monospace;color:var(--dim);margin-left:auto}
+.p2-story .p2-story-goal{font-size:26px;line-height:1.25;margin:10px 0 0;padding-top:3px;padding-bottom:3px}
+body.print .p2-story-controls{display:none!important}
+@media print{.p2-story-controls{display:none!important}}
+</style>
+<script>
+(function(){
+  'use strict';
+  var canvas=document.getElementById('m8p02story');
+  if(!canvas)return;
+  var slide=canvas.closest('.slide'), g=canvas.getContext('2d');
+  var playButton=slide.querySelector('[data-story-play]');
+  var restartButton=slide.querySelector('[data-story-restart]');
+  var sceneButtons=Array.from(slide.querySelectorAll('[data-story-scene]'));
+  var clock=slide.querySelector('.p2-story-time');
+  var reduced=window.matchMedia('(prefers-reduced-motion:reduce)');
+  var printMedia=window.matchMedia('print');
+  /* Exact illustration model. The opening dots are possible readings, not a
+     batch silently reused as an observed-data likelihood. The update takes ONE
+     actual reading, z=2.20m, with independent zero-mean Gaussian error.
+     Error density uses an error axis; prior/likelihood/posterior use a state axis.
+     The last band is the 1.96-sd Gaussian POSTERIOR interval for this model.
+     No general frequentist-coverage claim is made on the preview. */
+  var model={trueDistance:2,possibleReadings:[1.72,2.28,1.91,2.12,1.97],
+    priorMean:1.65,priorVariance:0.16,noiseVariance:0.0625,reading:2.2};
+  model.gain=model.priorVariance/(model.priorVariance+model.noiseVariance);
+  model.posteriorVariance=1/(1/model.priorVariance+1/model.noiseVariance);
+  model.posteriorMean=model.posteriorVariance*(model.priorMean/model.priorVariance+model.reading/model.noiseVariance);
+  model.posteriorStd=Math.sqrt(model.posteriorVariance);
+  model.interval=[model.posteriorMean-1.96*model.posteriorStd,model.posteriorMean+1.96*model.posteriorStd];
+  var duration=20,time=0,playing=false,wantedPlay=!reduced.matches,manual=false,forced=false,last=0,raf=0;
+  /* Playback follows the presenter without changing the deck's navigation
+     protocol. The pathname scopes both the channel and the popup fallback. */
+  var syncRole=/[?&]presenter(?:[=&]|$)/.test(location.search)?'presenter':/[?&]audience(?:[=&]|$)/.test(location.search)?'audience':'';
+  var syncPath=location.pathname,syncId=Math.random().toString(36).slice(2),syncSeq=0;
+  var syncChannel=null,syncPeers=[],syncSeen=Object.create(null),following=false,remoteRunning=false,applyingRemote=false;
+  var labels=['Readings','Error','Update','Estimate'];
+  function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
+  function ease(x){x=clamp(x,0,1);return x*x*(3-2*x);}
+  function palette(){var s=getComputedStyle(document.documentElement);function c(k){return s.getPropertyValue(k).trim();}
+    return {bg:c('--bg'),ink:c('--ink'),dim:c('--dim'),rule:c('--rule'),panel:c('--panel'),input:c('--c-in'),data:c('--c-data'),error:c('--c-res'),answer:c('--c-res-ok')};}
+  function text(s,x,y,size,color,align){g.fillStyle=color;g.font=(size||23)+'px Georgia, "Times New Roman", serif';g.textAlign=align||'left';g.textBaseline='alphabetic';g.fillText(s,x,y);}
+  function line(x1,y1,x2,y2,c,w,dash){g.save();g.strokeStyle=c;g.lineWidth=w||2;g.setLineDash(dash||[]);g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke();g.restore();}
+  function circle(x,y,r,c,stroke){g.beginPath();g.arc(x,y,r,0,2*Math.PI);if(c){g.fillStyle=c;g.fill();}if(stroke){g.strokeStyle=stroke;g.lineWidth=2;g.stroke();}}
+  function rect(x,y,w,h,r,fill,stroke){g.beginPath();g.roundRect(x,y,w,h,r||0);if(fill){g.fillStyle=fill;g.fill();}if(stroke){g.strokeStyle=stroke;g.lineWidth=1.5;g.stroke();}}
+  function normal(x,mu,variance){return Math.exp(-(x-mu)*(x-mu)/(2*variance))/Math.sqrt(2*Math.PI*variance);}
+  function curve(mu,variance,color,alpha,box,range,maxY,fill){
+    g.save();g.globalAlpha=alpha;g.strokeStyle=color;g.lineWidth=3;
+    g.beginPath();for(var i=0;i<=220;i++){var v=range[0]+(range[1]-range[0])*i/220;var x=box.x+box.w*i/220,y=box.y+box.h-normal(v,mu,variance)*box.h/maxY;if(i===0)g.moveTo(x,y);else g.lineTo(x,y);}g.stroke();
+    if(fill){g.lineTo(box.x+box.w,box.y+box.h);g.lineTo(box.x,box.y+box.h);g.closePath();g.globalAlpha=alpha*0.1;g.fillStyle=color;g.fill();}g.restore();
+  }
+  function axis(box,range,label,C,ticks){
+    line(box.x,box.y+box.h,box.x+box.w,box.y+box.h,C.rule,1.5);
+    (ticks||[]).forEach(function(v){var x=box.x+(v-range[0])/(range[1]-range[0])*box.w;line(x,box.y+box.h,x,box.y+box.h+5,C.rule,1.2);text(String(v),x,box.y+box.h+25,17,C.dim,'center');});
+    text(label,box.x+box.w/2,box.y+box.h+54,20,C.dim,'center');
+  }
+  function legend(s,x,y,color,C){line(x,y-7,x+24,y-7,color,3);text(s,x+33,y,18,C.dim);}
+  function world(C,phase,local){
+    text('One stationary wall',24,32,24,C.ink);
+    line(25,242,401,242,C.rule,2);
+    rect(67,186,89,44,10,C.panel,C.dim);circle(87,234,9,C.dim);circle(138,234,9,C.dim);
+    rect(111,157,24,29,5,C.panel,C.dim);circle(128,173,6,C.data);
+    line(359,84,359,241,C.input,8);line(370,84,370,241,C.rule,1.5);
+    for(var i=0;i<6;i++)line(370,95+i*26,384,82+i*26,C.rule,1.2);
+    text('Fixed wall',359,67,20,C.input,'center');text('Sensor',111,274,20,C.dim,'center');
+    line(138,173,350,173,C.data,2,[6,7]);
+    var reading=phase<2?model.possibleReadings[Math.min(4,Math.floor(local*5))]:model.reading;
+    var pulse=phase<2?0.35+0.35*Math.sin(local*Math.PI*8):0.6;
+    g.save();g.globalAlpha=pulse;circle(243,173,49,null,C.data);g.restore();
+    text(reading.toFixed(2)+' m',244,140,32,C.data,'center');
+    text(phase<2?'Possible readings':'New reading',244,205,19,C.dim,'center');
+    if(phase===3){text('Report an estimate and uncertainty',24,310,19,C.dim);}
+    else if(phase===2){text('Combine it with earlier information',24,310,19,C.dim);}
+    else if(phase===1){text('Describe how errors vary',24,310,19,C.dim);}
+    else{text('Same distance. Different readouts.',24,310,19,C.dim);}
+  }
+  function readingPlot(C,p){
+    var x0=490,x1=1094,y0=74,y1=244;
+    text('Possible readings',490,31,24,C.data);
+    line(x0,y1,x1,y1,C.rule,1.5);line(x0,y0,x0,y1,C.rule,1.5);
+    function yy(v){return y1-(v-1.5)*170;}
+    line(x0,yy(2),x1,yy(2),C.input,2,[6,6]);text('wall',x1+5,yy(2)+5,17,C.input);
+    [1.5,2,2.5].forEach(function(v){text(v.toFixed(1),x0-12,yy(v)+5,17,C.dim,'right');});
+    var count=Math.min(5,1+Math.floor(p*5));
+    model.possibleReadings.forEach(function(v,i){var x=535+i*127;text(String(i+1),x,y1+25,17,C.dim,'center');if(i<count){circle(x,yy(v),7,C.data);if(i===count-1)circle(x,yy(v),13,null,C.data);}});
+    text('Distance (m)',x0,y0-13,17,C.dim);text('Measurement',795,301,20,C.dim,'center');
+  }
+  function errorPlot(C,p){
+    var box={x:490,y:78,w:604,h:169};
+    text('A model of measurement error',490,31,24,C.error);
+    axis(box,[-0.8,0.8],'Error (m)',C,[-0.5,0,0.5]);
+    curve(0,model.noiseVariance,C.error,ease(p*1.8),box,[-0.8,0.8],1.75,true);
+    text('density',490,62,17,C.dim);
+    model.possibleReadings.forEach(function(v,i){var x=box.x+(v-model.trueDistance+0.8)/1.6*box.w;circle(x,box.y+box.h+1,4,C.data);});
+  }
+  function updatePlot(C,p){
+    var box={x:490,y:78,w:604,h:166},range=[0.4,3.2];
+    text('Use a reading to update what we know',490,31,24,C.ink);
+    axis(box,range,'Wall distance (m)',C,[0.5,1,1.5,2,2.5,3]);
+    curve(model.priorMean,model.priorVariance,C.input,0.82,box,range,2.0,false);
+    curve(model.reading,model.noiseVariance,C.data,ease(p*2),box,range,2.0,false);
+    curve(model.posteriorMean,model.posteriorVariance,C.answer,ease((p-0.26)/0.7),box,range,2.0,true);
+    legend('Earlier information',490,61,C.input,C);legend('New reading',727,61,C.data,C);legend('Updated',923,61,C.answer,C);
+  }
+  function estimatePlot(C,p){
+    var box={x:490,y:72,w:604,h:163},range=[0.4,3.2];
+    text('An estimate with uncertainty',490,31,24,C.answer);
+    curve(model.posteriorMean,model.posteriorVariance,C.answer,1,box,range,2.0,true);
+    line(box.x,235,box.x+box.w,235,C.rule,1.5);
+    function xx(v){return box.x+(v-range[0])/(range[1]-range[0])*box.w;}
+    var xm=xx(model.posteriorMean),lo=xx(model.interval[0]),hi=xx(model.interval[1]);
+    line(xm,81,xm,242,C.answer,2,[4,5]);
+    line(lo,265,hi,265,C.answer,5);line(lo,258,lo,272,C.answer,2);line(hi,258,hi,272,C.answer,2);circle(xm,265,7,C.answer);
+    text(model.posteriorMean.toFixed(2)+' m',xm,309,23,C.answer,'center');
+    text('Estimate',xm+13,222,19,C.answer);text('Uncertainty',hi+15,271,19,C.dim);
+  }
+  function drawFrame(seconds){
+    var C=palette();g.clearRect(0,0,1152,320);g.fillStyle=C.bg;g.fillRect(0,0,1152,320);
+    var phase=Math.min(3,Math.floor(clamp(seconds,0,duration-0.0001)/5));var local=(seconds-phase*5)/5;local=clamp(local,0,1);
+    line(437,17,437,306,C.rule,1);world(C,phase,local);
+    if(phase===0)readingPlot(C,local);else if(phase===1)errorPlot(C,local);else if(phase===2)updatePlot(C,local);else estimatePlot(C,local);
+    sceneButtons.forEach(function(b,i){b.setAttribute('aria-pressed',String(i===phase));});
+    clock.textContent='0:'+String(Math.floor(seconds)).padStart(2,'0')+' / 0:20';
+  }
+  function drawPoster(){
+    var C=palette();g.clearRect(0,0,1152,320);g.fillStyle=C.bg;g.fillRect(0,0,1152,320);
+    for(var i=0;i<4;i++){var x=i*290;rect(x+2,8,277,281,8,C.panel,C.rule);text(labels[i],x+21,42,24,i===0?C.data:i===1?C.error:i===2?C.input:C.answer);}
+    /* A four-moment poster is used for print/reduced motion; no animation is
+       needed to recover the lecture route, and no exercise answer is included. */
+    var x=23;
+    line(x+11,212,x+232,212,C.rule,1.5);line(x+206,74,x+206,212,C.input,5);rect(x+10,166,49,30,7,C.bg,C.dim);circle(x+20,201,6,C.dim);circle(x+48,201,6,C.dim);line(x+57,179,x+199,179,C.data,2,[5,5]);
+    model.possibleReadings.forEach(function(v,i){circle(x+87+i*25,137+(v-2)*-100,5,C.data);});
+    text('Same wall, noisy readouts',x,264,18,C.dim);
+    var box={x:313,y:83,w:220,h:129};curve(0,model.noiseVariance,C.error,1,box,[-0.8,0.8],1.75,true);line(313,212,533,212,C.rule,1.3);text('−',335,234,18,C.dim);text('0',423,234,18,C.dim,'center');text('+',511,234,18,C.dim);text('Model the error',313,264,18,C.dim);
+    box={x:603,y:83,w:220,h:129};curve(model.priorMean,model.priorVariance,C.input,.65,box,[0.4,3.2],2,false);curve(model.reading,model.noiseVariance,C.data,.6,box,[0.4,3.2],2,false);curve(model.posteriorMean,model.posteriorVariance,C.answer,1,box,[0.4,3.2],2,true);line(603,212,823,212,C.rule,1.3);text('Combine information',603,264,18,C.dim);
+    box={x:893,y:83,w:220,h:129};curve(model.posteriorMean,model.posteriorVariance,C.answer,1,box,[0.4,3.2],2,true);line(893,212,1113,212,C.rule,1.3);var lo=893+(model.interval[0]-.4)/2.8*220,hi=893+(model.interval[1]-.4)/2.8*220,mid=893+(model.posteriorMean-.4)/2.8*220;line(lo,231,hi,231,C.answer,4);circle(mid,231,5,C.answer);text('Report a value and a range',893,264,18,C.dim);
+    sceneButtons.forEach(function(b){b.setAttribute('aria-pressed','false');});clock.textContent='Four moments · 0:20';
+  }
+  function inPrint(){return printMedia.matches||document.body.classList.contains('print');}
+  function paint(){if(inPrint()||(!forced&&reduced.matches&&!manual))drawPoster();else drawFrame(time);}
+  function updateButton(){playButton.textContent=playing?'Pause':time>=duration?'Replay':'Play';playButton.setAttribute('aria-label',(playing?'Pause':'Play')+' the measurement story');}
+  function active(){return slide.classList.contains('on')&&!document.hidden&&!inPrint();}
+  function tick(now){raf=0;if(!playing||!active()){last=0;return;}if(last)time=Math.min(duration,time+(now-last)/1000);last=now;paint();if(time>=duration){playing=false;wantedPlay=false;last=0;updateButton();publishState();return;}raf=requestAnimationFrame(tick);}
+  function reconcile(){var wasPlaying=playing,should=active()&&wantedPlay&&(!reduced.matches||manual)&&(!following||remoteRunning);if(should&&!playing){playing=true;last=0;updateButton();if(!raf)raf=requestAnimationFrame(tick);}else if(!should&&playing){playing=false;last=0;if(raf)cancelAnimationFrame(raf);raf=0;updateButton();}paint();if(wasPlaying!==playing&&!applyingRemote)publishState();}
+  function applyAction(action,seconds){
+    if(action==='pause'||action==='seek'||action==='poster'){wantedPlay=false;remoteRunning=false;}
+    else if(action==='play'||action==='restart'){manual=true;forced=true;if(action==='restart'||time>=duration)time=0;wantedPlay=true;remoteRunning=true;}
+    if(action==='seek'){manual=true;forced=true;time=clamp(Number(seconds)||0,0,duration);}
+    reconcile();if(action==='poster')drawPoster();
+  }
+  function command(action,seconds){applyAction(action,seconds);if(syncRole==='audience')sendSync('intent',{action:action,seconds:seconds});else publishState();}
+  function pause(){command('pause');}
+  function play(){command('play');}
+  function restart(){command('restart');}
+  function renderAt(seconds){command('seek',seconds);return {time:time,scene:Math.min(3,Math.floor(Math.min(time,19.999)/5))};}
+  function sendSync(kind,details){
+    if(!syncRole)return;
+    var packet={protocol:'m8-roadmap-v1',path:syncPath,sender:syncId,role:syncRole,seq:++syncSeq,kind:kind,details:details||{}};
+    if(syncChannel)syncChannel.postMessage(packet);
+    var peers=syncPeers.slice();if(syncRole==='audience'&&window.opener)peers.push(window.opener);
+    peers.forEach(function(peer){try{if(!peer.closed)peer.postMessage(packet,location.origin==='null'?'*':location.origin);}catch(ignore){}});
+  }
+  function publishState(){if(syncRole==='presenter'&&!applyingRemote)sendSync('state',{time:time,playing:playing,wantedPlay:wantedPlay,manual:manual,forced:forced,sentAt:Date.now()});}
+  function receiveSync(packet,source){
+    if(!packet||packet.protocol!=='m8-roadmap-v1'||packet.path!==syncPath||packet.sender===syncId)return;
+    if(packet.role!==(syncRole==='presenter'?'audience':'presenter')||!(packet.seq>0))return;
+    if((syncSeen[packet.sender]||0)>=packet.seq)return;syncSeen[packet.sender]=packet.seq;
+    if(syncRole==='presenter'){
+      if(source&&syncPeers.indexOf(source)<0)syncPeers.push(source);
+      if(packet.kind==='intent'){
+        var intent=packet.details||{};
+        if(['pause','play','restart','seek','poster'].indexOf(intent.action)<0)return;
+        applyAction(intent.action,intent.seconds);
+      }
+      publishState();return;
+    }
+    if(packet.kind!=='state')return;
+    var state=packet.details||{};if(!Number.isFinite(state.time))return;
+    following=true;remoteRunning=state.playing===true;wantedPlay=state.wantedPlay===true;manual=state.manual===true;forced=state.forced===true;
+    var elapsed=remoteRunning&&Number.isFinite(state.sentAt)?clamp((Date.now()-state.sentAt)/1000,0,2):0;
+    time=clamp(state.time+elapsed,0,duration);last=0;
+    if(time>=duration){wantedPlay=false;remoteRunning=false;}
+    applyingRemote=true;reconcile();applyingRemote=false;updateButton();
+  }
+  function requestState(){if(syncRole==='audience')sendSync('request');}
+  playButton.addEventListener('click',function(e){e.stopPropagation();if(playing)pause();else play();});
+  restartButton.addEventListener('click',function(e){e.stopPropagation();restart();});
+  sceneButtons.forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();renderAt(Number(b.dataset.storyScene)*5+2.5);});});
+  slide.querySelector('.p2-story-controls').addEventListener('keydown',function(e){if(e.key===' '||e.key==='Enter')e.stopPropagation();});
+  new MutationObserver(reconcile).observe(slide,{attributes:true,attributeFilter:['class']});
+  new MutationObserver(paint).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  new MutationObserver(reconcile).observe(document.body,{attributes:true,attributeFilter:['class']});
+  document.addEventListener('visibilitychange',function(){reconcile();if(!document.hidden)requestState();});
+  if(reduced.addEventListener)reduced.addEventListener('change',reconcile);
+  if(printMedia.addEventListener)printMedia.addEventListener('change',reconcile);
+  window.addEventListener('beforeprint',function(){pause();drawPoster();});
+  window.addEventListener('afterprint',reconcile);
+  window.M8Roadmap={duration:duration,model:model,renderAt:renderAt,
+    renderPoster:function(){command('poster');},play:play,pause:pause,restart:restart,
+    getState:function(){return {time:time,playing:playing,active:active(),reduced:reduced.matches,manual:manual,syncRole:syncRole,following:following};}};
+  if(syncRole){
+    try{syncChannel=new BroadcastChannel('m8-roadmap:'+syncPath);syncChannel.onmessage=function(e){receiveSync(e.data,null);};}catch(ignore){}
+    window.addEventListener('message',function(e){if(e.origin===location.origin)receiveSync(e.data,e.source);});
+    requestState();setTimeout(requestState,200);setTimeout(requestState,800);
+    setInterval(function(){if(playing)publishState();},250);
+  }
+  paint();updateButton();reconcile();
+})();
+</script>
 <p class="cite page-source"><span>Probability distribution; uncertainty</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.1</a> · Course concept map</p>
 </section>
 
@@ -924,7 +1155,7 @@ window.M8 = (function () {
 <p class="eyebrow">Definition and reasoning</p>
 <h2>Random variables</h2>
 <p class="sub">How does an outcome become a number?</p>
-<div class="eq">$$x:\Omega\to\mathbb R,\qquad x(\omega)\in\{-1,0,2\}$$</div><dl class="gloss"><dt>$\Omega$</dt><dd>sample space: all possible outcomes</dd><dt>$\omega$</dt><dd>one outcome</dd><dt>$x$</dt><dd>random error here, not position (cm)</dd></dl><div class="cols3"><div class="box">Outcome A → −1 cm</div><div class="box">Outcome B → 0 cm</div><div class="box">Outcome C → 2 cm</div></div><div class="step" data-step="1"><p class="callout">The rule is fixed; the outcome is uncertain.</p></div>
+<div class="eq">$$x:\Omega\to\mathbb R,\qquad x(\omega)\in\{-1,0,2\}$$</div><dl class="gloss"><dt>$\Omega$</dt><dd>sample space: all possible outcomes</dd><dt>$\omega$</dt><dd>one outcome</dd><dt>$x$</dt><dd>random error (cm)</dd></dl><div class="cols3"><div class="box">Outcome A → −1 cm</div><div class="box">Outcome B → 0 cm</div><div class="box">Outcome C → 2 cm</div></div><div class="step" data-step="1"><p class="callout">The rule is fixed; the outcome is uncertain.</p></div>
 <p class="cite page-source"><span>Random variable; realization</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.2</a></p>
 </section>
 
