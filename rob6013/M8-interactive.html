@@ -1260,7 +1260,7 @@ var ctl=automatic(document.getElementById('m8p08c'),[[0,.05],[800,.05],[4800,.15
 <h3>Normalize the density</h3>
 <p class="worked-variables">$x$: error (cm); $h$: uniform density; $t$: integration variable (cm).</p>
 <ol class="worked-lines">
-<li>$x$: error in cm; $h$: constant density on $[0,.5]$.</li>
+<li>Uniform support: $[0,.5]$ cm; width $.5$ cm.</li>
 <li>Normalization means total area is one.<br>$h(.5-0)=1$.</li>
 <li>$h=1/.5=2\ \mathrm{cm}^{-1}$.</li>
 </ol><figure class="m8-density-figure"><svg viewBox="0 0 460 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Full uniform density rectangle has width zero point five and height two, giving total area one." style="width:460px;max-width:100%;height:auto">
@@ -1422,7 +1422,7 @@ var ctl=automatic(document.getElementById('m8p13-product'),[[0,1],[1400,1],[4900
  repaint();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(repaint);
  new MutationObserver(repaint).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
  ctl.sync();
-})();</script><div class="step" data-step="1"><p class="callout">Diagonal: component variance. Off-diagonal: paired deviations.</p></div>
+})();</script><div class="step" data-step="1"><p class="callout">In $\Sigma$: diagonal = component variance; off-diagonal = mean paired product.</p></div>
 <p class="cite page-source"><span>Covariance matrix</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · <a href="https://data140.org/fa18/textbook/chapters/Chapter_23/01_Random_Vectors">[7] Data140 §23.1</a> · Course derivation</p>
   
 </section>
@@ -2235,7 +2235,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <h3>Identify what the specification omits</h3>
 <p class="worked-variables">$C(B)$: confidence interval; $I(b)$: credible interval; $\varepsilon_{new}$: fresh noise; $\theta+\varepsilon_{new}$: next reading in this offset model.</p>
 <ol class="worked-lines">
-<li>The statement “$\pm2$ cm, 95%” supplies a width and a percentage.</li>
+<li>The statement “$\pm2$ cm, 95%” supplies a half-width of $2$ cm and a percentage.</li>
 <li>$\theta$: offset; $B$: repeated random dataset; $b$: observed dataset.</li>
 <li>No target quantity or probability construction is specified.</li>
 </ol></div>
