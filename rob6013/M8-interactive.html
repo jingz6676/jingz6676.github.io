@@ -1123,7 +1123,7 @@ window.M8 = (function () {
 <p class="eyebrow">Example</p>
 <h2>Probability Mass Function (PMF)</h2>
 <p class="sub">The mean is the probability-weighted average error.</p>
-<div class="ex"><p>Error values −1, 0, 2 cm; masses ¼, ½, ¼. Find nonnegative-error probability and mean.</p><div class="step" data-step="1"><div class="eq">$$P(x\geq0)=\tfrac12+\tfrac14=\tfrac34,\qquad \mu=\sum_a a\,p(a)=(-1)\tfrac14+0\tfrac12+2\tfrac14=\tfrac14$$</div><dl class="gloss"><dt>$P$</dt><dd>event probability</dd><dt>$x$</dt><dd>error (cm)</dd><dt>$\mu$</dt><dd>mean error; sensor bias (cm)</dd></dl></div></div>
+<div class="ex"><p>Error values −1, 0, 2 cm; masses ¼, ½, ¼. Find nonnegative-error probability and mean.</p><div class="step" data-step="1"><div class="eq">$$P(x\geq0)=\tfrac12+\tfrac14=\tfrac34,\qquad \mu=\sum_a a\,p(a)=(-1)\tfrac14+0\tfrac12+2\tfrac14=\tfrac14$$</div><dl class="gloss"><dt>$a,p(a)$</dt><dd>possible error (cm), its probability mass</dd><dt>$P$</dt><dd>event probability</dd><dt>$x$</dt><dd>error (cm)</dd><dt>$\mu$</dt><dd>mean error; sensor bias (cm)</dd></dl></div></div>
 <p class="cite page-source"><span>Discrete probability; expectation</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.3.1</a> · <a href="https://data140.org/fa18/textbook/chapters/Chapter_08/03_Expectations_of_Functions">[7] Data140 §§8.1,8.3</a> · Course example</p>
   
 </section>
@@ -1240,7 +1240,7 @@ var ctl=automatic(document.getElementById('m8p08c'),[[0,.05],[800,.05],[4800,.15
  repaint();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(repaint);
  new MutationObserver(repaint).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
  ctl.sync();
-})();</script><div class="ex"><p class="lbl">uniform error</p><div class="eq">$$p(t)=\begin{cases}4&amp;0\leq t\leq .25\\0&amp;\text{otherwise}\end{cases},\quad P(.05\leq x\leq .15)=4(.15-.05)=.4$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr auto 1fr auto 1fr"><dt>$t,x$</dt><dd>error (cm)</dd><dt>$p$</dt><dd>density (cm⁻¹)</dd><dt>$P$</dt><dd>interval probability</dd></dl></div>
+})();</script><div class="ex"><p class="lbl">uniform error</p><div class="eq">$$p(t)=\begin{cases}4&amp;0\leq t\leq .25\\0&amp;\text{otherwise}\end{cases},\quad P(.05\leq x\leq .15)=4(.15-.05)=.4$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr auto 1fr auto 1fr"><dt>$x$</dt><dd>random error (cm)</dd><dt>$t$</dt><dd>density argument (cm)</dd><dt>$p$</dt><dd>density (cm⁻¹)</dd><dt>$P$</dt><dd>interval probability</dd></dl></div>
 <p class="cite page-source"><span>Uniform density; normalization</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.3.2</a> · Course example</p>
   
 </section>
@@ -1356,7 +1356,7 @@ var ctl=automatic(document.getElementById('m8p08c'),[[0,.05],[800,.05],[4800,.15
 <p class="eyebrow">Definition</p>
 <h2>Moments</h2>
 <p class="sub">The mean vector lists the component expectations.</p>
-<div class="eq">$$x=\begin{bmatrix}x_1\\x_2\end{bmatrix},\qquad\mu=\mathbb E[x]=\begin{bmatrix}\mathbb E[x_1]\\\mathbb E[x_2]\end{bmatrix}$$</div><dl class="gloss"><dt>$x$</dt><dd>column of random variables on one outcome space</dd><dt>$x_i$</dt><dd>component i</dd><dt>$\mu$</dt><dd>mean in R²; finite component means</dd></dl><p class="callout">Average components; keep the column shape.</p><div class="step" data-step="1"><p>Sample index $s$: $x^{(s)}$. Component index $i$: $x_i$.</p></div>
+<div class="eq">$$x=\begin{bmatrix}x_1\\x_2\end{bmatrix},\qquad\mu=\mathbb E[x]=\begin{bmatrix}\mathbb E[x_1]\\\mathbb E[x_2]\end{bmatrix}$$</div><dl class="gloss"><dt>$x$</dt><dd>2×1 random column on one outcome space</dd><dt>$x_i$</dt><dd>scalar coordinate selected by i</dd><dt>$\mu$</dt><dd>fixed 2×1 mean; finite component means</dd></dl><p class="callout">Average components; keep the column shape.</p><div class="step" data-step="1"><p>Sample index $s$: $x^{(s)}$. Component index $i$: $x_i$.</p></div>
 <p class="cite page-source"><span>Random vector; mean vector</span> — <a href="https://data140.org/fa18/textbook/chapters/Chapter_23/01_Random_Vectors">[7] Data140 §23.1</a></p>
   
 </section>
@@ -1374,7 +1374,7 @@ var ctl=automatic(document.getElementById('m8p08c'),[[0,.05],[800,.05],[4800,.15
 .m8-review-controls output{min-width:96px;color:var(--acc);font-variant-numeric:tabular-nums}
 body.print .m8-review-controls{display:none!important}
 @media print{.m8-review-controls{display:none!important}}
-</style><style>.m8-p13>.gloss{max-width:none;grid-template-columns:auto 1.6fr auto 1fr auto 1fr}.m8-p13>.eq{margin:10px 0}.m8-p13 .callout{margin:7px 0}</style><div class="eq">$$\Sigma=\mathbb E[(x-\mu)(x-\mu)^T],\qquad\Sigma_{ij}=\mathbb E[(x_i-\mu_i)(x_j-\mu_j)]$$</div><dl class="gloss"><dt>$x,\mu$</dt><dd>random column and mean in Rᵈ; assume $\mathbb E[x_i^2]&lt;\infty$</dd><dt>$\Sigma$</dt><dd>population covariance, d × d</dd><dt>$i,j$</dt><dd>coordinate indices</dd></dl><figure style="flex:none;margin-top:8px"><canvas id="m8p13-product" width="1152" height="174" role="img" aria-label="One dimensionless centered outcome has deviations one and s; changing the sign of s changes the two cross products together, while both squared diagonal entries stay nonnegative"></canvas></figure>
+</style><style>.m8-p13>.gloss{max-width:none;grid-template-columns:auto 1.6fr auto 1fr auto 1fr}.m8-p13>.eq{margin:10px 0}.m8-p13 .callout{margin:7px 0}</style><div class="eq">$$\Sigma=\mathbb E[(x-\mu)(x-\mu)^T],\qquad\Sigma_{ij}=\mathbb E[(x_i-\mu_i)(x_j-\mu_j)]$$</div><dl class="gloss"><dt>$x,\mu$</dt><dd>d×1 random column / fixed mean; $d$: dimension; $\mathbb E[x_i^2]&lt;\infty$</dd><dt>$\Sigma$</dt><dd>population covariance, d × d</dd><dt>$i,j$</dt><dd>coordinate indices</dd></dl><figure style="flex:none;margin-top:8px"><canvas id="m8p13-product" width="1152" height="174" role="img" aria-label="One dimensionless centered outcome has deviations one and s; changing the sign of s changes the two cross products together, while both squared diagonal entries stay nonnegative"></canvas></figure>
 <script>(function(){
 var repaint=function(){};
 /* Pure automatic playback, scoped to this page. No student-facing controls. */
@@ -1440,7 +1440,7 @@ var ctl=automatic(document.getElementById('m8p13-product'),[[0,1],[1400,1],[4900
 .m8-review-controls output{min-width:96px;color:var(--acc);font-variant-numeric:tabular-nums}
 body.print .m8-review-controls{display:none!important}
 @media print{.m8-review-controls{display:none!important}}
-</style><style>.m8-p14 .m8-psd-top{display:grid;grid-template-columns:1.13fr 1fr;gap:28px;align-items:start}.m8-p14 .m8-psd-top .eq{margin:8px 0}.m8-p14 .m8-psd-top .gloss{margin-top:8px;max-width:none}.m8-p14 .m8-psd-top>.step{border-left:1px solid var(--rule);padding-left:24px}.m8-p14 .m8-review-controls{margin-bottom:0}</style><div class="m8-psd-top"><div><div class="eq">$$a^T\Sigma a=\mathbb E[(a^T(x-\mu))^2]\geq0$$</div><dl class="gloss"><dt>$a$</dt><dd>fixed direction column in Rᵈ</dd><dt>$x,\mu$</dt><dd>random column and population mean</dd><dt>$\Sigma$</dt><dd>population covariance (PSD)</dd></dl></div><div class="step" data-step="1"><div class="eq">$$C=\frac{X_c^TX_c}{N-1}\quad(N>1)$$</div><dl class="gloss"><dt>$C$</dt><dd>sample covariance estimate</dd><dt>$X_c$</dt><dd>N sample rows, each minus the sample mean</dd><dt>$N$</dt><dd>number of samples</dd></dl></div>
+</style><style>.m8-p14 .m8-psd-top{display:grid;grid-template-columns:1.13fr 1fr;gap:28px;align-items:start}.m8-p14 .m8-psd-top .eq{margin:8px 0}.m8-p14 .m8-psd-top .gloss{margin-top:8px;max-width:none}.m8-p14 .m8-psd-top>.step{border-left:1px solid var(--rule);padding-left:24px}.m8-p14 .m8-review-controls{margin-bottom:0}</style><div class="m8-psd-top"><div><div class="eq">$$a^T\Sigma a=\mathbb E[(a^T(x-\mu))^2]\geq0$$</div><dl class="gloss"><dt>$a$</dt><dd>fixed d×1 direction; d = dimension</dd><dt>$x,\mu$</dt><dd>d×1 random column / fixed population mean</dd><dt>$\Sigma$</dt><dd>d×d population covariance (PSD)</dd></dl></div><div class="step" data-step="1"><div class="eq">$$C=\frac{X_c^TX_c}{N-1}\quad(N>1)$$</div><dl class="gloss"><dt>$C$</dt><dd>d×d sample covariance estimate</dd><dt>$X_c$</dt><dd>N×d matrix: N centered rows, d coordinates</dd><dt>$N$</dt><dd>sample count; N&gt;1</dd></dl></div>
 </div>
 <figure style="flex:none;margin-top:8px"><canvas id="m8p14-projection" width="1152" height="207" role="img" aria-label="Four centered, dimensionless population outcomes each have probability one quarter; rotating a unit direction changes their scalar projections, whose squared values and probability-weighted average remain nonnegative"></canvas></figure>
 <script>(function(){
@@ -1500,7 +1500,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <p class="eyebrow">Example</p>
 <h2>Moments</h2>
 <p class="sub">Independence means knowing one sign does not change the other's probabilities.</p>
-<figure style="flex:none"><canvas id="m8p15c" width="1152" height="230" role="img" aria-label="Independent signs transform continuously into correlated coordinates; a varies from zero to one"></canvas></figure><script>m3anim(document.getElementById("m8p15c"),function(g,t,k){var c=k.c;var S=k.plane(470,120,75),alpha=k.shown(1)?1:t;k.seg(S([-2,0]),S([2,0]),c.dim,1.5);k.seg(S([0,-1.3]),S([0,1.3]),c.dim,1.5);[-1,1].forEach(function(u){[-1,1].forEach(function(v){var xx=470+u*75,yy=120-(alpha*u+v)*40;k.dot([xx,yy],8,c.dat);});});k.text('x1 = U',[635,140],c.dim,{size:17});k.text('x2 = aU + V',[350,26],c.dim,{size:17});k.text('a = '+alpha.toFixed(2),[780,70],c.in,{size:22});k.text('four equally likely outcomes',[760,115],c.dat,{size:17});k.text('a: 0 to 1 adds the shared sign',[760,155],c.dim,{size:17});k.text('dimensionless coordinates',[350,225],c.dim,{size:17});k.text('1',[555,139],c.dim,{size:15});k.text('-1',[370,139],c.dim,{size:15});k.text('2',[485,46],c.dim,{size:15});k.text('-2',[485,207],c.dim,{size:15});},{seconds:5,hold:1,rest:1});</script><div class="ex" style="padding:6px 16px;margin:4px 0"><p>Independent fair signs: $P(U=u,V=v)=P(U=u)P(V=v)$ for all $u,v=\pm1$. Let $x=(U,U+V)^T$.</p><div class="step" data-step="1"><div class="eq" style="margin:6px 0">$$\mu=\begin{bmatrix}0\\0\end{bmatrix},\qquad\Sigma=\begin{bmatrix}1&1\\1&2\end{bmatrix}$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr auto 1fr;gap:4px 12px"><dt>$U,V$</dt><dd>fair signs: ±1, each with mass ½</dd><dt>$x,\mu$</dt><dd>random column and mean</dd><dt>$\Sigma$</dt><dd style="grid-column:2 / -1">covariance; a nonzero off-diagonal entry means correlation</dd></dl></div></div>
+<figure style="flex:none"><canvas id="m8p15c" width="1152" height="230" role="img" aria-label="Independent signs transform continuously into correlated coordinates; a varies from zero to one"></canvas></figure><script>m3anim(document.getElementById("m8p15c"),function(g,t,k){var c=k.c;var S=k.plane(470,120,75),alpha=k.shown(1)?1:t;k.seg(S([-2,0]),S([2,0]),c.dim,1.5);k.seg(S([0,-1.3]),S([0,1.3]),c.dim,1.5);[-1,1].forEach(function(u){[-1,1].forEach(function(v){var xx=470+u*75,yy=120-(alpha*u+v)*40;k.dot([xx,yy],8,c.dat);});});k.text('x1 = U',[635,140],c.dim,{size:17});k.text('x2 = aU + V',[350,26],c.dim,{size:17});k.text('a = '+alpha.toFixed(2),[780,70],c.in,{size:22});k.text('four equally likely outcomes',[760,115],c.dat,{size:17});k.text('a: scalar coefficient, 0 to 1',[760,155],c.dim,{size:17});k.text('dimensionless coordinates',[350,225],c.dim,{size:17});k.text('1',[555,139],c.dim,{size:15});k.text('-1',[370,139],c.dim,{size:15});k.text('2',[485,46],c.dim,{size:15});k.text('-2',[485,207],c.dim,{size:15});},{seconds:5,hold:1,rest:1});</script><div class="ex" style="padding:6px 16px;margin:4px 0"><p>Independent fair signs: $P(U=u,V=v)=P(U=u)P(V=v)$ for all $u,v=\pm1$. Let $x=(U,U+V)^T$.</p><div class="step" data-step="1"><div class="eq" style="margin:6px 0">$$\mu=\begin{bmatrix}0\\0\end{bmatrix},\qquad\Sigma=\begin{bmatrix}1&1\\1&2\end{bmatrix}$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr auto 1fr;gap:4px 12px"><dt>$U,V$</dt><dd>fair signs: ±1, each with mass ½</dd><dt>$x,\mu$</dt><dd>2×1 random column / fixed mean</dd><dt>$\Sigma$</dt><dd style="grid-column:2 / -1">2×2 covariance; a nonzero off-diagonal entry means correlation</dd></dl></div></div>
 <p class="cite page-source"><span>Independence; covariance</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.7</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.8</a> · Course example</p>
   
 </section>
@@ -1535,7 +1535,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <ol class="worked-lines">
 <li>$\Sigma_{11}=\mathbb E[U^2]=1$.</li>
 <li>$\Sigma_{22}=\mathbb E[(2U+V)^2]=4(1)+4(0)+1=5$.</li>
-<li>$\Sigma=\begin{bmatrix}1&amp;2\\2&amp;5\end{bmatrix}$; $\det\Sigma=1(5)-2(2)=1$.</li><li>Positive definite means $a^T\Sigma a&gt;0$ for every $a\ne0$: positive variance in each nonzero direction.</li>
+<li>$\Sigma=\begin{bmatrix}1&amp;2\\2&amp;5\end{bmatrix}$; $\det\Sigma=1(5)-2(2)=1$.</li><li>For a direction column $a\in\mathbb R^2$, positive definite means $a^T\Sigma a&gt;0$ whenever $a\ne0$.</li>
 </ol></div>
 <div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
 <p class="worked-progress">Solution 4 / 4</p>
@@ -1567,21 +1567,22 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <p class="eyebrow">Definition</p>
 <h2>Gaussian geometry</h2>
 <p class="sub">A vector is Gaussian if every linear combination is normal (constant at zero variance).</p>
-<div class="eq">$$p(x)=(2\pi)^{-d/2}|\Sigma|^{-1/2}\exp(-d_M^2/2)$$</div><dl class="gloss"><dt>$x,\mu$</dt><dd>point/mean in Rᵈ</dd><dt>$d$</dt><dd>dimension</dd><dt>$\Sigma\succ0$</dt><dd>$a^T\Sigma a&gt;0$ for every $a\ne0$</dd><dt>$|\Sigma|$</dt><dd>determinant</dd><dt>$p$</dt><dd>density</dd><dt>$d_M^2$</dt><dd>squared covariance-scaled (Mahalanobis) distance</dd></dl><div class="step" data-step="1"><div class="eq">$$d_M^2=(x-\mu)^T\Sigma^{-1}(x-\mu)$$</div><dl class="gloss"><dt>$\Sigma^{-1}$</dt><dd>inverse covariance</dd><dt>$x-\mu$</dt><dd>deviation</dd></dl></div>
+<div class="eq">$$p(x)=(2\pi)^{-d/2}|\Sigma|^{-1/2}\exp(-d_M^2/2)$$</div><dl class="gloss"><dt>$x,\mu$</dt><dd>d×1 evaluation point / fixed mean</dd><dt>$d$</dt><dd>dimension</dd><dt>$\Sigma\succ0$</dt><dd>d×d covariance; $a^T\Sigma a&gt;0$ for every nonzero direction column $a$</dd><dt>$|\Sigma|$</dt><dd>determinant</dd><dt>$p$</dt><dd>density</dd><dt>$d_M^2$</dt><dd>squared Mahalanobis distance (dimensionless)</dd></dl><div class="step" data-step="1"><div class="eq">$$d_M^2=(x-\mu)^T\Sigma^{-1}(x-\mu)$$</div><dl class="gloss"><dt>$\Sigma^{-1}$</dt><dd>d×d inverse covariance</dd><dt>$x-\mu$</dt><dd>d×1 displacement from the mean</dd></dl></div>
 <p class="cite page-source"><span>Multivariate Gaussian distribution</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.9.3</a> · <a href="https://data140.org/fa18/textbook/chapters/Chapter_23/02_Multivariate_Normal_Distribution">[7] Data140 §23.2</a></p>
   
 </section>
 
 <!-- ============ 19 ============ -->
-<section class="slide has-worked-solutions whitening-derivation" data-derivation="whitening" data-part="IV">
+<section class="m8-variable-layout19 slide has-worked-solutions whitening-derivation" data-derivation="whitening" data-part="IV">
+<style>.m8-variable-layout19 .worked-question>.eq{margin:8px 0}.m8-variable-layout19 .worked-question>.gloss{margin-top:6px}</style>
 <p class="eyebrow">Derivation</p><h2>Gaussian geometry</h2><p class="sub">Whitening centers a vector and gives it identity covariance.</p>
 <div class="worked-question">
-<figure style="flex:none"><canvas id="m8p19c" width="1152" height="270" role="img" aria-label="whiten: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p19c"),function(g,t,k){var c=k.c;var S=k.plane(280,130,40),T=k.plane(850,130,40);k.grid(S,-3,3,-2,2,{col:c.rule});k.grid(T,-3,3,-2,2,{col:c.rule});var a=[],b=[];for(var i=0;i<=120;i++){var q=i*Math.PI/60;a.push(S([2*Math.cos(q),Math.sin(q)]));b.push(T([(2-t)*Math.cos(q),Math.sin(q)]));}k.poly(a,c.dat,3);k.poly(b,c.in,3);k.text('centered original coordinates',[150,24],c.dat,{size:17});k.text('divide x1 by its standard deviation',[660,24],c.in,{size:17});k.text('x1',[415,139],c.dim,{size:14});k.text('x2',[288,40],c.dim,{size:14});k.text('z1',[975,139],c.dim,{size:14});k.text('z2',[858,40],c.dim,{size:14});k.dot(S([2,0]),5,c.dat);k.dot(T([2-t,0]),5,c.in);k.text('(2, 0)',[365,164],c.dat,{size:16});k.text(t>.98?'(1, 0)':'x1 scale changing',[890,178],c.in,{size:16});},{seconds:4,hold:.7,rest:1});</script><div class="eq">$$\Sigma=Q\Lambda Q^T,\quad z=\Lambda^{-1/2}Q^T(x-\mu)$$</div><dl class="gloss"><dt></dt><dd>$Q$ columns: orthonormal eigenvectors; $\Lambda$ diagonal: positive eigenvalues; $x,\mu$ position and mean. Result: $\mathbb E[z]=0$, $\operatorname{Cov}(z)=I$. Plot: $Q=I$, $\Lambda=\operatorname{diag}(4,1)$.</dd></dl></div>
+<figure style="flex:none"><canvas id="m8p19c" width="1152" height="220" role="img" aria-label="whiten: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p19c"),function(g,t,k){var c=k.c;var S=k.plane(280,130,40),T=k.plane(850,130,40);k.grid(S,-3,3,-2,2,{col:c.rule});k.grid(T,-3,3,-2,2,{col:c.rule});var a=[],b=[];for(var i=0;i<=120;i++){var q=i*Math.PI/60;a.push(S([2*Math.cos(q),Math.sin(q)]));b.push(T([(2-t)*Math.cos(q),Math.sin(q)]));}k.poly(a,c.dat,3);k.poly(b,c.in,3);k.text('centered original coordinates',[150,24],c.dat,{size:17});k.text('divide x1 by its standard deviation',[660,24],c.in,{size:17});k.text('x1',[415,139],c.dim,{size:14});k.text('x2',[288,40],c.dim,{size:14});k.text('z1',[975,139],c.dim,{size:14});k.text('z2',[858,40],c.dim,{size:14});k.dot(S([2,0]),5,c.dat);k.dot(T([2-t,0]),5,c.in);k.text('(2, 0)',[365,164],c.dat,{size:16});k.text(t>.98?'(1, 0)':'x1 scale changing',[890,178],c.in,{size:16});},{seconds:4,hold:.7,rest:1});</script><div class="eq">$$\Sigma=Q\Lambda Q^T,\quad z=\Lambda^{-1/2}Q^T(x-\mu)$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$x,\mu$</dt><dd>random $d\times1$ column and fixed mean (coordinate units); $d$: number of coordinates.</dd><dt>$\Sigma,Q,\Lambda$</dt><dd>fixed $d\times d$ covariance, orthogonal eigenvector matrix and positive diagonal eigenvalue matrix; covariance/eigenvalues use squared units; $Q$ is dimensionless.</dd><dt>$z,I$</dt><dd>dimensionless $d\times1$ standardized column; $I$: $d\times d$ identity. $\mathbb E[z]=0$, $\operatorname{Cov}(z)=I$.</dd><dt>Plot</dt><dd>$Q=I$, $\Lambda=\operatorname{diag}(4,1)$; axes show centered $x_1,x_2$ and standardized $z_1,z_2$.</dd></dl></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Whitening covariance derivation">
 <p class="worked-progress">Derivation</p>
 <h3>Derive the mean and covariance</h3>
-<p class="worked-variables">$\mu=\mathbb E[x]$; $\Sigma=\operatorname{Cov}(x)=Q\Lambda Q^T\succ0$; $Q^TQ=I$; $\Lambda$ positive diagonal. Fixed whitening map $W=\Lambda^{-1/2}Q^T$; $z=W(x-\mu)$; $I$: identity.</p>
+<p class="worked-variables">$x,z,\mu$: $d\times1$ columns; $d$: dimension. $\Sigma$: covariance; $Q$: orthogonal eigenvector matrix; $\Lambda$: positive diagonal eigenvalue matrix. Fixed $d\times d$ whitening map $W=\Lambda^{-1/2}Q^T$; $z=W(x-\mu)$. $\mathbb E$: expectation; $\operatorname{Cov}$: covariance; $I$: $d\times d$ identity.</p>
 <ol class="worked-lines">
 <li>$\mathbb E[z]=W(\mathbb E[x]-\mu)=0$ by linearity.</li>
 <li>$\operatorname{Cov}(z)=\mathbb E[zz^T]=W\,\mathbb E[(x-\mu)(x-\mu)^T]\,W^T=W\Sigma W^T$.</li>
@@ -1596,14 +1597,15 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <!-- ============ 20 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Derivation</p><h2>Gaussian geometry</h2><p class="sub">A density contour joins points with the same density.</p>
-<figure style="flex:none"><canvas id="m8p20c" width="1152" height="190" role="img" aria-label="ellipse: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p20c"),function(g,t,k){var c=k.c;var S=k.plane(330,95,28); k.grid(S,-5,5,-2.5,2.5,{col:c.rule,step:1}); var pts=[]; for(var i=0;i<=120;i++){var a=i*Math.PI/60,u=Math.sqrt(3)*Math.cos(a),v=Math.sin(a);pts.push(S([(u+v)/Math.sqrt(2),(u-v)/Math.sqrt(2)]));}k.poly(pts,c.in,3);var a=t*2*Math.PI;k.dot(S([(Math.sqrt(3)*Math.cos(a)+Math.sin(a))/Math.sqrt(2),(Math.sqrt(3)*Math.cos(a)-Math.sin(a))/Math.sqrt(2)]),5,c.in);k.text('centered x1',[485,172],c.dim,{size:15});k.text('centered x2',[330,15],c.dim,{size:15});k.text('unit Mahalanobis contour',[640,75],c.in,{size:20});k.text('eigenvalues 3 and 1',[640,110],c.dim,{size:18});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$x=\mu+Q\Lambda^{1/2}z,\qquad \|z\|=c$$</div><dl class="gloss"><dt></dt><dd>$c>0$: standardized radius; $q_i$: unit eigenvectors (columns of $Q$). Semiaxis: center-to-boundary length along $q_i$, equal to $c\sqrt{\lambda_i}$. Plot of $x-\mu$: $c=1$, $\lambda=(3,1)$, $q_1=(1,1)^T/\sqrt2$, $q_2=(1,-1)^T/\sqrt2$.</dd></dl>
+<figure style="flex:none"><canvas id="m8p20c" width="1152" height="190" role="img" aria-label="ellipse: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p20c"),function(g,t,k){var c=k.c;var S=k.plane(330,95,28); k.grid(S,-5,5,-2.5,2.5,{col:c.rule,step:1}); var pts=[]; for(var i=0;i<=120;i++){var a=i*Math.PI/60,u=Math.sqrt(3)*Math.cos(a),v=Math.sin(a);pts.push(S([(u+v)/Math.sqrt(2),(u-v)/Math.sqrt(2)]));}k.poly(pts,c.in,3);var a=t*2*Math.PI;k.dot(S([(Math.sqrt(3)*Math.cos(a)+Math.sin(a))/Math.sqrt(2),(Math.sqrt(3)*Math.cos(a)-Math.sin(a))/Math.sqrt(2)]),5,c.in);k.text('centered x1',[485,172],c.dim,{size:15});k.text('centered x2',[330,15],c.dim,{size:15});k.text('unit Mahalanobis contour',[640,75],c.in,{size:20});k.text('eigenvalues 3 and 1',[640,110],c.dim,{size:18});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$x=\mu+Q\Lambda^{1/2}z,\qquad \|z\|=c$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$x,\mu$</dt><dd>$2\times1$ point and fixed mean (original coordinate units).</dd><dt>$Q=[q_1\ q_2]$</dt><dd>fixed $2\times2$ orthogonal matrix; orthonormal eigenvector columns. $Q^TQ=I_2$; $I_2$: $2\times2$ identity.</dd><dt>$\Sigma,\Lambda$</dt><dd>fixed covariance $\Sigma=Q\Lambda Q^T$; $\Lambda=\operatorname{diag}(\lambda_1,\lambda_2)$ contains positive eigenvalue variances (squared units).</dd><dt>$z,c,q_i$</dt><dd>$z$: dimensionless $2\times1$ coordinate point; $c=\|z\|>0$: fixed dimensionless radius. $q_i$: unit direction; $c\sqrt{\lambda_i}$: semiaxis length in original units; $i=1,2$.</dd><dt>Plot of $x-\mu$</dt><dd>$c=1$, $\Lambda=\operatorname{diag}(3,1)$; $q_1=(1,1)^T/\sqrt2$, $q_2=(1,-1)^T/\sqrt2$.</dd></dl>
 <p class="cite page-source"><span>Gaussian density contour</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=5">[2] UBC Lec.18 p.5</a> · Course derivation</p>
   
 </section>
 <!-- ============ 21 ============ -->
-<section class="slide" data-part="IV">
+<section class="m8-variable-layout21 slide" data-part="IV">
+<style>.m8-variable-layout21>.eq{margin:8px 0}.m8-variable-layout21>.gloss{margin-top:6px}.m8-variable-layout21>.step>.ex{display:flex;align-items:center;gap:20px;padding-top:8px;padding-bottom:8px;margin:8px 0}.m8-variable-layout21>.step>.ex>.eq{margin:0;flex:1;min-width:0}.m8-variable-layout21>.step>.ex>.gloss{margin:0;max-width:320px;flex:none}.m8-variable-layout21>.step>.ex>.lbl:empty{display:none}</style>
 <p class="eyebrow">Example</p><h2>Gaussian geometry</h2><p class="sub">Equal Euclidean lengths can have different Gaussian densities.</p>
-<figure style="flex:none"><canvas id="m8p21c" width="1152" height="190" role="img" aria-label="Two equal-length centered displacements against one Gaussian contour"></canvas></figure><script>m3anim(document.getElementById("m8p21c"),function(g,t,k){var c=k.c;var S=k.plane(310,95,30);k.grid(S,-3,3,-2.5,2.5,{col:c.rule,step:1});var pts=[];for(var i=0;i<=120;i++){var a=i*Math.PI/60,u=Math.sqrt(3)*Math.cos(a),v=Math.sin(a);pts.push(S([(u+v)/Math.sqrt(2),(u-v)/Math.sqrt(2)]));}k.poly(pts,c.dim,2);k.dot(S([0,0]),4,c.dim);k.text('mean',[220,110],c.dim,{size:16});[[[1,1],c.in,'x − μ = (1, 1)',[370,50]],[[1,-1],c.dat,'y − μ = (1, −1)',[370,143]]].forEach(function(o){k.seg(S([0,0]),S(o[0]),o[1],2);k.dot(S(o[0]),6,o[1]);k.text(o[2],o[3],o[1],{size:17});});k.text('centered x1',[205,180],c.dim,{size:15});k.text('centered x2',[225,15],c.dim,{size:15});k.text('gray ellipse: dₘ = 1',[720,55],c.dim,{size:18});k.text('both arrows: Euclidean length √2',[650,105],c.dim,{size:18});},{seconds:4,rest:0});</script><div class="eq">$$\Sigma=\begin{bmatrix}2&amp;1\\1&amp;2\end{bmatrix},\quad \mu=\binom1{-1}$$</div><dl class="gloss"><dt></dt><dd>$\Sigma$ covariance; $\mu$ mean; compare $x=(2,0)^T$ and $y=(2,-2)^T$.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$d_M^2(x)=\tfrac23,\qquad d_M^2(y)=2$$</div><dl class="gloss"><dt></dt><dd>$d_M$ covariance-scaled distance.</dd></dl></div></div>
+<figure style="flex:none"><canvas id="m8p21c" width="1152" height="190" role="img" aria-label="Two equal-length centered displacements against one Gaussian contour"></canvas></figure><script>m3anim(document.getElementById("m8p21c"),function(g,t,k){var c=k.c;var S=k.plane(310,95,30);k.grid(S,-3,3,-2.5,2.5,{col:c.rule,step:1});var pts=[];for(var i=0;i<=120;i++){var a=i*Math.PI/60,u=Math.sqrt(3)*Math.cos(a),v=Math.sin(a);pts.push(S([(u+v)/Math.sqrt(2),(u-v)/Math.sqrt(2)]));}k.poly(pts,c.dim,2);k.dot(S([0,0]),4,c.dim);k.text('mean',[220,110],c.dim,{size:16});[[[1,1],c.in,'x − μ = (1, 1)',[370,50]],[[1,-1],c.dat,'y − μ = (1, −1)',[370,143]]].forEach(function(o){k.seg(S([0,0]),S(o[0]),o[1],2);k.dot(S(o[0]),6,o[1]);k.text(o[2],o[3],o[1],{size:17});});k.text('centered x1',[205,180],c.dim,{size:15});k.text('centered x2',[225,15],c.dim,{size:15});k.text('gray ellipse: dₘ = 1',[720,55],c.dim,{size:18});k.text('both arrows: Euclidean length √2',[650,105],c.dim,{size:18});},{seconds:4,rest:0});</script><div class="eq">$$\Sigma=\begin{bmatrix}2&amp;1\\1&amp;2\end{bmatrix},\quad \mu=\binom1{-1}$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$x,y,\mu$</dt><dd>fixed $2\times1$ evaluation points and mean (coordinate units); $x=(2,0)^T$, $y=(2,-2)^T$.</dd><dt>$\Sigma,d_M$</dt><dd>fixed $2\times2$ covariance (squared units); $d_M$: dimensionless covariance-scaled distance from $\mu$. Plot axes show centered coordinates.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$d_M^2(x)=\tfrac23,\qquad d_M^2(y)=2$$</div><dl class="gloss"><dt></dt><dd>$d_M$ covariance-scaled distance.</dd></dl></div></div>
 <p class="cite page-source"><span>Mahalanobis distance</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=5">[2] UBC Lec.18 p.5</a> · Course example</p>
   
 </section>
@@ -1611,11 +1613,11 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <section class="slide has-worked-solutions" data-part="IV" data-mc="22">
 <p class="eyebrow you" data-min="3">Exercise</p>
 <h2>Gaussian geometry</h2><p class="sub">Which point has the higher Gaussian density?</p>
-<div class="worked-question"><p class="q">$\mu=0$, $\Sigma=\operatorname{diag}(4,1)$; $u=(2,0)^T$, $v=(0,2)^T$. Compare Gaussian densities.</p><ol class="opts one"><li><i>A</i>$p(u)=p(v)$: their Euclidean lengths agree.</li><li><i>B</i>$p(u)&gt;p(v)$: $u$ is one standard deviation away.<b class="ok step" data-step="4">✓</b></li><li><i>C</i>$p(u)&lt;p(v)$: higher variance always lowers density.</li></ol><div class="ex step" data-step="4"><p class="reveal">$d_M^2(u)=1$, $d_M^2(v)=4$; $p(u)/p(v)=e^{3/2}&gt;1$.</p></div></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">$\mu=0$, $\Sigma=\operatorname{diag}(4,1)$; $u=(2,0)^T$, $v=(0,2)^T$. Compare Gaussian densities.</p><p class="worked-variables">$u,v$: fixed $2\times1$ points; $\mu$: fixed mean column; $\Sigma$: fixed $2\times2$ covariance; $p$: density (inverse squared coordinate units). Coordinates use original units; covariance entries use squared units.</p><ol class="opts one"><li><i>A</i>$p(u)=p(v)$: their Euclidean lengths agree.</li><li><i>B</i>$p(u)&gt;p(v)$: $u$ is one standard deviation away.<b class="ok step" data-step="4">✓</b></li><li><i>C</i>$p(u)&lt;p(v)$: higher variance always lowers density.</li></ol><div class="ex step" data-step="4"><p class="reveal">$d_M^2(u)=1$, $d_M^2(v)=4$; $p(u)/p(v)=e^{3/2}&gt;1$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
 <p class="worked-progress">Solution 1 / 3</p>
 <h3>Use the covariance-scaled distance</h3>
-<p class="worked-variables">$\mu$: mean; $\Sigma$: covariance; $p$: density; $d_M$: covariance-scaled distance.</p>
+<p class="worked-variables">$u,v$: fixed point columns; $x=(x_1,x_2)^T$: generic point. $\mu$: mean; $\Sigma$: covariance; $p$: density (inverse squared coordinate units); $d_M$: dimensionless covariance-scaled distance. Coordinate units / squared covariance units.</p>
 <ol class="worked-lines">
 <li>$\mu=0$: mean; $\Sigma=\operatorname{diag}(4,1)$: covariance.</li>
 <li>$u=(2,0)^T$, $v=(0,2)^T$ are points in the same Gaussian.</li>
@@ -1624,7 +1626,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
 <p class="worked-progress">Solution 2 / 3</p>
 <h3>Compare exponents</h3>
-<p class="worked-variables">$\mu$: mean; $\Sigma$: covariance; $p$: density; $d_M$: covariance-scaled distance.</p>
+<p class="worked-variables">$u,v$: fixed point columns; $x=(x_1,x_2)^T$: generic point. $\mu$: mean; $\Sigma$: covariance; $p$: density (inverse squared coordinate units); $d_M$: dimensionless covariance-scaled distance. $c$: fixed normalization constant, same units as $p$. Coordinate units / squared covariance units.</p>
 <ol class="worked-lines">
 <li>$d_M^2(u)=2^2/4+0^2=1$; $d_M^2(v)=0^2/4+2^2=4$.</li>
 <li>$p(x)=c\exp(-d_M^2(x)/2)$; the normalization $c$ is shared.</li>
@@ -1633,7 +1635,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
 <p class="worked-progress">Solution 3 / 3</p>
 <h3>Choose B</h3>
-<p class="worked-variables">$\mu$: mean; $\Sigma$: covariance; $p$: density; $d_M$: covariance-scaled distance.</p>
+<p class="worked-variables">$u,v$: fixed point columns; $x=(x_1,x_2)^T$: generic point. $\mu$: mean; $\Sigma$: covariance; $p$: density (inverse squared coordinate units); $d_M$: dimensionless covariance-scaled distance. Coordinate units / squared covariance units.</p>
 <ol class="worked-lines">
 <li>A uses ordinary distance and ignores different directional variances.</li>
 <li>B: u is one standard deviation away; v is two.</li>
@@ -1645,37 +1647,40 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
   
 </section>
 <!-- ============ 23 ============ -->
-<section class="slide" data-part="IV">
+<section class="m8-variable-layout23 slide" data-part="IV">
+<style>.m8-variable-layout23>.eq{margin:8px 0}.m8-variable-layout23>.gloss{margin-top:6px}.m8-variable-layout23>.step>.ex{display:flex;align-items:center;gap:20px;margin:8px 0}.m8-variable-layout23>.step>.ex>.eq{margin:0;flex:1;min-width:0}.m8-variable-layout23>.step>.ex>.gloss{margin:0;max-width:320px;flex:none}</style>
 <p class="eyebrow">Derivation</p><h2>Gaussian geometry</h2><p class="sub">Choose a region by the probability it encloses.</p>
-<figure style="flex:none"><canvas id="m8p23c" width="1152" height="190" role="img" aria-label="Whitened Gaussian regions with unit and 95 percent radii"></canvas></figure><script>m3anim(document.getElementById("m8p23c"),function(g,t,k){var c=k.c;var S=k.plane(275,94,30),r95=Math.sqrt(-2*Math.log(.05));k.grid(S,-3,3,-2.7,2.7,{col:c.rule,step:1});function circle(r,col){var pts=[];for(var i=0;i<=120;i++){var a=i*Math.PI/60;pts.push(S([r*Math.cos(a),r*Math.sin(a)]));}k.poly(pts,col,2);}circle(1,c.dat);k.text('z1',[372,105],c.dim,{size:15});k.text('z2',[282,14],c.dim,{size:15});k.text('whitened coordinates',[155,184],c.dim,{size:16});k.text('c = 1: mass 39.3%',[460,50],c.dat,{size:19});if(k.shown(1)){circle(r95,c.ans);k.seg(S([0,0]),S([r95,0]),c.ans,2);k.text('c = 2.448: mass 95%',[460,90],c.ans,{size:19});k.text('original semiaxes: 4.24 and 2.45',[460,130],c.ans,{size:18});}k.text('circle radius = Mahalanobis distance',[460,166],c.dim,{size:17});},{seconds:4,rest:0});</script><div class="eq">$$P(d_M^2\le c^2)=1-e^{-c^2/2}\quad(d=2)$$</div><dl class="gloss" style="max-width:none"><dt></dt><dd>Here the region contains all points with $d_M\le c$; its probability is the integral of density inside. $d=2$; nonsingular Gaussian. Example: $\lambda_1=3,\lambda_2=1$.</dd></dl><div class="step" data-step="1"><div class="ex" style="padding:8px 16px"><div class="eq">$$c_{.95}=\sqrt{-2\log .05}\approx2.44775$$</div><dl class="gloss" style="max-width:none"><dt></dt><dd>$c_{.95}$ radius enclosing 95%.</dd></dl></div></div>
+<figure style="flex:none"><canvas id="m8p23c" width="1152" height="190" role="img" aria-label="Whitened Gaussian regions with unit and 95 percent radii"></canvas></figure><script>m3anim(document.getElementById("m8p23c"),function(g,t,k){var c=k.c;var S=k.plane(275,94,30),r95=Math.sqrt(-2*Math.log(.05));k.grid(S,-3,3,-2.7,2.7,{col:c.rule,step:1});function circle(r,col){var pts=[];for(var i=0;i<=120;i++){var a=i*Math.PI/60;pts.push(S([r*Math.cos(a),r*Math.sin(a)]));}k.poly(pts,col,2);}circle(1,c.dat);k.text('z1',[372,105],c.dim,{size:15});k.text('z2',[282,14],c.dim,{size:15});k.text('whitened coordinates',[155,184],c.dim,{size:16});k.text('c = 1: mass 39.3%',[460,50],c.dat,{size:19});if(k.shown(1)){circle(r95,c.ans);k.seg(S([0,0]),S([r95,0]),c.ans,2);k.text('c = 2.448: mass 95%',[460,90],c.ans,{size:19});k.text('original semiaxes: 4.24 and 2.45',[460,130],c.ans,{size:18});}k.text('circle radius = Mahalanobis distance',[460,166],c.dim,{size:17});},{seconds:4,rest:0});</script><div class="eq">$$P(d_M^2\le c^2)=1-e^{-c^2/2}\quad(d=2)$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$z,d_M,c,d$</dt><dd>$z=(z_1,z_2)^T$: dimensionless whitened random column; $d_M=\|z\|$: dimensionless distance; $c\ge0$: fixed dimensionless radius; $d=2$: dimension.</dd><dt>$P,\lambda_1,\lambda_2$</dt><dd>$P$: event probability (no units). Eigenvalues $\lambda_1=3,\lambda_2=1$ are variances in original squared units. The region is $d_M\le c$; its probability is the density integral inside.</dd></dl><div class="step" data-step="1"><div class="ex" style="padding:8px 16px"><div class="eq">$$c_{.95}=\sqrt{-2\log .05}\approx2.44775$$</div><dl class="gloss" style="max-width:none"><dt></dt><dd>$c_{.95}$ radius enclosing 95%.</dd></dl></div></div>
 <p class="cite page-source"><span>Chi-square distribution; Gaussian probability region</span> — <a href="https://www.itl.nist.gov/div898/handbook/eda/section3/eda3666.htm">[3] NIST §1.3.6.6.6</a> · <a href="https://itl.nist.gov/div898/handbook/eda/section3/eda3674.htm">[3] NIST χ² table</a> · Course derivation</p>
   
 </section>
 <!-- ============ 24 ============ -->
-<section class="slide" data-part="IV">
+<section class="m8-variable-layout24 slide" data-part="IV">
+<style>.m8-variable-layout24>.eq{margin:4px 0}.m8-variable-layout24>.gloss{margin-top:4px}</style>
 <p class="eyebrow">Definition</p><h2>Bayes</h2><p class="sub">Conditional probability is the chance of an event given another.</p>
-<figure style="flex:none"><canvas id="m8p24c" width="1152" height="190" role="img" aria-label="bayes: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p24c"),function(g,t,k){var c=k.c;k.text('joint events',[70,35],c.dim,{size:18});k.text('positive +',[410,35],c.dat,{size:18});k.text('negative −',[730,35],c.dim,{size:18});k.text('event H',[70,90],c.in,{size:18});k.text('no event',[70,120],c.dim,{size:18});k.text('H and +',[410,90],c.dat,{size:18});k.text('H and −',[730,90],c.dim,{size:18});k.text('not H and +',[410,120],c.dat,{size:18});k.text('not H and −',[730,120],c.dim,{size:18});k.seg([380,45],[380,160],c.dat,2);k.seg([700,45],[700,160],c.rule,1);k.text('row total',[965,35],c.dim,{size:17});k.text('P(H)',[965,90],c.in,{size:18});k.text('P(not H)',[965,120],c.dim,{size:18});k.text('total P(+)',[410,175],c.dat,{size:18});k.text('total P(−)',[730,175],c.dim,{size:18});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$\begin{gathered}P(H\mid +)=\frac{P(H\cap +)}{P(+)}\\P(+\mid H)=\frac{P(H\cap +)}{P(H)}\end{gathered}$$</div><dl class="gloss" style="max-width:none"><dt></dt><dd>$H$: event; $+$: positive reading; $\cap$: both occur. Sensitivity $P(+\mid H)$: positive rate among event cases. Posterior $P(H\mid+)$: event probability after a positive. Denominators must be positive.</dd></dl>
+<figure style="flex:none"><canvas id="m8p24c" width="1152" height="190" role="img" aria-label="bayes: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p24c"),function(g,t,k){var c=k.c;k.text('joint events',[70,35],c.dim,{size:18});k.text('positive +',[410,35],c.dat,{size:18});k.text('negative −',[730,35],c.dim,{size:18});k.text('event H',[70,90],c.in,{size:18});k.text('no event',[70,120],c.dim,{size:18});k.text('H and +',[410,90],c.dat,{size:18});k.text('H and −',[730,90],c.dim,{size:18});k.text('not H and +',[410,120],c.dat,{size:18});k.text('not H and −',[730,120],c.dim,{size:18});k.seg([380,45],[380,160],c.dat,2);k.seg([700,45],[700,160],c.rule,1);k.text('row total',[965,35],c.dim,{size:17});k.text('P(H)',[965,90],c.in,{size:18});k.text('P(not H)',[965,120],c.dim,{size:18});k.text('total P(+)',[410,175],c.dat,{size:18});k.text('total P(−)',[730,175],c.dim,{size:18});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$P(H\mid +)=\frac{P(H\cap +)}{P(+)}\qquad P(+\mid H)=\frac{P(H\cap +)}{P(H)}$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$H,+,-,P$</dt><dd>$H$: event present; $+$/$-$: positive/negative reading; $P$: event probability (no units). $\mid$: given; $\cap$: both occur.</dd><dt>Two conditions</dt><dd>Sensitivity $P(+\mid H)$: positive rate among event cases. Posterior $P(H\mid+)$: event probability after observing a positive. Denominators must be positive.</dd></dl>
 <p class="cite page-source"><span>Conditional probability</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.4–3.5</a> · <a href="https://pages.stat.wisc.edu/~larget/math225/notes5.html">[9] Wisconsin Math225 Lec.5</a> · Course example</p>
   
 </section>
 <!-- ============ 25 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Derivation</p><h2>Bayes</h2><p class="sub">Bayes’ rule updates a prior probability using an observation.</p>
-<div class="eq">$$P(H\mid +)=\frac{P(+\mid H)P(H)}{P(+)}$$</div><dl class="gloss"><dt></dt><dd>$P(H)$ prior: event chance before this reading. $P(+\mid H)$ likelihood: positive-reading chance if $H$ holds. $P(+)>0$ evidence: overall positive-reading chance. $P(H\mid+)$ posterior: event chance after this reading.</dd></dl>
+<div class="eq">$$P(H\mid +)=\frac{P(+\mid H)P(H)}{P(+)}$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$H,+,P$</dt><dd>$H$: event of interest; $+$: observed positive reading; $P$: event probability (no units); $\mid$: given.</dd><dt>Four roles</dt><dd>$P(H)$ prior: chance before this reading; $P(+\mid H)$ likelihood: positive-reading chance if $H$ holds; $P(+)>0$ evidence: overall positive-reading chance; $P(H\mid+)$ posterior: event chance after this reading.</dd></dl>
 <p class="cite page-source"><span>Bayes’ rule</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.11</a> · <a href="https://www.cs.cmu.edu/afs/cs/academic/class/10601-f10/lecture/bayesnotes.pdf">[8] CMU Bayes notes p.1</a> · Course derivation</p>
   
 </section>
 <!-- ============ 26 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Derivation</p><h2>Bayes</h2><p class="sub">Total probability adds contributions from disjoint cases.</p>
-<div class="eq">$$P(+)=P(+\mid H)P(H)+P(+\mid \neg H)P(\neg H)$$</div><dl class="gloss"><dt></dt><dd>A partition has disjoint cases covering all trials: here $H$ (event) and $\neg H$ (no event). Their joint events with $+$ cover all positive readings. $P(+)$: evidence.</dd></dl>
+<div class="eq">$$P(+)=P(+\mid H)P(H)+P(+\mid \neg H)P(\neg H)$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$H,\neg H,+,P$</dt><dd>event, no event, positive reading and probability (no units); $\neg$: not; $\mid$: given.</dd><dt>Partition</dt><dd>$H$ and $\neg H$ are disjoint and cover all trials. Their joint events with $+$ cover every positive reading. $P(+)$ is the evidence, the total positive-reading probability.</dd></dl>
 <p class="cite page-source"><span>Law of total probability; evidence</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.4–3.5</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.11</a> · Course derivation</p>
   
 </section>
 <!-- ============ 27 ============ -->
-<section class="slide" data-part="IV">
+<section class="m8-variable-layout27 slide" data-part="IV">
+<style>.m8-variable-layout27>.eq{margin:6px 0}.m8-variable-layout27>.gloss{margin-top:4px}.m8-variable-layout27>.step>.ex>.eq{margin:12px 0}</style>
 <p class="eyebrow">Example</p><h2>Bayes</h2><p class="sub">Why can most positive alarms be false?</p>
-<figure style="flex:none"><canvas id="m8p27c" width="1152" height="190" role="img" aria-label="bayes: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p27c"),function(g,t,k){var c=k.c;k.text('joint events',[70,35],c.dim,{size:18});k.text('positive +',[410,35],c.dat,{size:18});k.text('negative −',[730,35],c.dim,{size:18});k.text('event H',[70,90],c.in,{size:18});k.text('no event',[70,120],c.dim,{size:18});k.text((k.shown(1)?'90':'?'),[410,90],c.dat,{size:18});k.text((k.shown(1)?'10':'?'),[730,90],c.dim,{size:18});k.text((k.shown(1)?'990':'?'),[410,120],c.dat,{size:18});k.text((k.shown(1)?'8910':'?'),[730,120],c.dim,{size:18});k.seg([380,45],[380,160],c.dat,2);k.seg([700,45],[700,160],c.rule,1);},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$P(H)=.01,\quad P(+\mid H)=.9,\quad P(+\mid\neg H)=.1$$</div><dl class="gloss" style="max-width:none"><dt></dt><dd>$P(H)=.01$ prevalence: event probability before this reading. Expected counts in 10,000 model trials: 100 event cases and 9,900 non-event cases.</dd></dl><div class="step" data-step="1"><div class="ex" style="padding:8px 16px;margin:4px 0"><div class="eq">$$P(H\mid +)=\frac{90}{90+990}=\frac1{12}$$</div><dl class="gloss" style="max-width:none"><dt></dt><dd>$H$ event; $+$ positive reading.</dd></dl></div></div>
+<figure style="flex:none"><canvas id="m8p27c" width="1152" height="190" role="img" aria-label="bayes: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p27c"),function(g,t,k){var c=k.c;k.text('joint events',[70,35],c.dim,{size:18});k.text('positive +',[410,35],c.dat,{size:18});k.text('negative −',[730,35],c.dim,{size:18});k.text('event H',[70,90],c.in,{size:18});k.text('no event',[70,120],c.dim,{size:18});k.text((k.shown(1)?'90':'?'),[410,90],c.dat,{size:18});k.text((k.shown(1)?'10':'?'),[730,90],c.dim,{size:18});k.text((k.shown(1)?'990':'?'),[410,120],c.dat,{size:18});k.text((k.shown(1)?'8910':'?'),[730,120],c.dim,{size:18});k.seg([380,45],[380,160],c.dat,2);k.seg([700,45],[700,160],c.rule,1);},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$P(H)=.01,\quad P(+\mid H)=.9,\quad P(+\mid\neg H)=.1$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$H,\neg H,+,P$</dt><dd>event present, event absent, positive reading and probability (no units); $\mid$: given.</dd><dt>Given model</dt><dd>$P(H)=.01$: prevalence; $P(+\mid H)=.9$: sensitivity; $P(+\mid\neg H)=.1$: false-positive rate. Expected counts in 10,000 trials: 100 event cases, 9,900 non-event cases.</dd></dl><div class="step" data-step="1"><div class="ex" style="padding:8px 16px;margin:4px 0"><div class="eq">$$P(H\mid +)=\frac{90}{90+990}=\frac1{12}$$</div><dl class="gloss" style="max-width:none"><dt></dt><dd>$H$ event; $+$ positive reading.</dd></dl></div></div>
 <p class="cite page-source"><span>Prior probability; posterior probability</span> — <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.11</a> · <a href="https://pages.stat.wisc.edu/~larget/math225/notes5.html">[9] Wisconsin Math225 Lec.5</a> · Course example</p>
   
 </section>
@@ -1683,20 +1688,19 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <section class="slide has-worked-solutions" data-part="IV" data-mc="28">
 <p class="eyebrow you" data-min="3">Exercise</p>
 <h2>Bayes</h2><p class="sub">How does prevalence change the chance an alarm is true?</p>
-<div class="worked-question"><p class="q">$P(H)=.1$, $P(+\mid H)=.9$, $P(+\mid\neg H)=.1$. What is $P(H\mid+)$?</p><ol class="opts one"><li><i>A</i>$.9$: the chance of a true event equals sensor sensitivity.</li><li><i>B</i>$.1$: an observation cannot change the prior.</li><li><i>C</i>$.5$: true and false positives contribute equally.<b class="ok step" data-step="4">✓</b></li></ol><div class="ex step" data-step="4"><p class="reveal">$P(H\mid+)=\dfrac{.9(.1)}{.9(.1)+.1(.9)}=.5$.</p></div></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">$P(H)=.1$, $P(+\mid H)=.9$, $P(+\mid\neg H)=.1$. What is $P(H\mid+)$?</p><p class="worked-variables">$H$: event; $\neg H$: no event; $+$: positive reading; $P$: probability (no units); $\mid$: given.</p><ol class="opts one"><li><i>A</i>$.9$: the chance of a true event equals sensor sensitivity.</li><li><i>B</i>$.1$: an observation cannot change the prior.</li><li><i>C</i>$.5$: true and false positives contribute equally.<b class="ok step" data-step="4">✓</b></li></ol><div class="ex step" data-step="4"><p class="reveal">$P(H\mid+)=\dfrac{.9(.1)}{.9(.1)+.1(.9)}=.5$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
 <p class="worked-progress">Solution 1 / 3</p>
 <h3>Name the conditional populations</h3>
-<p class="worked-variables">$H$: event; $\neg H$: no event; $+$: positive reading; $P$: probability.</p>
+<p class="worked-variables">$H$: event; $\neg H$: no event; $+$: positive reading; $P$: probability (no units); $\mid$: given; $\cap$: both occur.</p>
 <ol class="worked-lines">
-<li>$H$: event; $\neg H$: no event; $+$: positive test.</li>
 <li>$P(H)=.1$, $P(\neg H)=1-.1=.9$.</li>
 <li>$P(+\mid H)=.9$; $P(+\mid\neg H)=.1$.</li>
 </ol></div>
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
 <p class="worked-progress">Solution 2 / 3</p>
 <h3>Find all positives, then normalize</h3>
-<p class="worked-variables">$H$: event; $\neg H$: no event; $+$: positive reading; $P$: probability.</p>
+<p class="worked-variables">$H$: event; $\neg H$: no event; $+$: positive reading; $P$: probability (no units); $\mid$: given; $\cap$: both occur.</p>
 <ol class="worked-lines">
 <li>$P(H\cap+)=P(+\mid H)P(H)=.9(.1)=.09$.</li>
 <li>$P(\neg H\cap+)=P(+\mid\neg H)P(\neg H)=.1(.9)=.09$.</li>
@@ -1705,7 +1709,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
 <p class="worked-progress">Solution 3 / 3</p>
 <h3>Choose C</h3>
-<p class="worked-variables">$H$: event; $\neg H$: no event; $+$: positive reading; $P$: probability.</p>
+<p class="worked-variables">$H$: event; $\neg H$: no event; $+$: positive reading; $P$: probability (no units); $\mid$: given; $\cap$: both occur.</p>
 <ol class="worked-lines">
 <li>A reverses the conditioning: sensitivity starts with event cases.</li>
 <li>B uses the prior and ignores the positive observation.</li>
@@ -1726,41 +1730,42 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <!-- ============ 30 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Model</p><h2>Gaussian conditioning</h2><p class="sub">A posterior density describes uncertainty after a reading.</p>
-<figure style="flex:none"><canvas id="m8p30c" width="1152" height="190" role="img" aria-label="fusion: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p30c"),function(g,t,k){var c=k.c;var S=k.plane(110,160,1);k.seg([110,160],[1040,160],c.dim,1);var curves=[{m:0,v:4,col:c.in},{m:3,v:1,col:c.dat}];curves.forEach(function(o){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-o.m)*(x-o.m)/(2*o.v))/Math.sqrt(2*Math.PI*o.v);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,o.col,2.5);});k.text('x (state units)',[860,180],c.dim,{size:16});k.text('density',[115,30],c.dim,{size:16});k.text('prior N(0,4)',[370,30],c.in,{size:17});k.text('likelihood shape at z=3, R=1',[670,30],c.dat,{size:17});[0,3].forEach(function(x){k.seg(S([(x+4)*90,0]),S([(x+4)*90,-4]),c.dim,1);k.text(String(x),S([(x+4)*90-4,-19]),c.dim,{size:15});});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$x\sim\mathcal N(\mu_0,P_0),\quad z=x+\varepsilon,\quad\varepsilon\sim\mathcal N(0,R)$$</div><dl class="gloss"><dt></dt><dd>$x$: state; $z$: reading. $P_0,R&gt;0$: prior/noise variances; $\varepsilon$ independent of $x$. Prior $p(x)$: density before observation; likelihood $p(z\mid x)$: reading density for candidate $x$; posterior $p(x\mid z)$: updated state density.</dd></dl>
+<figure style="flex:none"><canvas id="m8p30c" width="1152" height="190" role="img" aria-label="fusion: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p30c"),function(g,t,k){var c=k.c;var S=k.plane(110,160,1);k.seg([110,160],[1040,160],c.dim,1);var curves=[{m:0,v:4,col:c.in},{m:3,v:1,col:c.dat}];curves.forEach(function(o){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-o.m)*(x-o.m)/(2*o.v))/Math.sqrt(2*Math.PI*o.v);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,o.col,2.5);});k.text('x (state units)',[860,180],c.dim,{size:16});k.text('density',[115,30],c.dim,{size:16});k.text('prior N(0,4)',[370,30],c.in,{size:17});k.text('likelihood shape at z=3, R=1',[670,30],c.dat,{size:17});[0,3].forEach(function(x){k.seg(S([(x+4)*90,0]),S([(x+4)*90,-4]),c.dim,1);k.text(String(x),S([(x+4)*90-4,-19]),c.dim,{size:15});});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$x\sim\mathcal N(\mu_0,P_0),\quad z=x+\varepsilon,\quad\varepsilon\sim\mathcal N(0,R)$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$x,z,\varepsilon$</dt><dd>unknown random scalar state, scalar reading (fixed after observation), and independent zero-mean Gaussian noise; all in state units.</dd><dt>$\mu_0,P_0,R$</dt><dd>fixed prior mean (state units), prior variance and noise variance (squared state units); $P_0,R>0$. $\mathcal N$: normal distribution, with mean then variance.</dd><dt>$p(x),p(z\mid x),p(x\mid z)$</dt><dd>prior density, likelihood for candidate $x$ with observed $z$ fixed, and posterior density; density units are inverse state units.</dd></dl>
 <p class="cite page-source"><span>Gaussian prior; Gaussian likelihood</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · <a href="https://www.cs.cmu.edu/afs/cs/academic/class/10601-f10/lecture/bayesnotes.pdf">[8] CMU Bayes notes p.1</a></p>
   
 </section>
 <!-- ============ 31 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Derivation</p><h2>Gaussian conditioning</h2><p class="sub">Precision is inverse variance.</p>
-<div class="eq">$$J(x)=\frac{(x-\mu_0)^2}{2P_0}+\frac{(z-x)^2}{2R},\quad P_1^{-1}=P_0^{-1}+R^{-1},\quad\mu_1=P_1(\mu_0/P_0+z/R)$$</div><dl class="gloss"><dt></dt><dd>$J$: negative log posterior, up to a constant. Independent Gaussian prior/noise; $P_0,R>0$. $x$: state; $z$: reading. $\mu_0,P_0$: prior mean/variance; $R$: noise variance; $\mu_1,P_1$: posterior mean/variance.</dd></dl>
-<div class="eq">$$\begin{gathered}a=P_0^{-1}+R^{-1},\qquad b=\mu_0/P_0+z/R\\J(x)=\tfrac12(ax^2-2bx)+C=\tfrac a2(x-b/a)^2+C\prime\end{gathered}$$</div><dl class="gloss"><dt>$a,b$</dt><dd>scalar coefficients; $C,C\prime$: constants independent of $x$.</dd></dl>
+<div class="eq">$$J(x)=\frac{(x-\mu_0)^2}{2P_0}+\frac{(z-x)^2}{2R},\quad P_1^{-1}=P_0^{-1}+R^{-1},\quad\mu_1=P_1(\mu_0/P_0+z/R)$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$x,z,J$</dt><dd>unknown scalar state, fixed observed reading, and dimensionless negative log posterior up to an $x$-independent constant.</dd><dt>$\mu_0,P_0,R$</dt><dd>fixed prior mean, prior variance and independent noise variance; $P_0,R>0$.</dd><dt>$\mu_1,P_1$</dt><dd>posterior mean and variance. Means/readings use state units; variances use squared state units.</dd></dl>
+<div class="eq">$$\begin{gathered}a=P_0^{-1}+R^{-1},\qquad b=\mu_0/P_0+z/R\\J(x)=\tfrac12(ax^2-2bx)+C=\tfrac a2(x-b/a)^2+C\prime\end{gathered}$$</div><dl class="gloss" style="max-width:none"><dt>$a,b$</dt><dd>total precision (inverse squared state units), and precision-weighted location (inverse state units); $C,C\prime$: scalar constants independent of $x$.</dd></dl>
 <p class="cite page-source"><span>Gaussian posterior; precision</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">[1] DL §3.9.3</a> · Course derivation</p>
   
 </section>
 <!-- ============ 32 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Interpretation</p><h2>Gaussian conditioning</h2><p class="sub">The gain scales the innovation to update the mean.</p>
-<figure style="flex:none"><canvas id="m8p32c" width="1152" height="190" role="img" aria-label="Prior mean plus gain times innovation gives posterior mean"></canvas></figure><script>m3anim(document.getElementById("m8p32c"),function(g,t,k){var c=k.c;var l=180,r=900,p=l+.8*(r-l),y=115;k.seg([l-45,y],[r+45,y],c.dim,1.5);[[l,'prior mean μ₀',c.in],[p,'posterior mean μ₁',c.ans],[r,'reading z',c.dat]].forEach(function(o){k.dot([o[0],y],6,o[2]);k.text(o[1],[o[0]-(o[1].indexOf('posterior')===0?140:60),y+28],o[2],{size:17});});k.seg([l,45],[r,45],c.dim,2);k.seg([l,40],[l,50],c.dim,2);k.seg([r,40],[r,50],c.dim,2);k.text('innovation: z − μ₀',[410,28],c.dim,{size:18});k.seg([l,78],[p,78],c.ans,3);k.seg([p,78],[p-9,73],c.ans,3);k.seg([p,78],[p-9,83],c.ans,3);k.text('correction: K(z − μ₀)',[350,70],c.ans,{size:18});k.text('0 < K < 1',[315,180],c.dim,{size:16});},{seconds:4,rest:0});</script><div class="eq">$$\mu_1=\frac{R\mu_0+P_0z}{P_0+R}=\mu_0+K(z-\mu_0),\quad K=\frac{P_0}{P_0+R},\quad P_1=(1-K)P_0$$</div><dl class="gloss"><dt></dt><dd>$\mu_0,P_0$: prior mean/variance; $z$: reading; $R$: noise variance. $\mu_1,P_1$: posterior mean/variance. Innovation $z-\mu_0$: observed minus predicted reading. Gain $K$: fraction of that discrepancy used, with $0&lt;K&lt;1$.</dd></dl>
+<figure style="flex:none"><canvas id="m8p32c" width="1152" height="190" role="img" aria-label="Prior mean plus gain times innovation gives posterior mean"></canvas></figure><script>m3anim(document.getElementById("m8p32c"),function(g,t,k){var c=k.c;var l=180,r=900,p=l+.8*(r-l),y=115;k.seg([l-45,y],[r+45,y],c.dim,1.5);[[l,'prior mean μ₀',c.in],[p,'posterior mean μ₁',c.ans],[r,'reading z',c.dat]].forEach(function(o){k.dot([o[0],y],6,o[2]);k.text(o[1],[o[0]-(o[1].indexOf('posterior')===0?140:60),y+28],o[2],{size:17});});k.seg([l,45],[r,45],c.dim,2);k.seg([l,40],[l,50],c.dim,2);k.seg([r,40],[r,50],c.dim,2);k.text('innovation: z − μ₀',[410,28],c.dim,{size:18});k.seg([l,78],[p,78],c.ans,3);k.seg([p,78],[p-9,73],c.ans,3);k.seg([p,78],[p-9,83],c.ans,3);k.text('correction: K(z − μ₀)',[350,70],c.ans,{size:18});k.text('0 < K < 1',[315,180],c.dim,{size:16});},{seconds:4,rest:0});</script><div class="eq">$$\mu_1=\frac{R\mu_0+P_0z}{P_0+R}=\mu_0+K(z-\mu_0),\quad K=\frac{P_0}{P_0+R},\quad P_1=(1-K)P_0$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$\mu_0,z,\mu_1$</dt><dd>fixed prior mean, observed scalar reading and posterior mean (state units).</dd><dt>$P_0,R,P_1$</dt><dd>prior, independent noise and posterior variances (squared state units); $P_0,R>0$.</dd><dt>$K,z-\mu_0$</dt><dd>dimensionless gain $0<K<1$ and innovation (observed minus predicted reading, state units).</dd></dl>
 <p class="cite page-source"><span>Kalman gain; measurement innovation</span> — <a href="https://www.cs.utexas.edu/~pstone/Courses/393Rfall11/readings/Welch%2BBishop-TR-95.pdf#page=3">[5] Welch–Bishop §1</a> · <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · Course derivation</p>
   
 </section>
 <!-- ============ 33 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Example</p><h2>Gaussian conditioning</h2><p class="sub">Fuse a prior and a precise reading</p>
-<figure style="flex:none"><canvas id="m8p33c" width="1152" height="190" role="img" aria-label="fusion: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p33c"),function(g,t,k){var c=k.c;var S=k.plane(110,160,1);k.seg([110,160],[1040,160],c.dim,1);var curves=[{m:0,v:4,col:c.in},{m:3,v:1,col:c.dat}];curves.forEach(function(o){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-o.m)*(x-o.m)/(2*o.v))/Math.sqrt(2*Math.PI*o.v);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,o.col,2.5);});k.text('x (state units)',[860,180],c.dim,{size:16});k.text('density',[115,30],c.dim,{size:16});k.text('prior N(0,4)',[370,30],c.in,{size:17});k.text('likelihood shape at z=3, R=1',[670,30],c.dat,{size:17});[0,3].forEach(function(x){k.seg(S([(x+4)*90,0]),S([(x+4)*90,-4]),c.dim,1);k.text(String(x),S([(x+4)*90-4,-19]),c.dim,{size:15});});if(k.shown(1)){k.seg(S([(2.4+4)*90,0]),S([(2.4+4)*90,55]),c.ans,1,[3,3]);k.text('2.4',S([(2.4+4)*90-17,-19]),c.ans,{size:15});}if(k.shown(1)){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-2.4)*(x-2.4)/(2*0.8))/Math.sqrt(2*Math.PI*0.8);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,c.ans,3);k.text('posterior N(2.4,0.8)',[430,65],c.ans,{size:17});}},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$\mu_0=0,\quad P_0=4,\quad z=3,\quad R=1$$</div><dl class="gloss"><dt></dt><dd>$\mu_0$: prior mean; $P_0$: prior variance; $z$: reading; $R$: independent noise variance.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$K=\tfrac45,\qquad\mu_1=2.4,\qquad P_1=.8$$</div><dl class="gloss"><dt></dt><dd>$K$ gain; $\mu_1,P_1$ posterior mean, variance.</dd></dl></div></div>
+<figure style="flex:none"><canvas id="m8p33c" width="1152" height="190" role="img" aria-label="fusion: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p33c"),function(g,t,k){var c=k.c;var S=k.plane(110,160,1);k.seg([110,160],[1040,160],c.dim,1);var curves=[{m:0,v:4,col:c.in},{m:3,v:1,col:c.dat}];curves.forEach(function(o){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-o.m)*(x-o.m)/(2*o.v))/Math.sqrt(2*Math.PI*o.v);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,o.col,2.5);});k.text('x (state units)',[860,180],c.dim,{size:16});k.text('density',[115,30],c.dim,{size:16});k.text('prior N(0,4)',[370,30],c.in,{size:17});k.text('likelihood shape at z=3, R=1',[670,30],c.dat,{size:17});[0,3].forEach(function(x){k.seg(S([(x+4)*90,0]),S([(x+4)*90,-4]),c.dim,1);k.text(String(x),S([(x+4)*90-4,-19]),c.dim,{size:15});});if(k.shown(1)){k.seg(S([(2.4+4)*90,0]),S([(2.4+4)*90,55]),c.ans,1,[3,3]);k.text('2.4',S([(2.4+4)*90-17,-19]),c.ans,{size:15});}if(k.shown(1)){var pts=[];for(var i=0;i<=180;i++){var x=-4+10*i/180,y=Math.exp(-(x-2.4)*(x-2.4)/(2*0.8))/Math.sqrt(2*Math.PI*0.8);pts.push(S([(x+4)*90,y*120]));}k.poly(pts,c.ans,3);k.text('posterior N(2.4,0.8)',[430,65],c.ans,{size:17});}},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$\mu_0=0,\quad P_0=4,\quad z=3,\quad R=1$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$x,\mu_0,z$</dt><dd>candidate scalar state on the horizontal axis, fixed prior mean and observed reading (state units).</dd><dt>$P_0,R$</dt><dd>fixed prior variance and independent noise variance (squared state units); $\mathcal N$: normal, mean then variance.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$K=\tfrac45,\qquad\mu_1=2.4,\qquad P_1=.8$$</div><dl class="gloss"><dt></dt><dd>$K$ gain; $\mu_1,P_1$ posterior mean, variance.</dd></dl></div></div>
 <p class="cite page-source"><span>Gaussian conditioning</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · Course example</p>
   
 </section>
 <!-- ===== 34 ===== -->
-<section class="slide has-worked-solutions" data-part="IV" data-mc="34">
+<section class="m8-variable-layout34 slide has-worked-solutions" data-part="IV" data-mc="34">
+<style>.m8-variable-layout34 .worked-question>.q{margin-bottom:4px}.m8-variable-layout34 .worked-question>.ex{margin-top:2px;margin-bottom:4px}</style>
 <p class="eyebrow you" data-min="3">Exercise</p>
 <h2>Gaussian conditioning</h2><p class="sub">What does a noisier reading change?</p>
-<div class="worked-question"><p class="q">Prior $\mathcal N(0,4)$; $z=3$ with independent Gaussian noise, variance $R$: $1\to4$. Compare posterior mean and variance.</p><ol class="opts one"><li><i>A</i>Mean moves toward $0$; posterior variance increases.<b class="ok step" data-step="4">✓</b></li><li><i>B</i>Mean moves toward $3$; posterior variance decreases.</li><li><i>C</i>Only the mean changes; variance ignores sensor noise.</li></ol><div class="ex step" data-step="4"><p class="reveal">$K=4/(4+4)=1/2$; $\mu_1=1.5$, $P_1=2$ (before: $2.4,.8$).</p></div></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Prior $\mathcal N(0,4)$; $z=3$ with independent Gaussian noise, variance $R$: $1\to4$. Compare posterior mean and variance.</p><p class="worked-variables">$x$: scalar state; $z$: fixed reading; $R$: independent noise variance. $\mathcal N$: normal distribution, mean then variance; states/readings use state units and variances use squared units.</p><ol class="opts one"><li><i>A</i>Mean moves toward $0$; posterior variance increases.<b class="ok step" data-step="4">✓</b></li><li><i>B</i>Mean moves toward $3$; posterior variance decreases.</li><li><i>C</i>Only the mean changes; variance ignores sensor noise.</li></ol><div class="ex step" data-step="4"><p class="reveal">$K=4/(4+4)=1/2$; $\mu_1=1.5$, $P_1=2$ (before: $2.4,.8$).</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
 <p class="worked-progress">Solution 1 / 3</p>
 <h3>State the scalar measurement model</h3>
-<p class="worked-variables">$\mu_0,P_0$: prior mean/variance; $\mu_1,P_1$: posterior mean/variance; $K$: measurement gain.</p>
+<p class="worked-variables">$x,z,\varepsilon$: scalar state, fixed reading and independent noise (state units). $\mu_0,P_0$: prior mean/variance; $\mu_1,P_1$: posterior mean/variance; $R$: noise variance (squared units); $K$: dimensionless gain.</p>
 <ol class="worked-lines">
 <li>$x\sim\mathcal N(\mu_0,P_0)$ with $\mu_0=0$, $P_0=4$.</li>
 <li>$z=x+\varepsilon=3$; independent noise $\varepsilon\sim\mathcal N(0,R)$.</li>
@@ -1769,7 +1774,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
 <p class="worked-progress">Solution 2 / 3</p>
 <h3>Compare the two noise variances</h3>
-<p class="worked-variables">$\mu_0,P_0$: prior mean/variance; $\mu_1,P_1$: posterior mean/variance; $K$: measurement gain.</p>
+<p class="worked-variables">$x,z,\varepsilon$: scalar state, fixed reading and independent noise (state units). $\mu_0,P_0$: prior mean/variance; $\mu_1,P_1$: posterior mean/variance; $R$: noise variance (squared units); $K$: dimensionless gain.</p>
 <ol class="worked-lines">
 <li>Old $R=1$: $K=4/5$, $\mu_1=0+(4/5)3=2.4$, $P_1=(1/5)4=.8$.</li>
 <li>New $R=4$: $K=4/8=1/2$, $\mu_1=0+(1/2)3=1.5$.</li>
@@ -1778,7 +1783,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
 <p class="worked-progress">Solution 3 / 3</p>
 <h3>Choose A</h3>
-<p class="worked-variables">$\mu_0,P_0$: prior mean/variance; $\mu_1,P_1$: posterior mean/variance; $K$: measurement gain.</p>
+<p class="worked-variables">$x,z,\varepsilon$: scalar state, fixed reading and independent noise (state units). $\mu_0,P_0$: prior mean/variance; $\mu_1,P_1$: posterior mean/variance; $R$: noise variance (squared units); $K$: dimensionless gain.</p>
 <ol class="worked-lines">
 <li>A: the mean is closer to 0 and posterior variance rises from .8 to 2.</li>
 <li>B reverses both changes: a noisier reading carries less information.</li>
@@ -1792,14 +1797,14 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <!-- ============ 35 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Result</p><h2>Gaussian conditioning</h2><p class="sub">A conditional mean is an expectation given an observation.</p>
-<div class="eq">$$\mu_{a\mid b}=\mu_a+\Sigma_{ab}\Sigma_{bb}^{-1}(b-\mu_b)$$</div><dl class="gloss"><dt></dt><dd>Joint Gaussian: normal linear combinations (or constants). $a$: inferred p-vector; $b$: observed q-vector; $\mu_a,\mu_b$: marginal means. $\Sigma_{bb}$: invertible covariance of $b$. Cross-covariance averages centered products: $\Sigma_{ab}=\mathbb E[(a-\mu_a)(b-\mu_b)^T]$.</dd></dl>
+<div class="eq">$$\mu_{a\mid b}=\mu_a+\Sigma_{ab}\Sigma_{bb}^{-1}(b-\mu_b)$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$a,b,p,q$</dt><dd>jointly Gaussian random columns of sizes $p\times1$, $q\times1$; $p,q$: coordinate counts. The observed value of $b$ is fixed when conditioning.</dd><dt>$\mu_a,\mu_b,\mu_{a\mid b}$</dt><dd>marginal mean columns ($p$, $q$ entries), and conditional mean $\mathbb E[a\mid b]$ ($p$ entries); means/innovations retain their coordinate units.</dd><dt>$\Sigma_{ab}$</dt><dd>$p\times q$ cross-covariance $\mathbb E[(a-\mu_a)(b-\mu_b)^T]$; each entry has the product of the paired coordinate units.</dd><dt>$\Sigma_{bb}$</dt><dd>fixed, invertible $q\times q$ covariance of $b$; $\Sigma_{bb}^{-1}$ maps a $q$-entry innovation to scaled coordinates.</dd></dl>
 <p class="cite page-source"><span>Conditional Gaussian mean</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · <a href="https://data140.org/fa18/textbook/chapters/Chapter_23/02_Multivariate_Normal_Distribution">[7] Data140 §23.2</a></p>
   
 </section>
 <!-- ============ 36 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Result</p><h2>Gaussian conditioning</h2><p class="sub">Conditional covariance measures spread after an observation.</p>
-<figure style="flex:none"><canvas id="m8p36c" width="1152" height="160" role="img" aria-label="slice: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p36c"),function(g,t,k){var c=k.c;k.seg([100,125],[660,125],c.dim,1);[{m:5/3,col:c.in},{m:1,col:c.dat}].forEach(function(o){var pts=[];for(var i=0;i<=200;i++){var x=-5+12*i/200,y=Math.exp(-(x-o.m)*(x-o.m)/(2*32/9))/Math.sqrt(2*Math.PI*32/9);pts.push([100+(x+5)*45,125-y*340]);}k.poly(pts,o.col,3);});k.text('conditional density',[110,22],c.dim,{size:17});k.text('b = 5: mean 5/3',[760,25],c.in,{size:17});k.text('b = 2: mean 1',[760,52],c.dat,{size:17});k.text('both variances 32/9',[760,79],c.dim,{size:17});k.text('a',[640,150],c.dim,{size:17});[-4,0,4].forEach(function(x){k.text(String(x),[100+(x+5)*45,148],c.dim,{size:16});});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$\Sigma_{a\mid b}=\Sigma_{aa}-\Sigma_{ab}\Sigma_{bb}^{-1}\Sigma_{ba}$$</div><dl class="gloss"><dt></dt><dd>$a$: inferred block; $b$: observed block. $\Sigma_{aa}$: covariance of $a$; $\Sigma_{a\mid b}$: covariance after observing $b$. Joint Gaussian, $\Sigma_{bb}\succ0$, $\Sigma_{ba}=\Sigma_{ab}^T$. Plot: $\mu=(1,2)^T$, $\Sigma=\begin{bmatrix}4&amp;2\\2&amp;9\end{bmatrix}$.</dd></dl>
+<figure style="flex:none"><canvas id="m8p36c" width="1152" height="160" role="img" aria-label="slice: labeled probability geometry"></canvas></figure><script>m3anim(document.getElementById("m8p36c"),function(g,t,k){var c=k.c;k.seg([100,125],[660,125],c.dim,1);[{m:5/3,col:c.in},{m:1,col:c.dat}].forEach(function(o){var pts=[];for(var i=0;i<=200;i++){var x=-5+12*i/200,y=Math.exp(-(x-o.m)*(x-o.m)/(2*32/9))/Math.sqrt(2*Math.PI*32/9);pts.push([100+(x+5)*45,125-y*340]);}k.poly(pts,o.col,3);});k.text('conditional density',[110,22],c.dim,{size:17});k.text('b = 5: mean 5/3',[760,25],c.in,{size:17});k.text('b = 2: mean 1',[760,52],c.dat,{size:17});k.text('both variances 32/9',[760,79],c.dim,{size:17});k.text('a',[640,150],c.dim,{size:17});[-4,0,4].forEach(function(x){k.text(String(x),[100+(x+5)*45,148],c.dim,{size:16});});},{seconds:4,hold:.7,rest:0});</script><div class="eq">$$\Sigma_{a\mid b}=\Sigma_{aa}-\Sigma_{ab}\Sigma_{bb}^{-1}\Sigma_{ba}$$</div><dl class="gloss" style="max-width:none;grid-template-columns:auto 1fr;gap:3px 12px"><dt>$a,b,p,q$</dt><dd>jointly Gaussian columns with $p$, $q$ entries; $p,q$: coordinate counts. In a conditional distribution the observed value of $b$ is fixed.</dd><dt>$\Sigma_{aa},\Sigma_{a\mid b}$</dt><dd>$p\times p$ covariance of $a$ before/after observing $b$; entries have products of $a$-coordinate units.</dd><dt>$\Sigma_{ab},\Sigma_{bb},\Sigma_{ba}$</dt><dd>fixed $p\times q$ cross-covariance, positive-definite $q\times q$ covariance of $b$, and $q\times p$ transpose $\Sigma_{ba}=\Sigma_{ab}^T$.</dd><dt>Scalar plot</dt><dd>$a,b$ are scalars; fixed joint mean $\mu=(1,2)^T$ and joint covariance $\Sigma=\begin{bmatrix}4&2\\2&9\end{bmatrix}$. Horizontal: candidate $a$; vertical: density (inverse $a$ units).</dd></dl>
 <p class="cite page-source"><span>Conditional Gaussian covariance</span> — <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=7">[2] UBC Lec.18 p.7</a> · <a href="https://www.cs.ubc.ca/~arnaud/cs340/lec18_gausslda_handouts.pdf#page=8">[2] UBC Lec.18 p.8</a></p>
   
 </section>
@@ -1807,11 +1812,11 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <section class="slide has-worked-solutions" data-part="IV" data-mc="37">
 <p class="eyebrow you" data-min="3">Exercise</p>
 <h2>Gaussian conditioning</h2><p class="sub">Does the conditional variance change?</p>
-<div class="worked-question"><p class="q">Gaussian $(a,b)^T$: $\mu=(1,2)^T$, $\Sigma=\begin{bmatrix}4&amp;2\\2&amp;9\end{bmatrix}$. Observe $b=-1$ instead of $5$.</p><ol class="opts one"><li><i>A</i>Both conditional mean and variance decrease.</li><li><i>B</i>Mean decreases; conditional variance stays fixed.<b class="ok step" data-step="5">✓</b></li><li><i>C</i>Neither changes because the joint model is fixed.</li></ol><div class="ex step" data-step="5"><p class="reveal">$\mu_{a\mid b}=1+\frac29(-1-2)=\frac13$; $\Sigma_{a\mid b}=4-\frac49=\frac{32}9$.</p></div></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Gaussian $(a,b)^T$: $\mu=(1,2)^T$, $\Sigma=\begin{bmatrix}4&amp;2\\2&amp;9\end{bmatrix}$. Observe $b=-1$ instead of $5$.</p><p class="worked-variables">$a$: unknown scalar; $b$: observed scalar; $\mu$: fixed $2\times1$ joint mean; $\Sigma$: fixed $2\times2$ joint covariance. Means/values use coordinate units; covariance entries use paired product units.</p><ol class="opts one"><li><i>A</i>Both conditional mean and variance decrease.</li><li><i>B</i>Mean decreases; conditional variance stays fixed.<b class="ok step" data-step="5">✓</b></li><li><i>C</i>Neither changes because the joint model is fixed.</li></ol><div class="ex step" data-step="5"><p class="reveal">$\mu_{a\mid b}=1+\frac29(-1-2)=\frac13$; $\Sigma_{a\mid b}=4-\frac49=\frac{32}9$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
 <p class="worked-progress">Solution 1 / 4</p>
 <h3>Read the Gaussian blocks</h3>
-<p class="worked-variables">$a,b$: scalar components; $\mu$: means; $\Sigma$: covariance blocks; $a\mid b$: a conditioned on b.</p>
+<p class="worked-variables">$a,b$: unknown/observed scalars; $\mu_a,\mu_b$: marginal means; $\Sigma_{aa},\Sigma_{bb}$: variances; $\Sigma_{ab}=\Sigma_{ba}$: cross-covariance; $\mu_{a\mid b},\Sigma_{a\mid b}$: conditional mean/variance. Means use coordinate units; covariance entries use paired product units.</p>
 <ol class="worked-lines">
 <li>$a$: unobserved scalar; $b$: observed scalar.</li>
 <li>$\mu_a=1$, $\mu_b=2$; $\Sigma_{aa}=4$, $\Sigma_{ab}=\Sigma_{ba}=2$, $\Sigma_{bb}=9$.</li>
@@ -1820,7 +1825,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
 <p class="worked-progress">Solution 2 / 4</p>
 <h3>Update the center</h3>
-<p class="worked-variables">$a,b$: scalar components; $\mu$: means; $\Sigma$: covariance blocks; $a\mid b$: a conditioned on b.</p>
+<p class="worked-variables">$a,b$: unknown/observed scalars; $\mu_a,\mu_b$: marginal means; $\Sigma_{aa},\Sigma_{bb}$: variances; $\Sigma_{ab}=\Sigma_{ba}$: cross-covariance; $\mu_{a\mid b},\Sigma_{a\mid b}$: conditional mean/variance. Means use coordinate units; covariance entries use paired product units.</p>
 <ol class="worked-lines">
 <li>Old $b=5$: $\mu_{a\mid b}=1+(2/9)(5-2)=1+2/3=5/3$.</li>
 <li>New $b=-1$: $\mu_{a\mid b}=1+(2/9)(-1-2)=1-2/3=1/3$.</li>
@@ -1829,7 +1834,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
 <p class="worked-progress">Solution 3 / 4</p>
 <h3>Compute the unchanged variance</h3>
-<p class="worked-variables">$a,b$: scalar components; $\mu$: means; $\Sigma$: covariance blocks; $a\mid b$: a conditioned on b.</p>
+<p class="worked-variables">$a,b$: unknown/observed scalars; $\mu_a,\mu_b$: marginal means; $\Sigma_{aa},\Sigma_{bb}$: variances; $\Sigma_{ab}=\Sigma_{ba}$: cross-covariance; $\mu_{a\mid b},\Sigma_{a\mid b}$: conditional mean/variance. Means use coordinate units; covariance entries use paired product units.</p>
 <ol class="worked-lines">
 <li>$\Sigma_{a\mid b}=\Sigma_{aa}-\Sigma_{ab}\Sigma_{bb}^{-1}\Sigma_{ba}$.</li>
 <li>$=4-2(1/9)2=36/9-4/9=32/9$.</li>
@@ -1838,7 +1843,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
 <p class="worked-progress">Solution 4 / 4</p>
 <h3>Choose B</h3>
-<p class="worked-variables">$a,b$: scalar components; $\mu$: means; $\Sigma$: covariance blocks; $a\mid b$: a conditioned on b.</p>
+<p class="worked-variables">$a,b$: unknown/observed scalars; $\mu_a,\mu_b$: marginal means; $\Sigma_{aa},\Sigma_{bb}$: variances; $\Sigma_{ab}=\Sigma_{ba}$: cross-covariance; $\mu_{a\mid b},\Sigma_{a\mid b}$: conditional mean/variance. Means use coordinate units; covariance entries use paired product units.</p>
 <ol class="worked-lines">
 <li>A wrongly changes the width when only the observed value changes.</li>
 <li>B changes the mean and keeps the conditional variance fixed.</li>
@@ -1852,42 +1857,42 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <!-- ============ 38 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Definition</p><h2>Estimation</h2><p class="sub">Maximum likelihood estimation (MLE) maximizes data likelihood.</p>
-<div class="eq">$$\begin{gathered}b=A\theta+\varepsilon,\quad\varepsilon\sim\mathcal N(0,\sigma^2I)\\L(\theta;b)=p(b\mid\theta),\;\hat\theta_{MLE}\in\arg\max_{\theta}L(\theta;b)\end{gathered}$$</div><dl class="gloss"><dt></dt><dd>$b$: data N-vector; $A$: known N×p; $\theta$: parameter p-vector; $\sigma^2&gt;0$: known variance. $L$: density of fixed $b$ as $\theta$ varies; argmax: maximizers</dd></dl>
+<div class="eq">$$\begin{gathered}b=A\theta+\varepsilon,\quad\varepsilon\sim\mathcal N(0,\sigma^2I)\\L(\theta;b)=p(b\mid\theta),\;\hat\theta_{MLE}\in\arg\max_{\theta}L(\theta;b)\end{gathered}$$</div><dl class="gloss"><dt></dt><dd>$N,p$: reading/parameter counts; $A\in\mathbb R^{N\times p}$: fixed design; $b,\varepsilon\in\mathbb R^N$: data/noise columns; $\theta,\hat\theta_{MLE}\in\mathbb R^p$: unknown parameter/estimate. $I=I_N$: identity; $\sigma^2>0$: known noise variance (squared reading units). $L=p(b\mid\theta)$: data density with observed $b$ fixed; argmax: maximizing values.</dd></dl>
 <p class="cite page-source"><span>Gaussian linear regression; maximum likelihood</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.5</a></p>
   
 </section>
 <!-- ============ 39 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Derivation</p><h2>Estimation</h2><p class="sub">Gaussian products become a squared loss</p>
-<div class="eq">$$-\log p(b\mid\theta)=\frac N2\log(2\pi\sigma^2)+\frac{\|b-A\theta\|^2}{2\sigma^2}$$</div><dl class="gloss"><dt></dt><dd>$A$ known; $b$ observed; $\theta$ unknown; independent errors, each $\mathcal N(0,\sigma^2)$, $\sigma^2&gt;0$.</dd></dl>
+<div class="eq">$$-\log p(b\mid\theta)=\frac N2\log(2\pi\sigma^2)+\frac{\|b-A\theta\|^2}{2\sigma^2}$$</div><dl class="gloss"><dt></dt><dd>$N,p$: reading/parameter counts; $A\in\mathbb R^{N\times p}$: fixed design; $b\in\mathbb R^N$: observed data; $\theta\in\mathbb R^p$: varied parameter. $r=b-A\theta\in\mathbb R^N$: residual; $\|r\|^2$: sum of squared residuals. Independent errors share known variance $\sigma^2>0$ in squared reading units; $p(b\mid\theta)$: data density.</dd></dl>
 <p class="cite page-source"><span>Negative log-likelihood; least squares</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.5.1</a> · Course derivation</p>
   
 </section>
 <!-- ============ 40 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Derivation</p><h2>Estimation</h2><p class="sub">Normal equations set the least-squares gradient to zero.</p>
-<div class="eq">$$A^TA\hat\theta=A^Tb,\qquad A^T(b-A\hat\theta)=0$$</div><dl class="gloss"><dt></dt><dd>$A\in\mathbb R^{N\times p}$: known design; $b\in\mathbb R^N$: data; $\theta\in\mathbb R^p$: parameters. Independent equal-variance Gaussian errors make $\hat\theta$ the MLE. Full column rank means independent columns and gives uniqueness; the residual is orthogonal to every column.</dd></dl>
+<div class="eq">$$A^TA\hat\theta=A^Tb,\qquad A^T(b-A\hat\theta)=0$$</div><dl class="gloss"><dt></dt><dd>$N,p$: reading/parameter counts; $A\in\mathbb R^{N\times p}$: fixed design; $b\in\mathbb R^N$: fixed data; $\theta,\hat\theta\in\mathbb R^p$: candidate/fitted parameters. $r=b-A\hat\theta\in\mathbb R^N$: fitted residual, in reading units. Independent equal-variance Gaussian errors give the MLE. Full column rank gives uniqueness; $A^Tr=0$ means orthogonality to every design column.</dd></dl>
 <p class="cite page-source"><span>Normal equations; least squares</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.1.4</a> · Course derivation</p>
   
 </section>
 <!-- ============ 41 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Example</p><h2>Estimation</h2><p class="sub">Fit three readings with two coefficients</p>
-<div class="eq">$$A=\begin{bmatrix}1&amp;0\\1&amp;1\\1&amp;2\end{bmatrix},\quad b=\begin{bmatrix}1\\2\\2\end{bmatrix}$$</div><dl class="gloss"><dt></dt><dd>$\theta=(\text{intercept},\text{slope})^T$; $r=b-A\hat\theta$.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$\hat\theta=\binom{7/6}{1/2},\quad r=\begin{bmatrix}-1/6\\1/3\\-1/6\end{bmatrix}$$</div><dl class="gloss"><dt></dt><dd>$\hat\theta$ estimate; $r$ observed minus fitted.</dd></dl></div></div>
+<div class="eq">$$A=\begin{bmatrix}1&amp;0\\1&amp;1\\1&amp;2\end{bmatrix},\quad b=\begin{bmatrix}1\\2\\2\end{bmatrix}$$</div><dl class="gloss"><dt></dt><dd>$A\in\mathbb R^{3\times2}$: fixed design; $b\in\mathbb R^3$: observed readings. $\theta=(\theta_1,\theta_2)^T$: intercept/slope; $\hat\theta\in\mathbb R^2$: fitted coefficients; $r=b-A\hat\theta\in\mathbb R^3$: observed minus fitted. Inputs $0,1,2$ are dimensionless; both coefficients and residuals use reading units.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$\hat\theta=\binom{7/6}{1/2},\quad r=\begin{bmatrix}-1/6\\1/3\\-1/6\end{bmatrix}$$</div><dl class="gloss"><dt></dt><dd>$\hat\theta$ estimate; $r$ observed minus fitted.</dd></dl></div></div>
 <p class="cite page-source"><span>Least-squares estimate</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.1.4</a> · Course example</p>
   
 </section>
 <!-- ============ 42 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Definition</p><h2>Estimation</h2><p class="sub">Maximum a posteriori estimation (MAP) maximizes the posterior density.</p>
-<div class="eq">$$J(\theta)=\tfrac12\|b-A\theta\|^2+\tfrac{\lambda^2}{2}\|\theta-\mu_0\|^2,\quad\lambda^2=\sigma^2/\tau^2$$</div><dl class="gloss"><dt></dt><dd>Minimize $J$ for MAP under p.38’s Gaussian noise model. Prior $\theta\sim\mathcal N(\mu_0,\tau^2I)$, $\tau^2>0$: equal variance in every unit direction. $\sigma^2>0$: known variance; $\lambda^2$: quadratic penalty weight.</dd></dl>
+<div class="eq">$$J(\theta)=\tfrac12\|b-A\theta\|^2+\tfrac{\lambda^2}{2}\|\theta-\mu_0\|^2,\quad\lambda^2=\sigma^2/\tau^2$$</div><dl class="gloss"><dt></dt><dd>$N,p$: reading/parameter counts; fixed $A\in\mathbb R^{N\times p}$ and observed $b\in\mathbb R^N$; $\theta,\mu_0\in\mathbb R^p$: candidate parameter/fixed prior mean. Independent Gaussian noise has known variance $\sigma^2>0$. Prior: $\mathcal N(\mu_0,\tau^2I_p)$; $I_p$: identity; $\tau^2>0$: variance in each parameter direction. $J$: scaled negative-log posterior; $\lambda^2$: prior weight. Data/parameter variances use their respective squared units.</dd></dl>
 <p class="cite page-source"><span>Maximum a posteriori (MAP); quadratic regularization</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6.1</a> · Course derivation</p>
   
 </section>
 <!-- ============ 43 ============ -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Example</p><h2>Estimation</h2><p class="sub">The prior changes the normal equation</p>
-<div class="eq">$$(A^TA+\lambda^2I)\hat\theta=A^Tb+\lambda^2\mu_0$$</div><dl class="gloss"><dt></dt><dd>Example: $A=\begin{bmatrix}1&amp;0\\1&amp;1\\1&amp;2\end{bmatrix}$, $b=(1,2,2)^T$, $\mu_0=0$, $\lambda^2=1$.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$\hat\theta_{MAP}=\binom{4/5}{3/5},\quad\|b-A\hat\theta\|^2=\tfrac25$$</div><dl class="gloss"><dt></dt><dd>$\hat\theta_{MAP}=(\text{intercept},\text{slope})^T$: posterior mode; $\|b-A\hat\theta\|^2$: squared residual norm.</dd></dl></div></div>
+<div class="eq">$$(A^TA+\lambda^2I)\hat\theta=A^Tb+\lambda^2\mu_0$$</div><dl class="gloss"><dt></dt><dd>$A=\begin{bmatrix}1&0\\1&1\\1&2\end{bmatrix}\in\mathbb R^{3\times2}$: fixed design; $b=(1,2,2)^T$: observed data. $\theta=(\theta_1,\theta_2)^T$: intercept/slope; $\hat\theta$: fitted column; $I=I_2$: identity. Fixed prior mean $\mu_0=(0,0)^T$; weight $\lambda^2=1$. Inputs are dimensionless; coefficients and residuals use reading units.</dd></dl><div class="step" data-step="1"><div class="ex"><p class="lbl"></p><div class="eq">$$\hat\theta_{MAP}=\binom{4/5}{3/5},\quad\|b-A\hat\theta\|^2=\tfrac25$$</div><dl class="gloss"><dt></dt><dd>$\hat\theta_{MAP}=(\text{intercept},\text{slope})^T$: posterior mode; $\|b-A\hat\theta\|^2$: squared residual norm.</dd></dl></div></div>
 <p class="cite page-source"><span>MAP normal equations; ridge regularization</span> — <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.6.1</a> · <a href="https://www.deeplearningbook.org/contents/ml.html">[1] DL §5.1.4</a> · Course derivation</p>
   
 </section>
@@ -1895,11 +1900,11 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <section class="slide has-worked-solutions" data-part="IV" data-mc="44">
 <p class="eyebrow you" data-min="3">Exercise</p>
 <h2>Estimation</h2><p class="sub">What makes the MAP estimate unique?</p>
-<div class="worked-question"><p class="q">$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix}$, $b=(1,2)^T$; $J=\tfrac12\|b-A\theta\|^2+\tfrac12\|\theta\|^2$.</p><ol class="opts one"><li><i>A</i>The prior makes the two data columns independent.</li><li><i>B</i>Gaussian noise makes every data fit unique.</li><li><i>C</i>The prior adds curvature along the data null space.<b class="ok step" data-step="6">✓</b></li></ol><div class="ex step" data-step="6"><p class="reveal">Least squares: $\theta_1+\theta_2=1$. MAP: $(A^TA+I)\theta=A^Tb$ gives $\theta_1=\theta_2=5/11$.</p></div></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix}$, $b=(1,2)^T$; $J=\tfrac12\|b-A\theta\|^2+\tfrac12\|\theta\|^2$. $A$: fixed $2\times2$ design; $b$: observed 2-entry column; $\theta=(\theta_1,\theta_2)^T$: varied parameter; $J$: scalar objective in the stated numerical coordinates.</p><ol class="opts one"><li><i>A</i>The prior makes the two data columns independent.</li><li><i>B</i>Gaussian noise makes every data fit unique.</li><li><i>C</i>The prior adds curvature along the data null space.<b class="ok step" data-step="6">✓</b></li></ol><div class="ex step" data-step="6"><p class="reveal">Least squares: $\theta_1+\theta_2=1$. MAP: $(A^TA+I)\theta=A^Tb$ gives $\theta_1=\theta_2=5/11$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
 <p class="worked-progress">Solution 1 / 5</p>
 <h3>A null-space direction leaves predictions unchanged.</h3>
-<p class="worked-variables">$\theta$: parameter column; $A$: data matrix; $b$: data column; $r=b-A\theta$; $I$: $2\times2$ identity.</p>
+<p class="worked-variables">$A$: fixed $2\times2$ design; $b$: observed 2-entry column; $\theta$: parameter 2-entry column; $r=b-A\theta$: reading residual; $I=I_2$: identity; $J$: objective. $\theta_1,\theta_2$: the two coefficients.</p>
 <ol class="worked-lines">
 <li>$\theta=(\theta_1,\theta_2)^T$: parameters; $b=(1,2)^T$: readings.</li>
 <li>$A=\begin{bmatrix}1&amp;1\\2&amp;2\end{bmatrix}$; $r=b-A\theta$: residual.</li>
@@ -1908,7 +1913,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
 <p class="worked-progress">Solution 2 / 5</p>
 <h3>Add the stated prior penalty</h3>
-<p class="worked-variables">$\theta$: parameter column; $A$: data matrix; $b$: data column; $r=b-A\theta$; $I$: $2\times2$ identity.</p>
+<p class="worked-variables">$A$: fixed $2\times2$ design; $b$: observed 2-entry column; $\theta$: parameter 2-entry column; $r=b-A\theta$: reading residual; $I=I_2$: identity; $J$: objective. $\lambda^2$: prior weight; $\sigma^2,\tau^2$: noise/prior variances, with ratio $1$.</p>
 <ol class="worked-lines">
 <li>$J$: scaled negative-log posterior; $J=\tfrac12\|r\|^2+\tfrac12\|\theta\|^2$, with $\lambda^2=\sigma^2/\tau^2=1$.</li>
 <li>$\nabla J=A^T(A\theta-b)+\theta=0$.</li>
@@ -1917,7 +1922,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
 <p class="worked-progress">Solution 3 / 5</p>
 <h3>Solve the two equations</h3>
-<p class="worked-variables">$\theta$: parameter column; $A$: data matrix; $b$: data column; $r=b-A\theta$; $I$: $2\times2$ identity.</p>
+<p class="worked-variables">$A$: fixed $2\times2$ design; $b$: observed 2-entry column; $\theta$: parameter 2-entry column; $r=b-A\theta$: reading residual; $I=I_2$: identity; $J$: objective. $\hat\theta_{MAP}$: fitted posterior-mode column.</p>
 <ol class="worked-lines">
 <li>$6\theta_1+5\theta_2=5$; $5\theta_1+6\theta_2=5$.</li>
 <li>Subtract: $\theta_1-\theta_2=0$; substitute: $11\theta_1=5$.</li>
@@ -1926,7 +1931,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
 <p class="worked-progress">Solution 4 / 5</p>
 <h3>The Hessian collects the objective’s second partial derivatives.</h3>
-<p class="worked-variables">$\theta$: parameter column; $A$: data matrix; $b$: data column; $r=b-A\theta$; $I$: $2\times2$ identity.</p>
+<p class="worked-variables">$A$: fixed $2\times2$ design; $b$: observed 2-entry column; $\theta$: parameter 2-entry column; $r=b-A\theta$: reading residual; $I=I_2$: identity; $J$: objective. $v\in\mathbb R^2\setminus\{0\}$: parameter direction; Hessian: second-derivative matrix.</p>
 <ol class="worked-lines">
 <li>For any nonzero column $v$, $v^T(A^TA+I)v=\|Av\|^2+\|v\|^2&gt;0$.</li>
 <li>For the data-null direction $v=(1,-1)^T$, $Av=0$ but $\|v\|^2=2$.</li>
@@ -1935,7 +1940,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
 <p class="worked-progress">Solution 5 / 5</p>
 <h3>Choose C</h3>
-<p class="worked-variables">$\theta$: parameter column; $A$: data matrix; $b$: data column; $r=b-A\theta$; $I$: $2\times2$ identity.</p>
+<p class="worked-variables">$A$: fixed $2\times2$ design; $b$: observed 2-entry column; $\theta$: parameter 2-entry column; $r=b-A\theta$: reading residual; $I=I_2$: identity; $J$: objective.</p>
 <ol class="worked-lines">
 <li>A is false: A still has identical columns and rank 1.</li>
 <li>B is false: Gaussian noise alone does not identify their separate coefficients.</li>
@@ -1950,11 +1955,11 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <section class="slide has-worked-solutions" data-part="IV" data-mc="45">
 <p class="eyebrow you" data-min="0.75">Exercise</p>
 <h2>Sensor Calibration</h2><p class="sub">Calibration: choose the likelihood</p>
-<div class="worked-question"><p class="q">$b=(1,2,3)^T$: readings minus a known reference; $b_i=\theta+\varepsilon_i$, $\varepsilon_i\overset{iid}{\sim}\mathcal N(0,1)$. Which data objective fits this model?</p><ol class="opts one"><li><i>A</i>$\frac12\sum_i(b_i-\theta)^2$<b class="ok step" data-step="5">✓</b></li><li><i>B</i>$\sum_i|b_i-\theta|$</li><li><i>C</i>$\frac12\sum_i(b_i-\theta)^2+\frac12\theta^2$</li></ol><div class="ex step" data-step="5"><p class="reveal">$-\log p(b\mid\theta)=C+\frac12\sum_i(b_i-\theta)^2$; $\hat\theta_{MLE}=\bar b=2$.</p></div></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">$b=(1,2,3)^T$: readings minus a known reference; $b_i=\theta+\varepsilon_i$, $\varepsilon_i\overset{iid}{\sim}\mathcal N(0,1)$. Which data objective fits this model? $i=1,2,3$: reading index; $b$: observed 3-entry column; $\theta$: scalar offset; $\varepsilon_i$: random error in reading units.</p><ol class="opts one"><li><i>A</i>$\frac12\sum_i(b_i-\theta)^2$<b class="ok step" data-step="5">✓</b></li><li><i>B</i>$\sum_i|b_i-\theta|$</li><li><i>C</i>$\frac12\sum_i(b_i-\theta)^2+\frac12\theta^2$</li></ol><div class="ex step" data-step="5"><p class="reveal">$-\log p(b\mid\theta)=C+\frac12\sum_i(b_i-\theta)^2$; $\hat\theta_{MLE}=\bar b=2$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
 <p class="worked-progress">Solution 1 / 4</p>
 <h3>Define the calibration model</h3>
-<p class="worked-variables">$b_i$: reading $i$; $\theta$: common additive offset; $\varepsilon_i$: noise; $J_{data}$: data objective; $C$: constant in $\theta$.</p>
+<p class="worked-variables">$b=(b_1,b_2,b_3)^T$: fixed data; $i$: reading index; $\theta$: scalar offset; $\varepsilon_i$: zero-mean random noise. $J_{data}$: scalar data loss; $C$: constant in $\theta$; $\hat\theta_{MLE}$: data-only estimate; $\bar b$: data average.</p>
 <ol class="worked-lines">
 <li>$b=(1,2,3)^T$: observed readings; $\theta$: unknown common offset.</li>
 <li>$b_i=\theta+\varepsilon_i$; independent $\varepsilon_i\sim\mathcal N(0,1)$.</li>
@@ -1963,7 +1968,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
 <p class="worked-progress">Solution 2 / 4</p>
 <h3>From likelihood to objective</h3>
-<p class="worked-variables">$b_i$: reading $i$; $\theta$: common additive offset; $\varepsilon_i$: noise; $J_{data}$: data objective; $C$: constant in $\theta$.</p>
+<p class="worked-variables">$b=(b_1,b_2,b_3)^T$: fixed data; $i$: reading index; $\theta$: scalar offset; $\varepsilon_i$: zero-mean random noise. $J_{data}$: scalar data loss; $C$: constant in $\theta$; $\hat\theta_{MLE}$: data-only estimate; $\bar b$: data average.</p>
 <ol class="worked-lines">
 <li>Independence: $p(b\mid\theta)=\prod_{i=1}^3p(b_i\mid\theta)$.</li>
 <li>$-\log p(b\mid\theta)=C+\tfrac12\sum_{i=1}^3(b_i-\theta)^2$.</li>
@@ -1972,7 +1977,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
 <p class="worked-progress">Solution 3 / 4</p>
 <h3>Expand every square</h3>
-<p class="worked-variables">$b_i$: reading $i$; $\theta$: common additive offset; $\varepsilon_i$: noise; $J_{data}$: data objective; $C$: constant in $\theta$.</p>
+<p class="worked-variables">$b=(b_1,b_2,b_3)^T$: fixed data; $i$: reading index; $\theta$: scalar offset; $\varepsilon_i$: zero-mean random noise. $J_{data}$: scalar data loss; $C$: constant in $\theta$; $\hat\theta_{MLE}$: data-only estimate; $\bar b$: data average.</p>
 <ol class="worked-lines">
 <li>$2J_{data}=(1-\theta)^2+(2-\theta)^2+(3-\theta)^2$.</li>
 <li>$=(1-2\theta+\theta^2)+(4-4\theta+\theta^2)+(9-6\theta+\theta^2)$.</li>
@@ -1981,7 +1986,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
 <p class="worked-progress">Solution 4 / 4</p>
 <h3>Minimize and choose A</h3>
-<p class="worked-variables">$b_i$: reading $i$; $\theta$: common additive offset; $\varepsilon_i$: noise; $J_{data}$: data objective; $C$: constant in $\theta$.</p>
+<p class="worked-variables">$b=(b_1,b_2,b_3)^T$: fixed data; $i$: reading index; $\theta$: scalar offset; $\varepsilon_i$: zero-mean random noise. $J_{data}$: scalar data loss; $C$: constant in $\theta$; $\hat\theta_{MLE}$: data-only estimate; $\bar b$: data average.</p>
 <ol class="worked-lines">
 <li>$J_{data}^{\prime}=3\theta-6=0\Rightarrow\hat\theta_{MLE}=2$; $J_{data}^{\prime\prime}=3&gt;0$.</li>
 <li>A follows from independent Gaussian noise.</li>
@@ -1996,7 +2001,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <section class="slide has-worked-solutions" data-part="IV" data-mc="46">
 <p class="eyebrow you" data-min="0.75">Exercise</p>
 <h2>Sensor Calibration</h2><p class="sub">Calibration: combine data and prior</p>
-<div class="worked-question"><div class="cols" style="grid-template-columns:640px 460px;gap:28px;align-items:start"><div><p class="q">Readings $(1,2,3)$; independent normal noise, variance $1$; prior $\theta\sim\mathcal N(0,1)$. Find posterior mean and precision (inverse variance).</p><ol class="opts one"><li><i>A</i>Center stays at $2$; only uncertainty changes.</li><li><i>B</i>Center moves toward $0$; precision becomes $4$.<b class="ok step" data-step="5">✓</b></li><li><i>C</i>Center moves toward $0$; variances add to $4$.</li></ol><div class="ex step" data-step="5"><p class="reveal">$J_{post}=2(\theta-1.5)^2+2.5$; $\theta\mid b\sim\mathcal N(1.5,1/4)$.</p></div></div><figure class="step" data-step="5" style="align-self:center;flex:none"><canvas id="m8p46c" width="460" height="340" role="img" aria-label="Calibration model after the vote"></canvas></figure><script>m3anim(document.getElementById("m8p46c"),function(g,t,k){var c=k.c;var left=42,base=285,sx=53,sy=230;
+<div class="worked-question"><div class="cols" style="grid-template-columns:640px 460px;gap:28px;align-items:start"><div><p class="q">Readings $(1,2,3)$; independent normal noise, variance $1$; prior $\theta\sim\mathcal N(0,1)$. Find posterior mean and precision (inverse variance). $b=(1,2,3)^T$: fixed data column; $\theta$: scalar additive offset, in reading units; normal notation gives mean then variance.</p><ol class="opts one"><li><i>A</i>Center stays at $2$; only uncertainty changes.</li><li><i>B</i>Center moves toward $0$; precision becomes $4$.<b class="ok step" data-step="5">✓</b></li><li><i>C</i>Center moves toward $0$; variances add to $4$.</li></ol><div class="ex step" data-step="5"><p class="reveal">$J_{post}=2(\theta-1.5)^2+2.5$; $\theta\mid b\sim\mathcal N(1.5,1/4)$.</p></div></div><figure class="step" data-step="5" style="align-self:center;flex:none"><canvas id="m8p46c" width="460" height="340" role="img" aria-label="Calibration model after the vote"></canvas></figure><script>m3anim(document.getElementById("m8p46c"),function(g,t,k){var c=k.c;var left=42,base=285,sx=53,sy=230;
   k.seg([left,base],[435,base],c.dim,1);k.seg([left,base],[left,70],c.dim,1);
   var curves=[{m:0,v:1,col:c.in,label:'prior: mean 0, variance 1'},
    {m:2,v:1/3,col:c.dat,label:'likelihood shape (unit area)'},
@@ -2007,7 +2012,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
 <p class="worked-progress">Solution 1 / 4</p>
 <h3>Keep the data and state the prior</h3>
-<p class="worked-variables">$\theta$: offset; $J_{post}$: posterior objective; $\mu_1,P_1$: posterior mean/variance; precision $=1/P_1$.</p>
+<p class="worked-variables">$b$: fixed 3-entry column; $\theta$: scalar offset; $J_{data},J_{post}$: data/negative-log posterior objectives. $\mu_1$: posterior mean; $P_1$: posterior variance (squared reading units); $1/P_1$: precision; $\theta\mid b$: offset distribution given data.</p>
 <ol class="worked-lines">
 <li>$b=(1,2,3)^T$; independent noise variance $1$; $\theta$: offset.</li>
 <li>$J_{data}=\tfrac12(3\theta^2-12\theta+14)$; $\theta\sim\mathcal N(0,1)$.</li>
@@ -2016,7 +2021,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
 <p class="worked-progress">Solution 2 / 4</p>
 <h3>Collect the posterior quadratic</h3>
-<p class="worked-variables">$\theta$: offset; $J_{post}$: posterior objective; $\mu_1,P_1$: posterior mean/variance; precision $=1/P_1$.</p>
+<p class="worked-variables">$b$: fixed 3-entry column; $\theta$: scalar offset; $J_{data},J_{post}$: data/negative-log posterior objectives. $\mu_1$: posterior mean; $P_1$: posterior variance (squared reading units); $1/P_1$: precision; $\theta\mid b$: offset distribution given data.</p>
 <ol class="worked-lines">
 <li>$J_{post}=\tfrac12(3\theta^2-12\theta+14)+\tfrac12\theta^2$.</li>
 <li>$=2\theta^2-6\theta+7=2(\theta^2-3\theta)+7$.</li>
@@ -2025,7 +2030,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
 <p class="worked-progress">Solution 3 / 4</p>
 <h3>Complete the square and read variance</h3>
-<p class="worked-variables">$\theta$: offset; $J_{post}$: posterior objective; $\mu_1,P_1$: posterior mean/variance; precision $=1/P_1$.</p>
+<p class="worked-variables">$b$: fixed 3-entry column; $\theta$: scalar offset; $J_{data},J_{post}$: data/negative-log posterior objectives. $\mu_1$: posterior mean; $P_1$: posterior variance (squared reading units); $1/P_1$: precision; $\theta\mid b$: offset distribution given data.</p>
 <ol class="worked-lines">
 <li>$J_{post}=2(\theta-3/2)^2-9/2+7=2(\theta-1.5)^2+2.5$.</li>
 <li>Gaussian quadratic: $(\theta-\mu_1)^2/(2P_1)$; hence $\mu_1=1.5$, $1/(2P_1)=2$.</li>
@@ -2034,7 +2039,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
 <p class="worked-progress">Solution 4 / 4</p>
 <h3>Choose B and check the weights</h3>
-<p class="worked-variables">$\theta$: offset; $J_{post}$: posterior objective; $\mu_1,P_1$: posterior mean/variance; precision $=1/P_1$.</p>
+<p class="worked-variables">$b$: fixed 3-entry column; $\theta$: scalar offset; $J_{data},J_{post}$: data/negative-log posterior objectives. $\mu_1$: posterior mean; $P_1$: posterior variance (squared reading units); $1/P_1$: precision; $\theta\mid b$: offset distribution given data.</p>
 <ol class="worked-lines">
 <li>Data precision $3$ plus prior precision $1$ gives $4$.</li>
 <li>Posterior mean $=(3\cdot2+1\cdot0)/4=1.5$; MAP equals this Gaussian mean.</li>
@@ -2049,7 +2054,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <section class="slide has-worked-solutions" data-part="IV" data-mc="47">
 <p class="eyebrow you" data-min="0.75">Exercise</p>
 <h2>Sensor Calibration</h2><p class="sub">Calibration: confidence coverage</p>
-<div class="worked-question"><div class="cols" style="grid-template-columns:640px 460px;gap:28px;align-items:start"><div><p class="q">Three iid $B_i\mid\theta\sim\mathcal N(\theta,1)$; $\bar B$: mean. $C(B)=\bar B\pm1.96/\sqrt3$. Interpret 95% confidence.</p><ol class="opts one"><li><i>A</i>This realized interval has 95% posterior mass.</li><li><i>B</i>95% of future individual readings lie inside it.</li><li><i>C</i>Repeated intervals cover fixed $\theta$ 95% of the time.<b class="ok step" data-step="5">✓</b></li></ol><div class="ex step" data-step="5"><p class="reveal">$\sqrt3(\bar B-\theta)\sim\mathcal N(0,1)$; $P_\theta(\theta\in C(B))\approx.95$.</p></div></div><figure class="step" data-step="5" style="align-self:center;flex:none"><canvas id="m8p47c" width="460" height="340" role="img" aria-label="Calibration model after the vote"></canvas></figure><script>m3anim(document.getElementById("m8p47c"),function(g,t,k){var c=k.c;var truth=250;k.seg([truth,37],[truth,270],c.in,2,[4,4]);
+<div class="worked-question"><div class="cols" style="grid-template-columns:640px 460px;gap:28px;align-items:start"><div><p class="q">Three iid $B_i\mid\theta\sim\mathcal N(\theta,1)$; $\bar B$: mean. $C(B)=\bar B\pm1.96/\sqrt3$. Interpret 95% confidence. $B=(B_1,B_2,B_3)^T$: random data; $\theta$: fixed scalar offset; $\bar B$: random average; $C(B)$: interval rule. Offset and endpoints use reading units.</p><ol class="opts one"><li><i>A</i>This realized interval has 95% posterior mass.</li><li><i>B</i>95% of future individual readings lie inside it.</li><li><i>C</i>Repeated intervals cover fixed $\theta$ 95% of the time.<b class="ok step" data-step="5">✓</b></li></ol><div class="ex step" data-step="5"><p class="reveal">$\sqrt3(\bar B-\theta)\sim\mathcal N(0,1)$; $P_\theta(\theta\in C(B))\approx.95$.</p></div></div><figure class="step" data-step="5" style="align-self:center;flex:none"><canvas id="m8p47c" width="460" height="340" role="img" aria-label="Calibration model after the vote"></canvas></figure><script>m3anim(document.getElementById("m8p47c"),function(g,t,k){var c=k.c;var truth=250;k.seg([truth,37],[truth,270],c.in,2,[4,4]);
   k.text('fixed true offset',[truth-67,23],c.in,{size:17});
   [-75,20,62,-40,110,10,-60,40,-10].forEach(function(shift,i){var y=54+24*i,center=truth+shift,col=Math.abs(shift)<=90?c.dat:c.res;k.seg([center-90,y],[center+90,y],col,3);k.dot([center,y],3,col);k.text(String(i+1),[22,y+5],c.dim,{size:14});});
   k.text('repeated datasets',[12,286],c.dim,{size:15});k.text('offset',[354,286],c.dim,{size:15});
@@ -2057,7 +2062,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
 <p class="worked-progress">Solution 1 / 4</p>
 <h3>Define the random interval</h3>
-<p class="worked-variables">$B$: random data; $\bar B$: sample mean; $\theta$: fixed offset; $C(B)$: confidence interval; $Z$: standardized mean.</p>
+<p class="worked-variables">$i=1,2,3$; $B_i$: random reading; $B$: random 3-entry column; $\bar B$: average; $\theta$: fixed offset. $C(B)$: random confidence interval; $Z$: dimensionless standardized mean; $P_\theta$: repeated-data probability with $\theta$ held fixed.</p>
 <ol class="worked-lines">
 <li>$\theta$: fixed true offset; $B_i$: random reading before observation.</li>
 <li>$B_i\mid\theta\sim\mathcal N(\theta,1)$ independently; $\bar B=(B_1+B_2+B_3)/3$.</li>
@@ -2066,7 +2071,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
 <p class="worked-progress">Solution 2 / 4</p>
 <h3>Standard error is the sample mean’s sampling standard deviation.</h3>
-<p class="worked-variables">$B$: random data; $\bar B$: sample mean; $\theta$: fixed offset; $C(B)$: confidence interval; $Z$: standardized mean.</p>
+<p class="worked-variables">$i=1,2,3$; $B_i$: random reading; $B$: random 3-entry column; $\bar B$: average; $\theta$: fixed offset. $C(B)$: random confidence interval; $Z$: dimensionless standardized mean; $P_\theta$: repeated-data probability with $\theta$ held fixed.</p>
 <ol class="worked-lines">
 <li>$\mathbb E_\theta[\bar B]=\theta$; $\operatorname{Var}_\theta(\bar B)=(1+1+1)/9=1/3$.</li>
 <li>$Z=(\bar B-\theta)/(1/\sqrt3)\sim\mathcal N(0,1)$.</li>
@@ -2075,7 +2080,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
 <p class="worked-progress">Solution 3 / 4</p>
 <h3>A confidence interval comes from a rule with the stated repeated-sampling coverage.</h3>
-<p class="worked-variables">$B$: random data; $\bar B$: sample mean; $\theta$: fixed offset; $C(B)$: confidence interval; $Z$: standardized mean.</p>
+<p class="worked-variables">$i=1,2,3$; $B_i$: random reading; $B$: random 3-entry column; $\bar B$: average; $\theta$: fixed offset. $C(B)$: random confidence interval; $Z$: dimensionless standardized mean; $P_\theta$: repeated-data probability with $\theta$ held fixed.</p>
 <ol class="worked-lines">
 <li>$-1.96/\sqrt3\leq\bar B-\theta\leq1.96/\sqrt3$.</li>
 <li>$\bar B-1.96/\sqrt3\leq\theta\leq\bar B+1.96/\sqrt3$.</li>
@@ -2084,7 +2089,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
 <p class="worked-progress">Solution 4 / 4</p>
 <h3>Choose C</h3>
-<p class="worked-variables">$B$: random data; $\bar B$: sample mean; $\theta$: fixed offset; $C(B)$: confidence interval; $Z$: standardized mean.</p>
+<p class="worked-variables">$i=1,2,3$; $B_i$: random reading; $B$: random 3-entry column; $\bar B$: average; $\theta$: fixed offset. $C(B)$: random confidence interval; $Z$: dimensionless standardized mean; $P_\theta$: repeated-data probability with $\theta$ held fixed.</p>
 <ol class="worked-lines">
 <li>C: repeated random intervals cover the same fixed offset about 95% of the time.</li>
 <li>A needs a posterior distribution; confidence alone provides none.</li>
@@ -2099,11 +2104,11 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <section class="slide has-worked-solutions" data-part="IV" data-mc="48">
 <p class="eyebrow you" data-min="0.75">Exercise</p>
 <h2>Sensor Calibration</h2><p class="sub">Calibration: what does credibility describe?</p>
-<div class="worked-question"><p class="q">Observed $b=(1,2,3)^T$; $\theta\mid b\sim\mathcal N(1.5,.25)$. A 95% credible interval describes which probability?</p><ol class="opts one"><li><i>A</i>95% posterior mass for $\theta$, with $b$ fixed.<b class="ok step" data-step="4">✓</b></li><li><i>B</i>95% coverage for every fixed true offset.</li><li><i>C</i>95% probability for a future noisy reading.</li></ol><div class="ex step" data-step="4"><p class="reveal">$I(b)=1.5\pm1.96(.5)$; $P(\theta\in I(b)\mid b)\approx.95$.</p></div></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Observed $b=(1,2,3)^T$; $\theta\mid b\sim\mathcal N(1.5,.25)$. A 95% credible interval describes which probability? $b$: fixed observed 3-entry column; $\theta$: scalar offset. Normal notation lists mean then variance; $1.5$ is in reading units and $.25$ in squared units.</p><ol class="opts one"><li><i>A</i>95% posterior mass for $\theta$, with $b$ fixed.<b class="ok step" data-step="4">✓</b></li><li><i>B</i>95% coverage for every fixed true offset.</li><li><i>C</i>95% probability for a future noisy reading.</li></ol><div class="ex step" data-step="4"><p class="reveal">$I(b)=1.5\pm1.96(.5)$; $P(\theta\in I(b)\mid b)\approx.95$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
 <p class="worked-progress">Solution 1 / 3</p>
 <h3>Fix the data and use the posterior</h3>
-<p class="worked-variables">$b$: fixed data; $\theta$: offset; $\mu_1,P_1$: posterior mean/variance; $I(b)$: credible interval; $Z$: standardized offset.</p>
+<p class="worked-variables">$b$: fixed 3-entry column; $\theta$: scalar offset; $\mu_1,P_1$: posterior mean/variance; $I(b)$: interval from fixed data; $Z$: dimensionless standardized offset. $P(\cdot\mid b)$: probability under the stated posterior.</p>
 <ol class="worked-lines">
 <li>$b=(1,2,3)^T$: observed data, now fixed; $\theta$: offset.</li>
 <li>$\theta\mid b\sim\mathcal N(\mu_1,P_1)$ with $\mu_1=1.5$, $P_1=.25$.</li>
@@ -2112,7 +2117,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
 <p class="worked-progress">Solution 2 / 3</p>
 <h3>Standardize, then undo the scaling</h3>
-<p class="worked-variables">$b$: fixed data; $\theta$: offset; $\mu_1,P_1$: posterior mean/variance; $I(b)$: credible interval; $Z$: standardized offset.</p>
+<p class="worked-variables">$b$: fixed 3-entry column; $\theta$: scalar offset; $\mu_1,P_1$: posterior mean/variance; $I(b)$: interval from fixed data; $Z$: dimensionless standardized offset. $P(\cdot\mid b)$: probability under the stated posterior.</p>
 <ol class="worked-lines">
 <li>$Z=(\theta-1.5)/.5\mid b\sim\mathcal N(0,1)$.</li>
 <li>$P(-1.96\leq Z\leq1.96\mid b)\approx.95$.</li>
@@ -2121,7 +2126,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
 <p class="worked-progress">Solution 3 / 3</p>
 <h3>A credible interval contains the stated posterior probability.</h3>
-<p class="worked-variables">$b$: fixed data; $\theta$: offset; $\mu_1,P_1$: posterior mean/variance; $I(b)$: credible interval; $Z$: standardized offset.</p>
+<p class="worked-variables">$b$: fixed 3-entry column; $\theta$: scalar offset; $\mu_1,P_1$: posterior mean/variance; $I(b)$: interval from fixed data; $Z$: dimensionless standardized offset. $P(\cdot\mid b)$: probability under the stated posterior.</p>
 <ol class="worked-lines">
 <li>A: $P(\theta\in I(b)\mid b)\approx.95$ under this posterior.</li>
 <li>B is a repeated-sampling claim for every fixed offset; it does not follow here.</li>
@@ -2136,11 +2141,11 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <section class="slide has-worked-solutions" data-part="IV" data-mc="49">
 <p class="eyebrow you" data-min="0.75">Exercise</p>
 <h2>Sensor Calibration</h2><p class="sub">Calibration: why do the intervals differ?</p>
-<div class="worked-question"><p class="q">Prior $\theta\sim\mathcal N(0,1)$. Confidence $C(b)=2\pm1.96/\sqrt3$; credible $I(b)=1.5\pm1.96(.5)$. Why different?</p><ol class="opts one"><li><i>A</i>Narrower credible interval means better coverage.</li><li><i>B</i>The zero-centered prior adds information.<b class="ok step" data-step="4">✓</b></li><li><i>C</i>The physical sensor became less noisy.</li></ol><div class="ex step" data-step="4"><p class="reveal">$C\approx[.8684,3.1316]$; $I\approx[.5200,2.4800]$. Prior precision $1$ adds to data precision $3$.</p></div></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Prior $\theta\sim\mathcal N(0,1)$. Confidence $C(b)=2\pm1.96/\sqrt3$; credible $I(b)=1.5\pm1.96(.5)$. Why different? $b=(1,2,3)^T$: fixed data; $\theta$: scalar offset; normal noise variance $1$. $C(b),I(b)$: the two displayed interval constructions, in reading units.</p><ol class="opts one"><li><i>A</i>Narrower credible interval means better coverage.</li><li><i>B</i>The zero-centered prior adds information.<b class="ok step" data-step="4">✓</b></li><li><i>C</i>The physical sensor became less noisy.</li></ol><div class="ex step" data-step="4"><p class="reveal">$C\approx[.8684,3.1316]$; $I\approx[.5200,2.4800]$. Prior precision $1$ adds to data precision $3$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
 <p class="worked-progress">Solution 1 / 3</p>
 <h3>Identify the two information sources</h3>
-<p class="worked-variables">$C$: confidence interval; $I$: credible interval; $\bar b$: sample mean; precision: inverse variance.</p>
+<p class="worked-variables">$b$: observed 3-entry column; $\bar b$: data average; $\theta$: scalar offset; $C(b)$: realized confidence interval; $I(b)$: credible interval. Precision is inverse variance; endpoints use reading units, variances squared units.</p>
 <ol class="worked-lines">
 <li>$b=(1,2,3)^T$; $\bar b=2$; noise variance $1$; prior $\mathcal N(0,1)$.</li>
 <li>$C$: confidence interval; sampling standard error $1/\sqrt3$.</li>
@@ -2150,7 +2155,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
 <p class="worked-progress">Solution 2 / 3</p>
 <h3>Compute and compare endpoints</h3>
-<p class="worked-variables">$C$: confidence interval; $I$: credible interval; $\bar b$: sample mean; precision: inverse variance.</p>
+<p class="worked-variables">$b$: observed 3-entry column; $\bar b$: data average; $\theta$: scalar offset; $C(b)$: realized confidence interval; $I(b)$: credible interval. Precision is inverse variance; endpoints use reading units, variances squared units.</p>
 <ol class="worked-lines">
 <li>$C=2\pm1.96/\sqrt3\approx2\pm1.1316=[.8684,3.1316]$.</li>
 <li>$I=1.5\pm1.96\sqrt{1/4}=1.5\pm.98=[.52,2.48]$.</li>
@@ -2159,7 +2164,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
 <p class="worked-progress">Solution 3 / 3</p>
 <h3>Choose B</h3>
-<p class="worked-variables">$C$: confidence interval; $I$: credible interval; $\bar b$: sample mean; precision: inverse variance.</p>
+<p class="worked-variables">$b$: observed 3-entry column; $\bar b$: data average; $\theta$: scalar offset; $C(b)$: realized confidence interval; $I(b)$: credible interval. Precision is inverse variance; endpoints use reading units, variances squared units.</p>
 <ol class="worked-lines">
 <li>B: one unit of prior precision adds to three units from the data.</li>
 <li>A: narrower does not prove better repeated-sampling coverage.</li>
@@ -2174,11 +2179,11 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <section class="slide has-worked-solutions" data-part="IV" data-mc="50">
 <p class="eyebrow you" data-min="3">Exercise</p>
 <h2>Sensor Calibration</h2><p class="sub">Calibration: new data, new prior</p>
-<div class="worked-question"><p class="q">Readings $b=(2,3)^T$ estimate offset $\theta$; iid noise $\mathcal N(0,1)$; prior $\theta\sim\mathcal N(4,1)$. Which is valid?</p><ol class="opts one"><li><i>A</i>The prior changes the data-only MLE.</li><li><i>B</i>The prior center can be ignored in MAP.</li><li><i>C</i>MAP moves above the data mean; MLE stays fixed.<b class="ok step" data-step="6">✓</b></li></ol><div class="ex step" data-step="6"><p class="reveal">$\hat\theta_{MLE}=2.5$, $\theta\mid b\sim\mathcal N(3,1/3)$. $C=2.5\pm1.96/\sqrt2$; $I=3\pm1.96/\sqrt3$.</p></div></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Readings $b=(2,3)^T$ estimate offset $\theta$; iid noise $\mathcal N(0,1)$; prior $\theta\sim\mathcal N(4,1)$. Which is valid? $b$: fixed observed 2-entry column; $\theta$: scalar additive offset in reading units; normal notation lists mean then variance.</p><ol class="opts one"><li><i>A</i>The prior changes the data-only MLE.</li><li><i>B</i>The prior center can be ignored in MAP.</li><li><i>C</i>MAP moves above the data mean; MLE stays fixed.<b class="ok step" data-step="6">✓</b></li></ol><div class="ex step" data-step="6"><p class="reveal">$\hat\theta_{MLE}=2.5$, $\theta\mid b\sim\mathcal N(3,1/3)$. $C=2.5\pm1.96/\sqrt2$; $I=3\pm1.96/\sqrt3$.</p></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
 <p class="worked-progress">Solution 1 / 5</p>
 <h3>Set up the new data-only problem</h3>
-<p class="worked-variables">$\theta$: offset; $J$: objective; $\mu_1,P_1$: posterior mean/variance; $C$: confidence; $I$: credible interval.</p>
+<p class="worked-variables">$b$: fixed 2-entry column; $\theta$: scalar offset; $J_{data},J_{post}$: data/posterior objectives; $\hat\theta_{MLE},\hat\theta_{MAP}$: fitted offsets. $\mu_1,P_1$: posterior mean/variance; $C,I$: confidence/credible intervals; endpoints use reading units.</p>
 <ol class="worked-lines">
 <li>$b=(2,3)^T$; $\theta$: offset; independent noise variance $1$.</li>
 <li>$J_{data}=\tfrac12[(2-\theta)^2+(3-\theta)^2]$.</li>
@@ -2187,7 +2192,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
 <p class="worked-progress">Solution 2 / 5</p>
 <h3>Minimize, then add the new prior</h3>
-<p class="worked-variables">$\theta$: offset; $J$: objective; $\mu_1,P_1$: posterior mean/variance; $C$: confidence; $I$: credible interval.</p>
+<p class="worked-variables">$b$: fixed 2-entry column; $\theta$: scalar offset; $J_{data},J_{post}$: data/posterior objectives; $\hat\theta_{MLE},\hat\theta_{MAP}$: fitted offsets. $\mu_1,P_1$: posterior mean/variance; $C,I$: confidence/credible intervals; endpoints use reading units.</p>
 <ol class="worked-lines">
 <li>$J_{data}^{\prime}=2\theta-5=0\Rightarrow\hat\theta_{MLE}=2.5$; $J_{data}^{\prime\prime}=2&gt;0$.</li>
 <li>Prior $\mathcal N(4,1)$ adds $\tfrac12(\theta-4)^2=\tfrac12(\theta^2-8\theta+16)$.</li>
@@ -2196,7 +2201,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
 <p class="worked-progress">Solution 3 / 5</p>
 <h3>Complete the posterior square</h3>
-<p class="worked-variables">$\theta$: offset; $J$: objective; $\mu_1,P_1$: posterior mean/variance; $C$: confidence; $I$: credible interval.</p>
+<p class="worked-variables">$b$: fixed 2-entry column; $\theta$: scalar offset; $J_{data},J_{post}$: data/posterior objectives; $\hat\theta_{MLE},\hat\theta_{MAP}$: fitted offsets. $\mu_1,P_1$: posterior mean/variance; $C,I$: confidence/credible intervals; endpoints use reading units.</p>
 <ol class="worked-lines">
 <li>$3\theta^2-18\theta+29=3(\theta^2-6\theta)+29$.</li>
 <li>$=3[(\theta-3)^2-9]+29=3(\theta-3)^2+2$.</li>
@@ -2205,7 +2210,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
 <p class="worked-progress">Solution 4 / 5</p>
 <h3>Compute both interval constructions</h3>
-<p class="worked-variables">$\theta$: offset; $J$: objective; $\mu_1,P_1$: posterior mean/variance; $C$: confidence; $I$: credible interval.</p>
+<p class="worked-variables">$b$: fixed 2-entry column; $\theta$: scalar offset; $J_{data},J_{post}$: data/posterior objectives; $\hat\theta_{MLE},\hat\theta_{MAP}$: fitted offsets. $\mu_1,P_1$: posterior mean/variance; $C,I$: confidence/credible intervals; endpoints use reading units.</p>
 <ol class="worked-lines">
 <li>$C$: confidence; mean $2.5$, sampling standard error $1/\sqrt2$.</li>
 <li>$C=2.5\pm1.96/\sqrt2\approx[1.1141,3.8859]$.</li>
@@ -2214,7 +2219,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
 <p class="worked-progress">Solution 5 / 5</p>
 <h3>Choose C</h3>
-<p class="worked-variables">$\theta$: offset; $J$: objective; $\mu_1,P_1$: posterior mean/variance; $C$: confidence; $I$: credible interval.</p>
+<p class="worked-variables">$b$: fixed 2-entry column; $\theta$: scalar offset; $J_{data},J_{post}$: data/posterior objectives; $\hat\theta_{MLE},\hat\theta_{MAP}$: fitted offsets. $\mu_1,P_1$: posterior mean/variance; $C,I$: confidence/credible intervals; endpoints use reading units.</p>
 <ol class="worked-lines">
 <li>C: $\hat\theta_{MAP}=3&gt;2.5$, while the data-only MLE remains $2.5$.</li>
 <li>A incorrectly puts prior information into the data-only MLE.</li>
@@ -2233,7 +2238,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 3">
 <p class="worked-progress">Solution 1 / 3</p>
 <h3>Identify what the specification omits</h3>
-<p class="worked-variables">$C(B)$: confidence interval; $I(b)$: credible interval; $\varepsilon_{new}$: fresh noise; $\theta+\varepsilon_{new}$: next reading in this offset model.</p>
+<p class="worked-variables">$\theta$: scalar offset; $B$: random data column; $b$: observed data; $C(B)$: confidence interval; $I(b)$: credible interval. $\varepsilon_{new}$: fresh scalar noise; $Y=\theta+\varepsilon_{new}$: next reference-subtracted reading; lengths use cm.</p>
 <ol class="worked-lines">
 <li>The statement “$\pm2$ cm, 95%” supplies a half-width of $2$ cm and a percentage.</li>
 <li>$\theta$: offset; $B$: repeated random dataset; $b$: observed dataset.</li>
@@ -2242,7 +2247,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 3">
 <p class="worked-progress">Solution 2 / 3</p>
 <h3>Compare three possible meanings</h3>
-<p class="worked-variables">$C(B)$: confidence interval; $I(b)$: credible interval; $\varepsilon_{new}$: fresh noise; $\theta+\varepsilon_{new}$: next reading in this offset model.</p>
+<p class="worked-variables">$\theta$: scalar offset; $B$: random data column; $b$: observed data; $C(B)$: confidence interval; $I(b)$: credible interval. $\varepsilon_{new}$: fresh scalar noise; $Y=\theta+\varepsilon_{new}$: next reference-subtracted reading; lengths use cm.</p>
 <ol class="worked-lines">
 <li>Confidence: $P_\theta(\theta\in C(B))\approx.95$ for a stated repeated-data procedure.</li>
 <li>Credibility: $P(\theta\in I(b)\mid b)\approx.95$ under a stated posterior.</li>
@@ -2251,7 +2256,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 3">
 <p class="worked-progress">Solution 3 / 3</p>
 <h3>Choose C</h3>
-<p class="worked-variables">$C(B)$: confidence interval; $I(b)$: credible interval; $\varepsilon_{new}$: fresh noise; $\theta+\varepsilon_{new}$: next reading in this offset model.</p>
+<p class="worked-variables">$\theta$: scalar offset; $B$: random data column; $b$: observed data; $C(B)$: confidence interval; $I(b)$: credible interval. $\varepsilon_{new}$: fresh scalar noise; $Y=\theta+\varepsilon_{new}$: next reference-subtracted reading; lengths use cm.</p>
 <ol class="worked-lines">
 <li>A assumes an unstated repeated-sampling procedure.</li>
 <li>B assumes an unstated prior and posterior.</li>
@@ -2270,16 +2275,16 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 4">
 <p class="worked-progress">Solution 1 / 4</p>
 <h3>State the model and symbols</h3>
-<p class="worked-variables">$i$: reading index; $I$: identity matrix; $C$: constant in $\theta$; $J$: negative-log posterior, up to constants.</p>
+<p class="worked-variables">$N,p$: reading/parameter counts; $A\in\mathbb R^{N\times p}$: fixed design; $b,r,\varepsilon\in\mathbb R^N$: data/residual/noise; $\theta,\mu_0\in\mathbb R^p$: parameter/prior mean; $I_p$: identity. $i$: index; $C$: constant in $\theta$; $J$: objective. $\sigma^2,\tau^2>0$: noise/prior variances.</p>
 <ol class="worked-lines">
 <li>$b=A\theta+\varepsilon$: data column $b$, design matrix $A$, parameter column $\theta$.</li>
 <li>$\varepsilon_i$ are independent $\mathcal N(0,\sigma^2)$ noises; $r=b-A\theta$: residual.</li>
-<li>Prior $\theta\sim\mathcal N(\mu_0,\tau^2I)$; $\mu_0$: prior mean; $\sigma^2,\tau^2&gt;0$: variances.</li>
+<li>Prior $\theta\sim\mathcal N(\mu_0,\tau^2I_p)$; $\mu_0$: prior mean; $\sigma^2,\tau^2&gt;0$: variances.</li>
 </ol></div>
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 4">
 <p class="worked-progress">Solution 2 / 4</p>
 <h3>Separate the square from the sum</h3>
-<p class="worked-variables">$i$: reading index; $I$: identity matrix; $C$: constant in $\theta$; $J$: negative-log posterior, up to constants.</p>
+<p class="worked-variables">$N,p$: reading/parameter counts; $A\in\mathbb R^{N\times p}$: fixed design; $b,r,\varepsilon\in\mathbb R^N$: data/residual/noise; $\theta,\mu_0\in\mathbb R^p$: parameter/prior mean; $I_p$: identity. $i$: index; $C$: constant in $\theta$; $J$: objective. $r_i$: residual entry; $p(\cdot\mid\theta)$: data density.</p>
 <ol class="worked-lines">
 <li>One Gaussian factor: $p(b_i\mid\theta)=(2\pi\sigma^2)^{-1/2}e^{-r_i^2/(2\sigma^2)}$.</li>
 <li>Independence gives $p(b\mid\theta)=\prod_i p(b_i\mid\theta)$.</li>
@@ -2288,7 +2293,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 4">
 <p class="worked-progress">Solution 3 / 4</p>
 <h3>Add the prior through Bayes rule</h3>
-<p class="worked-variables">$i$: reading index; $I$: identity matrix; $C$: constant in $\theta$; $J$: negative-log posterior, up to constants.</p>
+<p class="worked-variables">$N,p$: reading/parameter counts; $A\in\mathbb R^{N\times p}$: fixed design; $b,r,\varepsilon\in\mathbb R^N$: data/residual/noise; $\theta,\mu_0\in\mathbb R^p$: parameter/prior mean; $I_p$: identity. $i$: index; $C$: constant in $\theta$; $J$: objective. $\lambda^2=\sigma^2/\tau^2$: prior weight; $\propto$: equality up to a factor independent of $\theta$.</p>
 <ol class="worked-lines">
 <li>$p(\theta\mid b)\propto p(b\mid\theta)p(\theta)$; logarithms turn this product into a sum.</li>
 <li>$J=\|b-A\theta\|^2/(2\sigma^2)+\|\theta-\mu_0\|^2/(2\tau^2)$.</li>
@@ -2297,7 +2302,7 @@ var ctl=automatic(document.getElementById('m8p14-projection'),[[0,0],[1400,0],[4
 <div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 4">
 <p class="worked-progress">Solution 4 / 4</p>
 <h3>Choose B</h3>
-<p class="worked-variables">$i$: reading index; $I$: identity matrix; $C$: constant in $\theta$; $J$: negative-log posterior, up to constants.</p>
+<p class="worked-variables">$N,p$: reading/parameter counts; $A\in\mathbb R^{N\times p}$: fixed design; $b,r,\varepsilon\in\mathbb R^N$: data/residual/noise; $\theta,\mu_0\in\mathbb R^p$: parameter/prior mean; $I_p$: identity. $i$: index; $C$: constant in $\theta$; $J$: objective.</p>
 <ol class="worked-lines">
 <li>B: the Gaussian exponent supplies squares; independence and logarithms supply the sum.</li>
 <li>A reverses the two reasons.</li>
