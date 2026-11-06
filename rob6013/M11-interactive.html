@@ -436,6 +436,7 @@ body.print .worked-pdf-check .math-figure{display:none!important}
 
 .slide .math-figure{flex:none;margin:8px 0 0;height:250px}
 .slide .math-figure canvas{width:100%;height:250px}
+.slide .math-figure.compact,.slide .math-figure.compact canvas{height:184px}
 .slide .eq{font-size:27px;margin:10px 0 5px}
 .slide .gloss{font-size:18px;line-height:1.3;margin:5px 0 4px;grid-template-columns:auto 1fr}
 .slide .course-identity{position:absolute;left:64px;bottom:83px;font:20px Georgia,serif;color:var(--dim)}
@@ -918,7 +919,8 @@ function m11figure(el,kind,opt,activity){
    ln(x0,y0,x1,y0,c.dim);ln(x0,y0,x0,y1,c.dim);
    const X=x=>x0+(x-xmin)/(xmax-xmin)*(x1-x0),Y=y=>y0-y/ymax*(y0-y1);
    for(let x=Math.ceil(xmin);x<=xmax;x++){let z=X(x);ln(z,y0,z,y0+4,c.dim,1);txt(String(x),z-4,y0+21,c.dim,15)}
-   txt(xlabel,x1-10,y0+25,c.dim,16);txt(ylabel,x0+8,20,c.dim,16);
+   if(xlabel)txt(xlabel,x1+12,y0-9,c.dim,16);
+   txt(ylabel,x0+8,20,c.dim,16);
    return [X,Y];
   }
   const norm=(x,m,v)=>Math.exp(-(x-m)*(x-m)/(2*v))/Math.sqrt(2*Math.PI*v);
@@ -944,8 +946,8 @@ function m11figure(el,kind,opt,activity){
     txt('sensitivity magnitude: σ / α',W*.5,42,c.out,19);return;
    }
    if(kind==='loss'){
-    let [X,Y]=axes(-3,3,14,'expected squared error');curve(X,Y,x=>x*x+4,-3,3,c.out);
-    dot(X(0),Y(4),c.ans);txt('R(u) = u² + 4',W*.62,42,c.out,20);txt('u',W-35,H-10,c.dim,16);return;
+    let [X,Y]=axes(-3,3,14,'expected squared error','u');curve(X,Y,x=>x*x+4,-3,3,c.out);
+    dot(X(0),Y(4),c.ans);txt('R(u) = u² + 4',W*.62,42,c.out,20);return;
    }
    if(kind==='energy'){
     let [X,Y]=axes(-3,3,5,'energy');curve(X,Y,x=>x*x/2,-3,3,c.out);
@@ -963,7 +965,9 @@ function m11figure(el,kind,opt,activity){
    let [X,Y]=axes(lo,hi,.65);
    if(kind==='gauss_compare'){
     curve(X,Y,x=>norm(x,1,1),lo,hi,c.in);curve(X,Y,x=>norm(x,1,4),lo,hi,c.out);
-    txt('same mean; standard deviations 1 and 2',W*.46,35,c.dim,18);return;
+    txt('mean 1 for both',W*.63,29,c.dim,18);
+    txt('standard deviation 1',W*.63,55,c.in,18);
+    txt('standard deviation 2',W*.63,80,c.out,18);return;
    }
    if(['noise','modes','mixture_score','conditional'].includes(kind)){
     let a=kind==='noise'?(1-(1-(opt.alpha||.6))*t):1;
@@ -987,19 +991,20 @@ function m11figure(el,kind,opt,activity){
    g.fillStyle=c.panel;g.strokeStyle=c.res;g.lineWidth=2;g.beginPath();g.arc(mx,y,44,0,2*Math.PI);g.fill();g.stroke();txt('obstacle',mx-38,y+6,c.res,17);
    const routeCol=opt.route_role==='demonstrations'?c.dat:c.ans;
    for(let s of [-1,1]){g.beginPath();g.moveTo(x0,y);g.bezierCurveTo(W*.33,y+s*135,W*.67,y+s*135,x1,y);g.strokeStyle=routeCol;g.lineWidth=4;g.stroke()}
-   ln(x0,y,x1,y,c.rule,2);dot(x0,y,c.in,8);dot(x1,y,c.ans,8);txt('start',x0-20,y+35,c.in);txt('goal',x1-17,y+35,c.ans);txt('two valid routes',80,24,c.ink,20);return;
+   if(!opt.hide_midline)ln(x0,y,x1,y,c.rule,2);dot(x0,y,c.in,8);dot(x1,y,c.ans,8);txt('start',x0-20,y+35,c.in);txt('goal',x1-17,y+35,c.ans);txt('two valid routes',80,24,c.ink,20);return;
   }
   if(kind==='ellipse'){
-   let ox=W*.5,oy=H*.55,scale=40;ln(ox-210,oy,ox+210,oy,c.dim);ln(ox,oy+95,ox,oy-95,c.dim);
+   let ox=W*.5,oy=H*.53,scale=Math.min(40,(H-28)/4.5);
+   ln(ox-210,oy,ox+210,oy,c.dim);ln(ox,oy+2.2*scale,ox,oy-2.2*scale,c.dim);
    for(let a of [1,1.5,2]){g.beginPath();g.ellipse(ox,oy,2*scale*a,scale*a,0,0,Math.PI*2);g.strokeStyle=c.dat;g.lineWidth=2;g.stroke()}
-   dot(ox+80,oy-40,c.in);txt('(2, 1)',ox+90,oy-43,c.in);
-   if(!activity)arrow(ox+80,oy-40,ox+60,oy,c.ans);
-   txt('Σ = diag(4, 1)',65,35,c.dat,20);txt('x₁',ox+215,oy+8,c.dim);txt('x₂',ox+10,oy-93,c.dim);return;
+   dot(ox+2*scale,oy-scale,c.in);txt('(2, 1)',ox+2*scale+10,oy-scale-4,c.in);
+   if(!activity)arrow(ox+2*scale,oy-scale,ox+1.5*scale,oy,c.ans);
+   txt('Σ = diag(4, 1)',65,35,c.dat,20);txt('x₁',ox+215,oy+8,c.dim);txt('x₂',ox+10,oy-2.2*scale,c.dim);return;
   }
   if(kind==='map'){
-   box('Demonstrations',45,20,210,48,c.dat);box('Known corruption',370,20,230);box('Noise regression',760,20,270,48,c.out);
+   box('Demonstrations',45,20,210,48,c.dat);box('Known corruption',370,20,230);box(opt.intro?'Predict the noise':'Noise regression',760,20,270,48,c.out);
    arrow(255,44,365,44);txt('creates pairs',263,30,c.dim,16);arrow(600,44,755,44);txt('fits targets',633,30,c.dim,16);
-   box('Score field',760,145,270,48,c.out);arrow(895,68,895,140,c.out);txt('−prediction / σ',908,111,c.dim,16);
+   box(opt.intro?'Directions for denoising':'Score field',760,145,270,48,c.out);arrow(895,68,895,140,c.out);if(!opt.intro)txt('−prediction / σ',908,111,c.dim,16);
    box('Reverse sampling',370,145,230,48,c.in);arrow(755,169,605,169,c.out);txt('guides',664,153,c.dim,16);
    box('Action chunk',45,145,210,48,c.ans);arrow(365,169,260,169,c.in);txt('generates',280,153,c.dim,16);return;
   }
@@ -1007,46 +1012,57 @@ function m11figure(el,kind,opt,activity){
    const labels=['Gaussian noise','Input gradient','Least squares','Iterative update'];for(let i=0;i<4;i++)box(labels[i],40+i*270,70,235,70,[c.dat,c.in,c.out,c.ans][i]);return;
   }
   if(kind==='clocks'){
-   txt('diffusion index',45,45,c.in);txt('physical time',45,165,c.dat);
-   arrow(270,40,W-80,40,c.in);arrow(270,160,W-80,160,c.dat);
-   for(let i=0;i<5;i++){dot(300+i*150,40,c.in);txt(String(i),294+i*150,70,c.in);dot(300+i*150,160,c.dat);txt('r + '+i,280+i*150,195,c.dat)}
-   txt('corruption levels of one stored action chunk',280,108,c.dim,19);return;
+   const top=30,bottom=H-40;
+   txt('diffusion index',45,top,c.in);txt('physical time',45,bottom,c.dat);
+   arrow(270,top,W-80,top,c.in);arrow(270,bottom,W-80,bottom,c.dat);
+   for(let i=0;i<5;i++){dot(300+i*150,top,c.in);txt(String(i),294+i*150,top+27,c.in);dot(300+i*150,bottom,c.dat);txt('r + '+i,280+i*150,bottom+24,c.dat)}
+   txt('corruption levels of one stored action chunk',280,(top+bottom)/2+10,c.dim,19);return;
+  }
+  if(kind==='step_noise'){
+   box('Previous state xₖ₋₁',40,21,230,50,c.dat);box('Fresh noise zₖ',40,H-71,230,50,c.in);
+   box('Scale by √(1 − βₖ)',390,21,240,50,c.dat);box('Scale by √βₖ',390,H-71,240,50,c.in);
+   box('Add to get xₖ',850,H/2-25,220,50,c.ans);
+   arrow(275,46,385,46,c.dat);arrow(275,H-46,385,H-46,c.in);
+   arrow(635,46,845,H/2-10,c.dat);arrow(635,H-46,845,H/2+10,c.in);return;
   }
   if(['chain','reverse_graph','sampler','paths','branch'].includes(kind)){
-   let names=kind==='chain'?['x₀','x₁','x₂','xₖ']:kind==='reverse_graph'?['x₀ known','xₖ₋₁ unknown','xₖ known']:['x_K ~ N(0,I)','x_k','x_j','x₀ output'];
+   let names=kind==='chain'?['x₀','x₁','x₂']:kind==='reverse_graph'?['x₀ known','xₖ₋₁ unknown','xₖ known']:['x_K ~ N(0,I)','x_k',kind==='sampler'?'xₖ₋₁':'x_j','x₀ output'];
    for(let i=0;i<names.length;i++){let x=40+i*270;box(names[i],x,85,220,60,i===names.length-1?c.ans:c.in);if(i)arrow(x-45,115,x-5,115,c.in)}
    txt(kind==='paths'?'same predictor; selected noise levels':kind==='chain'?'forward corruption':kind==='reverse_graph'?'condition on both endpoints':'fixed network, changing sample',260,35,c.dim,20);
    if(kind==='branch'){for(let i=0;i<3;i++)arrow(180,160,750+i*90,200-i*20,c.dat);txt('different initial samples',80,220,c.dat,19)}return;
   }
   if(['pair','vector','numberline'].includes(kind)){
    if(kind==='vector'){const labels=opt.labels||['clean vector','noise vector','noisy vector'];for(let i=0;i<3;i++)box(labels[i],100+i*330,82,240,70,[c.dat,c.in,c.out][i]);txt(opt.caption||'same shape; scalar scaling and vector addition',240,198,c.dim,20);return}
-   let [X,Y]=axes(-2,3,1,'');
+   let [X,Y]=axes(-2,3,1,'','');
    if(kind==='pair'){box('x₀',80,55,180,55,c.dat);box('αx₀ + σε',450,55,250,55,c.in);box('(xₖ, k)  →  ε',800,55,240,55,c.out);arrow(270,85,440,85);arrow(710,85,790,85)}
    else {txt(opt.label||'given scalar inputs',W*.34,55,c.dim,21);for(const [i,p] of (opt.points||[]).entries()){dot(X(p[0]),H-38,[c.dat,c.in,c.out][i%3]);txt(p[1],X(p[0])-20,H-65-i*25,[c.dat,c.in,c.out][i%3],18)}}
    return;
   }
   if(kind==='training'){
-   box('data x₀',40,35,220,50,c.dat);box('noise ε and level k',40,145,220,50,c.in);box('noisy xₖ',400,90,220,55,c.in);box('predict ε',785,90,250,55,c.out);
-   arrow(265,60,395,110,c.dat);arrow(265,170,395,120,c.in);arrow(625,118,780,118,c.out);txt('target: the sampled ε',765,195,c.dat,19);return;
+   const mid=H/2;
+   box('data x₀',40,22,220,48,c.dat);box('noise ε and level k',40,H-71,220,48,c.in);
+   box('noisy xₖ',400,mid-25,220,50,c.in);box('predict ε',785,mid-25,250,50,c.out);
+   arrow(265,46,395,mid-8,c.dat);arrow(265,H-47,395,mid+8,c.in);arrow(625,mid,780,mid,c.out);txt('target: the sampled ε',785,mid+57,c.dat,19);return;
   }
   if(kind==='policy_network'){
-   box('noisy actions',30,25,210,48,c.in);box('noise level k',30,95,210,48,c.in);box('observations o',30,165,210,48,c.dat);
-   box('denoiser θ',440,90,230,65,c.out);box('predicted noise',840,90,240,65,c.ans);
-   for(let y of [49,119,189])arrow(245,y,435,120,c.in);arrow(675,123,835,123,c.out);return;
+   const mid=H/2,ys=[32,mid,H-32];
+   box('noisy actions',30,ys[0]-21,210,42,c.in);box('noise level k',30,ys[1]-21,210,42,c.in);box('observations o',30,ys[2]-21,210,42,c.dat);
+   box('denoiser θ',440,mid-31,230,62,c.out);box('predicted noise',840,mid-31,240,62,c.ans);
+   for(let y of ys)arrow(245,y,435,mid,c.in);arrow(675,mid,835,mid,c.out);return;
   }
   if(kind==='guidance'){
-   box('same xₖ and k',35,90,230,60,c.in);box('null context',410,30,230,50,c.dim);box('context o',410,160,230,50,c.dat);box('weighted difference',800,90,270,60,c.out);
-   arrow(270,117,405,56,c.in);arrow(270,122,405,183,c.in);arrow(645,55,795,112,c.dim);arrow(645,185,795,128,c.dat);return;
+   box('same xₖ and k',35,90,230,60,c.in);box('Null-context prediction',410,30,260,50,c.dim);box('Observation-conditioned',410,160,260,50,c.dat);box('Guided prediction',800,90,270,60,c.out);
+   arrow(270,117,405,56,c.in);arrow(270,122,405,183,c.in);arrow(675,55,795,112,c.dim);arrow(675,185,795,128,c.dat);return;
   }
   if(['chunk','chunk2','loop'].includes(kind)){
    const count=opt.count||(kind==='chunk2'?2:4),execute=opt.execute||(kind==='chunk2'?1:2);
-   txt('physical action time',45,35,c.dim,20);
-   for(let i=0;i<count;i++){let x=180+i*205;box(i===0?'aᵣ':'aᵣ₊'+i,x,70,170,70,i<execute?c.ans:c.in);txt(i<execute?'execute prefix':'predicted suffix',x,168,i<execute?c.ans:c.dim,16)}
-   if(kind==='loop'){arrow(180,215,970,215,c.dat);txt('new observation → new chunk',375,206,c.dat,19)}
-   else txt('one chunk; denoising acts on all components',270,215,c.dim,19);return;
+   txt('physical action time',45,27,c.dim,20);
+   for(let i=0;i<count;i++){let x=180+i*205;box(i===0?'aᵣ':'aᵣ₊'+i,x,H/2-40,170,58,i<execute?c.ans:c.in);txt(i<execute?'execute prefix':'predicted suffix',x,H/2+43,i<execute?c.ans:c.dim,16)}
+   if(kind==='loop'){arrow(180,H-30,970,H-30,c.dat);txt('new observation → new chunk',375,H-39,c.dat,19)}
+   else txt('one chunk; denoising acts on all components',270,H-22,c.dim,19);return;
   }
   if(kind==='comparison'){
-   const rows=[['','ACT','Diffusion'],['Training','reconstruct + regularize latent','noise prediction'],['Generation','standard latent z = 0','iterative, random initialization'],['Output','action chunk','action chunk']];
+   const rows=[['','ACT','Diffusion'],['Training','reconstruct + regularize latent','noise prediction'],['Generation','test time: fix latent z = 0','iterative, random initialization'],['Output','action chunk','action chunk']];
    for(let i=0;i<4;i++){let y=35+i*58;txt(rows[i][0],25,y,c.dim,18);txt(rows[i][1],320,y,c.in,18);txt(rows[i][2],715,y,c.out,18);if(i<3)ln(20,y+18,W-20,y+18)}return;
   }
   if(kind==='budget'){
@@ -1072,7 +1088,7 @@ function m11figure(el,kind,opt,activity){
 <figure class="math-figure"><canvas id="m11p01c" width="1120" height="250" role="img" aria-label="routes: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p01c'),"routes",{},false);</script>
 <p class="callout">One observation. Several successful action sequences.</p>
-<div class="key"><span class="in">input / noise</span> · <span class="dat">demonstrations</span> · <span class="ans">generated actions</span></div>
+<div class="key"><span class="in">start</span> · <span class="ans">candidate routes</span> · <span class="res">obstacle</span></div>
 <p class="course-identity">Lecture 11 · November 25, 2026<br>Mathematics for Robotics · ROB-GY 6013 · NYU Tandon · Jing Zhang · Fall 2026</p>
 <p class="cite page-source">Diffusion Policy §4.1 · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
@@ -1084,7 +1100,7 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">A route from demonstrations to actions</p>
 <p class="q">Demonstrations supply training data. Repeated denoising generates an action sequence.</p>
 <figure class="math-figure"><canvas id="m11p02c" width="1120" height="250" role="img" aria-label="map: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p02c'),"map",{},false);</script>
+<script>m11figure(document.getElementById('m11p02c'),"map",{"intro": true},false);</script>
 <p class="cite page-source">DDPM §3; Diffusion Policy §2.3 · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a> · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
@@ -1095,7 +1111,7 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">Four familiar tools meet one new task</p>
 <p class="q">Recall: Gaussian mean/covariance, input gradients, squared error, iterative updates.</p>
 <div class="eq">$$\E\|Y-g(X)\|^2$$</div>
-<dl class="gloss"><dt>$X,Y$</dt><dd>random input and target</dd><dt>$g$</dt><dd>prediction rule</dd></dl>
+<dl class="gloss"><dt>$X,Y$</dt><dd>random input and target</dd><dt>$g(X)$</dt><dd>prediction of Y from X</dd><dt>$\E$</dt><dd>average over input–target pairs</dd></dl>
 <figure class="math-figure"><canvas id="m11p03c" width="1120" height="250" role="img" aria-label="tools: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p03c'),"tools",{},false);</script>
 <p class="cite page-source">DL §3.8; DDPM §3.2 · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a> · <a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al. (2016)</a></p>
@@ -1106,7 +1122,7 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Motivation</p>
 <h2>Multimodal actions</h2>
 <p class="sub">Two valid actions can have an invalid mean</p>
-<p class="q">A multimodal distribution has several distinct regions of high probability.</p>
+<p class="q">A multimodal distribution has several separated peaks in its probability mass or density.</p>
 <div class="eq">$$P(A=-2\mid o)=P(A=2\mid o)=\tfrac12$$</div>
 <dl class="gloss"><dt>$A$</dt><dd>scalar route choice; −2 left, +2 right</dd><dt>$o$</dt><dd>fixed obstacle observation</dd></dl>
 <figure class="math-figure"><canvas id="m11p04c" width="1120" height="250" role="img" aria-label="routes: course mathematical illustration"></canvas></figure>
@@ -1123,9 +1139,7 @@ function m11figure(el,kind,opt,activity){
 <p class="q">Squared-error risk is the expected squared prediction error; assume a finite second moment.</p>
 <div class="eq">$$\E[(A-u)^2\mid o]=\operatorname{Var}(A\mid o)+(u-\E[A\mid o])^2$$</div>
 <dl class="gloss"><dt>$u$</dt><dd>chosen scalar prediction</dd><dt>$A,o$</dt><dd>action and observation</dd></dl>
-<figure class="math-figure"><canvas id="m11p05c" width="1120" height="250" role="img" aria-label="loss: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p05c'),"loss",{},false);</script>
-<p class="reveal step" data-step="3">Return to the result and check its symbols and assumptions.</p></div>
+<p class="reveal step" data-step="3">The minimum risk is the conditional variance; the prediction attaining it is the conditional mean.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
@@ -1169,11 +1183,9 @@ function m11figure(el,kind,opt,activity){
 <h2>Multimodal actions</h2>
 <p class="sub">Transfer: one route is more common</p>
 <div class="worked-question">
-<p class="q">Find the squared-error minimizer u; compare it with the mode.</p>
+<p class="q">Find u, the prediction minimizing expected squared error. Compare it with the most probable action.</p>
 <div class="eq">$$P(A=-2\mid o)=\tfrac34,\quad P(A=2\mid o)=\tfrac14$$</div>
 <dl class="gloss"><dt>$A$</dt><dd>random action at fixed observation o</dd><dt>$u$</dt><dd>deterministic prediction to optimize</dd></dl>
-<figure class="math-figure"><canvas id="m11p07c" width="1120" height="250" role="img" aria-label="modes: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p07c'),"modes",{"weight": 0.75},true);</script>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> $u^*=-1$; a mean need not be a mode.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -1198,7 +1210,7 @@ function m11figure(el,kind,opt,activity){
 <div class="worked-question">
 <p class="q">Fixed observation; equally likely actions -2 and 2.<br>Compare: conditional mean vs a random draw.</p>
 <figure class="math-figure"><canvas id="m11p08c" width="1120" height="250" role="img" aria-label="routes: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p08c'),"routes",{"route_role": "demonstrations"},true);</script>
+<script>m11figure(document.getElementById('m11p08c'),"routes",{"route_role": "demonstrations", "hide_midline": true},true);</script>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> Sampling preserves the two choices.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -1233,9 +1245,9 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">Two clocks and three kinds of vectors</p>
 <p class="q">The diffusion index labels corruption levels of one stored vector; physical time labels robot execution.</p>
 <div class="eq">$$x_0,x_k,\epsilon\in\mathbb R^d,\quad k\in\{1,\ldots,K\}$$</div>
-<dl class="gloss"><dt>$x_0,x_k∈R^d$</dt><dd>clean/noisy column vectors with d components</dd><dt>$k,K$</dt><dd>diffusion index and final level</dd><dt>$r,ε$</dt><dd>physical time; standard Gaussian noise</dd></dl>
-<figure class="math-figure"><canvas id="m11p10c" width="1120" height="250" role="img" aria-label="clocks: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p10c'),"clocks",{},false);</script>
+<dl class="gloss"><dt>$x_0,x_k,\epsilon\in\mathbb R^d$</dt><dd>clean vector, noisy vector, standard Gaussian noise; d components each</dd><dt>$k,K$</dt><dd>diffusion level and final level</dd><dt>$r$</dt><dd>physical robot time</dd></dl>
+<figure class="math-figure compact"><canvas id="m11p10c" width="1120" height="184" role="img" aria-label="clocks: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p10c'),"clocks",{"compact": true},false);</script>
 <p class="cite page-source">DDPM §2; Diffusion Policy §2.3 · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a> · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
@@ -1244,11 +1256,11 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Definition</p>
 <h2>Forward diffusion</h2>
 <p class="sub">One step shrinks signal and adds fresh noise</p>
-<p class="q">Forward diffusion is a fixed Markov chain that progressively corrupts data with Gaussian noise.</p>
+<p class="q">Forward diffusion corrupts data one step at a time. Each step depends on the previous state and fresh noise.</p>
 <div class="eq">$$x_k=\sqrt{1-\beta_k}\,x_{k-1}+\sqrt{\beta_k}\,z_k$$</div>
-<dl class="gloss"><dt>$x_{k-1},x_k∈R^d$</dt><dd>previous and next noisy states</dd><dt>$0&lt;\beta_k&lt;1$</dt><dd>chosen transition noise variance</dd><dt>$z_k\sim\mathcal N(0,I_d)$</dt><dd>fresh noise independent of previous states</dd></dl>
-<figure class="math-figure"><canvas id="m11p11c" width="1120" height="250" role="img" aria-label="noise: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p11c'),"noise",{"alpha": 0.6},false);</script>
+<dl class="gloss"><dt>$x_{k-1},x_k$</dt><dd>previous and next vectors in Rᵈ</dd><dt>$0&lt;\beta_k&lt;1$</dt><dd>chosen step variance</dd><dt>$z_k\sim\mathcal N(0,I_d)$</dt><dd>fresh Gaussian noise, independent of earlier states; I_d is identity</dd></dl>
+<figure class="math-figure compact"><canvas id="m11p11c" width="1120" height="184" role="img" aria-label="step noise: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p11c'),"step_noise",{"alpha": 0.6, "compact": true},false);</script>
 <p class="cite page-source">DDPM §2, Eq.2 · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a></p>
 </section>
 
@@ -1260,7 +1272,7 @@ function m11figure(el,kind,opt,activity){
 <div class="worked-question">
 <p class="q">Find the conditional mean and covariance of x_k.</p>
 <div class="eq">$$x_k=\sqrt{1-\beta_k}\,x_{k-1}+\sqrt{\beta_k}\,z_k$$</div>
-<dl class="gloss"><dt>$x_{k-1}∈R^d$</dt><dd>fixed previous state</dd><dt>$0&lt;\beta_k&lt;1$</dt><dd>fixed transition variance</dd><dt>$z_k\sim\mathcal N(0,I_d)$</dt><dd>independent fresh noise</dd></dl>
+<dl class="gloss"><dt>$x_{k-1},x_k\in\mathbb R^d$</dt><dd>fixed previous state and random next state</dd><dt>$0&lt;\beta_k&lt;1$</dt><dd>step variance</dd><dt>$z_k\sim\mathcal N(0,I_d)$</dt><dd>fresh independent noise; $I_d$ is identity</dd></dl>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> Mean $\sqrt{1-\beta_k}x_{k-1}$; covariance $\beta_k I$.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -1295,7 +1307,7 @@ function m11figure(el,kind,opt,activity){
 <ol class="worked-lines">
 <li>$\sqrt{1-\beta_k}=\sqrt{0.64}=0.8$, and $\sqrt{\beta_k}=0.6$.</li>
 <li>$x_k=0.8\times2+0.6\times(-1)=1.6-0.6=1$.</li>
-<li>Using 0.36 as the noise multiplier would give the wrong variance.</li>
+<li>Using 0.36 as the multiplier would give noise variance 0.1296.</li>
 </ol></div>
 <span class="worked-finish step" data-step="2" aria-hidden="true"></span>
 </div>
@@ -1309,10 +1321,10 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">Two steps expose the cumulative signal</p>
 <div class="worked-question">
 <div class="eq">$$x_2=\sqrt{a_2a_1}x_0+\sqrt{a_2\beta_1}z_1+\sqrt{\beta_2}z_2$$</div>
-<dl class="gloss"><dt>$a_j=1-\beta_j$</dt><dd>one-step retention</dd><dt>$z_1,z_2$</dt><dd>independent N(0,I) noise</dd></dl>
+<dl class="gloss"><dt>$x_0,x_2$</dt><dd>clean and twice-corrupted vectors</dd><dt>$a_j=1-\beta_j$</dt><dd>one-step retention; β_j is step variance</dd><dt>$z_1,z_2$</dt><dd>independent standard Gaussian vectors</dd></dl>
 <figure class="math-figure"><canvas id="m11p14c" width="1120" height="250" role="img" aria-label="chain: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p14c'),"chain",{},false);</script>
-<p class="reveal step" data-step="2">Return to the result and check its symbols and assumptions.</p></div>
+<p class="reveal step" data-step="2">Both transitions shrink the clean term; the second transition also shrinks the first noise term.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 1">
 <p class="worked-progress">Derivation 1 / 1</p>
@@ -1335,11 +1347,10 @@ function m11figure(el,kind,opt,activity){
 <h2>Forward diffusion</h2>
 <p class="sub">Independent Gaussian variances combine</p>
 <div class="worked-question">
+<p class="q">For fixed $x_0$, the random part of $x_2$ is $\sqrt{a_2\beta_1}\,z_1+\sqrt{\beta_2}\,z_2$.</p>
 <div class="eq">$$a_2\beta_1+\beta_2=(1-\beta_2)\beta_1+\beta_2=1-a_1a_2$$</div>
-<dl class="gloss"><dt>$a_j=1-\beta_j$</dt><dd>retained variance fraction</dd><dt>$z_1,z_2$</dt><dd>independent standard Gaussians</dd></dl>
-<figure class="math-figure"><canvas id="m11p15c" width="1120" height="250" role="img" aria-label="noise: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p15c'),"noise",{"alpha": 0.48},false);</script>
-<p class="reveal step" data-step="2">Return to the result and check its symbols and assumptions.</p></div>
+<dl class="gloss"><dt>$a_j=1-\beta_j$</dt><dd>retention; β_j is the added variance at step j</dd><dt>$z_1,z_2$</dt><dd>independent Gaussian vectors with identity covariance</dd></dl>
+<p class="reveal step" data-step="2">The two-step noise covariance is $(1-a_1a_2)I$.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 1">
 <p class="worked-progress">Derivation 1 / 1</p>
@@ -1356,15 +1367,27 @@ function m11figure(el,kind,opt,activity){
 </section>
 
 <!-- ===== 16 ===== -->
-<section class="slide" data-part="IV">
+<section class="slide has-worked-solutions derivation-proof" data-part="IV">
 <p class="eyebrow">Result</p>
 <h2>Forward diffusion</h2>
 <p class="sub">Any noise level can be sampled directly</p>
-<p class="q">This is the conditional corruption law for one fixed clean vector.</p>
+<div class="worked-question">
 <div class="eq">$$x_k=\alpha_kx_0+\sigma_k\epsilon,\quad\epsilon\sim\mathcal N(0,I)$$</div>
-<dl class="gloss"><dt>$\alpha_k=\sqrt{\bar a_k}$</dt><dd>cumulative signal coefficient</dd><dt>$\sigma_k=\sqrt{1-\bar a_k}$</dt><dd>cumulative noise standard deviation</dd><dt>$\bar a_k=\prod_{j=1}^k(1-\beta_j)$</dt><dd>retention; ε independent of x₀</dd></dl>
-<figure class="math-figure"><canvas id="m11p16c" width="1120" height="250" role="img" aria-label="noise: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p16c'),"noise",{"alpha": 0.8},false);</script>
+<dl class="gloss"><dt>$x_0,x_k$</dt><dd>fixed clean, random noisy vectors</dd><dt>$\alpha_k=\sqrt{\bar a_k},\ \sigma_k=\sqrt{1-\bar a_k}$</dt><dd>signal and noise scales</dd><dt>$\bar a_k=\prod_{j=1}^k a_j,\ a_j=1-\beta_j$</dt><dd>retentions; $\beta_j$ step variance</dd><dt>$\epsilon$</dt><dd>independent of x₀; I is identity</dd></dl>
+<p class="reveal step" data-step="2">The formula samples one selected level directly.</p></div>
+<div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 1">
+<p class="worked-progress">Derivation 1 / 1</p>
+<h3>Build the conditional law one level at a time</h3>
+<p class="worked-variables">$a_j=1-\beta_j$; $z_j$ are fresh standard Gaussian vectors; $\bar a_0=1$ and $v_0=0$.</p>
+<ol class="worked-lines">
+<li>Clean coefficient at level $k$: $\prod_{j=1}^k\sqrt{a_j}=\sqrt{\bar a_k}$.</li>
+<li>Noise covariance is $v_kI$: $v_k=a_kv_{k-1}+\beta_k$.</li>
+<li>If $v_{k-1}=1-\bar a_{k-1}$, then $v_k=1-a_k\bar a_{k-1}=1-\bar a_k$.</li>
+<li>The noise remains Gaussian, so one draw scaled by $\sqrt{v_k}$ gives the level-$k$ law.</li>
+</ol></div>
+<span class="worked-finish step" data-step="2" aria-hidden="true"></span>
+</div>
 <p class="cite page-source">DDPM Eq.4; notation bridge · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a></p>
 </section>
 
@@ -1373,11 +1396,11 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Interpretation</p>
 <h2>Forward diffusion</h2>
 <p class="sub">A schedule controls signal-to-noise ratio</p>
-<p class="q">Signal-to-noise ratio compares signal variance with added noise variance.</p>
+<p class="q">For a unit-variance clean component, SNR is retained signal variance divided by added noise variance.</p>
 <div class="eq">$$\operatorname{SNR}_k=\frac{\alpha_k^2}{\sigma_k^2}=\frac{\bar a_k}{1-\bar a_k}$$</div>
-<dl class="gloss"><dt>$\alpha_k,\sigma_k$</dt><dd>signal coefficient and noise standard deviation</dd><dt>$SNR_k$</dt><dd>ratio for unit-variance clean signal</dd></dl>
-<figure class="math-figure"><canvas id="m11p17c" width="1120" height="250" role="img" aria-label="snr: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p17c'),"snr",{},false);</script>
+<dl class="gloss"><dt>$\alpha_k,\sigma_k&gt;0$</dt><dd>signal coefficient and noise standard deviation</dd><dt>$\bar a_k=\alpha_k^2$</dt><dd>cumulative retention at diffusion level k</dd></dl>
+<figure class="math-figure compact"><canvas id="m11p17c" width="1120" height="184" role="img" aria-label="snr: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p17c'),"snr",{"compact": true},false);</script>
 <p class="cite page-source">DDPM §4; Diffusion Policy §3.3 · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a> · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
@@ -1388,7 +1411,7 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">Worked example: one noisy training pair</p>
 <div class="ex"><p class="lbl">Example</p></div>
 <div class="eq">$$\begin{aligned}x_0&amp;=2,\ \alpha_k=0.8,\ \sigma_k=0.6,\ \epsilon=-0.5\\x_k&amp;=\alpha_kx_0+\sigma_k\epsilon=1.3\\\text{input}&amp;=(1.3,k),\quad\text{target}=-0.5\end{aligned}$$</div>
-<dl class="gloss"><dt>$x_0$</dt><dd>clean scalar</dd><dt>$\epsilon$</dt><dd>known training noise</dd><dt>$\alpha_k,\sigma_k$</dt><dd>fixed coefficients</dd></dl>
+<dl class="gloss"><dt>$x_0,x_k$</dt><dd>clean scalar and noisy scalar at level k</dd><dt>$\epsilon$</dt><dd>known sampled noise and target</dd><dt>$\alpha_k,\sigma_k$</dt><dd>fixed signal coefficient and noise standard deviation</dd></dl>
 <p class="cite page-source">DDPM Algorithm 1; course example · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a></p>
 </section>
 
@@ -1400,9 +1423,7 @@ function m11figure(el,kind,opt,activity){
 <div class="worked-question">
 <p class="q">Compute x, then recover the sampled noise.</p>
 <div class="eq">$$x_0=\begin{bmatrix}2\\-1\end{bmatrix},\ \epsilon=\begin{bmatrix}-0.5\\1\end{bmatrix},\ \alpha=0.8,\ \sigma=0.6$$</div>
-<dl class="gloss"><dt>$x_0,\epsilon\in\mathbb R^2$</dt><dd>clean and noise column vectors</dd><dt>$x=\alpha x_0+\sigma\epsilon$</dt><dd>noisy vector; component index differs from diffusion index</dd></dl>
-<figure class="math-figure"><canvas id="m11p19c" width="1120" height="250" role="img" aria-label="vector: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p19c'),"vector",{},true);</script>
+<dl class="gloss"><dt>$x_0,\epsilon$</dt><dd>two-coordinate clean and noise vectors</dd><dt>$\alpha,\sigma$</dt><dd>signal coefficient and noise standard deviation</dd><dt>$x=\alpha x_0+\sigma\epsilon$</dt><dd>noisy vector to compute</dd></dl>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> $x=(1.3,-0.2)^T$.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -1410,8 +1431,8 @@ function m11figure(el,kind,opt,activity){
 <h3>Apply the rule componentwise</h3>
 <p class="worked-variables">$x,x_0,\epsilon$ are two-component column vectors.</p>
 <ol class="worked-lines">
-<li>$x_1=0.8(2)+0.6(-0.5)=1.3$.</li>
-<li>$x_2=0.8(-1)+0.6(1)=-0.2$.</li>
+<li>$x_{(1)}=0.8(2)+0.6(-0.5)=1.3$.</li>
+<li>$x_{(2)}=0.8(-1)+0.6(1)=-0.2$.</li>
 <li>$(x-0.8x_0)/0.6=(-0.5,1)^T=\epsilon$.</li>
 </ol></div>
 <span class="worked-finish step" data-step="2" aria-hidden="true"></span>
@@ -1423,11 +1444,11 @@ function m11figure(el,kind,opt,activity){
 <section class="slide has-worked-solutions" data-part="IV">
 <p class="eyebrow you" data-min="1.5">Exercise</p>
 <h2>Forward diffusion</h2>
-<p class="sub">The marginal covariance also contains data spread</p>
+<p class="sub">Noisy covariance includes clean data spread</p>
 <div class="worked-question">
-<p class="q">Find the mean and covariance of X_k.</p>
+<p class="q">Find the mean and covariance.</p>
 <div class="eq">$$X_k=\alpha_kX_0+\sigma_k\epsilon,\quad X_0\perp\epsilon$$</div>
-<dl class="gloss"><dt>$X_0,X_k∈R^d$</dt><dd>random clean/noisy dataset vectors</dd><dt>$\mu_0,\Sigma_0$</dt><dd>finite clean-data mean/covariance</dd><dt>$\epsilon\sim\mathcal N(0,I_d)$</dt><dd>independent of X₀</dd></dl>
+<dl class="gloss"><dt>$X_0,X_k$</dt><dd>random clean and noisy vectors</dd><dt>$\mu_0,\Sigma_0$</dt><dd>finite clean mean and covariance</dd><dt>$\alpha_k,\sigma_k$</dt><dd>signal and noise scales</dd><dt>$\epsilon\sim\mathcal N(0,I_d)$</dt><dd>independent noise; $I_d$ identity</dd></dl>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> $\mu_k=\alpha_k\mu_0$, $\Sigma_k=\alpha_k^2\Sigma_0+\sigma_k^2I$.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -1451,7 +1472,7 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">The terminal Gaussian is a schedule approximation</p>
 <p class="q">The generation prior is the simple distribution used to initialize the reverse sampler.</p>
 <div class="eq">$$\alpha_K\approx0,\quad\sigma_K\approx1\quad\Longrightarrow\quad X_K\approx\mathcal N(0,I)$$</div>
-<dl class="gloss"><dt>$K$</dt><dd>last diffusion index</dd><dt>$X_K$</dt><dd>marginal noisy-data vector</dd></dl>
+<dl class="gloss"><dt>$K,X_K$</dt><dd>last diffusion level and its marginal noisy vector</dd><dt>$\alpha_K,\sigma_K$</dt><dd>final signal coefficient and noise standard deviation</dd><dt>$I$</dt><dd>identity covariance</dd></dl>
 <figure class="math-figure"><canvas id="m11p21c" width="1120" height="250" role="img" aria-label="noise: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p21c'),"noise",{"alpha": 0.08},false);</script>
 <p class="cite page-source">DDPM §4, terminal prior · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a></p>
@@ -1463,9 +1484,9 @@ function m11figure(el,kind,opt,activity){
 <h2>Forward diffusion</h2>
 <p class="sub">Does this terminal schedule match the prior?</p>
 <div class="worked-question">
-<p class="q">Can this law be N(0,1)? Check moments.</p>
-<div class="eq">$$\begin{aligned}\E[X_K]&amp;=\alpha_K\E[X_0],\quad\operatorname{Var}(X_K)=\alpha_K^2\operatorname{Var}(X_0)+\sigma_K^2\\\alpha_K&amp;=0.8,\ \sigma_K=0.6,\ \E[X_0]=5,\ \operatorname{Var}(X_0)=1\end{aligned}$$</div>
-<dl class="gloss"><dt>$X_0,X_K$</dt><dd>clean/noisy scalar data</dd><dt>$N(0,1)$</dt><dd>proposed generation prior</dd></dl>
+<p class="q">Can the final noisy law be standard Gaussian?</p>
+<div class="eq">$$\begin{aligned}\mu_K&amp;=\alpha_K\mu_0,\quad v_K=\alpha_K^2v_0+\sigma_K^2\\\alpha_K&amp;=0.8,\ \sigma_K=0.6,\ \mu_0=5,\ v_0=1\end{aligned}$$</div>
+<dl class="gloss"><dt>$\mu_i,v_i$</dt><dd>scalar mean and variance at level i; 0 is clean</dd><dt>$\alpha_K,\sigma_K$</dt><dd>final signal and noise scales</dd></dl>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> Variance 1 alone does not establish N(0,1).</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -1501,7 +1522,7 @@ function m11figure(el,kind,opt,activity){
 <h2>The score</h2>
 <p class="sub">Start with a Gaussian log density</p>
 <div class="eq">$$\log p(x)=C-\frac{(x-\mu)^2}{2v}$$</div>
-<dl class="gloss"><dt>$\mu\in\mathbb R,\ v&gt;0$</dt><dd>fixed mean and variance</dd><dt>$C=-\tfrac12\log(2\pi v)$</dt><dd>constant with respect to x</dd></dl>
+<dl class="gloss"><dt>$x,p(x)$</dt><dd>scalar input and its Gaussian density</dd><dt>$\mu\in\mathbb R,\ v&gt;0$</dt><dd>fixed mean and variance</dd><dt>$C=-\tfrac12\log(2\pi v)$</dt><dd>constant in x</dd></dl>
 <figure class="math-figure"><canvas id="m11p24c" width="1120" height="250" role="img" aria-label="log gauss: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p24c'),"log_gauss",{"mu": 1, "variance": 4},false);</script>
 <p class="cite page-source">DL §3.9.3; course derivation · <a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al. (2016)</a></p>
@@ -1513,11 +1534,12 @@ function m11figure(el,kind,opt,activity){
 <h2>The score</h2>
 <p class="sub">Differentiate the quadratic one step at a time</p>
 <div class="worked-question">
+<p class="q">Start with $\log p(x)=C-(x-\mu)^2/(2v)$, with $C$ independent of $x$.</p>
 <div class="eq">$$s(x)=-\frac{1}{2v}\,2(x-\mu)=-\frac{x-\mu}{v}$$</div>
-<dl class="gloss"><dt>$\mu,v$</dt><dd>fixed mean and variance</dd><dt>$s(x)$</dt><dd>scalar score</dd></dl>
+<dl class="gloss"><dt>$\mu,v$</dt><dd>fixed mean and positive variance</dd><dt>$s(x)$</dt><dd>scalar derivative of log p with respect to x</dd></dl>
 <figure class="math-figure"><canvas id="m11p25c" width="1120" height="250" role="img" aria-label="score: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p25c'),"score",{"mu": 1, "variance": 4},false);</script>
-<p class="reveal step" data-step="2">Return to the result and check its symbols and assumptions.</p></div>
+<p class="reveal step" data-step="2">The score is the signed displacement toward the mean divided by the variance.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 1">
 <p class="worked-progress">Derivation 1 / 1</p>
@@ -1566,11 +1588,11 @@ function m11figure(el,kind,opt,activity){
 <h2>The score</h2>
 <p class="sub">Compute an anisotropic score</p>
 <div class="worked-question">
-<p class="q">Compute s(x). Is its direction parallel to −x?</p>
+<p class="q">The Gaussian has different variances along the two axes. Find the score and compare its direction with −x.</p>
 <div class="eq">$$\mu=\begin{bmatrix}0\\0\end{bmatrix},\ \Sigma=\begin{bmatrix}4&amp;0\\0&amp;1\end{bmatrix},\ x=\begin{bmatrix}2\\1\end{bmatrix}$$</div>
-<dl class="gloss"><dt>$\Sigma$</dt><dd>covariance, not standard deviations</dd><dt>$s(x)=-\Sigma^{-1}(x-\mu)$</dt><dd>score to find</dd></dl>
-<figure class="math-figure"><canvas id="m11p27c" width="1120" height="250" role="img" aria-label="ellipse: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p27c'),"ellipse",{},true);</script>
+<dl class="gloss"><dt>$x,\mu$</dt><dd>evaluation point and mean</dd><dt>$\Sigma$</dt><dd>covariance matrix</dd><dt>$s(x)=-\Sigma^{-1}(x-\mu)$</dt><dd>score to compute</dd></dl>
+<figure class="math-figure compact"><canvas id="m11p27c" width="1120" height="184" role="img" aria-label="ellipse: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p27c'),"ellipse",{"compact": true},true);</script>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> $s(x)=(-0.5,-1)^T$.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -1593,7 +1615,7 @@ function m11figure(el,kind,opt,activity){
 <h2>The score</h2>
 <p class="sub">An unknown normalizing constant disappears</p>
 <div class="eq">$$p(x)=\frac{e^{-E(x)}}{Z}\quad\Longrightarrow\quad\nabla_x\log p(x)=-\nabla_x E(x)$$</div>
-<dl class="gloss"><dt>$E(x)$</dt><dd>differentiable energy</dd><dt>$Z$</dt><dd>finite positive constant independent of x</dd></dl>
+<dl class="gloss"><dt>$x,p(x)$</dt><dd>input vector and its density</dd><dt>$E(x)$</dt><dd>differentiable energy</dd><dt>$Z$</dt><dd>finite positive normalization independent of x</dd></dl>
 <figure class="math-figure"><canvas id="m11p28c" width="1120" height="250" role="img" aria-label="energy: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p28c'),"energy",{},false);</script>
 <p class="cite page-source">Hyvärinen (2005) §2, Eq.1; course energy form · <a href="https://jmlr.csail.mit.edu/papers/volume6/hyvarinen05a/hyvarinen05a.pdf">Hyvärinen (2005)</a></p>
@@ -1608,9 +1630,9 @@ function m11figure(el,kind,opt,activity){
 <p class="q">A mixture averages densities. Responsibility is a component’s posterior weight at x.</p>
 <div class="eq">$$s(x)=\sum_j r_j(x)s_j(x),\quad r_j(x)=\frac{w_jp_j(x)}{\sum_iw_ip_i(x)}$$</div>
 <dl class="gloss"><dt>$w_j\ge0,\ \sum_jw_j=1$</dt><dd>fixed mixture weights</dd><dt>$p_j,s_j$</dt><dd>positive component density and its score</dd><dt>$r_j(x)$</dt><dd>posterior component probability at x</dd></dl>
-<figure class="math-figure"><canvas id="m11p29c" width="1120" height="250" role="img" aria-label="mixture score: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p29c'),"mixture_score",{},false);</script>
-<p class="reveal step" data-step="2">Return to the result and check its symbols and assumptions.</p></div>
+<figure class="math-figure compact"><canvas id="m11p29c" width="1120" height="184" role="img" aria-label="mixture score: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p29c'),"mixture_score",{"compact": true},false);</script>
+<p class="reveal step" data-step="2">Weight the component scores by responsibility.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 1">
 <p class="worked-progress">Derivation 1 / 1</p>
@@ -1634,9 +1656,7 @@ function m11figure(el,kind,opt,activity){
 <div class="worked-question">
 <p class="q">Find s(0). Is x=0 a mode? Explain.</p>
 <div class="eq">$$p(x)=\tfrac12\mathcal N(x;-2,1)+\tfrac12\mathcal N(x;2,1)$$</div>
-<dl class="gloss"><dt>$x$</dt><dd>scalar state</dd><dt>$s_j(x)=-(x-\mu_j)$</dt><dd>component score for variance 1</dd></dl>
-<figure class="math-figure"><canvas id="m11p30c" width="1120" height="250" role="img" aria-label="mixture score: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p30c'),"mixture_score",{},true);</script>
+<dl class="gloss"><dt>$x$</dt><dd>scalar input</dd><dt>$\mu_1=-2,\ \mu_2=2$</dt><dd>component means; variances are 1</dd><dt>$s_j(x)=-(x-\mu_j)$</dt><dd>component score</dd><dt>$s(x)=\sum_j r_j(x)s_j(x)$</dt><dd>mixture score; r_j is posterior component weight</dd></dl>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> At x=0, score 0 does not imply a mode.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -1646,7 +1666,8 @@ function m11figure(el,kind,opt,activity){
 <ol class="worked-lines">
 <li>$s_1(0)=-(0+2)=-2$, $s_2(0)=-(0-2)=2$.</li>
 <li>$s(0)=\tfrac12(-2)+\tfrac12(2)=0$.</li>
-<li>Each Gaussian has $p_j^{\prime\prime}(0)=(2^2-1)p_j(0)$, so $p^{\prime\prime}(0)=3\mathcal N(0;2,1)&gt;0$.</li>
+<li>$p_j^{\prime\prime}(x)=((x-\mu_j)^2-1)p_j(x)$.</li>
+<li>$p^{\prime\prime}(0)=3\mathcal N(0;2,1)&gt;0$: zero is a local minimum.</li>
 </ol></div>
 <span class="worked-finish step" data-step="2" aria-hidden="true"></span>
 </div>
@@ -1661,7 +1682,7 @@ function m11figure(el,kind,opt,activity){
 <div class="worked-question">
 <p class="q">Compare standard deviations 1 and 2. Compute both scores.</p>
 <div class="eq">$$\mu=1,\quad x=3,\quad s(x)=-(x-\mu)/v$$</div>
-<dl class="gloss"><dt>$v$</dt><dd>variance</dd><dt>$\sqrt v$</dt><dd>standard deviation</dd></dl>
+<dl class="gloss"><dt>$\mu,x$</dt><dd>mean and evaluation point</dd><dt>$v,\sqrt v$</dt><dd>variance and standard deviation</dd><dt>$s(x)$</dt><dd>score to compute</dd></dl>
 <figure class="math-figure"><canvas id="m11p31c" width="1120" height="250" role="img" aria-label="gauss compare: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p31c'),"gauss_compare",{},true);</script>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> Doubling standard deviation divides the score by four.</p></div>
@@ -1685,11 +1706,11 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Model</p>
 <h2>Learning to denoise</h2>
 <p class="sub">Known corruption gives a target for every example</p>
-<p class="q">Training constructs inputs from clean data and known noise; the sampled noise supplies the target.</p>
+<p class="q">The noise drawn for corruption becomes the target.</p>
 <div class="eq">$$(x_0,k,\epsilon)\longmapsto\big((x_k,k),\epsilon\big)$$</div>
-<dl class="gloss"><dt>$x_k=\alpha_kx_0+\sigma_k\epsilon$</dt><dd>network input</dd><dt>$\epsilon$</dt><dd>supervised target</dd><dt>$k$</dt><dd>sampled noise level</dd></dl>
-<figure class="math-figure"><canvas id="m11p32c" width="1120" height="250" role="img" aria-label="training: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p32c'),"training",{},false);</script>
+<dl class="gloss"><dt>$x_0,k$</dt><dd>clean demonstration and sampled level</dd><dt>$x_k=\alpha_kx_0+\sigma_k\epsilon$</dt><dd>noisy vector; $\alpha_k,\sigma_k$ are signal and noise scales</dd><dt>$\epsilon$</dt><dd>sampled Gaussian noise and target</dd></dl>
+<figure class="math-figure compact"><canvas id="m11p32c" width="1120" height="184" role="img" aria-label="training: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p32c'),"training",{"compact": true},false);</script>
 <p class="cite page-source">DDPM Algorithm 1 · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a></p>
 </section>
 
@@ -1698,11 +1719,11 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Definition</p>
 <h2>Learning to denoise</h2>
 <p class="sub">The simple noise-prediction objective</p>
-<p class="q">The noise-prediction loss is the expected squared distance between predicted and sampled noise.</p>
+<p class="q">The loss averages squared prediction errors.</p>
 <div class="eq">$$L(\theta)=\E\|\epsilon_\theta(\alpha_kx_0+\sigma_k\epsilon,k)-\epsilon\|^2$$</div>
-<dl class="gloss"><dt>$\theta$</dt><dd>trainable parameters; fixed corruption schedule</dd><dt>$\epsilon_\theta,\epsilon\in\mathbb R^d$</dt><dd>predicted and sampled noise</dd><dt>$\E$</dt><dd>independent data, uniform k, Gaussian ε</dd></dl>
-<figure class="math-figure"><canvas id="m11p33c" width="1120" height="250" role="img" aria-label="training: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p33c'),"training",{},false);</script>
+<dl class="gloss"><dt>$x_0,k$</dt><dd>clean data and sampled level</dd><dt>$\alpha_k,\sigma_k$</dt><dd>fixed signal and noise scales</dd><dt>$\theta,\epsilon_\theta,\epsilon$</dt><dd>weights, predicted noise, sampled noise</dd><dt>$\E$</dt><dd>average over data, uniform k and independent Gaussian noise</dd></dl>
+<figure class="math-figure compact"><canvas id="m11p33c" width="1120" height="184" role="img" aria-label="training: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p33c'),"training",{"compact": true},false);</script>
 <p class="cite page-source">DDPM §3.4, Eq.14 · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a></p>
 </section>
 
@@ -1712,11 +1733,10 @@ function m11figure(el,kind,opt,activity){
 <h2>Learning to denoise</h2>
 <p class="sub">The optimal predictor is a conditional mean</p>
 <div class="worked-question">
+<p class="q">Finite conditional noise second moment.</p>
 <div class="eq">$$\E[\|\epsilon-g\|^2\mid x_k,k]=\E[\|\epsilon-m\|^2\mid x_k,k]+\|g-m\|^2$$</div>
-<dl class="gloss"><dt>$m=\E[\epsilon\mid x_k,k]$</dt><dd>conditional mean</dd><dt>$g\in\mathbb R^d$</dt><dd>chosen prediction</dd></dl>
-<figure class="math-figure"><canvas id="m11p34c" width="1120" height="250" role="img" aria-label="conditional: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p34c'),"conditional",{},false);</script>
-<p class="reveal step" data-step="3">Return to the result and check its symbols and assumptions.</p></div>
+<dl class="gloss"><dt>$x_k,k,\epsilon$</dt><dd>fixed noisy vector and level; random noise target</dd><dt>$m=\E[\epsilon\mid x_k,k]$</dt><dd>conditional mean</dd><dt>$g$</dt><dd>candidate noise prediction</dd></dl>
+<p class="reveal step" data-step="3">For a fixed noisy input and level, the best squared-error predictor is the conditional mean noise.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
@@ -1745,9 +1765,9 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Derivation</p>
 <h2>Learning to denoise</h2>
 <p class="sub">One clean example has an accessible conditional score</p>
-<p class="q">For fixed x₀, qₖ is Gaussian with mean αₖx₀ and covariance σₖ²I.</p>
+<p class="q">Fixed x₀: mean αₖx₀, covariance σₖ²I; I is identity.</p>
 <div class="eq">$$\nabla_x\log q_k(x\mid x_0)=-\frac{x-\alpha_kx_0}{\sigma_k^2}=-\frac{\epsilon}{\sigma_k}$$</div>
-<dl class="gloss"><dt>$x=\alpha_kx_0+\sigma_k\epsilon$</dt><dd>corrupted realization</dd><dt>$x_0,k$</dt><dd>fixed; sigma_k &gt; 0</dd></dl>
+<dl class="gloss"><dt>$q_k(x\mid x_0)$</dt><dd>corruption density</dd><dt>$x=\alpha_kx_0+\sigma_k\epsilon$</dt><dd>noisy vector; ε is standard Gaussian noise</dd><dt>$x_0,k$</dt><dd>fixed clean vector and level</dd><dt>$\alpha_k,\sigma_k&gt;0$</dt><dd>signal and noise scales</dd></dl>
 <p class="cite page-source">Vincent (2011) §4.2, Eq.4.4; Gaussian score derivation · <a href="https://doi.org/10.1162/NECO_a_00142">Vincent (2011)</a></p>
 </section>
 
@@ -1757,11 +1777,10 @@ function m11figure(el,kind,opt,activity){
 <h2>Learning to denoise</h2>
 <p class="sub">Average conditional scores to obtain the score</p>
 <div class="worked-question">
+<p class="q">Clean density: integrate. Discrete clean data: sum.</p>
 <div class="eq">$$\nabla_x\log p_k(x)=\int p_k(x_0\mid x)\nabla_x\log q_k(x\mid x_0)\,dx_0$$</div>
-<dl class="gloss"><dt>$p_k(x)&gt;0$</dt><dd>differentiable noisy marginal at fixed k</dd><dt>$p_k(x_0\mid x)$</dt><dd>posterior over clean data at this level</dd><dt>$Assumption$</dt><dd>derivative may pass under the integral</dd></dl>
-<figure class="math-figure"><canvas id="m11p36c" width="1120" height="250" role="img" aria-label="mixture score: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p36c'),"mixture_score",{},false);</script>
-<p class="reveal step" data-step="3">Return to the result and check its symbols and assumptions.</p></div>
+<dl class="gloss"><dt>$q_k(x\mid x_0)$</dt><dd>corruption density</dd><dt>$p_k(x)&gt;0$</dt><dd>noisy marginal; derivative passes under integral</dd><dt>$p_k(x_0\mid x)$</dt><dd>clean posterior at level k</dd></dl>
+<p class="reveal step" data-step="3">Average conditional scores under the clean posterior.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
@@ -1794,9 +1813,7 @@ function m11figure(el,kind,opt,activity){
 <div class="worked-question">
 <p class="q">Explain the minus sign and the factor 1/σ_k.</p>
 <div class="eq">$$s_k(x)=-\frac{\E[\epsilon\mid x_k=x,k]}{\sigma_k}\approx-\frac{\epsilon_\theta(x,k)}{\sigma_k}$$</div>
-<dl class="gloss"><dt>$s_k$</dt><dd>marginal noisy-data score</dd><dt>$\sigma_k&gt;0$</dt><dd>noise standard deviation</dd></dl>
-<figure class="math-figure"><canvas id="m11p37c" width="1120" height="250" role="img" aria-label="score: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p37c'),"score",{},true);</script>
+<dl class="gloss"><dt>$s_k(x)$</dt><dd>true score at noisy input x and fixed level k</dd><dt>$\epsilon,\epsilon_\theta(x,k)$</dt><dd>sampled noise and network prediction</dd><dt>$\sigma_k&gt;0$</dt><dd>noise standard deviation</dd></dl>
 <p class="reveal step" data-step="3"><b class="ok step" data-step="3">Check</b> $s_\theta=-\epsilon_\theta/\sigma_k$.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
@@ -1815,7 +1832,7 @@ function m11figure(el,kind,opt,activity){
 <ol class="worked-lines">
 <li>$\E\|\epsilon_\theta-\epsilon\|^2=\sigma_k^2\E\|s_\theta-c\|^2$.</li>
 <li>$\E\|s_\theta-c\|^2=\E\|s_\theta-s_k\|^2+C_k$.</li>
-<li>Denoising score matching fits the conditional score target. C_k is its irreducible conditional variance, independent of theta.</li>
+<li>$C_k=\E\|c-s_k\|^2$ is the averaged conditional target spread and is independent of $\theta$.</li>
 </ol></div>
 <span class="worked-finish step" data-step="3" aria-hidden="true"></span>
 </div>
@@ -1829,9 +1846,7 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">Worked example: noise prediction becomes a score</p>
 <div class="ex"><p class="lbl">Example</p></div>
 <div class="eq">$$\begin{aligned}\sigma_k&amp;=0.6,\quad\epsilon_\theta=(-0.3,0.6)^T\\s_\theta&amp;=-\epsilon_\theta/\sigma_k=(0.5,-1)^T\end{aligned}$$</div>
-<dl class="gloss"><dt>$\epsilon_\theta$</dt><dd>network prediction</dd><dt>$s_\theta=-\epsilon_\theta/\sigma_k$</dt><dd>score estimate</dd></dl>
-<figure class="math-figure"><canvas id="m11p38c" width="1120" height="250" role="img" aria-label="vector: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p38c'),"vector",{"labels": ["noise prediction", "divide by \u2212\u03c3", "score estimate"], "caption": "a density direction; the sampler still needs an update rule"},false);</script>
+<dl class="gloss"><dt>$\epsilon_\theta,\sigma_k$</dt><dd>predicted noise and noise standard deviation</dd><dt>$s_\theta=-\epsilon_\theta/\sigma_k$</dt><dd>score estimate at this input</dd></dl>
 <p class="cite page-source">DDPM §3.2; course example · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a></p>
 </section>
 
@@ -1843,9 +1858,7 @@ function m11figure(el,kind,opt,activity){
 <div class="worked-question">
 <p class="q">Find the noise for each clean hypothesis, then its mean.</p>
 <div class="eq">$$X_0\in\{-1,1\},\quad\alpha=\sigma=1/\sqrt2,\quad X_k=0$$</div>
-<dl class="gloss"><dt>$X_0$</dt><dd>clean values −1,+1, each probability 1/2</dd><dt>$X_k=\alpha X_0+\sigma\epsilon$</dt><dd>Gaussian ε independent of X₀; condition via its density</dd></dl>
-<figure class="math-figure"><canvas id="m11p39c" width="1120" height="250" role="img" aria-label="conditional: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p39c'),"conditional",{},true);</script>
+<dl class="gloss"><dt>$X_0$</dt><dd>clean value, −1 or +1 with equal probability</dd><dt>$\alpha,\sigma$</dt><dd>signal and noise scales</dd><dt>$X_k=\alpha X_0+\sigma\epsilon$</dt><dd>noisy value; independent standard Gaussian ε; condition via density</dd></dl>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> Zero conditional mean can average nonzero noises.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -1868,12 +1881,10 @@ function m11figure(el,kind,opt,activity){
 <h2>Learning to denoise</h2>
 <p class="sub">A denoising identity gives the posterior mean</p>
 <div class="worked-question">
-<p class="q">This denoising identity gives the mean clean vector conditional on a noisy observation.</p>
+<p class="q">Scaled Tweedie formula: recover the mean clean vector from the noisy score.</p>
 <div class="eq">$$\E[X_0\mid X_k=x]=\frac{x+\sigma_k^2s_k(x)}{\alpha_k}$$</div>
-<dl class="gloss"><dt>$\alpha_k&gt;0,\sigma_k&gt;0$</dt><dd>fixed coefficients</dd><dt>$s_k$</dt><dd>true marginal score</dd></dl>
-<figure class="math-figure"><canvas id="m11p40c" width="1120" height="250" role="img" aria-label="conditional: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p40c'),"conditional",{},false);</script>
-<p class="reveal step" data-step="3">Return to the result and check its symbols and assumptions.</p></div>
+<dl class="gloss"><dt>$X_0,X_k,x$</dt><dd>clean random vector, noisy random vector, observation</dd><dt>$\alpha_k,\sigma_k&gt;0$</dt><dd>positive signal and noise scales</dd><dt>$s_k(x)$</dt><dd>true noisy score</dd></dl>
+<p class="reveal step" data-step="3">The correction gives a clean posterior mean.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
@@ -1915,9 +1926,9 @@ function m11figure(el,kind,opt,activity){
 <h2>Learning to denoise</h2>
 <p class="sub">How does predictor error reach the clean estimate?</p>
 <div class="worked-question">
-<p class="q">Find Δx̂₀. Compare α=0.8 and α=0.1, with σ²=1−α².</p>
+<p class="q">Find the clean-estimate error. Compare $\alpha=0.8,0.1$.</p>
 <div class="eq">$$\hat x_0=\frac{x-\sigma\hat\epsilon}{\alpha},\quad\hat\epsilon=\epsilon^*+\delta$$</div>
-<dl class="gloss"><dt>$\epsilon^*$</dt><dd>optimal mean-noise predictor</dd><dt>$\delta$</dt><dd>prediction error; alpha &gt; 0</dd></dl>
+<dl class="gloss"><dt>$x$</dt><dd>fixed noisy input</dd><dt>$\epsilon^*,\hat\epsilon,\delta$</dt><dd>optimal mean, prediction, error</dd><dt>$\sigma=\sqrt{1-\alpha^2}$</dt><dd>noise scale; α &gt; 0 is signal scale</dd></dl>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> $\Delta\hat x_0=-(\sigma/\alpha)\delta$.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -1939,7 +1950,7 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Algorithm</p>
 <h2>Learning to denoise</h2>
 <p class="sub">Training updates weights, not the noisy input</p>
-<p class="q">Sample x₀, k, ε → form xₖ → predict ε → average squared error → update θ.</p>
+<p class="q">Draw clean data x₀, level k and noise ε. Form the noisy input xₖ. Compare the prediction with ε and update the denoiser weights θ.</p>
 <figure class="math-figure"><canvas id="m11p43c" width="1120" height="250" role="img" aria-label="training: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p43c'),"training",{},false);</script>
 <p class="cite page-source">DDPM Algorithm 1 · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a></p>
@@ -1951,9 +1962,7 @@ function m11figure(el,kind,opt,activity){
 <h2>Learning to denoise</h2>
 <p class="sub">Checkpoint: trace an input to a score</p>
 <div class="worked-question">
-<p class="q">Data → known corruption → noise regression → score<br>Which quantity is sampled, observed, and learned?</p>
-<figure class="math-figure"><canvas id="m11p44c" width="1120" height="250" role="img" aria-label="map: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p44c'),"map",{},true);</script>
+<p class="q">Trace one training example. Identify the sampled quantities, the network input, and the prediction target. How does the best prediction give a score?</p>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> Training learns a conditional mean noise field.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -1975,11 +1984,11 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Model</p>
 <h2>Reverse sampling</h2>
 <p class="sub">The reverse step needs a conditional distribution</p>
-<p class="q">The reverse conditional describes the previous state given the current noisy state. Here we also condition on the clean example to derive it.</p>
+<p class="q">To derive a reverse step, condition on both the current noisy state $x_k$ and its clean source $x_0$.</p>
 <div class="eq">$$q(x_{k-1}\mid x_k,x_0)\propto q(x_k\mid x_{k-1})q(x_{k-1}\mid x_0)$$</div>
-<dl class="gloss"><dt>$x_0,x_k$</dt><dd>temporarily known endpoints</dd><dt>$x_{k-1}$</dt><dd>unknown intermediate state; k &gt; 1</dd></dl>
-<figure class="math-figure"><canvas id="m11p45c" width="1120" height="250" role="img" aria-label="reverse graph: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p45c'),"reverse_graph",{},false);</script>
+<dl class="gloss"><dt>$q$</dt><dd>forward-chain density or conditional density</dd><dt>$x_{k-1}$</dt><dd>unknown previous vector</dd><dt>$x_0,x_k$</dt><dd>fixed clean and noisy endpoints; k &gt; 1</dd><dt>$\propto$</dt><dd>proportional in the unknown state</dd></dl>
+<figure class="math-figure compact"><canvas id="m11p45c" width="1120" height="184" role="img" aria-label="reverse graph: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p45c'),"reverse_graph",{"compact": true},false);</script>
 <p class="cite page-source">DDPM §2, Eqs.6–7 · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a></p>
 </section>
 
@@ -1989,7 +1998,7 @@ function m11figure(el,kind,opt,activity){
 <h2>Reverse sampling</h2>
 <p class="sub">The Gaussian product adds two quadratic penalties</p>
 <div class="eq">$$-2\log q(y\mid x_k,x_0)=\frac{\|y-\alpha_{k-1}x_0\|^2}{\sigma_{k-1}^2}+\frac{\|x_k-\sqrt{a_k}y\|^2}{\beta_k}+C$$</div>
-<dl class="gloss"><dt>$y=x_{k-1}$</dt><dd>unknown column vector; k &gt; 1</dd><dt>$x_0,x_k$</dt><dd>fixed clean and noisy endpoints</dd><dt>$\alpha_{k-1},\sigma_{k-1}$</dt><dd>previous signal coefficient and noise standard deviation</dd><dt>$a_k=1-\beta_k,\ C$</dt><dd>one-step retention; C is constant in y</dd></dl>
+<dl class="gloss"><dt>$y=x_{k-1}$</dt><dd>unknown previous vector; k &gt; 1</dd><dt>$x_0,x_k$</dt><dd>fixed clean and noisy endpoints</dd><dt>$\alpha_{k-1},\sigma_{k-1}$</dt><dd>previous signal/noise scales</dd><dt>$a_k=1-\beta_k$</dt><dd>step retention; β_k is step variance</dd><dt>$C$</dt><dd>constant in y</dd></dl>
 <p class="cite page-source">DDPM Appendix A, posterior derivation · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a></p>
 </section>
 
@@ -1999,10 +2008,10 @@ function m11figure(el,kind,opt,activity){
 <h2>Reverse sampling</h2>
 <p class="sub">Complete the square</p>
 <div class="worked-question">
-<p class="q">Complete the square in $y=x_{k-1}$; fix $x_0,x_k$, $k&gt;1$.</p>
-<div class="eq">$$\Lambda=\frac1{\sigma_{k-1}^2}+\frac{a_k}{\beta_k},\quad h=\frac{\alpha_{k-1}x_0}{\sigma_{k-1}^2}+\frac{\sqrt{a_k}x_k}{\beta_k}$$</div>
-<dl class="gloss"><dt>$\Lambda I$</dt><dd>posterior precision</dd><dt>$h$</dt><dd>coefficient vector</dd><dt>$\tilde\beta=1/\Lambda,\ \tilde\mu=h/\Lambda$</dt><dd>variance and mean</dd></dl>
-<p class="reveal step" data-step="3">Return to the result and check its symbols and assumptions.</p></div>
+<p class="q">Fix $x_0,x_k$, with $k&gt;1$. Complete the square in the previous state $y=x_{k-1}$.</p>
+<div class="eq">$$\Lambda\|y\|^2-2h^Ty+C$$</div>
+<dl class="gloss"><dt>$\Lambda I,\ h$</dt><dd>posterior precision and linear coefficient vector</dd><dt>$C$</dt><dd>constant in y</dd></dl>
+<p class="reveal step" data-step="3">The posterior mean is $h/\Lambda$; covariance is $I/\Lambda$.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
@@ -2033,22 +2042,19 @@ function m11figure(el,kind,opt,activity){
 <h2>Reverse sampling</h2>
 <p class="sub">Simplify the posterior coefficients</p>
 <div class="worked-question">
-<p class="q">$k&gt;1$, $\bar a_k=a_k\bar a_{k-1}$; $h=\alpha_{k-1}x_0/(1-\bar a_{k-1})+\sqrt{a_k}x_k/\beta_k$.</p>
 <div class="eq">$$\tilde\mu_k=c_0x_0+c_kx_k,\quad\tilde\beta_k=\frac{\beta_k(1-\bar a_{k-1})}{1-\bar a_k}$$</div>
-<dl class="gloss"><dt>$c_0=\beta_k\alpha_{k-1}/(1-\bar a_k)$</dt><dd>clean coefficient</dd><dt>$c_k=\sqrt{a_k}(1-\bar a_{k-1})/(1-\bar a_k)$</dt><dd>noisy coefficient</dd></dl>
-<figure class="math-figure"><canvas id="m11p48c" width="1120" height="250" role="img" aria-label="reverse graph: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p48c'),"reverse_graph",{},false);</script>
-<p class="reveal step" data-step="2">Return to the result and check its symbols and assumptions.</p></div>
+<dl class="gloss"><dt>$x_0,x_k$</dt><dd>fixed clean and noisy endpoints; k &gt; 1</dd><dt>$a_k,\beta_k$</dt><dd>step retention and variance</dd><dt>$\bar a_i$</dt><dd>cumulative retention through level i</dd><dt>$\tilde\mu_k,\tilde\beta_k$</dt><dd>posterior mean and variance</dd><dt>$c_0,c_k$</dt><dd>clean and noisy coefficients</dd></dl>
+<p class="reveal step" data-step="2">Only the mean depends on the two endpoints.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 1">
 <p class="worked-progress">Derivation 1 / 1</p>
 <h3>Simplify the precision denominator</h3>
-<p class="worked-variables">$a_k=1-\beta_k$; $\bar a_k=a_k\bar a_{k-1}$.</p>
+<p class="worked-variables">$a_k=1-\beta_k$; $\bar a_k=a_k\bar a_{k-1}$. $\Lambda$ is precision, $h$ the linear coefficient vector, and $\alpha_{k-1}$ the previous signal amplitude.</p>
 <ol class="worked-lines">
 <li>$\Lambda=\frac{\beta_k+a_k(1-\bar a_{k-1})}{\beta_k(1-\bar a_{k-1})}$.</li>
 <li>$\beta_k+a_k(1-\bar a_{k-1})=1-\bar a_k$.</li>
 <li>$\tilde\beta_k=1/\Lambda=\beta_k(1-\bar a_{k-1})/(1-\bar a_k)$.</li>
-<li>$\tilde\mu_k=\tilde\beta_kh=c_0x_0+c_kx_k$.</li>
+<li>$\tilde\mu_k=\tilde\beta_kh=c_0x_0+c_kx_k$, where $c_0=\beta_k\alpha_{k-1}/(1-\bar a_k)$ and $c_k=\sqrt{a_k}(1-\bar a_{k-1})/(1-\bar a_k)$.</li>
 </ol></div>
 <span class="worked-finish step" data-step="2" aria-hidden="true"></span>
 </div>
@@ -2061,11 +2067,10 @@ function m11figure(el,kind,opt,activity){
 <h2>Reverse sampling</h2>
 <p class="sub">Replace clean data by the learned noise estimate</p>
 <div class="worked-question">
-<div class="eq">$$\mu_\theta(x_k,k)=\frac1{\sqrt{a_k}}\left(x_k-\frac{\beta_k}{\sigma_k}\epsilon_\theta(x_k,k)\right)$$</div>
-<dl class="gloss"><dt>$x_k,\ \hat\epsilon=\epsilon_\theta(x_k,k)$</dt><dd>state; predicted noise</dd><dt>$a_k=1-\beta_k$</dt><dd>one-step retention</dd><dt>$\sigma_k=\sqrt{1-\bar a_k}$</dt><dd>cumulative noise std.</dd><dt>$\mu_\theta$</dt><dd>reverse mean</dd></dl>
-<figure class="math-figure"><canvas id="m11p49c" width="1120" height="250" role="img" aria-label="sampler: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p49c'),"sampler",{},false);</script>
-<p class="reveal step" data-step="3">Return to the result and check its symbols and assumptions.</p></div>
+<p class="q">Average over clean sources.</p>
+<div class="eq">$$\mu_\theta(x_k,k)=\frac{x_k-\beta_k\hat\epsilon/\sigma_k}{\sqrt{a_k}}$$</div>
+<dl class="gloss"><dt>$x_k,\hat\epsilon$</dt><dd>current state and predicted noise</dd><dt>$a_k=1-\beta_k$</dt><dd>step retention; β_k is step variance</dd><dt>$\sigma_k$</dt><dd>cumulative noise scale</dd><dt>$\mu_\theta$</dt><dd>reverse mean from denoiser weights θ</dd></dl>
+<p class="reveal step" data-step="3">A learned mean and a chosen variance define the reverse model.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
@@ -2097,9 +2102,9 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">Worked example: calculate one reverse mean</p>
 <div class="ex"><p class="lbl">Example</p></div>
 <div class="eq">$$\mu_\theta=\frac{x_k-\beta_k\hat\epsilon/\sigma_k}{\sqrt{a_k}}=\frac{1-0.36(0.4)/0.8}{0.8}=1.025$$</div>
-<dl class="gloss"><dt>$\beta_k=0.36,\ a_k=0.64$</dt><dd>one-step coefficients</dd><dt>$\sigma_k=0.8$</dt><dd>cumulative noise standard deviation</dd><dt>$x_k=1,\ \hat\epsilon=0.4$</dt><dd>current state and predicted noise</dd></dl>
-<figure class="math-figure"><canvas id="m11p50c" width="1120" height="250" role="img" aria-label="numberline: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p50c'),"numberline",{"points": [[1, "current"], [0.4, "predicted noise"]], "label": "inputs to the reverse-mean calculation"},false);</script>
+<dl class="gloss"><dt>$\beta_k=0.36,\ a_k=0.64$</dt><dd>step variance and retention</dd><dt>$\sigma_k=0.8$</dt><dd>cumulative noise standard deviation</dd><dt>$x_k=1,\ \hat\epsilon=0.4$</dt><dd>current state and predicted noise</dd><dt>$\mu_\theta$</dt><dd>reverse mean</dd></dl>
+<figure class="math-figure compact"><canvas id="m11p50c" width="1120" height="184" role="img" aria-label="numberline: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p50c'),"numberline",{"points": [[1, "current"], [0.4, "predicted noise"]], "label": "inputs to the reverse-mean calculation", "compact": true},false);</script>
 <p class="cite page-source">DDPM Eq.11; course example · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a></p>
 </section>
 
@@ -2109,11 +2114,9 @@ function m11figure(el,kind,opt,activity){
 <h2>Reverse sampling</h2>
 <p class="sub">A reverse draw uses a standard deviation</p>
 <div class="worked-question">
-<p class="q">Compute one draw and the variance across repeated draws.</p>
-<div class="eq">$$x_{k-1}=\mu_\theta+\sqrt{\tilde\beta_k}\,z,\quad z\sim\mathcal N(0,I)$$</div>
-<dl class="gloss"><dt>$\mu_\theta=1.025$</dt><dd>reverse mean from the previous example</dd><dt>$\tilde\beta_k=0.24609375,\ z=-1$</dt><dd>derived posterior variance; fresh draw</dd></dl>
-<figure class="math-figure"><canvas id="m11p51c" width="1120" height="250" role="img" aria-label="posterior: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p51c'),"posterior",{"mu": 1.025, "variance": 0.24609375, "sample": 0.5289216291753893},true);</script>
+<p class="q">Find the variance and one draw.</p>
+<div class="eq">$$x_{k-1}=\mu_\theta+\sqrt{\tilde\beta_k}\,z,\quad \tilde\beta_k=\beta_k(1-\bar a_{k-1})/(1-\bar a_k)$$</div>
+<dl class="gloss"><dt>$\mu_\theta=1.025,\ z=-1$</dt><dd>mean and standard-normal draw</dd><dt>$\beta_k=0.36$</dt><dd>step variance</dd><dt>$\bar a_k=0.36,\ \bar a_{k-1}=0.5625$</dt><dd>retentions; k &gt; 1</dd></dl>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> $x_{k-1}=1.025-\sqrt{0.24609375}\approx0.5289$.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -2136,7 +2139,7 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Algorithm</p>
 <h2>Reverse sampling</h2>
 <p class="sub">DDPM generation runs from noise to data</p>
-<p class="q">Draw x_K ∼ N(0,I). For k=K,…,1: predict noise; compute μθ; draw the next state. At k=1, return the continuous clean endpoint without fresh noise.</p>
+<p class="q">Denoising diffusion probabilistic model (DDPM): start with Gaussian noise. Predict a reverse mean and add Gaussian noise at each step until the clean endpoint.</p>
 <figure class="math-figure"><canvas id="m11p52c" width="1120" height="250" role="img" aria-label="sampler: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p52c'),"sampler",{},false);</script>
 <p class="cite page-source">DDPM Algorithm 2; continuous-action adaptation · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a></p>
@@ -2172,7 +2175,7 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Motivation</p>
 <h2>Reverse sampling</h2>
 <p class="sub">DDIM changes the path, using the same predictor</p>
-<p class="q">Denoising diffusion implicit models (DDIMs) generate samples by deterministic denoising from random initial noise.</p>
+<p class="q">A denoising diffusion implicit model (DDIM) can skip noise levels and denoise deterministically once the initial draw is fixed.</p>
 <figure class="math-figure"><canvas id="m11p54c" width="1120" height="250" role="img" aria-label="paths: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p54c'),"paths",{},false);</script>
 <p class="cite page-source">DDIM §§3–4 · <a href="https://arxiv.org/html/2010.02502v4">Song, Meng &amp; Ermon (2021)</a></p>
@@ -2184,9 +2187,7 @@ function m11figure(el,kind,opt,activity){
 <h2>Reverse sampling</h2>
 <p class="sub">A deterministic DDIM step keeps the predicted direction</p>
 <div class="eq">$$\hat x_0=\frac{x_k-\sigma_k\hat\epsilon}{\alpha_k},\qquad x_j=\alpha_j\hat x_0+\sigma_j\hat\epsilon$$</div>
-<dl class="gloss"><dt>$j&lt;k,\ 0&lt;\alpha_k&lt;\alpha_j\le1$</dt><dd>selected less noisy level in this schedule</dd><dt>$\hat\epsilon=\epsilon_\theta(x_k,k)$</dt><dd>current predicted noise</dd><dt>$\alpha_i^2+\sigma_i^2=1$</dt><dd>variance-preserving coefficients</dd></dl>
-<figure class="math-figure"><canvas id="m11p55c" width="1120" height="250" role="img" aria-label="paths: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p55c'),"paths",{},false);</script>
+<dl class="gloss"><dt>$x_k,x_j,\hat x_0$</dt><dd>current state, destination state and clean estimate</dd><dt>$0\le j&lt;k$</dt><dd>select a less noisy level</dd><dt>$\hat\epsilon=\epsilon_\theta(x_k,k)$</dt><dd>predicted noise</dd><dt>$\alpha_i&gt;0,\ \sigma_i\ge0$</dt><dd>signal and noise coefficients; α_i² + σ_i² = 1</dd></dl>
 <p class="cite page-source">DDIM §4.1, Eq.12 with eta=0 · <a href="https://arxiv.org/html/2010.02502v4">Song, Meng &amp; Ermon (2021)</a></p>
 </section>
 
@@ -2197,9 +2198,9 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">Worked example: skip to a cleaner level</p>
 <div class="ex"><p class="lbl">Example</p></div>
 <div class="eq">$$\hat x_0=\frac{1.3-0.6(-0.5)}{0.8}=2,\qquad x_j=\sqrt{0.91}(2)+0.3(-0.5)\approx1.758$$</div>
-<dl class="gloss"><dt>$x_k=1.3,\ \hat\epsilon=-0.5$</dt><dd>current state and noise prediction</dd><dt>$\alpha_k=0.8,\ \sigma_k=0.6$</dt><dd>current coefficients</dd><dt>$\alpha_j=\sqrt{0.91},\ \sigma_j=0.3$</dt><dd>selected destination coefficients</dd></dl>
-<figure class="math-figure"><canvas id="m11p56c" width="1120" height="250" role="img" aria-label="numberline: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p56c'),"numberline",{"points": [[1.3, "current"], [-0.5, "predicted noise"]], "label": "inputs before the skipped-level update"},false);</script>
+<dl class="gloss"><dt>$x_k=1.3,\ \hat\epsilon=-0.5$</dt><dd>current state and predicted noise</dd><dt>$\alpha_k=0.8,\ \sigma_k=0.6$</dt><dd>current signal and noise scales</dd><dt>$\alpha_j=\sqrt{0.91},\ \sigma_j=0.3$</dt><dd>scales at selected cleaner level j</dd><dt>$\hat x_0,x_j$</dt><dd>clean estimate and destination state</dd></dl>
+<figure class="math-figure compact"><canvas id="m11p56c" width="1120" height="184" role="img" aria-label="numberline: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p56c'),"numberline",{"label": "Current, selected level, and clean estimate", "points": [[1.3, "current"], [1.7578784028338914, "selected level"], [2, "clean estimate"]], "compact": true},false);</script>
 <p class="cite page-source">DDIM Eq.12; course example · <a href="https://arxiv.org/html/2010.02502v4">Song, Meng &amp; Ermon (2021)</a></p>
 </section>
 
@@ -2209,10 +2210,10 @@ function m11figure(el,kind,opt,activity){
 <h2>Reverse sampling</h2>
 <p class="sub">Transfer: check deterministic sampling at the endpoint</p>
 <div class="worked-question">
-<p class="q">Compute the deterministic clean-endpoint output. Can different initial noise draws still produce different outputs?</p>
-<div class="eq">$$x_k=0.9,\quad\alpha_k=0.8,\quad\sigma_k=0.6,\quad\hat\epsilon=0.5$$</div>
-<dl class="gloss"><dt>$\alpha_0=1,\sigma_0=0$</dt><dd>clean endpoint</dd><dt>$x_0^{\mathrm{out}}$</dt><dd>deterministic output to find</dd></dl>
-<p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> $x_0^{\mathrm{out}}=(0.9-0.6(0.5))/0.8=0.75$.</p></div>
+<p class="q">Find y. Can a new seed change a full sample?</p>
+<div class="eq">$$\hat x_0=(x_k-\sigma_k\hat\epsilon)/\alpha_k,\qquad y=\alpha_0\hat x_0+\sigma_0\hat\epsilon$$</div>
+<dl class="gloss"><dt>$x_k=0.9,\ \hat\epsilon=0.5$</dt><dd>fixed input and prediction</dd><dt>$\alpha_k=0.8,\ \sigma_k=0.6$</dt><dd>current scales</dd><dt>$\alpha_0=1,\ \sigma_0=0$</dt><dd>endpoint scales</dd><dt>$\hat x_0$</dt><dd>clean estimate</dd></dl>
+<p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> Endpoint $y=0.75$ for these inputs.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
 <p class="worked-progress">Solution 1 / 1</p>
@@ -2220,7 +2221,7 @@ function m11figure(el,kind,opt,activity){
 <p class="worked-variables">At level zero, signal coefficient is one and noise coefficient is zero.</p>
 <ol class="worked-lines">
 <li>$\hat x_0=(0.9-0.3)/0.8=0.75$.</li>
-<li>$x_0^{\mathrm{out}}=1\hat x_0+0\hat\epsilon=0.75$.</li>
+<li>$y=1\hat x_0+0\hat\epsilon=0.75$.</li>
 <li>The initial random state can still differ across generation runs; no fresh endpoint noise is added.</li>
 </ol></div>
 <span class="worked-finish step" data-step="2" aria-hidden="true"></span>
@@ -2233,10 +2234,9 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Result</p>
 <h2>Reverse sampling</h2>
 <p class="sub">A generalized step allocates fresh randomness</p>
+<p class="q">Allocate the destination noise variance.</p>
 <div class="eq">$$x_j=\alpha_j\hat x_0+\sqrt{\sigma_j^2-\rho_{k,j}^2}\,\hat\epsilon+\rho_{k,j}z$$</div>
-<dl class="gloss"><dt>$z\sim\mathcal N(0,I)$</dt><dd>fresh draw independent of the current state</dd><dt>$0\le\rho_{k,j}\le\sigma_j$</dt><dd>chosen fresh-noise standard deviation</dd><dt>$\hat x_0,\hat\epsilon$</dt><dd>fixed network estimates for the current input</dd></dl>
-<figure class="math-figure"><canvas id="m11p58c" width="1120" height="250" role="img" aria-label="paths: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p58c'),"paths",{},false);</script>
+<dl class="gloss"><dt>$x_j,\alpha_j,\sigma_j$</dt><dd>state, signal scale and noise scale at j &lt; k</dd><dt>$z\sim\mathcal N(0,I)$</dt><dd>independent fresh draw</dd><dt>$0\le\rho_{k,j}\le\sigma_j$</dt><dd>fresh noise scale</dd><dt>$\hat x_0,\hat\epsilon$</dt><dd>fixed clean and noise estimates</dd></dl>
 <p class="cite page-source">DDIM §4.1, Eq.12; §4.2 and Appendix C.1 · <a href="https://arxiv.org/html/2010.02502v4">Song, Meng &amp; Ermon (2021)</a></p>
 </section>
 
@@ -2247,9 +2247,7 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">The eta parameter selects the stochasticity</p>
 <p class="q">Eta controls the amount of fresh noise added by a sampling step.</p>
 <div class="eq">$$\rho_{k,j}=\eta\sqrt{\frac{1-\alpha_j^2}{1-\alpha_k^2}\left(1-\frac{\alpha_k^2}{\alpha_j^2}\right)}$$</div>
-<dl class="gloss"><dt>$j&lt;k,\ 0\le\eta\le1$</dt><dd>selected levels and parameter</dd><dt>$\alpha_j&gt;\alpha_k&gt;0$</dt><dd>cumulative signal coefficients</dd></dl>
-<figure class="math-figure"><canvas id="m11p59c" width="1120" height="250" role="img" aria-label="paths: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p59c'),"paths",{},false);</script>
+<dl class="gloss"><dt>$\rho_{k,j}$</dt><dd>fresh noise standard deviation</dd><dt>$j&lt;k,\ 0\le\eta\le1$</dt><dd>destination/current levels and noise scale</dd><dt>$0&lt;\alpha_k&lt;\alpha_j\le1$</dt><dd>current and destination signal amplitudes</dd></dl>
 <p class="cite page-source">DDIM Eq.16; §4.1 and Appendix C.1 · <a href="https://arxiv.org/html/2010.02502v4">Song, Meng &amp; Ermon (2021)</a></p>
 </section>
 
@@ -2286,8 +2284,6 @@ function m11figure(el,kind,opt,activity){
 <p class="q">The conditional score is the input gradient of a log density with the observation held fixed.</p>
 <div class="eq">$$s_k(x\mid o)=\nabla_x\log p_k(x\mid o)$$</div>
 <dl class="gloss"><dt>$o$</dt><dd>fixed observation context</dd><dt>$x$</dt><dd>noisy action column vector</dd><dt>$p_k(x\mid o)&gt;0$</dt><dd>density differentiable in x at the point considered</dd></dl>
-<figure class="math-figure"><canvas id="m11p61c" width="1120" height="250" role="img" aria-label="policy network: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p61c'),"policy_network",{},false);</script>
 <p class="cite page-source">Diffusion Policy §2.3 · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
@@ -2298,9 +2294,9 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">The denoiser has three inputs and one matching output</p>
 <p class="q">The denoiser maps noisy actions, a noise level and fixed observations to a same-shaped noise prediction.</p>
 <div class="eq">$$\epsilon_\theta:\ (x_k,k,o)\longmapsto\hat\epsilon\in\mathbb R^d$$</div>
-<dl class="gloss"><dt>$x_k\in\mathbb R^d$</dt><dd>noisy action sequence</dd><dt>$k,o$</dt><dd>noise level and encoded observations</dd></dl>
-<figure class="math-figure"><canvas id="m11p62c" width="1120" height="250" role="img" aria-label="policy network: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p62c'),"policy_network",{},false);</script>
+<dl class="gloss"><dt>$x_k\in\mathbb R^d$</dt><dd>noisy action sequence</dd><dt>$k,o$</dt><dd>noise level and encoded observation</dd><dt>$\theta,\hat\epsilon$</dt><dd>network weights and predicted d-component noise</dd></dl>
+<figure class="math-figure compact"><canvas id="m11p62c" width="1120" height="184" role="img" aria-label="policy network: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p62c'),"policy_network",{"compact": true},false);</script>
 <p class="cite page-source">Diffusion Policy §§2.3,3.1–3.2 · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
@@ -2323,11 +2319,10 @@ function m11figure(el,kind,opt,activity){
 <h2>Conditioning</h2>
 <p class="sub">Guidance changes the fixed-level density direction</p>
 <div class="worked-question">
+<p class="q">Use exact scores at one fixed noise level.</p>
 <div class="eq">$$s_g=(1-w)s_u+ws_c=\nabla_x\log\!\left[p_k(x)^{1-w}p_k(x\mid o)^w\right]$$</div>
-<dl class="gloss"><dt>$s_u,s_c$</dt><dd>exact scores at the same level</dd><dt>$w$</dt><dd>guidance scale; normalizability required</dd></dl>
-<figure class="math-figure"><canvas id="m11p64c" width="1120" height="250" role="img" aria-label="guidance: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p64c'),"guidance",{},false);</script>
-<p class="reveal step" data-step="3">Return to the result and check its symbols and assumptions.</p></div>
+<dl class="gloss"><dt>$p_k(x),p_k(x\mid o)$</dt><dd>positive noisy densities without/with fixed observation</dd><dt>$s_u,s_c,s_g$</dt><dd>unconditional, conditional and guided scores</dd><dt>$w$</dt><dd>guidance scale</dd></dl>
+<p class="reveal step" data-step="3">This identity is local to one noise level.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
@@ -2341,7 +2336,7 @@ function m11figure(el,kind,opt,activity){
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Derivation 2 of 2">
 <p class="worked-progress">Derivation 2 / 2</p>
 <h3>Combine logarithms with the necessary qualification</h3>
-<p class="worked-variables">Assume the power product can be normalized.</p>
+<p class="worked-variables">Positive densities at fixed k; a normalized interpretation requires finite integral of the product.</p>
 <ol class="worked-lines">
 <li>$s_g=\nabla_x\log[p_k(x)^{1-w}p_k(x\mid o)^w]$.</li>
 <li>This is a fixed-noise-level identity. It does not alone identify the final distribution of a finite guided sampler.</li>
@@ -2386,7 +2381,7 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">An action chunk is the vector being generated</p>
 <p class="q">An action chunk is a sequence of future robot commands predicted together.</p>
 <div class="eq">$$A_r^{(0)}=\begin{bmatrix}a_r^T\\\vdots\\a_{r+H_p-1}^T\end{bmatrix}\in\mathbb R^{H_p\times d_a}$$</div>
-<dl class="gloss"><dt>$r,\ a_r\in\mathbb R^{d_a}$</dt><dd>physical time and one column-vector action</dd><dt>$H_p,d_a$</dt><dd>prediction horizon and action dimension</dd><dt>$(0)$</dt><dd>clean diffusion level, separate from physical time</dd></dl>
+<dl class="gloss"><dt>$r$</dt><dd>physical robot time</dd><dt>$a_r\in\mathbb R^{d_a}$</dt><dd>one column-vector action</dd><dt>$H_p,d_a$</dt><dd>prediction horizon and action dimension</dd><dt>$(0)$</dt><dd>clean diffusion level</dd></dl>
 <p class="cite page-source">Diffusion Policy §2.3 · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
@@ -2398,9 +2393,7 @@ function m11figure(el,kind,opt,activity){
 <div class="worked-question">
 <p class="q">Count observations, predicted scalars, and executed steps.</p>
 <div class="eq">$$H_o=2,\quad H_p=4,\quad H_a=2,\quad d_a=2$$</div>
-<dl class="gloss"><dt>$H_o$</dt><dd>observations supplied</dd><dt>$H_p$</dt><dd>actions predicted</dd><dt>$H_a$</dt><dd>actions executed before replanning</dd></dl>
-<figure class="math-figure"><canvas id="m11p67c" width="1120" height="250" role="img" aria-label="chunk: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p67c'),"chunk",{},true);</script>
+<dl class="gloss"><dt>$H_o$</dt><dd>recent observations supplied</dd><dt>$H_p$</dt><dd>future actions predicted</dd><dt>$H_a$</dt><dd>actions executed before replanning</dd><dt>$d_a$</dt><dd>scalar components of one action</dd></dl>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> 2 observations; 8 predicted scalars; execute 2 steps.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -2422,9 +2415,9 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Definition</p>
 <h2>Diffusion Policy</h2>
 <p class="sub">Train on demonstrated chunks</p>
-<p class="q">Frobenius squared norm sums entrywise squared errors; expectation averages demonstrations, levels and noise.</p>
+<p class="q">Squared Frobenius norm sums squared entries.</p>
 <div class="eq">$$L(\theta)=\E\|\epsilon_\theta(A_r^{(k)},k,o_r)-\epsilon\|_F^2$$</div>
-<dl class="gloss"><dt>$A_r^{(k)}=\alpha_kA_r^{(0)}+\sigma_k\epsilon$</dt><dd>noisy normalized chunk</dd><dt>$o_r,\ k$</dt><dd>observation history; sampled level</dd><dt>$\epsilon,\epsilon_\theta\in\mathbb R^{H_p\times d_a}$</dt><dd>Gaussian noise; prediction</dd></dl>
+<dl class="gloss"><dt>$A_r^{(k)}=\alpha_kA_r^{(0)}+\sigma_k\epsilon$</dt><dd>noisy/clean chunks at time r</dd><dt>$\alpha_k,\sigma_k$</dt><dd>signal/noise scales</dd><dt>$o_r,k$</dt><dd>observations, noise level</dd><dt>$\epsilon,\epsilon_\theta$</dt><dd>Gaussian noise and matching prediction</dd><dt>$\E,\theta$</dt><dd>avg over data, levels, noise; weights</dd></dl>
 <p class="cite page-source">Diffusion Policy §2.3, Eq.5; DDPM Eq.14 · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a> · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
@@ -2434,9 +2427,7 @@ function m11figure(el,kind,opt,activity){
 <h2>Diffusion Policy</h2>
 <p class="sub">A receding horizon closes the feedback loop</p>
 <div class="worked-question">
-<p class="q">Receding-horizon execution predicts a sequence, applies a prefix and replans from fresh observations.<br>What happens to the unused suffix?</p>
-<figure class="math-figure"><canvas id="m11p69c" width="1120" height="250" role="img" aria-label="loop: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p69c'),"loop",{},true);</script>
+<p class="q">The robot predicts a chunk of actions and executes a prefix. It then observes a change in the scene. What can it do with the unused suffix?</p>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> Replan using fresh observations; do not blindly replay the old suffix.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -2459,11 +2450,11 @@ function m11figure(el,kind,opt,activity){
 <h2>Diffusion Policy</h2>
 <p class="sub">Recover and execute a two-action chunk</p>
 <div class="ex"><p class="lbl">Example</p></div>
-<p class="q">Recover two targets in meters; execute the first.</p>
+<p class="q">Recover both; execute the first.</p>
 <div class="eq">$$x_1=\begin{bmatrix}1.3\\-0.2\end{bmatrix},\quad\hat\epsilon=\begin{bmatrix}-0.5\\1\end{bmatrix},\quad\alpha_1=0.8,\ \sigma_1=0.6$$</div>
-<dl class="gloss"><dt>$x_1,\hat\epsilon\in\mathbb R^2$</dt><dd>noisy chunk; predicted noise</dd><dt>$a=0.4+0.1x$</dt><dd>target meters; x dimensionless</dd><dt>$H_p=2,\ H_a=1$</dt><dd>predict two; execute one</dd></dl>
-<figure class="math-figure"><canvas id="m11p70c" width="1120" height="250" role="img" aria-label="chunk2: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p70c'),"chunk2",{},false);</script>
+<dl class="gloss"><dt>$x_1,\hat\epsilon$</dt><dd>noisy chunk; predicted noise</dd><dt>$\alpha_1,\sigma_1$</dt><dd>signal and noise scales</dd><dt>$x=(x_1-\sigma_1\hat\epsilon)/\alpha_1$</dt><dd>clean normalized chunk</dd><dt>$a=0.4+0.1x$</dt><dd>each target in m</dd></dl>
+<figure class="math-figure compact"><canvas id="m11p70c" width="1120" height="184" role="img" aria-label="chunk2: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p70c'),"chunk2",{"compact": true},false);</script>
 <p class="cite page-source">Diffusion Policy §§2.3,A.1; course example · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
@@ -2474,9 +2465,7 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">Integrated example: the final denoising step</p>
 <div class="ex"><p class="lbl">Example</p></div>
 <div class="eq">$$\hat x_0=\frac{x_1-0.6\hat\epsilon}{0.8}=\begin{bmatrix}2\\-1\end{bmatrix}$$</div>
-<dl class="gloss"><dt>$x_1=(1.3,-0.2)^T$</dt><dd>noisy chunk</dd><dt>$\hat\epsilon=(-0.5,1)^T$</dt><dd>predicted noise</dd></dl>
-<figure class="math-figure"><canvas id="m11p71c" width="1120" height="250" role="img" aria-label="vector: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p71c'),"vector",{"labels": ["noisy chunk", "subtract \u03c3 \u03b5\u0302", "divide by \u03b1"], "caption": "recover the clean normalized chunk before restoring units"},false);</script>
+<dl class="gloss"><dt>$x_1=(1.3,-0.2)^T$</dt><dd>noisy chunk at level one</dd><dt>$\hat\epsilon=(-0.5,1)^T$</dt><dd>predicted noise</dd><dt>$0.8,\ 0.6$</dt><dd>level-one signal coefficient and noise standard deviation</dd><dt>$\hat x_0$</dt><dd>estimated normalized clean chunk</dd></dl>
 <p class="cite page-source">DDPM Eq.11; DDIM Eq.12; course example · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a> · <a href="https://arxiv.org/html/2010.02502v4">Song, Meng &amp; Ermon (2021)</a></p>
 </section>
 
@@ -2487,9 +2476,9 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">Integrated example: restore units and execute a prefix</p>
 <div class="ex"><p class="lbl">Example</p></div>
 <div class="eq">$$a=0.4+0.1x,\quad x=\begin{bmatrix}2\\-1\end{bmatrix}\quad\Rightarrow\quad A_r^{(0)}=\begin{bmatrix}0.6\\0.3\end{bmatrix}\mathrm m$$</div>
-<dl class="gloss"><dt>$H_p=2,H_a=1$</dt><dd>predict two, execute one</dd><dt>$a$</dt><dd>target position; not displacement</dd></dl>
-<figure class="math-figure"><canvas id="m11p72c" width="1120" height="250" role="img" aria-label="chunk2: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p72c'),"chunk2",{},false);</script>
+<dl class="gloss"><dt>$x$</dt><dd>dimensionless normalized target coordinates</dd><dt>$a$</dt><dd>target position; offset 0.4 m, scale 0.1 m per coordinate unit</dd><dt>$A_r^{(0)}$</dt><dd>two clean targets at physical time r</dd><dt>$H_p=2,H_a=1$</dt><dd>predict two; execute one</dd></dl>
+<figure class="math-figure compact"><canvas id="m11p72c" width="1120" height="184" role="img" aria-label="chunk2: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p72c'),"chunk2",{"compact": true},false);</script>
 <p class="cite page-source">Diffusion Policy §2.3; course example · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
@@ -2499,7 +2488,7 @@ function m11figure(el,kind,opt,activity){
 <h2>Diffusion Policy</h2>
 <p class="sub">Transfer: change execution without changing the sampler</p>
 <div class="worked-question">
-<p class="q">Targets: 0.6 m, then 0.3 m. Compare H_a=1 and H_a=2. An obstacle moves after the first action: which policy can refresh its second target?</p>
+<p class="q">Targets: 0.6 m, then 0.3 m. $H_a$ counts actions executed before replanning. Compare $H_a=1$ and $H_a=2$ when the obstacle moves after the first action.</p>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> Shorter execution horizon refreshes policy feedback sooner.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -2541,9 +2530,9 @@ function m11figure(el,kind,opt,activity){
 <h3>Trace the gap to the physical task</h3>
 <p class="worked-variables">Noise loss is a surrogate measured on a specified data distribution.</p>
 <ol class="worked-lines">
-<li>New observations can lie outside that distribution; evaluate held-out environments.</li>
-<li>Wrong units, action alignment, controller tracking or latency can break an otherwise correct denoiser.</li>
-<li>Measure repeated closed-loop task success and variability across trials; plausible samples alone do not enforce every physical constraint.</li>
+<li>Distribution shift: compare repeated task success in training-like scenes and held-out scenes.</li>
+<li>Wrong action units: send a known normalized command and compare its converted target with the expected physical target.</li>
+<li>Measure closed-loop success over repeated trials to check whether the suspected fix helps.</li>
 </ol></div>
 <span class="worked-finish step" data-step="2" aria-hidden="true"></span>
 </div>

@@ -863,7 +863,9 @@ window.m9figure=function(cv,type,page){
       const sx=x=>48+(W-72)*(x-x0)/(x1-x0),sy=y=>H-43-(H-85)*(y-y0)/(y1-y0);
       seg(48,sy(0),W-24,sy(0));seg(48,30,48,H-43);
       txt(xlab,W-25,H-12,C.dim,16,'right');txt(ylab,49,19,C.dim,16);
-      txt(String(x0),48,H-23,C.dim,14);txt(String(x1),W-24,H-23,C.dim,14,'right');
+      if(xlab!=='outcome' && xlab!=='class index'){
+        txt(String(x0),48,H-23,C.dim,14);txt(String(x1),W-24,H-23,C.dim,14,'right');
+      }
       function curve(fn,color){let pts=[];for(let j=0;j<=180;j++){const x=x0+(x1-x0)*j/180;pts.push([sx(x),sy(fn(x))]);}for(let j=1;j<pts.length;j++)k.seg(pts[j-1],pts[j],color,2.5);}
       return{sx,sy,curve};
     }
@@ -873,14 +875,17 @@ window.m9figure=function(cv,type,page){
       const ent=type==='entropy';
       let a=axes(ent?0:1/32,1,0,ent?1.15:5.2,ent?'binary probability a':'assigned probability q(x)',ent?'H(a, 1-a), bits':'surprisal, bits');
       let f=ent?h2:p=>-Math.log2(p);a.curve(f,C.in);
+      for(const [px,label] of (ent?[[.5,'(0.5, 1 bit)']]:[[.25,'(0.25, 2 bits)'],[.5,'(0.5, 1 bit)']])){
+        k.dot([a.sx(px),a.sy(f(px))],4,C.in);txt(label,a.sx(px)+9,a.sy(f(px))-8,C.in,14);
+      }
       let x=ent?0.02+0.96*t:1/32+(31/32)*t,y=f(x);k.dot([a.sx(x),a.sy(y)],5,C.dat);
       txt((ent?'a = ':'q(x) = ')+x.toFixed(2),W-25,43,C.dat,17,'right');txt('value = '+y.toFixed(2),W-25,67,C.dat,17,'right');
     }else if(['compare','bars','softmax'].includes(type)){
       let p=type==='softmax'?[.090030573,.244728471,.665240956]:type==='compare'?([76].includes(page)?[.8,.2]:[.75,.25]):[.5,.3,.2];
       let q=type==='compare'?([76].includes(page)?[.6,.4]:[.5,.5]):null;
-      const a=axes(0,p.length,0,1.05,'outcome','probability');
+      const a=axes(0,p.length,0,1.05,type==='softmax'?'class index':'outcome',page===54?'observed fraction':'probability');
       p.forEach((v,i)=>{let x=73+i*(W-105)/p.length,bw=q?35:55;g.fillStyle=C.dat;g.fillRect(x,a.sy(v),bw,a.sy(0)-a.sy(v));txt(v.toFixed(2),x+bw/2,a.sy(v)-9,C.dat,16,'center');if(q){g.fillStyle=C.in;g.fillRect(x+39,a.sy(q[i]),35,a.sy(0)-a.sy(q[i]));txt(q[i].toFixed(2),x+56,a.sy(q[i])-9,C.in,16,'center');}txt(type==='compare'?['left','right'][i]:String(i+1),x+(q?38:28),H-23,C.dim,16,'center');});
-      if(q){txt('data p',190,20,C.dat,16);txt('model q',310,20,C.in,16);}
+      if(q){txt('source p',190,20,C.dat,16);txt('model q',310,20,C.in,16);}
       const selected=Math.min(p.length-1,Math.floor(t*p.length)), bx=73+selected*(W-105)/p.length;
       g.strokeStyle=C.dat;g.lineWidth=2.5;g.strokeRect(bx-4,a.sy(p[selected])-4,(q?35:55)+8,a.sy(0)-a.sy(p[selected])+8);
     }else if(type==='mixture'||type==='kde'){
@@ -890,6 +895,39 @@ window.m9figure=function(cv,type,page){
       a.curve(f,C.dat);a.curve(q,C.in);txt(type==='mixture'?'target mixture':'bandwidth h = 0.25',67,44,C.dat,16);txt(type==='mixture'?'Gaussian N(0,5)':'bandwidth h = 2',67,67,C.in,16);
       const x=-4+8*t;k.dot([a.sx(x),a.sy(f(x))],4.5,C.dat);k.dot([a.sx(x),a.sy(q(x))],4.5,C.in);
       [-2,0,2].forEach(x=>txt(String(x),a.sx(x),H-23,C.dim,15,'center'));
+    }else if(type==='gap'){
+      const a=axes(-5,5,0,.62,'action x','density');
+      const base=a.sy(0), top=a.sy(.5), left=a.sx(-1.5), right=a.sx(1.5);
+      g.fillStyle=C.res;g.globalAlpha=.13;g.fillRect(left,a.sy(.55),right-left,base-a.sy(.55));g.globalAlpha=1;
+      for(const [lo,hi] of [[-2.5,-1.5],[1.5,2.5]]){
+        seg(a.sx(lo),base,a.sx(lo),top,C.dat,2);
+        seg(a.sx(lo),top,a.sx(hi),top,C.dat,3);
+        seg(a.sx(hi),top,a.sx(hi),base,C.dat,2);
+      }
+      seg(left,base,right,base,C.dat,3);
+      a.curve(x=>phi(x,0,Math.sqrt(5)),C.in);
+      txt('target p: two uniform intervals',61,45,C.dat,15);
+      txt('model q: Gaussian N(0, 5)',61,68,C.in,15);
+      txt('p = 0, q > 0',W/2,a.sy(.28),C.res,16,'center');
+    }else if(type==='kernel'){
+      const a=axes(-4,4,0,.46,'action x','density');
+      a.curve(x=>phi(x,0,1),C.dat);
+      a.curve(x=>phi(x,0,2),C.in);
+      txt('h = 1',85,45,C.dat,17);
+      txt('h = 2',85,69,C.in,17);
+      k.dot([a.sx(0),a.sy(0)],5,C.res);
+      txt('sample at 0',a.sx(0),H-23,C.res,15,'center');
+    }else if(type==='interval'){
+      const a=axes(-3,3,0,.47,'action u','density p(u)');
+      g.fillStyle=C.dat;g.globalAlpha=.22;g.beginPath();g.moveTo(a.sx(-1),a.sy(0));
+      for(let i=0;i<=100;i++){const x=-1+2*i/100;g.lineTo(a.sx(x),a.sy(phi(x)));}
+      g.lineTo(a.sx(1),a.sy(0));g.closePath();g.fill();g.globalAlpha=1;
+      a.curve(phi,C.in);
+      for(const [x,label] of [[-1,'a = −1'],[1,'b = 1']]){
+        seg(a.sx(x),a.sy(0),a.sx(x),a.sy(phi(x)),C.dat,2);
+        txt(label,a.sx(x),H-23,C.dat,15,'center');
+      }
+      txt('interval probability',W/2,a.sy(.13),C.ink,15,'center');
     }else if(type==='parabola'){
       const a=axes(-1.5,1.5,0,1.4,'X','Y = X squared');[-1,0,1].forEach(x=>{k.dot([a.sx(x),a.sy(x*x)],7,C.dat);txt('('+x+','+x*x+')',a.sx(x),a.sy(x*x)-15,C.dat,17,'center');});
       txt('Each point has probability 1/3',W/2,37,C.dim,17,'center');
@@ -898,27 +936,49 @@ window.m9figure=function(cv,type,page){
     }else if(type==='se'){
       const a=axes(1,400,0,.52,'sample count n','standard error');a.curve(n=>.5/Math.sqrt(n),C.in);for(let n of[25,100,400]){const y=.5/Math.sqrt(n);k.dot([a.sx(n),a.sy(y)],5,C.dat);txt('n='+n,a.sx(n),a.sy(y)-14,C.dat,15,n===400?'right':'left');}txt('one-trial SD = 0.5',W-20,38,C.dim,16,'right');
     }else if(type==='samples'){
-      let a=axes(-3,3,0,1,'action x','observations');[-2.2,-2,-1.8,1.8,2,2.2].forEach((x,i)=>k.dot([a.sx(x),a.sy(.45+(i%3)*.12)],6,C.dat));seg(a.sx(0),65,a.sx(0),H-43,C.res,2);txt('mean = 0',a.sx(0)+7,77,C.res,17);txt('Each dot is one observed action',W-25,43,C.dim,16,'right');
+      let a=axes(-3,3,0,1,'action x','six observations');[-2.2,-2,-1.8,1.8,2,2.2].forEach(x=>k.dot([a.sx(x),a.sy(.55)],5,C.dat));seg(a.sx(0),65,a.sx(0),H-43,C.res,2);txt('mean = 0',a.sx(0)+7,77,C.res,17);txt('Each dot is one observed action',W-25,43,C.dim,16,'right');
     }else if(type==='bins'){
       const xs=[-2.2,-2,-1.8,1.8,2,2.2],sx=x=>46+(W-72)*(x+3)/6;
       [[1,-3,112],[2,-3,265]].forEach(([h,b,base],row)=>{
         txt('width '+h+'; origin '+b,48,base-80,C.dim,16);
         for(let j=0;j<6/h;j++){let lo=b+j*h,hi=lo+h,count=xs.filter(x=>x>=lo&&x<hi).length,d=count/(6*h),height=d*100;g.fillStyle=row?C.in:C.dat;g.globalAlpha=.65;g.fillRect(sx(lo),base-height,sx(hi)-sx(lo)-2,height);g.globalAlpha=1;}
-        seg(46,base,W-26,base);xs.forEach(x=>k.dot([sx(x),base+8],3,C.res));txt('same six observations',W-26,base+29,C.dim,14,'right');
+        seg(46,base,W-26,base);xs.forEach(x=>k.dot([sx(x),base+8],3,C.res));for(const tick of [-3,-1,1,3])txt(String(tick),sx(tick),base+29,C.dim,14,'center');
       });
     }else if(type==='hist'){
-      const a=axes(0,3,0,.65,'bin / action','density');[.25,.5,.25].forEach((v,i)=>{g.fillStyle=C.dat;g.globalAlpha=.65;g.fillRect(a.sx(i),a.sy(v),a.sx(i+1)-a.sx(i)-2,a.sy(0)-a.sy(v));g.globalAlpha=1;txt(['2 / 8','4 / 8','2 / 8'][i],(a.sx(i)+a.sx(i+1))/2,a.sy(v)-12,C.dat,17,'center');});txt('width 1; total area 1',W/2,22,C.dim,16,'center');
+      const a=axes(0,3,0,.65,'bin / action','density');[.25,.5,.25].forEach((v,i)=>{g.fillStyle=C.dat;g.globalAlpha=.65;g.fillRect(a.sx(i),a.sy(v),a.sx(i+1)-a.sx(i)-2,a.sy(0)-a.sy(v));g.globalAlpha=1;txt(['2 / 8','4 / 8','2 / 8'][i],(a.sx(i)+a.sx(i+1))/2,a.sy(v)-12,C.dat,17,'center');});txt('width 1; total area 1',W/2,40,C.dim,16,'center');
+      [1,2].forEach(x=>txt(String(x),a.sx(x),H-23,C.dim,14,'center'));
     }else if(type==='joint'||type==='channel'){
       txt('Hidden state X',70,28,C.dat,17);txt('Report Y',290,28,C.in,17);const ys=[95,205];ys.forEach((y,i)=>{k.dot([85,y],17,C.dat);k.dot([330,y],17,C.in);txt(String(i),85,y+5,C.bg,17,'center');txt(String(i),330,y+5,C.bg,17,'center');});
       seg(110,95,305,95,C.ans,4);seg(110,205,305,205,C.ans,4);seg(110,105,305,195,C.res,1.5);seg(110,195,305,105,C.res,1.5);txt('correct: 0.9',200,77,C.ans,17,'center');txt('flip: 0.1',205,150,C.res,17,'center');txt('P(X=0) = P(X=1) = 0.5',W/2,H-20,C.dim,16,'center');
     }else if(type==='stopping'){
-      txt('Independent fair trials',W/2,24,C.dim,18,'center');k.dot([48,145],6,C.dat);seg(55,140,175,75,C.in,2);seg(55,150,175,215,C.in,2);txt('1 (1/2)',102,90,C.in,17);txt('0 (1/2)',102,205,C.in,17);txt('stop: estimate 1',190,73,C.dat,17);seg(180,215,300,178,C.in,2);seg(180,215,300,254,C.in,2);txt('01: 1/2',310,179,C.dat,17);txt('00: 0',310,256,C.dat,17);txt('path masses: 1/2, 1/4, 1/4',W/2,H-9,C.dim,16,'center');
+      txt('Independent fair trials',W/2,24,C.dim,18,'center');k.dot([48,145],6,C.dat);seg(55,140,175,75,C.in,2);seg(55,150,175,215,C.in,2);txt('1 (1/2)',102,90,C.in,17);txt('0 (1/2)',102,205,C.in,17);txt('1: estimate 1',190,73,C.dat,17);seg(180,215,300,178,C.in,2);seg(180,215,300,254,C.in,2);txt('01: estimate 1/2',304,179,C.dat,16);txt('00: estimate 0',304,256,C.dat,16);txt('path masses: 1/2, 1/4, 1/4',W/2,H-9,C.dim,16,'center');
     }else if(type==='code'){
       let labs=['A','B','C','D'],ps=['1/2','1/4','1/8','1/8'],codes=['0','10','110','111'];txt('symbol',56,25,C.dim,17);txt('probability',166,25,C.dim,17);txt('codeword',320,25,C.dim,17);labs.forEach((v,i)=>{let y=77+i*55;txt(v,68,y,C.dat,22);txt(ps[i],205,y,C.dat,21,'center');txt(codes[i],350,y,C.in,24,'center');seg(50,y+18,W-25,y+18);});
     }else if(type==='map'){
-      const rows=['Compare route predictions','Measure sensor information','Assess evidence from trials','Locate action groups','Compute probabilities reliably'];
-      txt('Questions for the same robot',W/2,28,C.dim,18,'center');
-      rows.forEach((label,i)=>{let y=76+i*49;txt(String(i+1),48,y,C.in,21);txt(label,86,y,C.ink,19);if(i<4)seg(47,y+17,W-35,y+17);});
+      const rows=page===36?[
+        ['Route choices','Uncertainty within the source'],
+        ['Model predictions','Mismatch from the source'],
+        ['Sensor reports','Dependence with hidden state'],
+        ['Trial data','Estimate unknown quantities'],
+      ]:page===78?[
+        ['Score predictions','Cross entropy and KL'],
+        ['Measure sensor information','Mutual information'],
+        ['Use trial evidence','Sample mean and standard error'],
+        ['Model action groups','Histogram and kernel density'],
+        ['Compute log scores','Softmax and log-sum-exp'],
+      ]:[
+        ['Routes and probabilities','Score the model'],
+        ['Hidden state and reports','Evaluate the sensor'],
+        ['Observed trials','Estimate unknown quantities'],
+        ['Continuous actions','Find action groups'],
+        ['Model scores','Compute probabilities safely'],
+      ];
+      rows.forEach(([input,goal],i)=>{
+        const y=45+i*54;
+        txt(input,48,y,C.dat,17);
+        txt(goal,48,y+21,C.ink,17);
+        if(i<rows.length-1)seg(47,y+31,W-35,y+31);
+      });
     }else if(type==='routes'){
       let ox=60,oy=H/2,gx=W-45;k.dot([ox,oy],8,C.in);k.dot([gx,oy],8,C.ans);g.fillStyle=C.panel;g.strokeStyle=C.rule;g.fillRect(180,105,90,100);g.strokeRect(180,105,90,100);txt('obstacle',225,160,C.dim,17,'center');[[70,C.dat,'left route'],[245,C.out,'right route']].forEach(([y,c,l])=>{k.seg([ox,oy],[155,y],c,3);k.seg([155,y],[290,y],c,3);k.arrow([290,y],[gx,oy],c,3);txt(l,225,y-12,c,17,'center');});txt('start',ox,oy+30,C.in,16,'center');txt('goal',gx,oy+30,C.ans,16,'center');
     }
@@ -937,12 +997,12 @@ window.m9figure=function(cv,type,page){
 <script>m9figure(document.getElementById("m9p01c"),"routes",1);</script>
 <!-- ===== 2 ===== -->
 <section class="slide" id="m9p02" data-part="III">
-<p class="eyebrow">Roadmap</p><h2>The reasoning path</h2><p class="sub">One robot problem, several different questions</p><div class="m9body"><div><p class="lead">We will compare route predictions, measure sensor information, assess trial evidence, locate action groups, and compute probabilities reliably.</p></div><figure><canvas id="m9p02c" width="460" height="320" aria-label="One robot problem, several different questions"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.13</a></p>
+<p class="eyebrow">Roadmap</p><h2>The reasoning path</h2><p class="sub">One robot problem, several different questions</p><div class="m9body"><div><p class="lead">Score the routes and ask what the sensor tells us. Use trials to estimate unknown quantities, then model continuous action groups. Stable arithmetic supports the probability calculations.</p></div><figure><canvas id="m9p02c" width="460" height="320" aria-label="One robot problem, several different questions"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.13</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p02c"),"map",2);</script>
 <!-- ===== 3 ===== -->
 <section class="slide" id="m9p03" data-part="III">
-<p class="eyebrow">Recall</p><h2>Probability recall</h2><p class="sub">The distribution and its samples are different objects</p><div class="m9body"><div><p class="lead">For a finite outcome set, expectation is a probability-weighted average. Here p is fixed; sampled outcomes vary.</p><div class="eq">$$\mathbb E_p[g(X)]=\sum_xp(x)g(x)$$</div><dl class="gloss"><dt>X,x</dt><dd>random outcome and possible value</dd><dt>p,g</dt><dd>probability mass function and measured quantity</dd></dl></div><figure><canvas id="m9p03c" width="460" height="320" aria-label="The distribution and its samples are different objects"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.8; original example</a></p>
+<p class="eyebrow">Recall</p><h2>Probability recall</h2><p class="sub">The distribution and its samples are different objects</p><div class="m9body"><div><p class="lead">For finite outcomes, expectation is a probability-weighted average. The source probabilities satisfy p(x)≥0 and Σₓp(x)=1. The graph shows three outcomes.</p><div class="eq">$$\mathbb E_p[g(X)]=\sum_xp(x)g(x)$$</div><dl class="gloss"><dt>X,x</dt><dd>random outcome and possible value</dd><dt>p,g</dt><dd>probability mass function and measured quantity</dd></dl></div><figure><canvas id="m9p03c" width="460" height="320" aria-label="The distribution and its samples are different objects"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.8; original example</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p03c"),"bars",3);</script>
 <!-- ===== 4 ===== -->
@@ -956,7 +1016,7 @@ window.m9figure=function(cv,type,page){
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 1">
 <p class="worked-progress">Derivation 1 / 1</p>
 <h3>Factor the independent joint probability</h3>
-<p class="worked-variables">q₁ and q₂ are positive probabilities of independent events.</p>
+<p class="worked-variables">Independent outcomes x₁ and x₂ have positive masses q₁=q(x₁) and q₂=q(x₂).</p>
 <ol class="worked-lines">
 <li>$q(x_1,x_2)=q_1q_2$ by independence.</li>
 <li>$I_q(x_1,x_2)=-\log_2(q_1q_2)$ by the definition of surprise.</li>
@@ -972,17 +1032,17 @@ window.m9figure=function(cv,type,page){
 <script>m9figure(document.getElementById("m9p06c"),"entropy",6);</script>
 <!-- ===== 7 ===== -->
 <section class="slide" id="m9p07" data-part="III">
-<p class="eyebrow">Example</p><h2>Entropy</h2><p class="sub">A concrete prefix code makes the units visible</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">A prefix code has no codeword that begins another. For probabilities (1/2,1/4,1/8,1/8), use (0,10,110,111).</p><div class="eq">$$L=\tfrac 12(1)+\tfrac 14(2)+\tfrac 18(3)+\tfrac 18(3)$$</div><dl class="gloss"><dt>L</dt><dd>expected codeword length in bits</dd></dl></div></div><figure><canvas id="m9p07c" width="460" height="320" aria-label="A concrete prefix code makes the units visible"></canvas></figure></div><p class="cite"><a href="https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf">Shannon (1948), §§6,9–12; original course examples</a></p>
+<p class="eyebrow">Example</p><h2>Entropy</h2><p class="sub">A concrete prefix code makes the units visible</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">A prefix code has no complete codeword that is the beginning of a different codeword. Pair (1/2, 1/4, 1/8, 1/8) with (0, 10, 110, 111).</p><div class="eq">$$L=\tfrac 12(1)+\tfrac 14(2)+\tfrac 18(3)+\tfrac 18(3)$$</div><dl class="gloss"><dt>L</dt><dd>expected codeword length in bits</dd></dl></div></div><figure><canvas id="m9p07c" width="460" height="320" aria-label="A concrete prefix code makes the units visible"></canvas></figure></div><p class="cite"><a href="https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf">Shannon (1948), §§6,9–12; original course examples</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p07c"),"code",7);</script>
 <!-- ===== 8 ===== -->
 <section class="slide" id="m9p08" data-part="III">
-<p class="eyebrow">Example</p><h2>Entropy</h2><p class="sub">The code length equals entropy in this example</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">The same four probabilities give ideal lengths 1, 2, 3, 3.</p><div class="eq">$$H(p)=\tfrac 12\log_22+\tfrac 14\log_24+\tfrac 14\log_28=1.75$$</div><dl class="gloss"><dt>p</dt><dd>(1/2, 1/4, 1/8, 1/8)</dd><dt>H(p)</dt><dd>average surprise in bits</dd></dl></div></div><figure><canvas id="m9p08c" width="460" height="320" aria-label="The code length equals entropy in this example"></canvas></figure></div><p class="cite"><a href="https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf">Shannon (1948), §§6,9–12; original course examples</a></p>
+<p class="eyebrow">Example</p><h2>Entropy</h2><p class="sub">The code length equals entropy in this example</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">For p=(1/2, 1/4, 1/8, 1/8), the ideal lengths −log₂ p(x) are 1, 2, 3, 3 bits.</p><div class="eq">$$H(p)=\tfrac 12\log_22+\tfrac 14\log_24+\tfrac 14\log_28=1.75$$</div><dl class="gloss"><dt>p</dt><dd>(1/2, 1/4, 1/8, 1/8)</dd><dt>H(p)</dt><dd>average surprise in bits</dd></dl></div></div><figure><canvas id="m9p08c" width="460" height="320" aria-label="The code length equals entropy in this example"></canvas></figure></div><p class="cite"><a href="https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf">Shannon (1948), §§6,9–12; original course examples</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p08c"),"code",8);</script>
 <!-- ===== 9 ===== -->
 <section class="slide has-worked-solutions" id="m9p09" data-part="III">
-<p class="eyebrow you" data-min="1.25">Exercise</p><h2>Entropy</h2><p class="sub">Which binary source is hardest to predict?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Compare A: p=(1,0), B: p=(3/4,1/4), C: p=(1/2,1/2).</p><div class="eq">$$H(p)=-\sum_xp(x)\log_2p(x)$$</div><dl class="gloss"><dt>H</dt><dd>entropy in bits; 0 log 0 = 0</dd></dl><ol class="opts one"><li><i>A</i>A has the largest entropy</li><li><i>B</i>B has the largest entropy</li><li><i>C</i>C has the largest entropy<b class="ok step" data-step="3" data-handout="hide">✓</b></li></ol></div></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="1.25">Exercise</p><h2>Entropy</h2><p class="sub">Which binary source is hardest to predict?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Each p lists masses p(x) for the same two outcomes x. Compare A: (1,0), B: (3/4,1/4), C: (1/2,1/2).</p><div class="eq">$$H(p)=-\sum_xp(x)\log_2p(x)$$</div><dl class="gloss"><dt>H</dt><dd>entropy in bits; 0 log 0 = 0</dd></dl><ol class="opts one"><li><i>A</i>A has the largest entropy</li><li><i>B</i>B has the largest entropy</li><li><i>C</i>C has the largest entropy<b class="ok step" data-step="3" data-handout="hide">✓</b></li></ol></div></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Compute each expected surprise</h3>
@@ -1015,11 +1075,11 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 12 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p12" data-part="III">
-<p class="eyebrow">Derivation</p><h2>KL divergence</h2><p class="sub">The cross-entropy identity follows by expansion</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Separate the logarithm of a ratio into a difference.</p><div class="eq">$$H(p,q)=H(p)+D_{\mathrm{KL}}(p\Vert q)$$</div><dl class="gloss"><dt>H(p)</dt><dd>source uncertainty</dd><dt>D_KL</dt><dd>extra cost of q</dd><dt>H(p,q)</dt><dd>total average log penalty</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>KL divergence</h2><p class="sub">The cross-entropy identity follows by expansion</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">For source p and model q on the same outcomes, assume q(x)&gt;0 wherever p(x)&gt;0. Split the log ratio.</p><div class="eq">$$H(p,q)=H(p)+D_{\mathrm{KL}}(p\Vert q)$$</div><dl class="gloss"><dt>H(p)</dt><dd>source entropy</dd><dt>D_KL</dt><dd>directed divergence from p to q</dd><dt>H(p,q)</dt><dd>cross entropy, in bits</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
 <h3>Expand the log ratio</h3>
-<p class="worked-variables">p is the fixed source; q is positive wherever p is positive.</p>
+<p class="worked-variables">p is the source and q the model. Sum only over outcomes x with p(x)&gt;0, where q(x)&gt;0.</p>
 <ol class="worked-lines">
 <li>$D_{\rm KL}(p\Vert q)=\sum_xp(x)\log_2[p(x)/q(x)]$.</li>
 <li>$=\sum_xp(x)\log_2p(x)-\sum_xp(x)\log_2q(x)$ by the log-ratio rule.</li>
@@ -1038,12 +1098,12 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 13 ===== -->
 <section class="slide" id="m9p13" data-part="III">
-<p class="eyebrow">Example</p><h2>KL divergence</h2><p class="sub">A two-route model has a measurable penalty</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">Source p=(3/4,1/4). Model q=(1/2,1/2).</p><div class="eq">$$H(p,q)=1,\quad H(p)\approx 0.811,\quad D_{\rm KL}\approx 0.189$$</div><dl class="gloss"><dt>p,q</dt><dd>route probabilities in left/right order</dd><dt>values</dt><dd>bits per observed route</dd></dl></div></div><figure><canvas id="m9p13c" width="460" height="320" aria-label="A two-route model has a measurable penalty"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.13</a></p>
+<p class="eyebrow">Example</p><h2>KL divergence</h2><p class="sub">A two-route model has a measurable penalty</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">Source p=(3/4,1/4). Model q=(1/2,1/2).</p><div class="eq">$$H(p,q)=1,\quad H(p)\approx 0.811,\quad D_{\rm KL}(p\Vert q)\approx 0.189$$</div><dl class="gloss"><dt>p,q</dt><dd>route probabilities in left/right order</dd><dt>values</dt><dd>bits per observed route</dd></dl></div></div><figure><canvas id="m9p13c" width="460" height="320" aria-label="A two-route model has a measurable penalty"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.13</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p13c"),"compare",13);</script>
 <!-- ===== 14 ===== -->
 <section class="slide has-worked-solutions" id="m9p14" data-part="III">
-<p class="eyebrow you" data-min="1.5">Exercise</p><h2>KL divergence</h2><p class="sub">What changes when source and model swap?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Now p=(1/2,1/2), q=(3/4,1/4). Find KL in bits.</p><div class="eq">$$D_{\rm KL}(p\Vert q)=\sum_xp(x)\log_2[p(x)/q(x)]$$</div><dl class="gloss"><dt>p,q</dt><dd>source and model on the same two outcomes</dd></dl><ol class="opts one"><li><i>A</i>About 0.189</li><li><i>B</i>About 0.208<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>Exactly zero</li></ol></div></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="1.5">Exercise</p><h2>KL divergence</h2><p class="sub">What changes when source and model swap?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">The source is p=(1/2,1/2) and the model is q=(3/4,1/4), both in left/right order. Find KL in bits.</p><div class="eq">$$D_{\rm KL}(p\Vert q)=\sum_xp(x)\log_2[p(x)/q(x)]$$</div><dl class="gloss"><dt>p,q</dt><dd>source and model on the same two outcomes</dd></dl><ol class="opts one"><li><i>A</i>About 0.189</li><li><i>B</i>About 0.208<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>Exactly zero</li></ol></div></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Average the model log penalties</h3>
@@ -1067,11 +1127,11 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 15 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p15" data-part="III">
-<p class="eyebrow">Derivation</p><h2>Cross entropy</h2><p class="sub">Maximum likelihood uses the same average penalty</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">For a fixed dataset, maximum likelihood chooses parameters that maximize its model probability. Assume iid discrete observations from qθ.</p><div class="eq">$$-\tfrac 1n\log\prod_{i=1}^nq_\theta(x_i)=-\tfrac 1n\sum_{i=1}^n\log q_\theta(x_i)$$</div><dl class="gloss"><dt>θ</dt><dd>adjustable model parameters</dd><dt>n,x_i</dt><dd>fixed sample count and observed values</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>Cross entropy</h2><p class="sub">Maximum likelihood uses the same average penalty</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">For a fixed dataset, maximum likelihood chooses parameters that maximize its model probability. Assume independent discrete observations under the same model qθ.</p><div class="eq">$$-\tfrac 1n\log\prod_{i=1}^nq_\theta(x_i)=-\tfrac 1n\sum_{i=1}^n\log q_\theta(x_i)$$</div><dl class="gloss"><dt>qθ(xᵢ)</dt><dd>model mass of observation xᵢ</dd><dt>θ</dt><dd>adjustable parameters</dd><dt>n</dt><dd>fixed sample count; log is natural</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
 <h3>Turn a likelihood product into a sum</h3>
-<p class="worked-variables">x₁,…,xₙ are observed iid data; θ is adjustable; log is natural.</p>
+<p class="worked-variables">n observed values xᵢ are iid under the model qθ; L(θ) is their likelihood; log is natural.</p>
 <ol class="worked-lines">
 <li>$L(\theta)=\prod_{i=1}^nq_\theta(x_i)$ by the iid model.</li>
 <li>$-n^{-1}\log L(\theta)=-n^{-1}\sum_i\log q_\theta(x_i)$ by the log-product rule.</li>
@@ -1090,7 +1150,7 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 16 ===== -->
 <section class="slide has-worked-solutions" id="m9p16" data-part="III">
-<p class="eyebrow you" data-min="1.0">Exercise</p><h2>KL divergence</h2><p class="sub">Can a model forbid an event that occurs?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">p=(0.9,0.1), q=(1,0). The second outcome is possible under p.</p><ol class="opts one"><li><i>A</i>KL(p||q) is infinite<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>B</i>KL(p||q) is zero</li><li><i>C</i>The zero-probability term is ignored</li></ol></div></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="1.0">Exercise</p><h2>KL divergence</h2><p class="sub">Can a model forbid an event that occurs?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Source p=(0.9,0.1), model q=(1,0). The support of a discrete distribution is its positive-probability outcomes. Is KL(p‖q) finite?</p><ol class="opts one"><li><i>A</i>KL(p||q) is infinite<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>B</i>KL(p||q) is zero</li><li><i>C</i>The zero-probability term is ignored</li></ol></div></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Check the support condition</h3>
@@ -1114,7 +1174,7 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 17 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p17" data-part="III">
-<p class="eyebrow">Derivation</p><h2>KL divergence</h2><p class="sub">Why the total cannot be negative</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Use natural logs for this proof: −ln u≥1−u for u&gt;0. The resulting KL is in nats; changing log base preserves its sign.</p><div class="eq">$$D_{\rm KL}(p\Vert q)\ge\sum_{p(x)&gt;0}[p(x)-q(x)]\ge 0$$</div><dl class="gloss"><dt>u</dt><dd>q(x)/p(x)</dd><dt>log</dt><dd>natural logarithm here; base changes only scale</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>KL divergence</h2><p class="sub">Why the total cannot be negative</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">For p(x)&gt;0, assume q(x)&gt;0 and set u=q(x)/p(x). Use −ln u≥1−u. Natural logs give KL in nats.</p><div class="eq">$$D_{\rm KL}(p\Vert q)\ge\sum_{p(x)&gt;0}[p(x)-q(x)]\ge 0$$</div><dl class="gloss"><dt>u</dt><dd>q(x)/p(x)</dd><dt>log</dt><dd>natural logarithm here; base changes only scale</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
 <h3>Apply the tangent inequality</h3>
@@ -1141,12 +1201,12 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 19 ===== -->
 <section class="slide" id="m9p19" data-part="III">
-<p class="eyebrow">Interpretation</p><h2>KL fitting</h2><p class="sub">The direction changes what the model averages</p><div class="m9body"><div><p class="lead">A mode maximizes probability mass or density. Fix target p and restrict adjustable qθ to a chosen model family.</p><div class="eq">$$\min_\theta D(p\Vert q_\theta)\quad\text{or}\quad\min_\theta D(q_\theta\Vert p)$$</div><dl class="gloss"><dt>θ</dt><dd>adjustable model parameters</dd><dt>p,q_theta</dt><dd>target distribution and approximation</dd></dl></div><figure><canvas id="m9p19c" width="460" height="320" aria-label="The direction changes what the model averages"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.13</a></p>
+<p class="eyebrow">Interpretation</p><h2>KL fitting</h2><p class="sub">The direction changes what the model averages</p><div class="m9body"><div><p class="lead">A mode maximizes probability mass or density. Fix target p and restrict adjustable qθ to a chosen model family.</p><div class="eq">$$\min_\theta D(p\Vert q_\theta)\quad\text{or}\quad\min_\theta D(q_\theta\Vert p)$$</div><dl class="gloss"><dt>θ</dt><dd>adjustable parameters</dd><dt>p,qθ</dt><dd>target and candidate densities</dd><dt>D</dt><dd>KL divergence in the written direction</dd></dl></div><figure><canvas id="m9p19c" width="460" height="320" aria-label="The direction changes what the model averages"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.13</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p19c"),"mixture",19);</script>
 <!-- ===== 20 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p20" data-part="III">
-<p class="eyebrow">Derivation</p><h2>KL fitting</h2><p class="sub">Forward KL within a Gaussian family</p><div class="worked-question"><div class="m9body"><div><p class="lead">Continuous density p on R: finite second moment, finite differential entropy, variance v&gt;0. Fit q=N(m,s²), s²&gt;0.</p><div class="eq">$$-\mathbb E_p[\log q(X)]=\tfrac 12\log(2\pi s^2)+\frac{\mathbb E_p[(X-m)^2]}{2s^2}$$</div><dl class="gloss"><dt>m,s²</dt><dd>adjustable Gaussian mean and variance</dd><dt>mu,v</dt><dd>fixed target mean and variance</dd></dl></div><figure><canvas id="m9p20c" width="460" height="320" aria-label="Forward KL within a Gaussian family"></canvas></figure></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>KL fitting</h2><p class="sub">Forward KL within a Gaussian family</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Continuous density p on R: finite second moment, finite differential entropy, variance v&gt;0. Fit q=N(m,s²), s²&gt;0.</p><div class="eq">$$-\mathbb E_p[\log q(X)]=\tfrac 12\log(2\pi s^2)+\frac{\mathbb E_p[(X-m)^2]}{2s^2}$$</div><dl class="gloss"><dt>Eₚ</dt><dd>expectation under target density p</dd><dt>X</dt><dd>random action from p</dd><dt>m,s²</dt><dd>candidate Gaussian mean and variance</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
 <h3>Insert the Gaussian model density</h3>
@@ -1167,10 +1227,9 @@ window.m9figure=function(cv,type,page){
 <span class="worked-finish step" data-step="3" aria-hidden="true"></span>
 </div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §§3.8,3.9.3,3.13; course derivation</a></p>
 </section>
-<script>m9figure(document.getElementById("m9p20c"),"mixture",20);</script>
 <!-- ===== 21 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p21" data-part="III">
-<p class="eyebrow">Derivation</p><h2>KL fitting</h2><p class="sub">The best Gaussian center is the target mean</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Target mean μ=Eₚ[X], variance v=Eₚ[(X−μ)²]. Adjustable m is the Gaussian mean; its variance s²&gt;0 stays fixed.</p><div class="eq">$$\mathbb E_p[(X-m)^2]=v+(\mu-m)^2$$</div><dl class="gloss"><dt>v</dt><dd>target variance E[(X−μ)²]</dd><dt>m</dt><dd>candidate Gaussian mean</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>KL fitting</h2><p class="sub">The best Gaussian center is the target mean</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Target mean μ=Eₚ[X], variance v=Eₚ[(X−μ)²]. Adjustable m is the Gaussian mean; its variance s²&gt;0 stays fixed.</p><div class="eq">$$\mathbb E_p[(X-m)^2]=v+(\mu-m)^2$$</div><dl class="gloss"><dt>Eₚ</dt><dd>expectation for X drawn from target p</dd><dt>v</dt><dd>target variance</dd><dt>m</dt><dd>candidate Gaussian mean</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
 <h3>Expand the square around the target mean</h3>
@@ -1216,12 +1275,12 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 23 ===== -->
 <section class="slide" id="m9p23" data-part="III">
-<p class="eyebrow">Example</p><h2>KL fitting</h2><p class="sub">One Gaussian can place its mean between two peaks</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">A mixture first chooses a component, then samples it. Here each component N(−2,1) or N(2,1) has weight 1/2 and variance 1.</p><div class="eq">$$\mu=0,\qquad v=1+4=5,\qquad q^*=\mathcal N(0,5)$$</div><dl class="gloss"><dt>p</dt><dd>two-component target density</dd><dt>q*</dt><dd>best single Gaussian for forward KL</dd></dl></div></div><figure><canvas id="m9p23c" width="460" height="320" aria-label="One Gaussian can place its mean between two peaks"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §§3.8,3.9.3,3.13; course derivation</a></p>
+<p class="eyebrow">Example</p><h2>KL fitting</h2><p class="sub">One Gaussian can place its mean between two peaks</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">A mixture first chooses a component, then samples it. Here each component N(−2,1) or N(2,1) has weight 1/2 and variance 1.</p><div class="eq">$$\mu=0,\qquad v=1+4=5,\qquad q^*=\mathcal N(0,5)$$</div><dl class="gloss"><dt>μ,v</dt><dd>mean and variance of the target mixture</dd><dt>q*</dt><dd>best forward-KL Gaussian, with mean μ and variance v</dd></dl></div></div><figure><canvas id="m9p23c" width="460" height="320" aria-label="One Gaussian can place its mean between two peaks"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §§3.8,3.9.3,3.13; course derivation</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p23c"),"mixture",23);</script>
 <!-- ===== 24 ===== -->
 <section class="slide has-worked-solutions" id="m9p24" data-part="III">
-<p class="eyebrow you" data-min="2.0">Exercise</p><h2>KL fitting</h2><p class="sub">An uneven mixture shifts both fitted moments</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">p=0.75 N(−2,1)+0.25 N(2,1). Fit one Gaussian by forward KL.</p><div class="eq">$$m=\mathbb E_p[X],\qquad s^2=\mathbb E_p[X^2]-m^2$$</div><dl class="gloss"><dt>m,s²</dt><dd>forward-KL Gaussian mean and variance</dd></dl><ol class="opts one"><li><i>A</i>Mean −1, variance 1</li><li><i>B</i>Mean −1, variance 4<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>Mean 0, variance 5</li></ol></div></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="2.0">Exercise</p><h2>KL fitting</h2><p class="sub">An uneven mixture shifts both fitted moments</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Target p=0.75 N(−2,1)+0.25 N(2,1). Each component has variance 1. Fit one Gaussian by forward KL.</p><div class="eq">$$m=\mathbb E_p[X],\qquad s^2=\mathbb E_p[X^2]-m^2$$</div><dl class="gloss"><dt>m,s²</dt><dd>forward-KL Gaussian mean and variance</dd></dl><ol class="opts one"><li><i>A</i>Mean −1, variance 1</li><li><i>B</i>Mean −1, variance 4<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>Mean 0, variance 5</li></ol></div></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Compute moments of the target</h3>
@@ -1245,12 +1304,12 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 25 ===== -->
 <section class="slide" id="m9p25" data-part="III">
-<p class="eyebrow">Interpretation</p><h2>KL fitting</h2><p class="sub">Reverse KL penalizes probability in a forbidden gap</p><div class="m9body"><div><p class="lead">If q(x)&gt;0 where p(x)=0 on a region of positive q mass, reverse KL is infinite.</p><div class="eq">$$D(q\Vert p)=\mathbb E_q[\log q(X)-\log p(X)]$$</div><dl class="gloss"><dt>p</dt><dd>fixed target density</dd><dt>q</dt><dd>candidate model density</dd></dl></div><figure><canvas id="m9p25c" width="460" height="320" aria-label="Reverse KL penalizes probability in a forbidden gap"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.13</a></p>
+<p class="eyebrow">Interpretation</p><h2>KL fitting</h2><p class="sub">Reverse KL penalizes probability in a forbidden gap</p><div class="m9body"><div><p class="lead">If a region has zero target density p but positive model probability under q, reverse KL is infinite.</p><div class="eq">$$D(q\Vert p)=\mathbb E_q[\log q(X)-\log p(X)]$$</div><dl class="gloss"><dt>p,q</dt><dd>target and candidate densities</dd><dt>X</dt><dd>action sampled from q</dd></dl></div><figure><canvas id="m9p25c" width="460" height="320" aria-label="Reverse KL penalizes probability in a forbidden gap"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.13</a></p>
 </section>
-<script>m9figure(document.getElementById("m9p25c"),"mixture",25);</script>
+<script>m9figure(document.getElementById("m9p25c"),"gap",25);</script>
 <!-- ===== 26 ===== -->
 <section class="slide has-worked-solutions" id="m9p26" data-part="III">
-<p class="eyebrow you" data-min="1.25">Exercise</p><h2>KL fitting</h2><p class="sub">Does reverse KL always select one mode?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">The candidate family contains the exact bimodal target p.</p><ol class="opts one"><li><i>A</i>Yes, one mode is always optimal</li><li><i>B</i>No, q=p minimizes both directions<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>Neither direction can reach zero</li></ol></div></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="1.25">Exercise</p><h2>KL fitting</h2><p class="sub">Does reverse KL always select one mode?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">A bimodal target p has two peaks. The candidate family for q contains p itself. Compare the minimum forward and reverse KL.</p><ol class="opts one"><li><i>A</i>Yes, one mode is always optimal</li><li><i>B</i>No, q=p minimizes both directions<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>Neither direction can reach zero</li></ol></div></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Apply nonnegativity and equality</h3>
@@ -1279,20 +1338,20 @@ window.m9figure=function(cv,type,page){
 <script>m9figure(document.getElementById("m9p27c"),"channel",27);</script>
 <!-- ===== 28 ===== -->
 <section class="slide" id="m9p28" data-part="III">
-<p class="eyebrow">Example</p><h2>Mutual information</h2><p class="sub">The marginals come from summing the joint table</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">A fair binary state is reported correctly with probability 0.9.</p><div class="eq">$$p_{XY}=\begin{bmatrix}0.45&amp;0.05\\0.05&amp;0.45\end{bmatrix}$$</div><dl class="gloss"><dt>rows</dt><dd>X=0,1</dd><dt>columns</dt><dd>Y=0,1</dd><dt>p_X,p_Y</dt><dd>row and column sums, each (1/2,1/2)</dd></dl></div></div><figure><canvas id="m9p28c" width="460" height="320" aria-label="The marginals come from summing the joint table"></canvas></figure></div><p class="cite"><a href="https://web.stanford.edu/class/ee376a/files/2017-18/lecture_3.pdf">Weissman, Stanford EE376A (2018), Lecture3, Definitions5–6, eqs.(30)–(46)</a></p>
+<p class="eyebrow">Example</p><h2>Mutual information</h2><p class="sub">The marginals come from summing the joint table</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">X is a fair binary state. For either state, the binary report Y equals X with probability 0.9.</p><div class="eq">$$p_{XY}=\begin{bmatrix}0.45&amp;0.05\\0.05&amp;0.45\end{bmatrix}$$</div><dl class="gloss"><dt>p_XY</dt><dd>joint mass table for X,Y</dd><dt>rows</dt><dd>X=0,1</dd><dt>columns</dt><dd>Y=0,1</dd><dt>p_X,p_Y</dt><dd>marginals, each (1/2,1/2)</dd></dl></div></div><figure><canvas id="m9p28c" width="460" height="320" aria-label="The marginals come from summing the joint table"></canvas></figure></div><p class="cite"><a href="https://web.stanford.edu/class/ee376a/files/2017-18/lecture_3.pdf">Weissman, Stanford EE376A (2018), Lecture3, Definitions5–6, eqs.(30)–(46)</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p28c"),"joint",28);</script>
 <!-- ===== 29 ===== -->
 <section class="slide" id="m9p29" data-part="III">
-<p class="eyebrow">Definition</p><h2>Mutual information</h2><p class="sub">Compare dependence with the independent baseline</p><div class="m9body solo"><div><p class="lead">Mutual information measures dependence as KL from a joint distribution to the product of its marginals. Here X,Y are discrete.</p><div class="eq">$$I(X;Y)=\sum_{x,y}p(x,y)\log_2\frac{p(x,y)}{p_X(x)p_Y(y)}$$</div><dl class="gloss"><dt>I(X;Y)</dt><dd>mutual information in bits</dd><dt>p_X,p_Y</dt><dd>marginal distributions</dd></dl></div></div><p class="cite"><a href="https://web.stanford.edu/class/ee376a/files/2017-18/lecture_3.pdf">Weissman, Stanford EE376A (2018), Lecture3, Definitions5–6, eqs.(30)–(46)</a></p>
+<p class="eyebrow">Definition</p><h2>Mutual information</h2><p class="sub">Compare dependence with the independent baseline</p><div class="m9body solo"><div><p class="lead">For discrete X,Y, mutual information compares the joint mass to the product of the marginals by KL. Sum over pairs with positive joint mass.</p><div class="eq">$$I(X;Y)=\sum_{x,y}p(x,y)\log_2\frac{p(x,y)}{p_X(x)p_Y(y)}$$</div><dl class="gloss"><dt>I(X;Y)</dt><dd>mutual information in bits</dd><dt>x,y</dt><dd>values of X,Y</dd><dt>p(x,y)</dt><dd>joint mass at (x,y)</dd><dt>p_X,p_Y</dt><dd>marginal mass functions</dd></dl></div></div><p class="cite"><a href="https://web.stanford.edu/class/ee376a/files/2017-18/lecture_3.pdf">Weissman, Stanford EE376A (2018), Lecture3, Definitions5–6, eqs.(30)–(46)</a></p>
 </section>
 <!-- ===== 30 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p30" data-part="III">
-<p class="eyebrow">Derivation</p><h2>Mutual information</h2><p class="sub">Information is expected uncertainty reduction</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Conditional entropy H(X|Y) is the average entropy of X after observing Y. Factor p(x,y)=pY(y)p(x|y).</p><div class="eq">$$I(X;Y)=H(X)-H(X\mid Y)$$</div><dl class="gloss"><dt>H(X|Y)</dt><dd>average entropy of X after observing Y</dd><dt>H(X)</dt><dd>entropy before observing Y</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>Mutual information</h2><p class="sub">Information is expected uncertainty reduction</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Conditional entropy H(X|Y) averages uncertainty about state X after observing report Y. Factor joint mass into report mass and conditional state mass.</p><div class="eq">$$I(X;Y)=H(X)-H(X\mid Y)$$</div><dl class="gloss"><dt>I(X;Y)</dt><dd>mutual information in bits</dd><dt>H(X)</dt><dd>state entropy in bits</dd><dt>H(X|Y)</dt><dd>report-weighted state entropy</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
 <h3>Cancel the report probability</h3>
-<p class="worked-variables">p(x,y)=p_Y(y)p(x|y) on positive joint-probability pairs.</p>
+<p class="worked-variables">For p(x,y)&gt;0, factor the joint mass into report mass p_Y(y) and conditional state mass p(x|y).</p>
 <ol class="worked-lines">
 <li>$\log_2\frac{p(x,y)}{p_X(x)p_Y(y)}=\log_2\frac{p(x\mid y)}{p_X(x)}$.</li>
 <li>$=\log_2p(x\mid y)-\log_2p_X(x)$.</li>
@@ -1316,7 +1375,7 @@ window.m9figure=function(cv,type,page){
 <script>m9figure(document.getElementById("m9p31c"),"channel",31);</script>
 <!-- ===== 32 ===== -->
 <section class="slide has-worked-solutions" id="m9p32" data-part="III">
-<p class="eyebrow you" data-min="1.5">Exercise</p><h2>Mutual information</h2><p class="sub">A noisier sensor leaves more uncertainty</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">X is fair. Y flips X independently with probability e=0.25. Find I(X;Y).</p><div class="eq">$$I(X;Y)=H(X)-H(X\mid Y)$$</div><dl class="gloss"><dt>H(X|Y)</dt><dd>average remaining binary entropy</dd></dl><ol class="opts one"><li><i>A</i>About 0.811 bits</li><li><i>B</i>About 0.189 bits<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>Exactly 0.75 bits</li></ol></div></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="1.5">Exercise</p><h2>Mutual information</h2><p class="sub">A noisier sensor leaves more uncertainty</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">X is a fair binary state. Report Y flips X independently with probability e=0.25. Find the mutual information I(X;Y).</p><div class="eq">$$I(X;Y)=H(X)-H(X\mid Y)$$</div><dl class="gloss"><dt>H(X)</dt><dd>state entropy</dd><dt>H(X|Y)</dt><dd>average remaining state entropy</dd></dl><ol class="opts one"><li><i>A</i>About 0.811 bits</li><li><i>B</i>About 0.189 bits<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>Exactly 0.75 bits</li></ol></div></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Compute remaining uncertainty</h3>
@@ -1345,7 +1404,7 @@ window.m9figure=function(cv,type,page){
 <script>m9figure(document.getElementById("m9p33c"),"parabola",33);</script>
 <!-- ===== 34 ===== -->
 <section class="slide has-worked-solutions" id="m9p34" data-part="III">
-<p class="eyebrow you" data-min="1.5">Exercise</p><h2>Mutual information</h2><p class="sub">How much does the square reveal?</p><div class="worked-question"><div class="m9body"><div><p class="lead">X is uniform on {−1,0,1}; Y=X². H(Y|X)=0.</p><div class="eq">$$I(X;Y)=H(Y)-H(Y\mid X)$$</div><dl class="gloss"><dt>H(Y)</dt><dd>entropy of the squared output</dd></dl><ol class="opts one"><li><i>A</i>I(X;Y)=0 because covariance is zero</li><li><i>B</i>I(X;Y)=log₂3</li><li><i>C</i>I(X;Y)=h₂(1/3)≈0.918 bits<b class="ok step" data-step="3" data-handout="hide">✓</b></li></ol></div><figure><canvas id="m9p34c" width="460" height="320" aria-label="How much does the square reveal?"></canvas></figure></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="1.5">Exercise</p><h2>Mutual information</h2><p class="sub">How much does the square reveal?</p><div class="worked-question"><div class="m9body"><div><p class="lead">X is uniform on {−1,0,1}; Y=X². H(Y|X)=0.</p><div class="eq">$$I(X;Y)=H(Y)-H(Y\mid X)$$</div><dl class="gloss"><dt>H(Y)</dt><dd>entropy of the squared output</dd><dt>h₂(a)</dt><dd>entropy of binary masses (a,1−a)</dd></dl><ol class="opts one"><li><i>A</i>I(X;Y)=0 because covariance is zero</li><li><i>B</i>I(X;Y)=log₂3</li><li><i>C</i>I(X;Y)=h₂(1/3)≈0.918 bits<b class="ok step" data-step="3" data-handout="hide">✓</b></li></ol></div><figure><canvas id="m9p34c" width="460" height="320" aria-label="How much does the square reveal?"></canvas></figure></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Find the distribution of the output</h3>
@@ -1399,12 +1458,12 @@ window.m9figure=function(cv,type,page){
 <script>m9figure(document.getElementById("m9p36c"),"map",36);</script>
 <!-- ===== 37 ===== -->
 <section class="slide" id="m9p37" data-part="III">
-<p class="eyebrow">Definition</p><h2>Monte Carlo estimation</h2><p class="sub">An average estimates a chosen expectation</p><div class="m9body"><div><p class="lead">Monte Carlo estimation approximates an expectation by averaging sampled values. Here n is fixed and draws from p are iid.</p><div class="eq">$$\hat\mu_n=\frac 1n\sum_{i=1}^ng(X_i),\qquad\mu=\mathbb E_p[g(X)]$$</div><dl class="gloss"><dt>X_i</dt><dd>independent draws from the same distribution</dd><dt>g,mu</dt><dd>measured quantity and its true mean</dd></dl></div><figure><canvas id="m9p37c" width="460" height="320" aria-label="An average estimates a chosen expectation"></canvas></figure></div><p class="cite"><a href="https://www.fa17.eecs70.org/static/notes/n18.html">UC Berkeley CS70 (2017), Note18: mean, variance, concentration</a></p>
+<p class="eyebrow">Definition</p><h2>Monte Carlo estimation</h2><p class="sub">An average estimates a chosen expectation</p><div class="m9body"><div><p class="lead">Monte Carlo estimation approximates an expectation by averaging sampled values. The count n is fixed and the draws are independent and identically distributed (iid).</p><div class="eq">$$\hat\mu_n=\frac 1n\sum_{i=1}^ng(X_i),\qquad\mu=\mathbb E_p[g(X)]$$</div><dl class="gloss"><dt>X_i</dt><dd>draws from source p</dd><dt>g,mu</dt><dd>quantity measured and its true mean</dd><dt>μ̂ₙ</dt><dd>average of n measured values</dd></dl></div><figure><canvas id="m9p37c" width="460" height="320" aria-label="An average estimates a chosen expectation"></canvas></figure></div><p class="cite"><a href="https://www.fa17.eecs70.org/static/notes/n18.html">UC Berkeley CS70 (2017), Note18: mean, variance, concentration</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p37c"),"sampling",37);</script>
 <!-- ===== 38 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p38" data-part="III">
-<p class="eyebrow">Derivation</p><h2>Monte Carlo estimation</h2><p class="sub">Linearity explains unbiasedness</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">An estimator is unbiased if its expectation equals its target. Here n is fixed and each g(Xᵢ) has finite expectation μ.</p><div class="eq">$$\mathbb E[\hat\mu_n]=\frac 1n\sum_{i=1}^n\mathbb E[g(X_i)]=\mu$$</div><dl class="gloss"><dt>μ̂</dt><dd>random sample average</dd><dt>μ</dt><dd>common expectation of each sample value</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>Monte Carlo estimation</h2><p class="sub">Linearity explains unbiasedness</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">An estimator is unbiased if its expectation equals its target. Here n is fixed and each g(Xᵢ) has finite expectation μ.</p><div class="eq">$$\mathbb E[\hat\mu_n]=\frac 1n\sum_{i=1}^n\mathbb E[g(X_i)]=\mu$$</div><dl class="gloss"><dt>μ̂</dt><dd>random average of n measurements</dd><dt>g(Xᵢ)</dt><dd>measurement from draw i</dd><dt>μ</dt><dd>common mean</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 1">
 <p class="worked-progress">Derivation 1 / 1</p>
 <h3>Use linearity of expectation</h3>
@@ -1419,11 +1478,11 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 39 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p39" data-part="III">
-<p class="eyebrow">Derivation</p><h2>Monte Carlo estimation</h2><p class="sub">Independence makes the variance shrink</p><div class="worked-question"><div class="m9body"><div><p class="lead">Standard error (SE) is an estimator’s standard deviation. Use n fixed independent measurements with common finite variance σ².</p><div class="eq">$$\operatorname{Var}(\hat\mu_n)=\frac{\sigma^2}{n},\qquad\operatorname{SE}(\hat\mu_n)=\frac{\sigma}{\sqrt n}$$</div><dl class="gloss"><dt>σ²</dt><dd>variance of one measured value</dd><dt>SE</dt><dd>standard deviation of the estimator</dd></dl></div><figure><canvas id="m9p39c" width="460" height="320" aria-label="Independence makes the variance shrink"></canvas></figure></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>Monte Carlo estimation</h2><p class="sub">Independence makes the variance shrink</p><div class="worked-question"><div class="m9body"><div><p class="lead">Standard error (SE) is an estimator’s standard deviation. Use n fixed independent measurements with common finite variance σ².</p><div class="eq">$$\operatorname{Var}(\hat\mu_n)=\frac{\sigma^2}{n},\qquad\operatorname{SE}(\hat\mu_n)=\frac{\sigma}{\sqrt n}$$</div><dl class="gloss"><dt>μ̂ₙ</dt><dd>mean of n measurements</dd><dt>σ, σ²</dt><dd>one measurement’s standard deviation and variance</dd><dt>SE</dt><dd>standard deviation of the mean</dd></dl></div><figure><canvas id="m9p39c" width="460" height="320" aria-label="Independence makes the variance shrink"></canvas></figure></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
 <h3>Expand the variance of the average</h3>
-<p class="worked-variables">Zᵢ=g(Xᵢ) are independent with common finite variance σ².</p>
+<p class="worked-variables">μ̂ₙ averages n independent measurements Zᵢ with common finite variance σ².</p>
 <ol class="worked-lines">
 <li>$\operatorname{Var}(\hat\mu_n)=n^{-2}\operatorname{Var}(\sum_i Z_i)$.</li>
 <li>$=n^{-2}\sum_i\operatorname{Var}(Z_i)$ because all cross covariances vanish.</li>
@@ -1432,7 +1491,7 @@ window.m9figure=function(cv,type,page){
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Derivation 2 of 2">
 <p class="worked-progress">Derivation 2 / 2</p>
 <h3>Convert variance to standard error</h3>
-<p class="worked-variables">Standard error is the standard deviation of the estimator.</p>
+<p class="worked-variables">σ is the standard deviation of one measurement. SE is the standard deviation of the mean μ̂ₙ.</p>
 <ol class="worked-lines">
 <li>$\operatorname{SE}(\hat\mu_n)=\sqrt{\operatorname{Var}(\hat\mu_n)}=\sigma/\sqrt n$.</li>
 <li>Four times as many independent samples gives half the standard error.</li>
@@ -1444,7 +1503,7 @@ window.m9figure=function(cv,type,page){
 <script>m9figure(document.getElementById("m9p39c"),"se",39);</script>
 <!-- ===== 40 ===== -->
 <section class="slide has-worked-solutions" id="m9p40" data-part="III">
-<p class="eyebrow you" data-min="1.0">Exercise</p><h2>Monte Carlo estimation</h2><p class="sub">What does four times as much data buy?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Independent draws have the same finite variance. Increase n from 100 to 400.</p><div class="eq">$$\operatorname{SE}(\hat\mu_n)=\sigma/\sqrt n$$</div><dl class="gloss"><dt>σ</dt><dd>unchanged one-trial standard deviation</dd></dl><ol class="opts one"><li><i>A</i>Standard error becomes one quarter</li><li><i>B</i>Standard error becomes one half<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>Every realized estimate is closer</li></ol></div></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="1.0">Exercise</p><h2>Monte Carlo estimation</h2><p class="sub">What does four times as much data buy?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Independent draws have the same finite variance σ². Increase the fixed count n from 100 to 400. What happens to the standard error of the mean?</p><div class="eq">$$\operatorname{SE}(\hat\mu_n)=\sigma/\sqrt n$$</div><dl class="gloss"><dt>σ</dt><dd>unchanged one-trial standard deviation</dd></dl><ol class="opts one"><li><i>A</i>Standard error becomes one quarter</li><li><i>B</i>Standard error becomes one half<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>Every realized estimate is closer</li></ol></div></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Use the square-root law</h3>
@@ -1468,11 +1527,11 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 41 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p41" data-part="III">
-<p class="eyebrow">Derivation</p><h2>Monte Carlo estimation</h2><p class="sub">A variance bound gives a probability statement</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Chebyshev’s inequality bounds deviation probability using variance. Here μ̂ₙ is an unbiased iid average; n is fixed and ε&gt;0.</p><div class="eq">$$P(|\hat\mu_n-\mu|\ge\varepsilon)\le\frac{\sigma^2}{n\varepsilon^2}$$</div><dl class="gloss"><dt>epsilon</dt><dd>chosen error tolerance</dd><dt>σ²</dt><dd>finite variance of g(X)</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>Monte Carlo estimation</h2><p class="sub">A variance bound gives a probability statement</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Chebyshev’s inequality bounds deviation probability using variance. Here μ̂ₙ is an unbiased iid average; n is fixed and ε&gt;0.</p><div class="eq">$$P(|\hat\mu_n-\mu|\ge\varepsilon)\le\frac{\sigma^2}{n\varepsilon^2}$$</div><dl class="gloss"><dt>μ̂ₙ, μ</dt><dd>sample mean and true mean</dd><dt>epsilon</dt><dd>chosen error tolerance</dd><dt>σ²</dt><dd>finite variance per measurement</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
 <h3>Bound squared error on the bad event</h3>
-<p class="worked-variables">E=|μ̂ₙ−μ|, ε&gt;0, and A={E≥ε}.</p>
+<p class="worked-variables">E=|μ̂ₙ−μ| is the absolute error of the sample mean μ̂ₙ around the true mean μ. A={E≥ε}, with ε&gt;0.</p>
 <ol class="worked-lines">
 <li>On A, E²≥ε²; outside A, E²≥0.</li>
 <li>Therefore $\mathbb E[E^2]\ge\varepsilon^2P(A)$.</li>
@@ -1491,11 +1550,11 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 42 ===== -->
 <section class="slide" id="m9p42" data-part="III">
-<p class="eyebrow">Example</p><h2>Monte Carlo estimation</h2><p class="sub">A conservative trial count for a success rate</p><div class="m9body solo"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">Bernoulli success has variance p(1−p)≤1/4. Target error 0.1 with failure probability ≤0.05.</p><div class="eq">$$\frac{1}{4n(0.1)^2}\le 0.05\quad\Longrightarrow\quad n\ge 500$$</div><dl class="gloss"><dt>p</dt><dd>unknown success probability</dd><dt>n</dt><dd>fixed number of independent trials</dd></dl></div></div></div><p class="cite"><a href="https://www.fa17.eecs70.org/static/notes/n18.html">UC Berkeley CS70 (2017), Note18: mean, variance, concentration</a></p>
+<p class="eyebrow">Example</p><h2>Monte Carlo estimation</h2><p class="sub">A conservative trial count for a success rate</p><div class="m9body solo"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">For n fixed independent Bernoulli trials, p(1−p)≤1/4. Require P(|p̂−p|≥0.1)≤0.05.</p><div class="eq">$$\frac{1}{4n(0.1)^2}\le 0.05\quad\Longrightarrow\quad n\ge 500$$</div><dl class="gloss"><dt>p,p̂</dt><dd>success probability and observed fraction</dd><dt>n</dt><dd>fixed number of independent trials</dd></dl></div></div></div><p class="cite"><a href="https://www.fa17.eecs70.org/static/notes/n18.html">UC Berkeley CS70 (2017), Note18: mean, variance, concentration</a></p>
 </section>
 <!-- ===== 43 ===== -->
 <section class="slide has-worked-solutions" id="m9p43" data-part="III">
-<p class="eyebrow you" data-min="1.5">Exercise</p><h2>Monte Carlo estimation</h2><p class="sub">A tighter tolerance changes sample cost</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Use p(1−p)≤1/4 and the variance bound. Keep failure probability ≤0.05; reduce error tolerance from 0.1 to 0.05.</p><div class="eq">$$P(|\hat p-p|\ge\varepsilon)\le 1/(4n\varepsilon^2)$$</div><dl class="gloss"><dt>p-hat,p</dt><dd>sample fraction and true success probability</dd></dl><ol class="opts one"><li><i>A</i>250 trials suffice by this bound</li><li><i>B</i>1000 trials suffice by this bound</li><li><i>C</i>2000 trials suffice by this bound<b class="ok step" data-step="3" data-handout="hide">✓</b></li></ol></div></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="1.5">Exercise</p><h2>Monte Carlo estimation</h2><p class="sub">A tighter tolerance changes sample cost</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Use n fixed independent Bernoulli trials and p(1−p)≤1/4. Require failure probability at most 0.05 with error tolerance ε=0.05.</p><div class="eq">$$P(|\hat p-p|\ge\varepsilon)\le 1/(4n\varepsilon^2)$$</div><dl class="gloss"><dt>p-hat,p</dt><dd>sample fraction and true success probability</dd></dl><ol class="opts one"><li><i>A</i>250 trials suffice by this bound</li><li><i>B</i>1000 trials suffice by this bound</li><li><i>C</i>2000 trials suffice by this bound<b class="ok step" data-step="3" data-handout="hide">✓</b></li></ol></div></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Substitute the new tolerance</h3>
@@ -1519,7 +1578,7 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 44 ===== -->
 <section class="slide" id="m9p44" data-part="III">
-<p class="eyebrow">Result</p><h2>Monte Carlo estimation</h2><p class="sub">The law of large numbers is not a monotone path</p><div class="m9body"><div><p class="lead">Convergence in probability means every fixed positive error tolerance is exceeded with probability tending to zero. Here samples are iid with finite variance.</p><div class="eq">$$P(|\hat\mu_n-\mu|\ge\varepsilon)\longrightarrow 0$$</div><dl class="gloss"><dt>μ̂n</dt><dd>average of n iid measurements</dd><dt>μ</dt><dd>finite-variance population mean</dd></dl></div><figure><canvas id="m9p44c" width="460" height="320" aria-label="The law of large numbers is not a monotone path"></canvas></figure></div><p class="cite"><a href="https://www.fa17.eecs70.org/static/notes/n18.html">UC Berkeley CS70 (2017), Note18: mean, variance, concentration</a></p>
+<p class="eyebrow">Result</p><h2>Monte Carlo estimation</h2><p class="sub">The law of large numbers is not a monotone path</p><div class="m9body"><div><p class="lead">Convergence in probability means every fixed positive error tolerance is exceeded with probability tending to zero. Here samples are iid with finite variance.</p><div class="eq">$$P(|\hat\mu_n-\mu|\ge\varepsilon)\longrightarrow 0$$</div><dl class="gloss"><dt>μ̂n</dt><dd>average of n iid measurements</dd><dt>μ</dt><dd>population mean</dd><dt>ε</dt><dd>fixed positive error tolerance</dd></dl></div><figure><canvas id="m9p44c" width="460" height="320" aria-label="The law of large numbers is not a monotone path"></canvas></figure></div><p class="cite"><a href="https://www.fa17.eecs70.org/static/notes/n18.html">UC Berkeley CS70 (2017), Note18: mean, variance, concentration</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p44c"),"sampling",44);</script>
 <!-- ===== 45 ===== -->
@@ -1533,7 +1592,7 @@ window.m9figure=function(cv,type,page){
 <script>m9figure(document.getElementById("m9p46c"),"stopping",46);</script>
 <!-- ===== 47 ===== -->
 <section class="slide" id="m9p47" data-part="III">
-<p class="eyebrow">Example</p><h2>Stopping rules</h2><p class="sub">Enumerating paths exposes the selection effect</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">Stop after first success, but take at most two trials. Each trial succeeds with probability 1/2.</p><div class="eq">$$(T,\hat p_T)=(1,1),(2,1/2),(2,0)$$</div><dl class="gloss"><dt>path probabilities</dt><dd>1/2, 1/4, 1/4 respectively</dd><dt>p̂T</dt><dd>success fraction at the stopping time</dd></dl></div></div><figure><canvas id="m9p47c" width="460" height="320" aria-label="Enumerating paths exposes the selection effect"></canvas></figure></div><p class="cite"><a href="https://math.mit.edu/~sheffield/2016175/Lecture14.pdf">Sheffield, MIT 18.175 (2016), Lecture 14, pp.34–35; original example</a></p>
+<p class="eyebrow">Example</p><h2>Stopping rules</h2><p class="sub">Enumerating paths exposes the selection effect</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">Stop after first success, but take at most two trials. The trials are independent, with success probability 1/2 each.</p><div class="eq">$$(T,\hat p_T)=(1,1),(2,1/2),(2,0)$$</div><dl class="gloss"><dt>T</dt><dd>number of trials taken</dd><dt>p̂T</dt><dd>reported success fraction</dd><dt>path masses</dt><dd>1/2, 1/4, 1/4 in order</dd></dl></div></div><figure><canvas id="m9p47c" width="460" height="320" aria-label="Enumerating paths exposes the selection effect"></canvas></figure></div><p class="cite"><a href="https://math.mit.edu/~sheffield/2016175/Lecture14.pdf">Sheffield, MIT 18.175 (2016), Lecture 14, pp.34–35; original example</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p47c"),"stopping",47);</script>
 <!-- ===== 48 ===== -->
@@ -1586,15 +1645,15 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 50 ===== -->
 <section class="slide" id="m9p50" data-part="III">
-<p class="eyebrow">Application</p><h2>Stopping rules</h2><p class="sub">Match the guarantee to the collection rule</p><div class="m9body solo"><div><p class="lead">Fixed-n estimates need fixed-n evaluation. Adaptive collection needs an analysis designed for its stopping rule.</p></div></div><p class="cite"><a href="https://arxiv.org/abs/1808.03204v7">Howard et al. (2020), Introduction: time-uniform bounds</a></p>
+<p class="eyebrow">Application</p><h2>Stopping rules</h2><p class="sub">Match the guarantee to the collection rule</p><div class="m9body solo"><div><p class="lead">Fixed-n error guarantees assume a sample size fixed before inspection. For data-dependent stopping, use a guarantee proved for the collection rule.</p></div></div><p class="cite"><a href="https://arxiv.org/abs/1808.03204v7">Howard et al. (2020), Introduction: time-uniform bounds</a></p>
 </section>
 <!-- ===== 51 ===== -->
 <section class="slide" id="m9p51" data-part="III">
-<p class="eyebrow">Example</p><h2>Monte Carlo estimation</h2><p class="sub">A rollout result needs an uncertainty statement</p><div class="m9body solo"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">An independent fixed evaluation has 80 successes in 100 trials. Use a Bernoulli model.</p><div class="eq">$$\hat p=0.8,\qquad\widehat{\operatorname{SE}}=\sqrt{\frac{0.8(0.2)}{100}}=0.04$$</div><dl class="gloss"><dt>p̂</dt><dd>observed success fraction</dd><dt>estimated SE</dt><dd>plug-in standard error, not exact coverage</dd></dl></div></div></div><p class="cite"><a href="https://www.itl.nist.gov/div898/software/dataplot/refman1/auxillar/propconf.htm">NIST Dataplot, Proportion Confidence Limits, Normal approximation</a></p>
+<p class="eyebrow">Example</p><h2>Monte Carlo estimation</h2><p class="sub">A rollout result needs an uncertainty statement</p><div class="m9body solo"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">A fixed Bernoulli evaluation has 80 successes in 100 independent trials. Approximate 95% interval: [0.7216, 0.8784].</p><div class="eq">$$\hat p=0.8,\qquad\widehat{\operatorname{SE}}=\sqrt{\frac{0.8(0.2)}{100}}=0.04$$</div><dl class="gloss"><dt>p̂</dt><dd>observed success fraction</dd><dt>estimated SE</dt><dd>plug-in standard error of the success fraction</dd></dl></div></div></div><p class="cite"><a href="https://www.itl.nist.gov/div898/software/dataplot/refman1/auxillar/propconf.htm">NIST Dataplot, Proportion Confidence Limits, Normal approximation</a></p>
 </section>
 <!-- ===== 52 ===== -->
 <section class="slide has-worked-solutions" id="m9p52" data-part="III">
-<p class="eyebrow you" data-min="2.0">Exercise</p><h2>Monte Carlo estimation</h2><p class="sub">How many draws to see a rare route at least once?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">A route has probability 0.1 in each independent draw. Find the smallest fixed integer n with detection probability at least 0.95.</p><div class="eq">$$P(\text{no rare route})=(0.9)^n$$</div><dl class="gloss"><dt>n</dt><dd>fixed independent sample count</dd></dl><ol class="opts one"><li><i>A</i>At least 10 draws</li><li><i>B</i>At least 29 draws<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>At least 95 draws</li></ol></div></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="2.0">Exercise</p><h2>Monte Carlo estimation</h2><p class="sub">How many draws to see a rare route at least once?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">A route has probability 0.1 in each independent draw. Find the smallest fixed integer n with detection probability at least 0.95.</p><div class="eq">$$P(\text{no rare route})=(0.9)^n$$</div><dl class="gloss"><dt>n</dt><dd>fixed independent sample count</dd></dl><ol class="opts one"><li><i>A</i>10 draws</li><li><i>B</i>29 draws<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>95 draws</li></ol></div></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Turn detection into its complement</h3>
@@ -1623,7 +1682,7 @@ window.m9figure=function(cv,type,page){
 <script>m9figure(document.getElementById("m9p53c"),"samples",53);</script>
 <!-- ===== 54 ===== -->
 <section class="slide" id="m9p54" data-part="III">
-<p class="eyebrow">Definition</p><h2>Density and modes</h2><p class="sub">A discrete mode maximizes probability mass</p><div class="m9body"><div><p class="lead">A discrete mode maximizes true probability mass. An empirical mode maximizes observed frequency; tied maxima are possible.</p><div class="eq">$$\hat p_n(x)=\frac{N_x}{n},\qquad\hat m\in\arg\max_x\hat p_n(x)$$</div><dl class="gloss"><dt>N_x</dt><dd>number of observations equal to x</dd><dt>m̂</dt><dd>one empirical mode; ties are possible</dd></dl></div><figure><canvas id="m9p54c" width="460" height="320" aria-label="A discrete mode maximizes probability mass"></canvas></figure></div><p class="cite"><a href="https://www.stat.cmu.edu/~larry/=sml/densityestimation.pdf">Wasserman, 36-708 Density Estimation, §§1,3–4</a></p>
+<p class="eyebrow">Definition</p><h2>Density and modes</h2><p class="sub">A discrete mode maximizes probability mass</p><div class="m9body"><div><p class="lead">A discrete mode maximizes probability mass under the source. An empirical mode maximizes observed frequency. The figure shows counts 5, 3, 2 out of 10 as proportions.</p><div class="eq">$$\hat p_n(x)=\frac{N_x}{n},\qquad\hat m\in\arg\max_x\hat p_n(x)$$</div><dl class="gloss"><dt>N_x,n</dt><dd>count in category x and total count</dd><dt>p̂ₙ(x)</dt><dd>observed fraction in category x</dd><dt>m̂</dt><dd>any empirical mode</dd></dl></div><figure><canvas id="m9p54c" width="460" height="320" aria-label="A discrete mode maximizes probability mass"></canvas></figure></div><p class="cite"><a href="https://www.stat.cmu.edu/~larry/=sml/densityestimation.pdf">Wasserman, 36-708 Density Estimation, §§1,3–4</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p54c"),"bars",54);</script>
 <!-- ===== 55 ===== -->
@@ -1652,17 +1711,17 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 56 ===== -->
 <section class="slide" id="m9p56" data-part="III">
-<p class="eyebrow">Recall</p><h2>Density and modes</h2><p class="sub">Continuous data rarely repeat exactly</p><div class="m9body"><div><p class="lead">For an absolutely continuous model, each exact value has probability zero, while intervals can have positive probability.</p><div class="eq">$$P(X=x)=0,\qquad P(a\le X\le b)=\int_a^bp(u)\,du$$</div><dl class="gloss"><dt>p(u)</dt><dd>density, not point probability</dd><dt>a,b</dt><dd>interval endpoints</dd></dl></div><figure><canvas id="m9p56c" width="460" height="320" aria-label="Continuous data rarely repeat exactly"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.3.2</a></p>
+<p class="eyebrow">Recall</p><h2>Density and modes</h2><p class="sub">Continuous data rarely repeat exactly</p><div class="m9body"><div><p class="lead">For a model with density p≥0 and ∫p=1, each exact value has probability zero. Interval probability is the area under p over that interval.</p><div class="eq">$$P(X=x)=0,\qquad P(a\le X\le b)=\int_a^bp(u)\,du$$</div><dl class="gloss"><dt>X,x</dt><dd>random action and a fixed value</dd><dt>p(u)</dt><dd>density at integration variable u</dd><dt>a,b</dt><dd>interval endpoints</dd></dl></div><figure><canvas id="m9p56c" width="460" height="320" aria-label="Continuous data rarely repeat exactly"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.3.2</a></p>
 </section>
-<script>m9figure(document.getElementById("m9p56c"),"samples",56);</script>
+<script>m9figure(document.getElementById("m9p56c"),"interval",56);</script>
 <!-- ===== 57 ===== -->
 <section class="slide" id="m9p57" data-part="III">
-<p class="eyebrow">Definition</p><h2>Histograms</h2><p class="sub">Counts become density after dividing by width</p><div class="m9body"><div><p class="lead">A histogram estimates density as a constant on each bin. Here bins have width h and contain counts Nⱼ out of n observations.</p><div class="eq">$$\hat p(x)=\frac{N_j}{nh}\quad(x\text{ in bin }j)$$</div><dl class="gloss"><dt>n,N_j</dt><dd>total count and bin count</dd><dt>h</dt><dd>bin width in action units</dd></dl></div><figure><canvas id="m9p57c" width="460" height="320" aria-label="Counts become density after dividing by width"></canvas></figure></div><p class="cite"><a href="https://www.stat.cmu.edu/~larry/=sml/densityestimation.pdf">Wasserman, 36-708 Density Estimation, §3; original example</a></p>
+<p class="eyebrow">Definition</p><h2>Histograms</h2><p class="sub">Counts become density after dividing by width</p><div class="m9body"><div><p class="lead">A histogram estimates density as a constant on each bin. Here bins have width h and contain counts Nⱼ out of n observations.</p><div class="eq">$$\hat p(x)=\frac{N_j}{nh}\quad(x\text{ in bin }j)$$</div><dl class="gloss"><dt>n,N_j</dt><dd>total count and count in bin j</dd><dt>h</dt><dd>bin width in action units</dd><dt>p̂(x)</dt><dd>estimated density at action x</dd></dl></div><figure><canvas id="m9p57c" width="460" height="320" aria-label="Counts become density after dividing by width"></canvas></figure></div><p class="cite"><a href="https://www.stat.cmu.edu/~larry/=sml/densityestimation.pdf">Wasserman, 36-708 Density Estimation, §3; original example</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p57c"),"hist",57);</script>
 <!-- ===== 58 ===== -->
 <section class="slide" id="m9p58" data-part="III">
-<p class="eyebrow">Example</p><h2>Histograms</h2><p class="sub">The area check catches normalization mistakes</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">Eight samples give counts 2,4,2 in three bins of width 1.</p><div class="eq">$$\hat p=(0.25,0.5,0.25),\qquad\sum_jh\hat p_j=1$$</div><dl class="gloss"><dt>h</dt><dd>common bin width 1</dd><dt>p-hat_j</dt><dd>constant density in bin j</dd></dl></div></div><figure><canvas id="m9p58c" width="460" height="320" aria-label="The area check catches normalization mistakes"></canvas></figure></div><p class="cite"><a href="https://www.stat.cmu.edu/~larry/=sml/densityestimation.pdf">Wasserman, 36-708 Density Estimation, §3; original example</a></p>
+<p class="eyebrow">Example</p><h2>Histograms</h2><p class="sub">The area check catches normalization mistakes</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">Eight samples give counts 2, 4, 2 in bins [0,1), [1,2), [2,3), each of width 1.</p><div class="eq">$$\hat p=(0.25,0.5,0.25),\qquad\sum_jh\hat p_j=1$$</div><dl class="gloss"><dt>h</dt><dd>common bin width 1</dd><dt>p-hat_j</dt><dd>constant density in bin j</dd></dl></div></div><figure><canvas id="m9p58c" width="460" height="320" aria-label="The area check catches normalization mistakes"></canvas></figure></div><p class="cite"><a href="https://www.stat.cmu.edu/~larry/=sml/densityestimation.pdf">Wasserman, 36-708 Density Estimation, §3; original example</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p58c"),"hist",58);</script>
 <!-- ===== 59 ===== -->
@@ -1691,31 +1750,31 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 60 ===== -->
 <section class="slide" id="m9p60" data-part="III">
-<p class="eyebrow">Interpretation</p><h2>Histograms</h2><p class="sub">The apparent peak depends on the binning</p><div class="m9body"><div><p class="lead">Use observations −2.2,−2,−1.8,1.8,2,2.2. Compare bin widths 1 and 2 with origin −3; changing bin boundaries also changes counts.</p></div><figure><canvas id="m9p60c" width="460" height="320" aria-label="The apparent peak depends on the binning"></canvas></figure></div><p class="cite"><a href="https://www.stat.cmu.edu/~larry/=sml/densityestimation.pdf">Wasserman, 36-708 Density Estimation, §3; original example</a></p>
+<p class="eyebrow">Interpretation</p><h2>Histograms</h2><p class="sub">The apparent peak depends on the binning</p><div class="m9body"><div><p class="lead">Use observations −2.2, −2, −1.8, 1.8, 2, 2.2. Compare half-open bins of width 1 and 2, both starting at −3.</p></div><figure><canvas id="m9p60c" width="460" height="320" aria-label="The apparent peak depends on the binning"></canvas></figure></div><p class="cite"><a href="https://www.stat.cmu.edu/~larry/=sml/densityestimation.pdf">Wasserman, 36-708 Density Estimation, §3; original example</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p60c"),"bins",60);</script>
 <!-- ===== 61 ===== -->
 <section class="slide" id="m9p61" data-part="III">
-<p class="eyebrow">Definition</p><h2>Kernel density estimation</h2><p class="sub">Each sample contributes a small smooth bump</p><div class="m9body"><div><p class="lead">Kernel density estimation (KDE) averages a rescaled bump at each sample. Use K≥0 with integral 1 and bandwidth h&gt;0.</p><div class="eq">$$\hat p_h(x)=\frac 1{nh}\sum_{i=1}^nK\!\left(\frac{x-x_i}{h}\right)$$</div><dl class="gloss"><dt>x_i,x</dt><dd>observed samples and query location</dd><dt>h,K</dt><dd>bandwidth and unit-integral kernel</dd></dl></div><figure><canvas id="m9p61c" width="460" height="320" aria-label="Each sample contributes a small smooth bump"></canvas></figure></div><p class="cite"><a href="https://www.stat.cmu.edu/~larry/=sml/densityestimation.pdf">Wasserman, 36-708 Density Estimation, §4; original example</a></p>
+<p class="eyebrow">Definition</p><h2>Kernel density estimation</h2><p class="sub">Each sample contributes a small smooth bump</p><div class="m9body"><div><p class="lead">Kernel density estimation (KDE) averages one rescaled bump per sample. Use a nonnegative kernel K with integral 1 and bandwidth h&gt;0.</p><div class="eq">$$\hat p_h(x)=\frac 1{nh}\sum_{i=1}^nK\!\left(\frac{x-x_i}{h}\right)$$</div><dl class="gloss"><dt>x_i,x</dt><dd>sample i and query location</dd><dt>n</dt><dd>sample count</dd><dt>h,K</dt><dd>bandwidth and unit-integral kernel</dd></dl></div><figure><canvas id="m9p61c" width="460" height="320" aria-label="Each sample contributes a small smooth bump"></canvas></figure></div><p class="cite"><a href="https://www.stat.cmu.edu/~larry/=sml/densityestimation.pdf">Wasserman, 36-708 Density Estimation, §4; original example</a></p>
 </section>
-<script>m9figure(document.getElementById("m9p61c"),"kde",61);</script>
+<script>m9figure(document.getElementById("m9p61c"),"kernel",61);</script>
 <!-- ===== 62 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p62" data-part="III">
-<p class="eyebrow">Derivation</p><h2>Kernel density estimation</h2><p class="sub">The normalization survives a change of scale</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Substitute u=(x−xᵢ)/h, so dx=h du.</p><div class="eq">$$\int\frac 1hK\!\left(\frac{x-x_i}{h}\right)dx=\int K(u)\,du=1$$</div><dl class="gloss"><dt>h</dt><dd>positive bandwidth</dd><dt>x_i</dt><dd>fixed sample center</dd><dt>u</dt><dd>rescaled integration variable</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>Kernel density estimation</h2><p class="sub">The normalization survives a change of scale</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Kernel K has area 1 over ℝ. Substitute u=(x−xᵢ)/h, so dx=h du.</p><div class="eq">$$\int_{\mathbb R}\frac 1hK\!\left(\frac{x-x_i}{h}\right)dx=\int_{\mathbb R} K(u)\,du=1$$</div><dl class="gloss"><dt>h</dt><dd>positive bandwidth</dd><dt>x_i</dt><dd>fixed sample center</dd><dt>u</dt><dd>rescaled integration variable</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
 <h3>Change the integration variable</h3>
-<p class="worked-variables">K has integral 1, h&gt;0, and xᵢ is a fixed sample center.</p>
+<p class="worked-variables">K has integral 1 on ℝ, h&gt;0, and xᵢ is a fixed sample center.</p>
 <ol class="worked-lines">
 <li>Set $u=(x-x_i)/h$, so $dx=h\,du$.</li>
-<li>$\int h^{-1}K((x-x_i)/h)\,dx=\int h^{-1}K(u)h\,du=1$.</li>
+<li>$\int_{\mathbb R} h^{-1}K((x-x_i)/h)\,dx=\int_{\mathbb R} h^{-1}K(u)h\,du=1$.</li>
 </ol></div>
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Derivation 2 of 2">
 <p class="worked-progress">Derivation 2 / 2</p>
 <h3>Average the unit-area bumps</h3>
-<p class="worked-variables">There are n kernel bumps and the estimator divides their sum by n.</p>
+<p class="worked-variables">The estimated density p̂ₕ(x) averages n unit-area bumps; x spans ℝ.</p>
 <ol class="worked-lines">
-<li>$\int\hat p_h(x)\,dx=n^{-1}\sum_{i=1}^n1=1$.</li>
+<li>$\int_{\mathbb R}\hat p_h(x)\,dx=n^{-1}\sum_{i=1}^n1=1$.</li>
 <li>Without the 1/h factor, each bump would instead have area h.</li>
 <li>Bandwidth changes width and height together, preserving total probability.</li>
 </ol></div>
@@ -1724,7 +1783,7 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 63 ===== -->
 <section class="slide has-worked-solutions" id="m9p63" data-part="III">
-<p class="eyebrow you" data-min="1.0">Exercise</p><h2>Kernel density estimation</h2><p class="sub">What does a larger bandwidth change?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Use the same samples and a normalized Gaussian kernel. Increase h.</p><div class="eq">$$\hat p_h(x)=\frac1{nh}\sum_iK((x-x_i)/h)$$</div><dl class="gloss"><dt>x,x_i</dt><dd>query location and fixed observations</dd><dt>n,h</dt><dd>sample count and positive bandwidth</dd></dl><ol class="opts one"><li><i>A</i>Wider bumps, same total area<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>B</i>More total probability mass</li><li><i>C</i>Narrower bumps and more sharp peaks</li></ol></div></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="1.0">Exercise</p><h2>Kernel density estimation</h2><p class="sub">What does a larger bandwidth change?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Hold xᵢ∈{−2.2, −2, −1.8, 1.8, 2, 2.2} fixed. Increase h for a Gaussian kernel K of area 1. What changes?</p><div class="eq">$$\hat p_h(x)=\frac1{nh}\sum_iK((x-x_i)/h)$$</div><dl class="gloss"><dt>x,x_i</dt><dd>query location and fixed observations</dd><dt>n,h</dt><dd>sample count and positive bandwidth</dd></dl><ol class="opts one"><li><i>A</i>Wider bumps, same total area<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>B</i>More total probability mass</li><li><i>C</i>Narrower bumps and more sharp peaks</li></ol></div></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Follow the scale factors</h3>
@@ -1748,7 +1807,7 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 64 ===== -->
 <section class="slide" id="m9p64" data-part="III">
-<p class="eyebrow">Example</p><h2>Kernel density estimation</h2><p class="sub">The same actions support different apparent shapes</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">A density mode maximizes density height. Estimate it from actions ±1.8,±2,±2.2 using Gaussian kernels with bandwidths 0.25 and 2.</p><div class="eq">$$\hat m_h\in\arg\max_x\hat p_h(x)$$</div><dl class="gloss"><dt>m̂h</dt><dd>estimated density mode, dependent on h</dd><dt>h</dt><dd>bandwidth, in action units</dd></dl></div></div><figure><canvas id="m9p64c" width="460" height="320" aria-label="The same actions support different apparent shapes"></canvas></figure></div><p class="cite"><a href="https://www.stat.cmu.edu/~larry/=sml/densityestimation.pdf">Wasserman, 36-708 Density Estimation, §4; original example</a></p>
+<p class="eyebrow">Example</p><h2>Kernel density estimation</h2><p class="sub">The same actions support different apparent shapes</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">A density mode maximizes density height. Estimate it from actions ±1.8,±2,±2.2 using Gaussian kernels with bandwidths 0.25 and 2.</p><div class="eq">$$\hat m_h\in\arg\max_x\hat p_h(x)$$</div><dl class="gloss"><dt>p̂ₕ(x)</dt><dd>estimated density at action x</dd><dt>m̂h</dt><dd>a maximizing action</dd><dt>h</dt><dd>bandwidth in action units</dd></dl></div></div><figure><canvas id="m9p64c" width="460" height="320" aria-label="The same actions support different apparent shapes"></canvas></figure></div><p class="cite"><a href="https://www.stat.cmu.edu/~larry/=sml/densityestimation.pdf">Wasserman, 36-708 Density Estimation, §4; original example</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p64c"),"kde",64);</script>
 <!-- ===== 65 ===== -->
@@ -1782,11 +1841,11 @@ window.m9figure=function(cv,type,page){
 <script>m9figure(document.getElementById("m9p66c"),"softmax",66);</script>
 <!-- ===== 67 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p67" data-part="III">
-<p class="eyebrow">Derivation</p><h2>Stable probability computation</h2><p class="sub">A shared shift leaves softmax unchanged</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Multiply numerator and denominator by e⁻ᶜ. Choose c=maxⱼzⱼ.</p><div class="eq">$$q_i=\frac{e^{z_i-c}}{\sum_je^{z_j-c}}$$</div><dl class="gloss"><dt>c</dt><dd>largest finite logit</dd><dt>z_i−c</dt><dd>nonpositive shifted logit</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>Stable probability computation</h2><p class="sub">A shared shift leaves softmax unchanged</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Multiply numerator and denominator by e⁻ᶜ. Choose c=maxⱼzⱼ.</p><div class="eq">$$q_i=\frac{e^{z_i-c}}{\sum_je^{z_j-c}}$$</div><dl class="gloss"><dt>z_i,z_j</dt><dd>finite scores for classes i,j</dd><dt>q_i</dt><dd>probability for class i</dd><dt>c</dt><dd>maximum score</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
 <h3>Cancel a common exponential factor</h3>
-<p class="worked-variables">zᵢ are finite logits; c is any finite shared constant.</p>
+<p class="worked-variables">zᵢ is the finite score for class i, qᵢ its probability, and c any finite shared constant.</p>
 <ol class="worked-lines">
 <li>$q_i=\frac{e^{z_i}e^{-c}}{\sum_je^{z_j}e^{-c}}$.</li>
 <li>$=\frac{e^{z_i-c}}{\sum_je^{z_j-c}}$ by exponential multiplication.</li>
@@ -1810,7 +1869,7 @@ window.m9figure=function(cv,type,page){
 <script>m9figure(document.getElementById("m9p68c"),"softmax",68);</script>
 <!-- ===== 69 ===== -->
 <section class="slide has-worked-solutions" id="m9p69" data-part="III">
-<p class="eyebrow you" data-min="1.0">Exercise</p><h2>Stable probability computation</h2><p class="sub">Which change preserves the distribution?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">For finite logits z, compare two transformations before softmax.</p><ol class="opts one"><li><i>A</i>z→z+1000·1<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>B</i>z→2z</li><li><i>C</i>z→−z</li></ol></div></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="1.0">Exercise</p><h2>Stable probability computation</h2><p class="sub">Which change preserves the distribution?</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">For K real scores z, which change always preserves softmax in exact arithmetic? Here 1 is the K-vector of ones.</p><ol class="opts one"><li><i>A</i>z→z+1000·1<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>B</i>z→2z</li><li><i>C</i>z→−z</li></ol></div></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Factor the shared exponential</h3>
@@ -1834,7 +1893,7 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 70 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p70" data-part="III">
-<p class="eyebrow">Derivation</p><h2>Stable probability computation</h2><p class="sub">Log-sum-exp keeps the normalization in log space</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Log-sum-exp (LSE) is the natural logarithm of a sum of exponentials. Evaluate it using the largest finite logit c.</p><div class="eq">$$\operatorname{LSE}(z)=c+\log\sum_je^{z_j-c},\quad c=\max_jz_j$$</div><dl class="gloss"><dt>LSE(z)</dt><dd>log of the sum of exponentials</dd><dt>c</dt><dd>maximum finite logit</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>Stable probability computation</h2><p class="sub">Log-sum-exp keeps the normalization in log space</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Log-sum-exp (LSE) is the natural logarithm of a sum of exponentials. Evaluate it using the largest finite logit c.</p><div class="eq">$$\operatorname{LSE}(z)=c+\log\sum_je^{z_j-c},\quad c=\max_jz_j$$</div><dl class="gloss"><dt>z</dt><dd>vector of finite class scores</dd><dt>c</dt><dd>maximum score</dd><dt>LSE(z)</dt><dd>log of the sum of exponentials</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
 <h3>Factor before taking the logarithm</h3>
@@ -1858,11 +1917,11 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 71 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p71" data-part="III">
-<p class="eyebrow">Derivation</p><h2>Stable probability computation</h2><p class="sub">Compute log probabilities before exponentiating</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">For a known class y, use the log probability directly in cross entropy.</p><div class="eq">$$\log q_i=z_i-\operatorname{LSE}(z),\qquad\ell=-\log q_y$$</div><dl class="gloss"><dt>y</dt><dd>observed class index</dd><dt>ℓ</dt><dd>single-example negative log loss in nats</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>Stable probability computation</h2><p class="sub">Compute log probabilities before exponentiating</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">For a known class y, use the log probability directly in cross entropy.</p><div class="eq">$$\log q_i=z_i-\operatorname{LSE}(z),\qquad\ell=-\log q_y$$</div><dl class="gloss"><dt>z_i,q_i</dt><dd>score and probability for class i</dd><dt>LSE(z)</dt><dd>log-sum-exp of the scores</dd><dt>y</dt><dd>observed class</dd><dt>ℓ</dt><dd>negative log loss in nats</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
 <h3>Take the log of the softmax ratio</h3>
-<p class="worked-variables">qᵢ is the class probability and LSE(z)=logΣⱼexp(zⱼ).</p>
+<p class="worked-variables">For class i, zᵢ is its score and qᵢ its probability. LSE(z)=logΣⱼexp(zⱼ).</p>
 <ol class="worked-lines">
 <li>$\log q_i=\log e^{z_i}-\log\sum_je^{z_j}=z_i-\operatorname{LSE}(z)$.</li>
 <li>For the observed class y, $\ell=-\log q_y$.</li>
@@ -1905,7 +1964,7 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 73 ===== -->
 <section class="slide has-worked-solutions has-proof-derivation" id="m9p73" data-part="III">
-<p class="eyebrow">Derivation</p><h2>Stable probability computation</h2><p class="sub">The gradient of log-sum-exp is softmax</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Let z,q∈ℝᴷ be logit and probability columns. The one-hot target eᵧ has a 1 at class y and 0 elsewhere.</p><div class="eq">$$\frac{\partial}{\partial z_i}\log\sum_je^{z_j}=\frac{e^{z_i}}{\sum_je^{z_j}}=q_i$$</div><dl class="gloss"><dt>z</dt><dd>column vector of logits</dd><dt>gradient</dt><dd>column probability vector q</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
+<p class="eyebrow">Derivation</p><h2>Stable probability computation</h2><p class="sub">The gradient of log-sum-exp is softmax</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">For K classes, z,q∈ℝᴷ are score and probability columns. The one-hot target eᵧ has a 1 at observed class y and 0 elsewhere.</p><div class="eq">$$\frac{\partial}{\partial z_i}\log\sum_je^{z_j}=\frac{e^{z_i}}{\sum_je^{z_j}}=q_i$$</div><dl class="gloss"><dt>z</dt><dd>column vector of logits</dd><dt>gradient</dt><dd>column probability vector q</dd></dl></div></div></div><div class="worked-solutions proof-derivation">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Derivation 1 of 2">
 <p class="worked-progress">Derivation 1 / 2</p>
 <h3>Differentiate the scalar normalizer</h3>
@@ -1928,7 +1987,7 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 74 ===== -->
 <section class="slide has-worked-solutions" id="m9p74" data-part="III">
-<p class="eyebrow you" data-min="1.25">Exercise</p><h2>Stable probability computation</h2><p class="sub">The loss gradient changes the right scores</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">q=(0.7,0.2,0.1). The true class is 2. Use gradient descent on logits.</p><div class="eq">$$\nabla_z\ell=q-e_2,\qquad z_{new}=z-\eta\nabla_z\ell$$</div><dl class="gloss"><dt>e_2</dt><dd>one-hot target (0,1,0)</dd><dt>η</dt><dd>positive gradient-descent step size</dd></dl><ol class="opts one"><li><i>A</i>Increase all logits equally</li><li><i>B</i>Increase class 2, decrease classes 1 and 3<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>Decrease class 2, increase classes 1 and 3</li></ol></div></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="1.25">Exercise</p><h2>Stable probability computation</h2><p class="sub">The loss gradient changes the right scores</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">q=(0.7,0.2,0.1). The true class is 2. Use gradient descent on logits.</p><div class="eq">$$\nabla_z\ell=q-e_2,\qquad z_{new}=z-\eta\nabla_z\ell$$</div><dl class="gloss"><dt>z, z_new</dt><dd>logits before and after the update</dd><dt>ℓ</dt><dd>loss</dd><dt>e_2</dt><dd>one-hot target (0,1,0)</dd><dt>η</dt><dd>positive step size</dd></dl><ol class="opts one"><li><i>A</i>Increase all logits equally</li><li><i>B</i>Increase class 2, decrease classes 1 and 3<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>C</i>Decrease class 2, increase classes 1 and 3</li></ol></div></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Subtract the target</h3>
@@ -1952,21 +2011,21 @@ window.m9figure=function(cv,type,page){
 </section>
 <!-- ===== 75 ===== -->
 <section class="slide" id="m9p75" data-part="III">
-<p class="eyebrow">Setup</p><h2>Robot synthesis</h2><p class="sub">Choose the quantities before calculating them</p><div class="m9body"><div><p class="lead">Source p=(0.8,0.2), model q=(0.6,0.4). Plan 100 independent trials. Find H(p), H(p,q), KL, and the route-fraction standard error.</p></div><figure><canvas id="m9p75c" width="460" height="320" aria-label="Choose the quantities before calculating them"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.13</a></p>
+<p class="eyebrow">Setup</p><h2>Robot synthesis</h2><p class="sub">Choose the quantities before calculating them</p><div class="m9body"><div><p class="lead">Source p=(0.8,0.2), model q=(0.6,0.4). Plan 100 independent trials. Find entropy H(p), cross entropy H(p,q), KL from p to q, and the left-route fraction’s standard error.</p></div><figure><canvas id="m9p75c" width="460" height="320" aria-label="Choose the quantities before calculating them"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.13</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p75c"),"routes",75);</script>
 <!-- ===== 76 ===== -->
 <section class="slide" id="m9p76" data-part="III">
-<p class="eyebrow">Solution</p><h2>Robot synthesis</h2><p class="sub">Information and sampling answer different parts</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">p=(0.8,0.2), q=(0.6,0.4), n=100 independent trials.</p><div class="eq">$$H(p)\approx 0.722,\quad H(p,q)\approx 0.854,\quad D_{\rm KL}\approx 0.132$$</div><dl class="gloss"><dt>values</dt><dd>bits per route; exact source probabilities given</dd><dt>SE</dt><dd>sqrt(0.8·0.2/100)=0.04 for route frequency</dd></dl></div></div><figure><canvas id="m9p76c" width="460" height="320" aria-label="Information and sampling answer different parts"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.13</a></p>
+<p class="eyebrow">Solution</p><h2>Robot synthesis</h2><p class="sub">Information and sampling answer different parts</p><div class="m9body"><div><div class="ex"><p class="lbl">Course-created worked example</p><p class="lead">Source p=(0.8,0.2), model q=(0.6,0.4), both left/right. Fix n=100 independent trials.</p><div class="eq">$$H(p)\approx 0.722,\quad H(p,q)\approx 0.854,\quad D_{\rm KL}(p\Vert q)\approx 0.132$$</div><dl class="gloss"><dt>H(p)</dt><dd>source entropy</dd><dt>H(p,q)</dt><dd>cross entropy</dd><dt>D_KL</dt><dd>p-to-q divergence (all in bits)</dd><dt>SE</dt><dd>standard error of left-route fraction: √(0.8·0.2/100)=0.04</dd></dl></div></div><figure><canvas id="m9p76c" width="460" height="320" aria-label="Information and sampling answer different parts"></canvas></figure></div><p class="cite"><a href="https://www.deeplearningbook.org/contents/prob.html">Goodfellow et al., Deep Learning (2016), §3.13</a></p>
 </section>
 <script>m9figure(document.getElementById("m9p76c"),"compare",76);</script>
 <!-- ===== 77 ===== -->
 <section class="slide has-worked-solutions" id="m9p77" data-part="III">
-<p class="eyebrow you" data-min="2.0">Exercise</p><h2>Robot synthesis</h2><p class="sub">Evaluate a changed route frequency</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">Source changes to p=(0.2,0.8); model stays q=(0.6,0.4). Collect a fresh fixed evaluation.</p><ol class="opts one"><li><i>A</i>Entropy stays the same; cross entropy rises<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>B</i>Both quantities stay the same</li><li><i>C</i>Entropy must increase</li></ol></div></div></div><div class="worked-solutions">
+<p class="eyebrow you" data-min="2.0">Exercise</p><h2>Robot synthesis</h2><p class="sub">Evaluate a changed route frequency</p><div class="worked-question"><div class="m9body solo"><div><p class="lead">In left/right order, source p changes from (0.8,0.2) to (0.2,0.8). Model q stays (0.6,0.4). Compare entropy and cross entropy.</p><ol class="opts one"><li><i>A</i>Entropy stays the same; cross entropy rises<b class="ok step" data-step="3" data-handout="hide">✓</b></li><li><i>B</i>Both quantities stay the same</li><li><i>C</i>Entropy must increase</li></ol></div></div></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Preserve the source/model roles</h3>
-<p class="worked-variables">p=(0.2,0.8) generates routes; q=(0.6,0.4) is unchanged.</p>
+<p class="worked-variables">p swaps from (0.8,0.2) to (0.2,0.8); q=(0.6,0.4) is unchanged.</p>
 <ol class="worked-lines">
 <li>Swapping source labels leaves $H(p)\approx 0.721928$ bits.</li>
 <li>$H(p,q)=-0.2\log_20.6-0.8\log_20.4\approx 1.204936$.</li>

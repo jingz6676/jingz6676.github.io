@@ -466,7 +466,7 @@ window.m3anim = function (cv, draw, o) {
   cv.style.width = W + 'px';
   var g = cv.getContext('2d');
   var slide = cv.closest('.slide');
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var motionPreference = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)');
   var qprint = /[?&]print/.test(location.search), qsteps = /[?&]steps/.test(location.search);
   var qhandout = /[?&]handout/.test(location.search);
   var dur = (o.seconds || 4) * 1000, hold = (o.hold == null ? 0.6 : o.hold) * 1000;
@@ -769,23 +769,37 @@ window.m3anim = function (cv, draw, o) {
     else if (p < 2 * dur + hold) s = 1 - (p - dur - hold) / dur; else s = 0;
     return (1 - Math.cos(Math.PI * s)) / 2;
   }
-  var raf = 0, parked = false, t0 = null;
+  var raf = 0, parked = false, t0 = null, ready = false;
+  function active() { return !slide || slide.classList.contains('on'); }
+  function still() { return o.motion === false || qprint || qsteps || qhandout || (motionPreference && motionPreference.matches); }
+  function stop() {
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
+    t0 = null;
+  }
   function tick(ts) {
-    if (parked) { raf = 0; return; }
+    raf = 0;
+    if (parked || still() || !active()) { stop(); return; }
     if (t0 === null) t0 = ts;
-    if (!slide || slide.classList.contains('on') || document.body.classList.contains('print')) paint(phase(ts - t0));
+    paint(phase(ts - t0));
     raf = requestAnimationFrame(tick);
   }
-  var still = reduce || qprint;
+  function refresh() {
+    if (!ready || parked) return;
+    if (still()) { stop(); paint(rest); }
+    else if (active() && !raf) raf = requestAnimationFrame(tick);
+    else if (!active()) stop();
+  }
   (window.__deckGrids || (window.__deckGrids = [])).push({
-    still: function () { parked = true; if (raf) cancelAnimationFrame(raf); raf = 0; paint(rest); },
-    resume: function () { if (!parked || still) return; parked = false; t0 = null; raf = requestAnimationFrame(tick); }
+    still: function () { parked = true; stop(); paint(rest); },
+    resume: function () { parked = false; refresh(); }
   });
   if (slide && window.MutationObserver) {
-    new MutationObserver(function () { if (still || parked) paint(rest); })
-      .observe(slide, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    new MutationObserver(refresh).observe(slide, { attributes: true, attributeFilter: ['class'] });
+    new MutationObserver(refresh).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   }
-  function start() { if (still) paint(rest); else raf = requestAnimationFrame(tick); }
+  if (motionPreference) motionPreference.addEventListener('change', refresh);
+  function start() { ready = true; refresh(); }
   /* fonts first, or the first frames draw their labels in a fallback face */
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
 };
@@ -832,14 +846,13 @@ window.drawFlowFigure=function(id,kind,page){
  const cv=document.getElementById(id);if(!cv)return;
  const aliases={cover:'cloud',flowmap:'paths',field:'field',velocity:'pair_example',pair:'coupling',conditional_path:'conditional_gauss',risk_example:'risk',regression:'regression',linear_fit:'fit',euler_example:'euler',midpoint_example:'midpoint',coupling_cost:'coupling',chunk_example:'chunk',chunk_steps:'chunksteps',vla:'vla',recall:'recall',training:'training',bridge:'bridge',hierarchy:'hierarchy',losses:'losses',errors:'errors',conventions:'clocks'};
  kind=aliases[kind]||kind;
+ const motion=['cloud','paths','field','translate','expand','compress','affine','conditional_gauss','interpolate','pair_example'].includes(kind);
  m3anim(cv,function(g,t,k){
    const W=k.W,H=k.H,C=k.c;
    const label=(s,x,y,c=C.ink,size=18)=>k.text(s,[x,y],c,{size,align:'center'});
    const line=(a,b,c=C.dim,w=2)=>k.seg(a,b,c,w);
    const arrow=(a,b,c=C.out)=>k.arrow(a,b,c,2.4);
    const box=(s,x,y,w=150,h=58,c=C.in)=>{g.strokeStyle=c;g.fillStyle=C.panel;g.lineWidth=2;g.beginPath();g.roundRect(x-w/2,y-h/2,w,h,9);g.fill();g.stroke();s.split('|').forEach((a,i,arr)=>label(a,x,y+(i-(arr.length-1)/2)*22,c,17));};
-   const S=(x,y)=>[54+x*(W-92)/6,H-45-y*(H-90)/4];
-   const plot=(f,x0,x1,col)=>{let pts=[];for(let i=0;i<=120;i++){let x=x0+(x1-x0)*i/120;pts.push(S(x,f(x)));}k.poly(pts,col,2.6);};
    function axes(xlabel='state x',ylabel='density'){line([44,H-45],[W-20,H-45]);line([44,H-45],[44,30]);label(xlabel,W-70,H-18,C.dim,15);label(ylabel,85,18,C.dim,15);}
    if(['cloud','paths','field'].includes(kind)){
       label('noise / initial states',110,28,C.in);label('generated states',W-125,28,C.out);
@@ -853,12 +866,12 @@ window.drawFlowFigure=function(id,kind,page){
       label('illustrative trajectories in state space',W/2,H-12,C.dim,14);
    } else if(['translate','expand','compress','affine','conditional_gauss'].includes(kind)){
       axes('state x','density');
-      let tau=.05+.9*t,mu=0,sd=1,txt='';
+      let tau=t,mu=0,sd=1,txt='';
       if(kind==='translate'){mu=2*tau;sd=1;txt='mean = 2τ, variance = 1';}
       if(kind==='expand'){sd=Math.exp(.6*tau);txt='example: a = 0.6';}
       if(kind==='compress'){sd=Math.exp(-tau);txt='standard deviation = exp(−τ)';}
       if(kind==='affine'){mu=2*tau;sd=1+tau;txt='mean = 2τ, standard deviation = 1+τ';}
-      if(kind==='conditional_gauss'){mu=3*tau;sd=1-tau;tau=Math.min(tau,.82);mu=3*tau;sd=1-tau;txt='example: fixed data y = 3';}
+      if(kind==='conditional_gauss'){tau=.82*t;mu=3*tau;sd=1-tau;txt='example: fixed data y = 3';}
       const X=x=>48+(x+4)*(W-80)/10,Y=y=>H-45-y*(H-95)/2.5;
       function bell(m,s,c){let pts=[];for(let i=0;i<=160;i++){let x=-4+10*i/160;pts.push([X(x),Y(Math.exp(-.5*((x-m)/s)**2)/(s*Math.sqrt(2*Math.PI)))]);}k.poly(pts,c,2.5);}
       for(const x of [-4,-2,0,2,4,6]){line([X(x),H-45],[X(x),H-41],C.rule,1);label(String(x),X(x),H-27,C.dim,12);}
@@ -873,12 +886,30 @@ window.drawFlowFigure=function(id,kind,page){
       label('x₀ = (−1, 2)',110,25,C.in,17);label('x₁ = (3, 0)',W-115,H-35,C.out,17);label('τ = '+u.toFixed(2),W/2,H-14,C.dat,17);
       if(kind==='pair_example'){arrow(map(x),[map(x)[0]+62,map(x)[1]+32],C.ans);label('u = (4, −2)',W/2,55,C.ans,17);}
    } else if(kind==='crossing'){
-      const mid=[W/2,H/2];line([60,70],[W-60,H-70],C.in);line([60,H-70],[W-60,70],C.out);k.dot(mid,7,C.dat);arrow(mid,[mid[0]+65,mid[1]+65*(H-140)/(W-120)],C.in);arrow(mid,[mid[0]+65,mid[1]-65*(H-140)/(W-120)],C.out);label('same state and generation time',W/2,25,C.dat,17);label('different hidden pairs → different labels',W/2,H-22,C.dim,17);
+      const mid=[W/2,H/2], slope=(H-150)/(W-180);
+      arrow([64,H-45],[W-20,H-45],C.dim);arrow([64,H-45],[64,40],C.dim);
+      label('generation time τ',W-105,H-16,C.dim,15);label('state x',70,22,C.dim,15);
+      line([90,75],[W-90,H-75],C.in);line([90,H-75],[W-90,75],C.out);
+      line([mid[0],H-45],mid,C.rule,1);
+      k.dot(mid,7,C.dat);
+      arrow(mid,[mid[0]+65,mid[1]+65*slope],C.in);
+      arrow(mid,[mid[0]+65,mid[1]-65*slope],C.out);
+      label('same state and time; two target rates',W/2,26,C.dat,17);
    } else if(['risk','fit'].includes(kind)){
       axes('prediction / parameter',kind==='fit'?'training loss':'conditional risk');
       const opt=kind==='fit'?.8:1,fn=kind==='fit'?a=>.5*((a-2)**2+(2*a-1)**2):a=>(a-1)**2+3;
       const X=x=>50+(x+1)*(W-90)/4,Y=y=>H-44-y*(H-90)/12;
       let pts=[];for(let i=0;i<=100;i++){let x=-1+4*i/100;pts.push([X(x),Y(fn(x))]);}k.poly(pts,C.out,3);k.dot([X(opt),Y(fn(opt))],7,C.ans);label(kind==='fit'?'minimum at w = 0.8':'minimum at a = 1',W/2,28,C.ans,18);label('squared-error curve',W/2,H-10,C.dim,15);
+   } else if(kind==='euler_update'){
+      const a=[105,H-90], b=[W-105,92], foot=[b[0],a[1]];
+      arrow([62,H-56],[W-24,H-56],C.dim);arrow([62,H-56],[62,46],C.dim);
+      line(a,foot,C.rule,2);line(foot,b,C.rule,2);
+      arrow(a,b,C.out);
+      k.dot(a,6,C.in);k.dot(b,6,C.out);
+      label('xⱼ',a[0]+12,a[1]-16,C.in,17);label('xⱼ₊₁',b[0],b[1]-17,C.out,17);
+      label('step h',(a[0]+b[0])/2,a[1]+24,C.dim,17);
+      label('h × start rate',b[0]-73,(a[1]+b[1])/2+11,C.dim,16);
+      label('state x',84,25,C.dim,16);label('generation time τ',W-115,H-20,C.dim,16);
    } else if(['euler','midpoint'].includes(kind)){
       label('example: dx/dτ = x, x(0)=1',W/2,20,C.ink,18);
       const X=u=>60+u*(W-120),Y=x=>H-45-(x-1)*(H-100)/1.9;
@@ -908,6 +939,18 @@ window.drawFlowFigure=function(id,kind,page){
       label('start x=1',a[0]+10,a[1]-26,C.in,17);label('trial: x=1.25, τ=0.25',trial[0],trial[1]-30,C.dat,17);
       label('accepted: x=1.625, τ=0.5',out[0]-60,out[1]-20,C.out,17);
       label('k₁=1; half-step h/2',245,H-14,C.dat,16);label('k₂=1.25; full step from the original start',W-300,H-14,C.out,16);
+   } else if(kind==='pairings'){
+      const ys=[96,214];
+      for(let example=0;example<2;example++){
+        const x=40+example*W/2, right=x+W/2-80;
+        label(example?'Pairing B':'Pairing A',(x+right)/2,30,C.ink,18);
+        for(let row=0;row<2;row++){
+          line([x,ys[row]],[right,ys[example?1-row:row]],example?C.res:C.dat,2.5);
+          k.dot([x,ys[row]],6,C.in);k.dot([right,ys[row]],6,C.out);
+        }
+        label('noise',x,262,C.in,16);label('data',right,262,C.out,16);
+      }
+      label('Each dot keeps mass ½ in both pairings.',W/2,H-12,C.dim,16);
    } else if(kind==='coupling'){
       const ys=[H*.3,H*.7];label('sources',100,25,C.in,18);label('targets',W-100,25,C.out,18);
       [-1,1].forEach((x,i)=>{k.dot([105,ys[i]],7,C.in);label(String(x),65,ys[i],C.in,18);k.dot([W-105,ys[i]],7,C.out);label(String(x*2),W-65,ys[i],C.out,18);});
@@ -916,6 +959,18 @@ window.drawFlowFigure=function(id,kind,page){
       const X=u=>50+u*(W-100),Y=u=>H-50-u*(H-105);line([50,H-50],[W-35,H-50]);line([50,H-50],[50,35]);line([X(0),Y(0)],[X(1),Y(1)],C.out,3);line([X(0),Y(1)],[X(1),Y(0)],C.in,3);label('α=τ (data)',W-115,30,C.out,18);label('σ=1−τ (noise)',145,30,C.in,18);label('0',X(0),H-23,C.dim,16);label('1',X(1),H-23,C.dim,16);label('generation time τ',W/2,H-14,C.dim,16);
    } else if(kind==='score'){
       const center=W/2;box('density center',center,H/2,160,65,C.out);arrow([70,H/2],[center-90,H/2],C.ans);arrow([W-70,H/2],[center+90,H/2],C.ans);label('Gaussian score points toward its mean',W/2,36,C.ans,18);label('score = −(x−μ)/variance',W/2,H-40,C.dim,18);
+   } else if(kind==='stack_actions'){
+      const right=W-119;
+      ['first: aₖ','second: aₖ₊₁','last: k + H − 1'].forEach((s,i)=>{
+        const y=65+91*i;
+        box(s,109,y,150,49,C.in);
+        box(i===0?'aₖ':i===1?'aₖ₊₁':'last',right,y,90,49,C.out);
+        arrow([188,y],[right-64,y],C.dim);
+      });
+      k.poly([[right-49,33],[right-58,33],[right-58,278],[right-49,278]],C.out,2);
+      k.poly([[right+49,33],[right+58,33],[right+58,278],[right+49,278]],C.out,2);
+      label('…',right,215,C.dim,18);
+      label('H actions × dₐ coordinates',W/2,H-15,C.dim,16);
    } else if(['chunk','chunksteps'].includes(kind)){
       let vals=kind==='chunksteps'?[[-2,2],[-1,1.5],[0,1],[1,.5],[2,0]]:[[2,0]];
       vals.forEach((a,j)=>{let x=kind==='chunksteps'?50+j*(W-100)/4:W/2;box(a.join(' | '),x,H/2,kind==='chunksteps'?85:220,75,j===vals.length-1?C.out:C.dat);if(kind==='chunksteps')label('j='+j,x,H/2+60,C.dim,15);});
@@ -928,7 +983,7 @@ window.drawFlowFigure=function(id,kind,page){
       if(kind==='training')arrow([W-85,130],[85,195],C.dim);
       if(kind==='map'){arrow([W-85,130],[85,195],C.dim);label('fixed observation + language enter the regressor',W/2,H-14,C.dim,15);}
    }
- },{seconds:5,rest:.5,hold:1});
+ },{seconds:5,rest:.5,hold:1,mode:'loop',motion});
 };
 
 
@@ -979,35 +1034,35 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p05">
 <p class="eyebrow">Motivation</p>
 <h2>Probability Flows</h2><p class="sub">The target is a distribution</p>
-<div class="cols w5050"><div class="m12copy"><div class="eq">$$X_0\sim p_0,\qquad X_1\sim p_{\rm data}$$</div><dl class="gloss"><dt>where</dt><dd>$X_0,X_1\in\mathbb R^d$: random vectors; $p_0$: easy noise law; $p_{\rm data}$: data law.</dd></dl></div><figure><canvas id="m12p05c" width="560" height="320" role="img" aria-label="The target is a distribution: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p05c","cloud",5);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §2, Eqs. (1)–(4)</a></p>
+<div class="cols w5050"><div class="m12copy"><div class="eq">$$X_0\sim p_0,\qquad X_1\sim p_{\rm data}$$</div><dl class="gloss"><dt>where</dt><dd>$X_0,X_1\in\mathbb R^d$: random vectors with $d$ coordinates. $p_0$: noise law; $p_{\rm data}$: data law.</dd></dl></div><figure><canvas id="m12p05c" width="560" height="320" role="img" aria-label="The target is a distribution: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p05c","cloud",5);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §2, Eqs. (1)–(4)</a></p>
 </section>
 
 <!-- ==================== 6 ==================== -->
 <section class="slide" data-part="IV" id="m12p06">
 <p class="eyebrow">Definition</p>
 <h2>Probability Flows</h2><p class="sub">A learned velocity field</p>
-<div class="cols w5050"><div class="m12copy"><p class="m12-definition">A velocity field assigns a rate vector to each state and generation time.</p><div class="eq">$$\frac{dx_\tau}{d\tau}=v_\theta(x_\tau,\tau),\quad x_0\sim p_0$$</div><dl class="gloss"><dt>where</dt><dd>$x_\tau,v_\theta\in\mathbb R^d$; $\theta$: fixed learned parameters during sampling.</dd></dl></div><figure><canvas id="m12p06c" width="560" height="320" role="img" aria-label="A learned velocity field: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p06c","field",6);</script></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §2.1, Eqs. (1)–(2), footnote 1</a></p>
+<div class="cols w5050"><div class="m12copy"><p class="m12-definition">A velocity field assigns a rate vector to each state and generation time.</p><div class="eq">$$\frac{dx_\tau}{d\tau}=v_\theta(x_\tau,\tau),\quad x_0\sim p_0$$</div><dl class="gloss"><dt>where</dt><dd>$x_\tau\in\R^d$: candidate at time $\tau\in[0,1]$. $v_\theta$: learned rate; $x_0$: initial draw from $p_0$; $\theta$: fixed weights.</dd></dl></div><figure><canvas id="m12p06c" width="560" height="320" role="img" aria-label="A learned velocity field: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p06c","field",6);</script></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §2.1, Eqs. (1)–(2), footnote 1</a></p>
 </section>
 
 <!-- ==================== 7 ==================== -->
 <section class="slide" data-part="IV" id="m12p07">
 <p class="eyebrow">Definition</p>
 <h2>Probability Flows</h2><p class="sub">The flow map collects trajectories</p>
-<div class="cols w5050"><div class="m12copy"><p class="m12-definition">A flow map returns the state reached from an initial point after integrating the velocity field.</p><div class="eq">$$\phi_\tau(x_0)=x_\tau,\qquad \phi_0(x_0)=x_0$$</div><dl class="gloss"><dt>where</dt><dd>$\phi_\tau:\mathbb R^d\to\mathbb R^d$: map from an initial point to its state at time $\tau$.</dd></dl></div><figure><canvas id="m12p07c" width="560" height="320" role="img" aria-label="The flow map collects trajectories: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p07c","flowmap",7);</script></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §2.1, Eqs. (1)–(2), footnote 1</a></p>
+<div class="cols w5050"><div class="m12copy"><p class="m12-definition">A flow map returns the state reached from an initial point after integrating the velocity field.</p><div class="eq">$$\phi_\tau(x_0)=x_\tau,\qquad \phi_0(x_0)=x_0$$</div><dl class="gloss"><dt>where</dt><dd>$x_0$: initial point; $x_\tau$: point at time $\tau$. $\phi_\tau:\mathbb R^d\to\mathbb R^d$ on the domain of a well-posed flow.</dd></dl></div><figure><canvas id="m12p07c" width="560" height="320" role="img" aria-label="The flow map collects trajectories: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p07c","flowmap",7);</script></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §2.1, Eqs. (1)–(2), footnote 1</a></p>
 </section>
 
 <!-- ==================== 8 ==================== -->
 <section class="slide" data-part="IV" id="m12p08">
 <p class="eyebrow">Example</p>
 <h2>Probability Flows</h2><p class="sub">Worked example: translation</p>
-<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}v(x,\tau)=2,\quad \phi_\tau(x_0)=x_0+2\tau \\[6pt] x_\tau-x_0=\int_0^\tau2\,ds=2\tau \\[6pt] \dot x_\tau=2,\quad\phi_0(x_0)=x_0;\quad X_\tau\sim\N(2\tau,1)\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$X_0\sim\N(0,1)$; $x_0,x_\tau\in\mathbb R$: realized states; rate $2$ per unit generation time.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §2, Eqs. (1)–(4)</a></p>
+<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}v(x,\tau)=2,\quad \phi_\tau(x_0)=x_0+2\tau \\[6pt] x_\tau-x_0=\int_0^\tau2\,ds=2\tau \\[6pt] \dot x_\tau=2,\quad\phi_0(x_0)=x_0;\quad X_\tau\sim\N(2\tau,1)\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$x_0,x_\tau$: scalar samples; $\tau$: generation time. Start with $X_0\sim\N(0,1)$, mean 0 and variance 1.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §2, Eqs. (1)–(4)</a></p>
 </section>
 
 <!-- ==================== 9 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p09">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Probability Flows</h2><p class="sub">Transfer: a different velocity</p>
-<div class="worked-question"><p class="q">$X_0\sim\mathcal N(1,4)$ and $dx_\tau/d\tau=-3$. Find the law at $\tau=1$.</p><ol class="opts one"><li><i>A</i><span>Gaussian mean −2, variance 4</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>Gaussian mean −2, variance 16</span></li><li><i>C</i><span>Gaussian mean 4, variance 4</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">The initial law is $X_0\sim\N(1,4)$ (variance 4). Each state $x_\tau$ has velocity $dx_\tau/d\tau=-3$. Find the law at generation time $\tau=1$.</p><ol class="opts one"><li><i>A</i><span>Gaussian mean −2, variance 4</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>Gaussian mean −2, variance 16</span></li><li><i>C</i><span>Gaussian mean 4, variance 4</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Integrate before transforming the law</h3>
@@ -1033,35 +1088,35 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p10">
 <p class="eyebrow">Derivation</p>
 <h2>Probability Flows</h2><p class="sub">Expansion changes density</p>
-<div class="m12-derivation"><div class="eq">$$\begin{gathered}x_\tau=e^{a\tau}x_0,\qquad p_\tau(x)=e^{-a\tau}p_0(e^{-a\tau}x) \\[6pt] \dot x=ax\ \Rightarrow\ x=e^{a\tau}x_0,\quad x_0=e^{-a\tau}x \\[6pt] p_\tau(x)\,dx=p_0(e^{-a\tau}x)e^{-a\tau}\,dx\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$a\in\mathbb R$: fixed rate; $p_\tau$: scalar density; $x$: evaluation point.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §2, Eqs. (1)–(4)</a></p>
+<div class="m12-derivation"><div class="eq">$$\begin{gathered}x_\tau=e^{a\tau}x_0,\qquad p_\tau(x)=e^{-a\tau}p_0(e^{-a\tau}x) \\[6pt] \dot x=ax\ \Rightarrow\ x=e^{a\tau}x_0,\quad x_0=e^{-a\tau}x \\[6pt] p_\tau(x)\,dx=p_0(e^{-a\tau}x)e^{-a\tau}\,dx\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$a$: fixed rate; $\tau$: generation time; $x_0$: initial state; $x$: evaluation point. $p_0,p_\tau$: initial and current densities.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §2, Eqs. (1)–(4)</a></p>
 </section>
 
 <!-- ==================== 11 ==================== -->
 <section class="slide" data-part="IV" id="m12p11">
 <p class="eyebrow">Example</p>
 <h2>Probability Flows</h2><p class="sub">Compression preserves total probability</p>
-<div class="cols w5050"><div class="m12copy"><div class="eq">$$X_\tau=e^{-\tau}X_0,\quad X_0\sim\mathcal N(0,1)$$</div><dl class="gloss"><dt>where</dt><dd>$X_\tau$: scalar random state; $\operatorname{Var}(X_\tau)=e^{-2\tau}$.</dd></dl></div><figure><canvas id="m12p11c" width="560" height="320" role="img" aria-label="Compression preserves total probability: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p11c","compress",11);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §2, Eqs. (1)–(4)</a></p>
+<div class="cols w5050"><div class="m12copy"><p class="m12-definition">Standard deviation: $e^{-\tau}$. Variance: $e^{-2\tau}$. Total area: 1.</p><div class="eq">$$X_\tau=e^{-\tau}X_0,\quad X_0\sim\mathcal N(0,1)$$</div><dl class="gloss"><dt>where</dt><dd>$X_0$: initial random state; $X_\tau$: state at time $\tau$. $\N(0,1)$ has mean 0 and variance 1.</dd></dl></div><figure><canvas id="m12p11c" width="560" height="320" role="img" aria-label="Compression preserves total probability: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p11c","compress",11);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §2, Eqs. (1)–(4)</a></p>
 </section>
 
 <!-- ==================== 12 ==================== -->
 <section class="slide" data-part="IV" id="m12p12">
 <p class="eyebrow">Derivation</p>
 <h2>Probability Flows</h2><p class="sub">Probability enters and leaves an interval</p>
-<div class="cols w5050"><div class="m12copy"><p class="m12-definition">Probability flux is the signed probability crossing a boundary per unit generation time.</p><div class="eq">$$\frac{d}{d\tau}\int_a^bp_\tau(x)\,dx=j_\tau(a)-j_\tau(b)$$</div><dl class="gloss"><dt>where</dt><dd>$[a,b]$: fixed interval; $j_\tau(x)=p_\tau(x)v(x,\tau)$: probability flux.</dd></dl></div><figure><canvas id="m12p12c" width="560" height="320" role="img" aria-label="Probability enters and leaves an interval: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p12c","flux",12);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., Appendix B, Eq. (26)</a></p>
+<div class="cols w5050"><div class="m12copy"><p class="m12-definition">Probability flux is the signed probability crossing a boundary per unit generation time.</p><div class="eq">$$\frac{d}{d\tau}\int_a^bp_\tau(x)\,dx=j_\tau(a)-j_\tau(b)$$</div><dl class="gloss"><dt>where</dt><dd>$[a,b]$: fixed interval; $p_\tau(x)$: density at $x$ and time $\tau$; $v(x,\tau)$: signed rate; $j_\tau=p_\tau v$: flux.</dd></dl></div><figure><canvas id="m12p12c" width="560" height="320" role="img" aria-label="Probability enters and leaves an interval: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p12c","flux",12);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., Appendix B, Eq. (26)</a></p>
 </section>
 
 <!-- ==================== 13 ==================== -->
 <section class="slide" data-part="IV" id="m12p13">
 <p class="eyebrow">Derivation</p>
 <h2>Probability Flows</h2><p class="sub">Local probability conservation</p>
-<div class="m12-derivation"><div class="eq">$$\begin{gathered}\partial_\tau p_\tau(x)=-\partial_x[p_\tau(x)v(x,\tau)] \\[6pt] j(a)-j(b)=-\int_a^b\partial_xj(x)\,dx \\[6pt] \int_a^b[\partial_\tau p+\partial_x(pv)]\,dx=0 \\[6pt] \partial_\tau p=-\partial_x(pv),\qquad\partial_\tau p+\nabla\!\cdot(pv)=0\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$p=p_\tau(x)$: density; $v=v(x,\tau)$: rate; $j=pv$: flux. Smooth $p,v$; any $[a,b]$.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., Appendix B, Eq. (26)</a></p>
+<div class="m12-derivation"><div class="eq">$$\begin{gathered}\partial_\tau\int_a^b p\,dx=j(a)-j(b) \\[6pt] j(a)-j(b)=-\int_a^b\partial_xj\,dx \\[6pt] \int_a^b[\partial_\tau p+\partial_x(pv)]\,dx=0 \\[6pt] \partial_\tau p=-\partial_xj,\ \partial_\tau p+\nabla\cdot j=0\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$x,\tau$: position/time; $p,v$: smooth density/rate; $j=pv$: flux. Fixed $[a,b]$; $\nabla\cdot$: divergence.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., Appendix B, Eq. (26)</a></p>
 </section>
 
 <!-- ==================== 14 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p14">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Probability Flows</h2><p class="sub">Does constant velocity freeze density?</p>
-<div class="worked-question"><p class="q">$p_\tau(x)=p_0(x-2\tau)$, $v=2$. At a fixed $x$, does density generally stay constant?</p><ol class="opts one"><li><i>A</i><span>Yes, because velocity is constant.</span></li><li><i>B</i><span>No, because the density profile moves.</span><b class="ok step" data-step="3">✓</b></li><li><i>C</i><span>No, because total probability grows.</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">A smooth starting density $p_0$ translates at rate $v=2$: $p_\tau(x)=p_0(x-2\tau)$. At a fixed position $x$, does density stay constant as $\tau$ changes?</p><ol class="opts one"><li><i>A</i><span>Yes, because velocity is constant.</span></li><li><i>B</i><span>No, because the density profile moves.</span><b class="ok step" data-step="3">✓</b></li><li><i>C</i><span>No, because total probability grows.</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Differentiate the translated profile</h3>
@@ -1087,14 +1142,14 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p15">
 <p class="eyebrow">Example</p>
 <h2>Probability Flows</h2><p class="sub">Integrated example: a moving Gaussian</p>
-<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}X_\tau=2\tau+(1+\tau)X_0,\quad X_0\sim\N(0,1) \\[6pt] \dot x_\tau=2+x_0,\qquad x_0=\frac{x_\tau-2\tau}{1+\tau} \\[6pt] v(x,\tau)=2+\frac{x-2\tau}{1+\tau} \\[6pt] X_1=2+2X_0\sim\N(2,4)\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$\mu_\tau=2\tau$; $s_\tau=1+\tau&gt;0$: standard deviation.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §2; Goodfellow et al., §3.8</a></p>
+<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}X_\tau=2\tau+(1+\tau)X_0,\quad X_0\sim\N(0,1) \\[6pt] \dot x_\tau=2+x_0,\qquad x_0=\frac{x_\tau-2\tau}{1+\tau} \\[6pt] v(x,\tau)=2+\frac{x-2\tau}{1+\tau} \\[6pt] X_1=2+2X_0\sim\N(2,4)\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$X_0,X_\tau$: initial/current random states; $x_0,x_\tau$: sample values; $\tau$: time. Scale $1+\tau&gt;0$.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §2; Goodfellow et al., §3.8</a></p>
 </section>
 
 <!-- ==================== 16 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p16">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Probability Flows</h2><p class="sub">Transfer: contracting toward a target mean</p>
-<div class="worked-question"><p class="q">$X_\tau=3\tau+(1-\tau/2)X_0$, $X_0\sim\mathcal N(0,4)$. Find mean and variance at $\tau=1$.</p><ol class="opts one"><li><i>A</i><span>Mean 3, variance 1</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>Mean 3, variance 2</span></li><li><i>C</i><span>Mean 0, variance 1</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Initial $X_0\sim\N(0,4)$ has variance 4. The state at generation time $\tau$ is $X_\tau=3\tau+(1-\tau/2)X_0$. Find mean and variance at $\tau=1$.</p><ol class="opts one"><li><i>A</i><span>Mean 3, variance 1</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>Mean 3, variance 2</span></li><li><i>C</i><span>Mean 0, variance 1</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Apply affine moment rules</h3>
@@ -1120,7 +1175,7 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p17">
 <p class="eyebrow">Motivation</p>
 <h2>Conditional Paths</h2><p class="sub">A training pair supplies both endpoints</p>
-<div class="m12copy"><p class="m12-definition">A coupling is a joint law for two endpoints with specified individual distributions.</p><div class="eq">$$(X_0,X_1)\sim\pi,\qquad \pi_0=p_0,\ \pi_1=p_{\rm data}$$</div><dl class="gloss"><dt>where</dt><dd>$\pi$: joint pairing law; $\pi_0,\pi_1$: its two marginals, not model names.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §3.2.2</a></p>
+<div class="m12copy"><p class="m12-definition">A coupling is a joint law for two endpoints with specified individual distributions.</p><div class="eq">$$(X_0,X_1)\sim\pi,\qquad \pi_0=p_0,\ \pi_1=p_{\rm data}$$</div><dl class="gloss"><dt>where</dt><dd>$X_0$: noise endpoint; $X_1$: data endpoint. $\pi$: joint law; its marginals $\pi_0,\pi_1$ give the individual laws $p_0,p_{\rm data}$.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §3.2.2</a></p>
 </section>
 
 <!-- ==================== 18 ==================== -->
@@ -1134,21 +1189,21 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p19">
 <p class="eyebrow">Derivation</p>
 <h2>Conditional Paths</h2><p class="sub">The target velocity is an endpoint difference</p>
-<div class="m12-derivation"><div class="eq">$$\begin{gathered}U=\frac{dX_\tau}{d\tau}=-X_0+X_1 \\[6pt] \frac{d}{d\tau}[(1-\tau)x_0]=-x_0,\qquad\frac{d}{d\tau}[\tau x_1]=x_1 \\[6pt] u=x_1-x_0,\qquad\Delta x=\Delta\tau\,u\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$U\in\mathbb R^d$: target rate for a fixed pair; endpoints stay fixed in this derivative.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §3.2.2</a></p>
+<div class="m12-derivation"><div class="eq">$$\begin{gathered}U=\frac{dX_\tau}{d\tau}=-X_0+X_1 \\[6pt] \frac{d}{d\tau}[(1-\tau)x_0]=-x_0,\qquad\frac{d}{d\tau}[\tau x_1]=x_1 \\[6pt] u=x_1-x_0,\qquad\Delta x=\Delta\tau\,u\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$X_0,X_1$: fixed endpoints for this derivative; $X_\tau$: intermediate state; $\tau$: generation time; $U\in\mathbb R^d$: target rate.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §3.2.2</a></p>
 </section>
 
 <!-- ==================== 20 ==================== -->
 <section class="slide" data-part="IV" id="m12p20">
 <p class="eyebrow">Example</p>
 <h2>Conditional Paths</h2><p class="sub">Worked example: a 2D pair</p>
-<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}x_0=\begin{bmatrix}-1\\2\end{bmatrix},\quad x_1=\begin{bmatrix}3\\0\end{bmatrix},\quad \tau=\tfrac14 \\[6pt] u=(3-(-1),\,0-2)^T=(4,-2)^T \\[6pt] x_{1/4}=(-1,2)^T+\tfrac14(4,-2)^T=(0,3/2)^T \\[6pt] x_{1/4}+\tfrac34u=(3,0)^T=x_1\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$x_0$: noise draw; $x_1$: data vector; $x_\tau$: training input; $u$: velocity target.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §3.2.2</a></p>
+<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}x_0=\begin{bmatrix}-1\\2\end{bmatrix},\quad x_1=\begin{bmatrix}3\\0\end{bmatrix},\quad \tau=\tfrac14 \\[6pt] u=(3-(-1),\,0-2)^T=(4,-2)^T \\[6pt] x_{1/4}=(-1,2)^T+\tfrac14(4,-2)^T=(0,3/2)^T \\[6pt] x_{1/4}+\tfrac34u=(3,0)^T=x_1\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$x_0$: noise; $x_1$: data; $x_\tau$: state at generation time $\tau$; $u$: target rate.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §3.2.2</a></p>
 </section>
 
 <!-- ==================== 21 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p21">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Conditional Paths</h2><p class="sub">Transfer: another pair</p>
-<div class="worked-question"><p class="q">$x_0=(2,-1)^T$, $x_1=(-2,3)^T$, $\tau=1/4$. Choose $(x_\tau,u)$.</p><ol class="opts one"><li><i>A</i><span>((1, 0), (−4, 4))</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>((−1, 2), (−4, 4))</span></li><li><i>C</i><span>((1, 0), (−1, 1))</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Noise $x_0=(2,-1)^T$, data $x_1=(-2,3)^T$, generation time $\tau=1/4$. Choose the intermediate state $x_\tau$ and target velocity $u$.</p><ol class="opts one"><li><i>A</i><span>((1, 0), (−4, 4))</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>((−1, 2), (−4, 4))</span></li><li><i>C</i><span>((1, 0), (−1, 1))</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Compute the rate, then the state</h3>
@@ -1173,14 +1228,14 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p22">
 <p class="eyebrow">Definition</p>
 <h2>Conditional Paths</h2><p class="sub">Fixing data leaves a Gaussian noise cloud</p>
-<div class="cols w5050"><div class="m12copy"><p class="m12-definition">A conditional path describes the random intermediate state after fixing a data endpoint.</p><div class="eq">$$X_\tau\mid X_1=y\sim\mathcal N(\tau y,(1-\tau)^2I)$$</div><dl class="gloss"><dt>where</dt><dd>$X_0\sim\mathcal N(0,I)$ independent of $X_1$; $y\in\mathbb R^d$ fixed; $\tau&lt;1$.</dd></dl></div><figure><canvas id="m12p22c" width="560" height="320" role="img" aria-label="Fixing data leaves a Gaussian noise cloud: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p22c","conditional_gauss",22);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §4, Eqs. (10)–(14)</a></p>
+<div class="cols w5050"><div class="m12copy"><p class="m12-definition">A conditional path describes the random intermediate state after fixing a data endpoint.</p><div class="eq">$$X_\tau\mid X_1=y\sim\mathcal N(\tau y,(1-\tau)^2I)$$</div><dl class="gloss"><dt>where</dt><dd>$X_0\sim\mathcal N(0,I)$ independent of $X_1$; $I$: identity covariance. Fixed $y\in\mathbb R^d$; $0\leq\tau&lt;1$.</dd></dl></div><figure><canvas id="m12p22c" width="560" height="320" role="img" aria-label="Fixing data leaves a Gaussian noise cloud: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p22c","conditional_gauss",22);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §4, Eqs. (10)–(14)</a></p>
 </section>
 
 <!-- ==================== 23 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p23">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Conditional Paths</h2><p class="sub">Is the noise coefficient a variance?</p>
-<div class="worked-question"><p class="q">$X_0\sim\mathcal N(0,1)$, fixed $y=4$, $X_\tau=(1-\tau)X_0+\tau y$. Use $\tau=1/2$.</p><ol class="opts one"><li><i>A</i><span>Mean 2, variance 1/2</span></li><li><i>B</i><span>Mean 2, variance 1/4</span><b class="ok step" data-step="3">✓</b></li><li><i>C</i><span>Mean 4, variance 1/4</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Noise $X_0\sim\N(0,1)$, fixed data $y=4$. The state is $X_\tau=(1-\tau)X_0+\tau y$. Find its mean and variance at time $\tau=1/2$.</p><ol class="opts one"><li><i>A</i><span>Mean 2, variance 1/2</span></li><li><i>B</i><span>Mean 2, variance 1/4</span><b class="ok step" data-step="3">✓</b></li><li><i>C</i><span>Mean 4, variance 1/4</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Transform the standard Gaussian</h3>
@@ -1206,7 +1261,7 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide has-worked-solutions" data-part="IV" id="m12p24">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Conditional Paths</h2><p class="sub">Can we use the endpoint during sampling?</p>
-<div class="worked-question"><p class="q">Training stores $(x_0,x_1,\tau)$ and constructs $x_\tau$. A new generation call has only noise and an observation.</p><ol class="opts one"><li><i>A</i><span>Give the network the unknown x₁.</span></li><li><i>B</i><span>Use x₁−x₀ directly at every step.</span></li><li><i>C</i><span>Predict velocity from xτ, τ and observation.</span><b class="ok step" data-step="2">✓</b></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Training uses noise $x_0$, demonstration $x_1$ and generation time $\tau$ to form the candidate $x_\tau$. A new sampling call has only noise and an observation.</p><ol class="opts one"><li><i>A</i><span>Give the network the unknown x₁.</span></li><li><i>B</i><span>Use x₁−x₀ directly at every step.</span></li><li><i>C</i><span>Predict velocity from xτ, τ and observation.</span><b class="ok step" data-step="2">✓</b></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
 <p class="worked-progress">Solution 1 / 1</p>
 <h3>Separate supervision from inputs</h3>
@@ -1224,21 +1279,21 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p25">
 <p class="eyebrow">Derivation</p>
 <h2>Conditional Paths</h2><p class="sub">A conditional field can eliminate the noise</p>
-<div class="m12-derivation"><div class="eq">$$\begin{gathered}u(x,\tau\mid y)=\frac{y-x}{1-\tau},\quad \tau&lt;1 \\[6pt] x_0=\frac{x-\tau y}{1-\tau} \\[6pt] y-x_0=\frac{(1-\tau)y-x+\tau y}{1-\tau}=\frac{y-x}{1-\tau}\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$x=(1-\tau)x_0+\tau y$; $u=y-x_0$; fixed endpoint $y$.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §4, Eqs. (10)–(14)</a></p>
+<div class="m12-derivation"><div class="eq">$$\begin{gathered}u(x,\tau\mid y)=\frac{y-x}{1-\tau},\quad \tau&lt;1 \\[6pt] x_0=\frac{x-\tau y}{1-\tau} \\[6pt] y-x_0=\frac{(1-\tau)y-x+\tau y}{1-\tau}=\frac{y-x}{1-\tau}\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$x_0$: initial noise; $y$: fixed data; $x=(1-\tau)x_0+\tau y$: state; $u=y-x_0$: rate.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §4, Eqs. (10)–(14)</a></p>
 </section>
 
 <!-- ==================== 26 ==================== -->
 <section class="slide" data-part="IV" id="m12p26">
 <p class="eyebrow">Motivation</p>
 <h2>Conditional Paths</h2><p class="sub">One input can have several target velocities</p>
-<div class="cols w5050"><div class="m12copy"><div class="eq">$$U=X_1-X_0,\qquad (X_\tau,\tau)=(x,\tau)$$</div><dl class="gloss"><dt>where</dt><dd>$U$: random target under endpoint pairing; $x$: shared current location.</dd></dl></div><figure><canvas id="m12p26c" width="560" height="320" role="img" aria-label="One input can have several target velocities: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p26c","crossing",26);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §3.1, Eq. (8)</a></p>
+<div class="cols w5050"><div class="m12copy"><div class="eq">$$U=X_1-X_0,\qquad X_\tau=x$$</div><dl class="gloss"><dt>where</dt><dd>$X_0,X_1$: paired endpoints; $X_\tau$: training state at time $\tau$; $x$: shared location; $U$: random target rate.</dd></dl></div><figure><canvas id="m12p26c" width="560" height="320" role="img" aria-label="One input can have several target velocities: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p26c","crossing",26);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §3.1, Eq. (8)</a></p>
 </section>
 
 <!-- ==================== 27 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p27">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Conditional Paths</h2><p class="sub">Which average does the field need?</p>
-<div class="worked-question"><p class="q">At a fixed $(x,\tau)$, velocity targets are $+2$ with probability $3/4$ and $-2$ with probability $1/4$.</p><ol class="opts one"><li><i>A</i><span>The unconditional endpoint average.</span></li><li><i>B</i><span>The target mean given this x and τ.</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>Always the most frequent target exactly.</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">At a fixed state $x$ and generation time $\tau$, target rates are $+2$ with probability $3/4$ and $-2$ with probability $1/4$. Which average should the model predict?</p><ol class="opts one"><li><i>A</i><span>The unconditional endpoint average.</span></li><li><i>B</i><span>The target mean given this x and τ.</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>Always the most frequent target exactly.</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
 <p class="worked-progress">Solution 1 / 1</p>
 <h3>Use the input-conditioned target law</h3>
@@ -1256,35 +1311,35 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p28">
 <p class="eyebrow">Definition</p>
 <h2>Learning the Velocity</h2><p class="sub">Squared error compares rates</p>
-<div class="cols w5050"><div class="m12copy"><p class="m12-definition">Conditional flow matching trains a velocity field against labels from sampled conditional paths.</p><div class="eq">$$\mathcal L(\theta)=\mathbb E\|v_\theta(X_\tau,\tau)-U\|^2$$</div><dl class="gloss"><dt>where</dt><dd>$U=X_1-X_0$; expectation over endpoint pairs and sampled time; $\theta$: trainable weights. MSE: mean squared error.</dd></dl></div><figure><canvas id="m12p28c" width="560" height="320" role="img" aria-label="Squared error compares rates: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p28c","training",28);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §3.2, Eq. (9)</a></p>
+<div class="cols w5050"><div class="m12copy"><p class="m12-definition">Conditional flow matching trains a velocity field against labels from sampled conditional paths.</p><div class="eq">$$\mathcal L(\theta)=\mathbb E\|v_\theta(X_\tau,\tau)-U\|^2$$</div><dl class="gloss"><dt>where</dt><dd>$X_\tau$: state at time $\tau$; $U=X_1-X_0$: target rate; $v_\theta$: predicted rate; $\theta$: weights.</dd></dl></div><figure><canvas id="m12p28c" width="560" height="320" role="img" aria-label="Squared error compares rates: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p28c","training",28);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §3.2, Eq. (9)</a></p>
 </section>
 
 <!-- ==================== 29 ==================== -->
 <section class="slide" data-part="IV" id="m12p29">
 <p class="eyebrow">Derivation</p>
 <h2>Learning the Velocity</h2><p class="sub">Derivation: the best scalar prediction</p>
-<div class="m12-derivation"><div class="eq">$$\begin{gathered}R(a)=\E[(a-U)^2\mid x,\tau] \\[6pt] R(a)=a^2-2a\E[U\mid x,\tau]+\E[U^2\mid x,\tau] \\[6pt] R^{\prime}(a)=2a-2\E[U\mid x,\tau] \\[6pt] a^*=\E[U\mid x,\tau],\qquad R^{\prime\prime}(a)=2&gt;0\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$a\in\mathbb R$: candidate prediction; conditional target has a finite second moment.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §3.2, Eq. (9)</a></p>
+<div class="m12-derivation"><div class="eq">$$\begin{gathered}R(a)=\E[(a-U)^2\mid x,\tau] \\[6pt] R(a)=a^2-2a\E[U\mid x,\tau]+\E[U^2\mid x,\tau] \\[6pt] R^{\prime}(a)=2a-2\E[U\mid x,\tau] \\[6pt] a^*=\E[U\mid x,\tau],\qquad R^{\prime\prime}(a)=2&gt;0\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$a$: scalar prediction; $U$: target with finite second moment; $x,\tau$: fixed input; $R$: risk.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §3.2, Eq. (9)</a></p>
 </section>
 
 <!-- ==================== 30 ==================== -->
 <section class="slide" data-part="IV" id="m12p30">
 <p class="eyebrow">Result</p>
 <h2>Learning the Velocity</h2><p class="sub">The vector result is coordinatewise</p>
-<div class="m12-derivation"><p class="m12-definition">A conditional mean averages only the targets compatible with the given input.</p><div class="eq">$$\begin{gathered}v^*(x,\tau)=\E[U\mid X_\tau=x,\tau] \\[6pt] \|a-U\|^2=\sum_{j=1}^d(a_j-U_j)^2 \\[6pt] \nabla_aR=2(a-\E[U\mid x,\tau])=0\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$v^*,U\in\mathbb R^d$; squared norm sums all coordinate risks. Finite conditional second moments.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §3.2, Eq. (9)</a></p>
+<div class="m12-derivation"><p class="m12-definition">A conditional mean averages only the targets compatible with the given input.</p><div class="eq">$$\begin{gathered}v^*(x,\tau)=\E[U\mid X_\tau=x,\tau] \\[6pt] \|a-U\|^2=\sum_{j=1}^d(a_j-U_j)^2 \\[6pt] \nabla_aR=2(a-\E[U\mid x,\tau])=0\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$U$: vector target; $a$: prediction; $R$: risk at fixed state $x$ and time $\tau$. Finite second moments.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §3.2, Eq. (9)</a></p>
 </section>
 
 <!-- ==================== 31 ==================== -->
 <section class="slide" data-part="IV" id="m12p31">
 <p class="eyebrow">Example</p>
 <h2>Learning the Velocity</h2><p class="sub">Worked example: conflicting targets</p>
-<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}R(a)=\tfrac34(a-2)^2+\tfrac14(a+2)^2 \\[6pt] R(a)=\tfrac34(a^2-4a+4)+\tfrac14(a^2+4a+4) \\[6pt] R(a)=a^2-2a+4=(a-1)^2+3 \\[6pt] R(1)=3&lt;4=R(2)\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$a$: predicted scalar rate; targets $2,-2$ have conditional weights $3/4,1/4$.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §3.2, Eq. (9)</a></p>
+<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}R(a)=\tfrac34(a-2)^2+\tfrac14(a+2)^2 \\[6pt] R(a)=\tfrac34(a^2-4a+4)+\tfrac14(a^2+4a+4) \\[6pt] R(a)=a^2-2a+4=(a-1)^2+3 \\[6pt] R(1)=3&lt;4=R(2)\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$a$: predicted rate; $R$: conditional risk. Targets $2,-2$ have weights $3/4,1/4$.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §3.2, Eq. (9)</a></p>
 </section>
 
 <!-- ==================== 32 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p32">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Learning the Velocity</h2><p class="sub">Transfer: changed conditional weights</p>
-<div class="worked-question"><p class="q">$P(U=-1\mid x,\tau)=1/4$, $P(U=3\mid x,\tau)=3/4$. Minimize conditional squared error.</p><ol class="opts one"><li><i>A</i><span>Predict 1</span></li><li><i>B</i><span>Predict 2</span><b class="ok step" data-step="3">✓</b></li><li><i>C</i><span>Predict 3</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">At a fixed state $x$ and generation time $\tau$, the target $U$ equals $-1$ with probability $1/4$ and $3$ with probability $3/4$. Minimize conditional squared error.</p><ol class="opts one"><li><i>A</i><span>Predict 1</span></li><li><i>B</i><span>Predict 2</span><b class="ok step" data-step="3">✓</b></li><li><i>C</i><span>Predict 3</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Compute the conditional mean</h3>
@@ -1310,7 +1365,7 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p33">
 <p class="eyebrow">Derivation</p>
 <h2>Learning the Velocity</h2><p class="sub">Conditional supervision learns the marginal field</p>
-<div class="m12-derivation"><div class="eq">$$\begin{gathered}\E\|v-U\|^2=\E\|v-m\|^2+\E\|U-m\|^2 \\[6pt] v-U=(v-m)+(m-U) \\[6pt] \E[(v-m)^T(m-U)\mid X_\tau,\tau]=(v-m)^T\,0=0 \\[6pt] \mathcal L_{\rm CFM}=\mathcal L_{\rm FM}+C,\qquad\nabla_\theta C=0\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$m=\E[U|X_\tau,\tau]$; $v$: prediction; CFM: conditional flow matching; FM: flow matching. Finite second moments.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., Theorem 2; course least-squares calculation</a></p>
+<div class="m12-derivation"><div class="eq">$$\begin{gathered}\E\|v-U\|^2=\E\|v-m\|^2+\E\|U-m\|^2 \\[6pt] v-U=(v-m)+(m-U) \\[6pt] \E[(v-m)^T(m-U)\mid X_\tau,\tau]=(v-m)^T\,0=0 \\[6pt] L_{\rm conditional}=L_{\rm marginal}+C,\qquad\nabla_\theta C=0\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$m=\E[U|X_\tau,\tau]$: mean target; $v$: prediction; $C=\E\|U-m\|^2$. Finite second moments.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., Theorem 2; course least-squares calculation</a></p>
 </section>
 
 <!-- ==================== 34 ==================== -->
@@ -1324,7 +1379,7 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide has-worked-solutions" data-part="IV" id="m12p35">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Learning the Velocity</h2><p class="sub">Shapes and loss reduction</p>
-<div class="worked-question"><p class="q">$B=2$ samples, $d=3$ coordinates. $V,U\in\mathbb R^{2\times3}$. Use $L=\frac1{Bd}\sum_{i,j}(V_{ij}-U_{ij})^2$.</p><ol class="opts one"><li><i>A</i><span>Gradient is 2(V−U)</span></li><li><i>B</i><span>Gradient is (V−U)/3</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>Gradient has shape 3×2</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Prediction $V$ and target $U$ have $B=2$ sample rows $i$ and $d=3$ coordinate columns $j$. Find the gradient of $L=\frac1{Bd}\sum_{i,j}(V_{ij}-U_{ij})^2$.</p><ol class="opts one"><li><i>A</i><span>Gradient is 2(V−U)</span></li><li><i>B</i><span>Gradient is (V−U)/3</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>Gradient has shape 3×2</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
 <p class="worked-progress">Solution 1 / 1</p>
 <h3>Differentiate the stated mean</h3>
@@ -1342,14 +1397,14 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p36">
 <p class="eyebrow">Example</p>
 <h2>Learning the Velocity</h2><p class="sub">Worked example: a scalar linear field</p>
-<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}v_w(x,\tau)=wx,\quad (x,u)=(1,2),(2,1) \\[6pt] L^{\prime}(w)=(w-2)+2(2w-1)=5w-4 \\[6pt] w_0=0,\quad\eta=.1,\quad w_1=0-.1(-4)=.4 \\[6pt] L(0)=2.5,\qquad L(.4)=1.3\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$w\in\mathbb R$: trainable weight; $L(w)=\frac12[(w-2)^2+(2w-1)^2]$.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., Theorem 2; course least-squares calculation</a></p>
+<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}v_w(x,\tau)=wx,\quad (x,u)=(1,2),(2,1) \\[6pt] L^{\prime}(w)=(w-2)+2(2w-1)=5w-4 \\[6pt] w_0=0,\quad\eta=.1,\quad w_1=0-.1(-4)=.4 \\[6pt] L(0)=2.5,\qquad L(.4)=1.3\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$w$: weight; $x,u$: input, target; $\eta$: step size. $L(w)=[(w-2)^2+(2w-1)^2]/2$.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., Theorem 2; course least-squares calculation</a></p>
 </section>
 
 <!-- ==================== 37 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p37">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Learning the Velocity</h2><p class="sub">Transfer: a negative input</p>
-<div class="worked-question"><p class="q">$v_w(x)=wx$, one pair $(x,u)=(-2,3)$, $L=\frac12(wx-u)^2$, $w=1$, $\eta=.1$.</p><ol class="opts one"><li><i>A</i><span>New w is 0</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>New w is 2</span></li><li><i>C</i><span>New w is 1.5</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Rate $v_w(x)=wx$ with input $x=-2$, target $u=3$, and weight $w=1$. Take one descent step of size $\eta=.1$ on $L=\frac12(wx-u)^2$.</p><ol class="opts one"><li><i>A</i><span>New w is 0</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>New w is 2</span></li><li><i>C</i><span>New w is 1.5</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Differentiate before updating</h3>
@@ -1382,7 +1437,7 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide has-worked-solutions" data-part="IV" id="m12p39">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Sampling the Learned Flow</h2><p class="sub">What remains fixed while sampling?</p>
-<div class="worked-question"><p class="q">$dx_\tau/d\tau=v_\theta(x_\tau,\tau,c)$; draw $x_0$ once. The condition $c$ is one observation.</p><ol class="opts one"><li><i>A</i><span>Optimize θ at every flow step.</span></li><li><i>B</i><span>Hold θ and c fixed; update x and τ.</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>Replace x with fresh noise every step.</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Candidate $x_\tau$ follows $dx_\tau/d\tau=v_\theta(x_\tau,\tau,c)$. Draw $x_0$ once. $\tau$: generation time; $\theta$: field weights; $c$: fixed observation.</p><ol class="opts one"><li><i>A</i><span>Optimize θ at every flow step.</span></li><li><i>B</i><span>Hold θ and c fixed; update x and τ.</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>Replace x with fresh noise every step.</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
 <p class="worked-progress">Solution 1 / 1</p>
 <h3>Read the differential equation</h3>
@@ -1400,21 +1455,21 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p40">
 <p class="eyebrow">Recap</p>
 <h2>Sampling the Learned Flow</h2><p class="sub">Euler multiplies velocity by a step size</p>
-<div class="cols w5050"><div class="m12copy"><p class="m12-definition">Forward Euler advances a state using the rate at the beginning of the step.</p><div class="eq">$$x_{j+1}=x_j+h\,v_\theta(x_j,\tau_j,c),\quad \tau_{j+1}=\tau_j+h$$</div><dl class="gloss"><dt>where</dt><dd>$j$: numerical step index; $h&gt;0$: step size; $τ_0=0$, $Nh=1$.</dd></dl></div><figure><canvas id="m12p40c" width="560" height="320" role="img" aria-label="Euler multiplies velocity by a step size: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p40c","euler",40);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lecture 7, p22 and pp33–34; Lipman et al., §2</a></p>
+<div class="cols w5050"><div class="m12copy"><p class="m12-definition">Forward Euler advances a state using the rate at the beginning of the step.</p><div class="eq">$$x_{j+1}=x_j+h\,v_\theta(x_j,\tau_j,c),\quad \tau_{j+1}=\tau_j+h$$</div><dl class="gloss"><dt>where</dt><dd>$x_j$: candidate at $\tau_j$; $j$: solver index; $c$: fixed observation; $\theta$: fixed weights. $N$ steps of size $h=1/N$.</dd></dl></div><figure><canvas id="m12p40c" width="560" height="320" role="img" aria-label="Euler multiplies velocity by a step size: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p40c","euler_update",40);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lecture 7, p22 and pp33–34; Lipman et al., §2</a></p>
 </section>
 
 <!-- ==================== 41 ==================== -->
 <section class="slide" data-part="IV" id="m12p41">
 <p class="eyebrow">Example</p>
 <h2>Sampling the Learned Flow</h2><p class="sub">Worked example: two Euler steps</p>
-<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}v(x,\tau)=x,\quad x_0=1,\quad h=\tfrac12 \\[6pt] x_1=1+\tfrac12(1)=1.5 \\[6pt] x_2=1.5+\tfrac12(1.5)=2.25 \\[6pt] x(1)=e\approx2.71828\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$x_j$: numerical state; exact solution $x(\tau)=e^\tau$.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lecture 7, p22 and pp33–34; Lipman et al., §2</a></p>
+<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}v(x,\tau)=x,\quad x_0=1,\quad h=\tfrac12 \\[6pt] x_1=1+\tfrac12(1)=1.5 \\[6pt] x_2=1.5+\tfrac12(1.5)=2.25 \\[6pt] x(1)=e\approx2.71828\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$x_j$: numerical state after step $j$; $h$: step size; $\tau$: time. Exact solution $x(\tau)=e^\tau$.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lecture 7, p22 and pp33–34; Lipman et al., §2</a></p>
 </section>
 
 <!-- ==================== 42 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p42">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Sampling the Learned Flow</h2><p class="sub">Transfer: a time-dependent rate</p>
-<div class="worked-question"><p class="q">$v(x,\tau)=2\tau$, $x_0=1$, $h=1/2$. Use two forward Euler steps from $\tau=0$ to $1$.</p><ol class="opts one"><li><i>A</i><span>1.5</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>2</span></li><li><i>C</i><span>2.5</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">State $x$ starts at $x_0=1$. The rate is $v(x,\tau)=2\tau$. Use two forward Euler steps of size $h=1/2$ from time $\tau=0$ to $1$.</p><ol class="opts one"><li><i>A</i><span>1.5</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>2</span></li><li><i>C</i><span>2.5</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Evaluate at the beginning of each step</h3>
@@ -1439,21 +1494,21 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p43">
 <p class="eyebrow">Derivation</p>
 <h2>Sampling the Learned Flow</h2><p class="sub">A midpoint estimate improves the local rate</p>
-<div class="m12-derivation"><p class="m12-definition">Explicit midpoint uses a trial half-step to estimate the rate for a full step.</p><div class="eq">$$\begin{gathered} \\[6pt] k_1=v(x_j,\tau_j),\qquad x_{\rm trial}=x_j+\tfrac h2 k_1 \\[6pt] k_2=v(x_{\rm trial},\tau_j+\tfrac h2) \\[6pt] x_{j+1}=x_j+hk_2\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$k_1,k_2$: rates; $x_j+(h/2)k_1$: trial midpoint state; condition $c$ held fixed.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lecture 7, p22 and pp33–34; Lipman et al., §2</a></p>
+<div class="m12-derivation"><p class="m12-definition">Explicit midpoint uses a trial half-step to estimate the rate for a full step.</p><div class="eq">$$\begin{gathered} \\[6pt] k_1=v(x_j,\tau_j),\quad x_m=x_j+hk_1/2 \\[6pt] k_2=v(x_m,\tau_j+h/2) \\[6pt] x_{j+1}=x_j+hk_2\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$x_j,\tau_j$: start; $h$: full step; $v$: field for fixed context $c$; $k_1,k_2$: rates; $x_m$: trial state.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lecture 7, p22 and pp33–34; Lipman et al., §2</a></p>
 </section>
 
 <!-- ==================== 44 ==================== -->
 <section class="slide" data-part="IV" id="m12p44">
 <p class="eyebrow">Example</p>
 <h2>Sampling the Learned Flow</h2><p class="sub">Worked example: midpoint on the same field</p>
-<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}v(x,\tau)=x,\quad x_0=1,\quad h=\tfrac12 \\[6pt] k_1=1,\quad x_{\rm trial}=1+.25(1)=1.25,\quad k_2=1.25 \\[6pt] x_1=1+.5(1.25)=1.625 \\[6pt] x_2=(1+h+h^2/2)^2=1.625^2=2.640625\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$k_1,k_2$: rates; each accepted step uses $x_{j+1}=x_j+hk_2$.</dd></dl><canvas class="m12-mini" id="m12p44mini" width="1100" height="145" role="img" aria-label="Midpoint trial and accepted update from the original start"></canvas><script>drawFlowFigure("m12p44mini","midpoint_construction",44);</script></div></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lecture 7, p22 and pp33–34; Lipman et al., §2</a></p>
+<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}v(x,\tau)=x,\quad x_0=1,\quad h=\tfrac12 \\[6pt] k_1=1,\ x_m=1+.25(1)=1.25,\ k_2=1.25 \\[6pt] x_1=1+.5(1.25)=1.625 \\[6pt] x_2=(1+h+h^2/2)^2=1.625^2=2.640625\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$k_1,k_2$: start/trial rates; $x_m$: trial state; $h$: full step. Accepted update $x_{j+1}=x_j+hk_2$.</dd></dl><canvas class="m12-mini" id="m12p44mini" width="1100" height="145" role="img" aria-label="Midpoint trial and accepted update from the original start"></canvas><script>drawFlowFigure("m12p44mini","midpoint_construction",44);</script></div></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lecture 7, p22 and pp33–34; Lipman et al., §2</a></p>
 </section>
 
 <!-- ==================== 45 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p45">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Sampling the Learned Flow</h2><p class="sub">Transfer: a fixed evaluation budget</p>
-<div class="worked-question"><p class="q">Budget: 8 calls to $v_\theta$. Euler uses 1 call/step; explicit midpoint uses 2. Both integrate $[0,1]$.</p><ol class="opts one"><li><i>A</i><span>Euler h=1/8; midpoint h=1/4</span><b class="ok step" data-step="2">✓</b></li><li><i>B</i><span>Both h=1/8</span></li><li><i>C</i><span>Midpoint always gives the smaller error</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Budget: 8 calls to learned rate $v_\theta$. Euler uses 1 call/step; explicit midpoint uses 2. Both integrate $[0,1]$. Compare step sizes $h$.</p><ol class="opts one"><li><i>A</i><span>Euler h=1/8; midpoint h=1/4</span><b class="ok step" data-step="2">✓</b></li><li><i>B</i><span>Both h=1/8</span></li><li><i>C</i><span>Midpoint always gives the smaller error</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
 <p class="worked-progress">Solution 1 / 1</p>
 <h3>Count steps from calls per step</h3>
@@ -1478,14 +1533,14 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p47">
 <p class="eyebrow">Interpretation</p>
 <h2>Sampling the Learned Flow</h2><p class="sub">Random starts preserve sample diversity</p>
-<div class="cols w5050"><div class="m12copy"><div class="eq">$$X_0\sim p_0,\qquad X_1=\phi_1(X_0;c)$$</div><dl class="gloss"><dt>where</dt><dd>$c$: fixed observation; $\phi_1$: deterministic learned flow map for that condition.</dd></dl></div><figure><canvas id="m12p47c" width="560" height="320" role="img" aria-label="Random starts preserve sample diversity: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p47c","cloud",47);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lecture 7, p22 and pp33–34; Lipman et al., §2</a></p>
+<div class="cols w5050"><div class="m12copy"><div class="eq">$$X_0\sim p_0,\qquad X_1=\phi_1(X_0;c)$$</div><dl class="gloss"><dt>where</dt><dd>$X_0,X_1$: random start and endpoint; $p_0$: noise law; $c$: fixed observation; $\phi_1$: deterministic endpoint map.</dd></dl></div><figure><canvas id="m12p47c" width="560" height="320" role="img" aria-label="Random starts preserve sample diversity: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p47c","cloud",47);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lecture 7, p22 and pp33–34; Lipman et al., §2</a></p>
 </section>
 
 <!-- ==================== 48 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p48">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Sampling the Learned Flow</h2><p class="sub">Reversing the generation clock</p>
-<div class="worked-question"><p class="q">$s=1-\tau$; $y_s=x_{1-s}$; $dx_\tau/d\tau=v(x_\tau,\tau)$. Find $dy_s/ds$.</p><ol class="opts one"><li><i>A</i><span>v(yₛ,1−s)</span></li><li><i>B</i><span>−v(yₛ,1−s)</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>−v(yₛ,s) always</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Course candidate $x_\tau$ has rate $v(x_\tau,\tau)$. Reverse the clock by $s=1-\tau$ and set $y_s=x_{1-s}$. Find the new rate $dy_s/ds$.</p><ol class="opts one"><li><i>A</i><span>v(yₛ,1−s)</span></li><li><i>B</i><span>−v(yₛ,1−s)</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>−v(yₛ,s) always</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
 <p class="worked-progress">Solution 1 / 1</p>
 <h3>Apply the chain rule</h3>
@@ -1503,21 +1558,21 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p49">
 <p class="eyebrow">Definition</p>
 <h2>Pairing and Optimal Transport</h2><p class="sub">A coupling changes pairs, not endpoint laws</p>
-<div class="cols w5050"><div class="m12copy"><div class="eq">$$\pi(X_0\in A)=p_0(A),\quad \pi(X_1\in B)=p_1(B)$$</div><dl class="gloss"><dt>where</dt><dd>$\pi$: joint endpoint law; $A,B$: measurable sets; $p_0,p_1$: fixed marginals.</dd></dl></div><figure><canvas id="m12p49c" width="560" height="320" role="img" aria-label="A coupling changes pairs, not endpoint laws: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p49c","coupling",49);</script></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §§2.2, 3.2.3</a></p>
+<div class="cols w5050"><div class="m12copy"><div class="eq">$$\pi(X_0\in A)=p_0(A),\quad \pi(X_1\in B)=p_1(B)$$</div><dl class="gloss"><dt>where</dt><dd>$X_0,X_1$: noise/data endpoints; $p_0,p_1$: their laws; $\pi$: joint law; $A,B$: measurable sets.</dd></dl></div><figure><canvas id="m12p49c" width="560" height="320" role="img" aria-label="A coupling changes pairs, not endpoint laws: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p49c","pairings",49);</script></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §§2.2, 3.2.3</a></p>
 </section>
 
 <!-- ==================== 50 ==================== -->
 <section class="slide" data-part="IV" id="m12p50">
 <p class="eyebrow">Example</p>
 <h2>Pairing and Optimal Transport</h2><p class="sub">Worked example: two pairings</p>
-<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}x_0\in\{-1,1\},\quad x_1\in\{-2,2\} \\[6pt] C_{\rm aligned}=\tfrac12[(-2+1)^2+(2-1)^2]=1 \\[6pt] C_{\rm crossed}=\tfrac12[(2+1)^2+(-2-1)^2]=9\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>Each endpoint has mass $1/2$; pair cost is squared displacement $(x_1-x_0)^2$.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §§2.2, 3.2.3</a></p>
+<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}x_0\in\{-1,1\},\quad x_1\in\{-2,2\} \\[6pt] C_{\rm aligned}=\tfrac12[(-2+1)^2+(2-1)^2]=1 \\[6pt] C_{\rm crossed}=\tfrac12[(2+1)^2+(-2-1)^2]=9\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$x_0,x_1$: source/target values; each has mass $1/2$. $C$: mean squared displacement.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §§2.2, 3.2.3</a></p>
 </section>
 
 <!-- ==================== 51 ==================== -->
 <section class="slide" data-part="IV" id="m12p51">
 <p class="eyebrow">Definition</p>
 <h2>Pairing and Optimal Transport</h2><p class="sub">Optimal transport chooses the coupling</p>
-<div class="cols w5050"><div class="m12copy"><p class="m12-definition">Quadratic optimal transport minimizes expected squared displacement while preserving both endpoint laws.</p><div class="eq">$$\pi^*\in\arg\min_{\pi\in\Pi(p_0,p_1)}\mathbb E_\pi\|X_1-X_0\|^2$$</div><dl class="gloss"><dt>where</dt><dd>$\Pi(p_0,p_1)$: couplings with the required marginals; cost uses Euclidean coordinates.</dd></dl></div><figure><canvas id="m12p51c" width="560" height="320" role="img" aria-label="Optimal transport chooses the coupling: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p51c","coupling_cost",51);</script></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §§2.2, 3.2.3</a></p>
+<div class="m12copy"><p class="m12-definition">Quadratic optimal transport minimizes expected squared displacement while preserving both endpoint laws.</p><div class="eq">$$\pi^*\in\arg\min_{\pi\in\Pi(p_0,p_1)}\mathbb E_\pi\|X_1-X_0\|^2$$</div><dl class="gloss"><dt>where</dt><dd>$X_0,X_1$: noise/data endpoints; $p_0,p_1$: their laws; $\Pi$: valid couplings; $\pi^*$: minimizing coupling.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2302.00482v4">Tong et al., §§2.2, 3.2.3</a></p>
 </section>
 
 <!-- ==================== 52 ==================== -->
@@ -1549,7 +1604,7 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide has-worked-solutions" data-part="IV" id="m12p53">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Pairing and Optimal Transport</h2><p class="sub">Are learned trajectories necessarily straight?</p>
-<div class="worked-question"><p class="q">Training paths are straight. The learned field is $v^*(x,\tau)=\mathbb E[U\mid x,\tau]$.</p><ol class="opts one"><li><i>A</i><span>Yes, every generated path is one training segment.</span></li><li><i>B</i><span>No; the conditional average can vary along a path.</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>Every learned path must cross another path.</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Paired training paths are straight. At state $x$ and time $\tau$, $v^*(x,\tau)=\E[U|x,\tau]$ averages target rates $U$. Are generated paths straight?</p><ol class="opts one"><li><i>A</i><span>Yes, every generated path is one training segment.</span></li><li><i>B</i><span>No; the conditional average can vary along a path.</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>Every learned path must cross another path.</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
 <p class="worked-progress">Solution 1 / 1</p>
 <h3>Track the field along the generated state</h3>
@@ -1567,7 +1622,7 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide has-worked-solutions" data-part="IV" id="m12p54">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Pairing and Optimal Transport</h2><p class="sub">What does a conditional path establish?</p>
-<div class="worked-question"><p class="q">For each data point y, Gaussian noise contracts toward y along a simple conditional path. The data point may be sampled independently.</p><ol class="opts one"><li><i>A</i><span>This alone proves globally optimal endpoint pairing.</span></li><li><i>B</i><span>A simple conditional path and global OT are different claims.</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>Every coupling has equal expected displacement cost.</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Each conditional path moves Gaussian noise toward a fixed demonstration. Noise and demonstrations may be paired independently. What does this establish?</p><ol class="opts one"><li><i>A</i><span>This alone proves globally optimal endpoint pairing.</span></li><li><i>B</i><span>A simple conditional path and global OT are different claims.</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>Every coupling has equal expected displacement cost.</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
 <p class="worked-progress">Solution 1 / 1</p>
 <h3>Identify what was optimized</h3>
@@ -1603,35 +1658,35 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p56">
 <p class="eyebrow">Definition</p>
 <h2>The Bridge to Diffusion</h2><p class="sub">A Gaussian path can use different schedules</p>
-<div class="cols w5050"><div class="m12copy"><p class="m12-definition">A Gaussian conditional path adds scaled Gaussian noise to a scaled data vector. The score is the spatial gradient of its log density.</p><div class="eq">$$X_\tau=\alpha(\tau)Y+\sigma(\tau)\varepsilon$$</div><dl class="gloss"><dt>where</dt><dd>$Y$: data vector; $\varepsilon\sim\mathcal N(0,I)$ independent; $\alpha,\sigma$: differentiable scalars.</dd></dl></div><figure><canvas id="m12p56c" width="560" height="320" role="img" aria-label="A Gaussian path can use different schedules: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p56c","schedule",56);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §4 and Appendix D; course score derivation</a></p>
+<div class="cols w5050"><div class="m12copy"><p class="m12-definition">The conditional path adds scaled Gaussian noise to the data. The score is the gradient of the log marginal density.</p><div class="eq">$$X_\tau=\alpha(\tau)Y+\sigma(\tau)\varepsilon$$</div><dl class="gloss"><dt>where</dt><dd>$Y$: data; $\varepsilon\sim\N(0,I)$: independent noise; $X_\tau$: state at time $\tau$; $\alpha,\sigma$: smooth signal/noise scales, $\sigma&gt;0$.</dd></dl></div><figure><canvas id="m12p56c" width="560" height="320" role="img" aria-label="A Gaussian path can use different schedules: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p56c","schedule",56);</script></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §4 and Appendix D; course score derivation</a></p>
 </section>
 
 <!-- ==================== 57 ==================== -->
 <section class="slide" data-part="IV" id="m12p57">
 <p class="eyebrow">Derivation</p>
-<h2>The Bridge to Diffusion</h2><p class="sub">Score and mean noise</p>
-<div class="m12-derivation"><div class="eq">$$\begin{gathered}X=\alpha Y+\sigma\varepsilon \\[6pt] g_y=\nabla_x\log p(x|y)=-(x-\alpha y)/\sigma^2 \\[6pt] s=\E[g_Y|x] \\[6pt] \E[\varepsilon|x]=-\sigma s\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>Fixed $\tau$. $Y$: data; independent $\varepsilon\sim\N(0,I)$; $\alpha$: signal scale; $\sigma&gt;0$: noise scale. $s$: marginal score; integral differentiation valid.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §4 and Appendix D; course score derivation</a></p>
+<h2>The Bridge to Diffusion</h2><p class="sub">Derive the score identity</p>
+<div class="m12-derivation"><div class="eq">$$\begin{gathered}X=\alpha Y+\sigma\varepsilon \\[6pt] g_y=\nabla\log p(x|y)=-(x-\alpha y)/\sigma^2 \\[6pt] \nabla p=\E[p(x|Y)g_Y] \\[6pt] s=\nabla\log p=\E[g_Y|x]=-\E[\varepsilon|x]/\sigma\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>Fixed τ. $x,y$: state/data; $p$: marginal density; $g_y$: conditional score. Scales $\alpha,\sigma$, $\sigma&gt;0$; independent $\varepsilon\sim\N(0,I)$.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §4 and Appendix D; course score derivation</a></p>
 </section>
 
 <!-- ==================== 58 ==================== -->
 <section class="slide" data-part="IV" id="m12p58">
 <p class="eyebrow">Derivation</p>
 <h2>The Bridge to Diffusion</h2><p class="sub">Score to velocity</p>
-<div class="m12-derivation"><div class="eq">$$\begin{gathered}X_\tau=\alpha Y+\sigma\varepsilon \\[6pt] v=\dot\alpha m+\dot\sigma n \\[6pt] m=(x-\sigma n)/\alpha,\quad n=-\sigma s \\[6pt] v=(\dot\alpha/\alpha)x+(\dot\alpha\sigma^2/\alpha-\sigma\dot\sigma)s\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$Y$: data; independent $\varepsilon\sim\N(0,I)$; $m=\E[Y|x]$, $n=\E[\varepsilon|x]$; $s$: score. $\alpha\ne0$, $\sigma&gt;0$; dots: τ-rates.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §4 and Appendix D; course score derivation</a></p>
+<div class="m12-derivation"><div class="eq">$$\begin{gathered}X_\tau=\alpha Y+\sigma\varepsilon \\[6pt] v=\dot\alpha m+\dot\sigma n,\ n=-\sigma s \\[6pt] \alpha m=x-\sigma n \\[6pt] v=\dot\alpha x/\alpha+\sigma(\dot\alpha\sigma/\alpha-\dot\sigma)s\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$x,v$: state/rate; data $Y$; Gaussian noise $\varepsilon$; score $s$. $m=\E[Y|x],n=\E[\varepsilon|x]$. Scales $\alpha\ne0,\sigma&gt;0$; dots: rates.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §4 and Appendix D; course score derivation</a></p>
 </section>
 
 <!-- ==================== 59 ==================== -->
 <section class="slide" data-part="IV" id="m12p59">
 <p class="eyebrow">Derivation</p>
 <h2>The Bridge to Diffusion</h2><p class="sub">The straight-path bridge</p>
-<div class="m12-derivation"><div class="eq">$$\begin{gathered}v(x,\tau)=\frac{x}{\tau}+\frac{1-\tau}{\tau}s_\tau(x),\quad 0&lt;\tau&lt;1 \\[6pt] \alpha=\tau,\quad\dot\alpha=1,\quad\sigma=1-\tau,\quad\dot\sigma=-1 \\[6pt] \frac{(1-\tau)^2}\tau+(1-\tau)=(1-\tau)\!\left[\frac{1-\tau}\tau+1\right]=\frac{1-\tau}\tau\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$\alpha=\tau$, $\dot\alpha=1$, $\sigma=1-\tau$, $\dot\sigma=-1$.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §4 and Appendix D; course score derivation</a></p>
+<div class="m12-derivation"><div class="eq">$$\begin{gathered}v(x,\tau)=\frac{x}{\tau}+\frac{1-\tau}{\tau}s_\tau(x),\quad 0&lt;\tau&lt;1 \\[6pt] \alpha=\tau,\quad\dot\alpha=1,\quad\sigma=1-\tau,\quad\dot\sigma=-1 \\[6pt] \frac{(1-\tau)^2}{\tau}+(1-\tau)=(1-\tau)/\tau\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$x$: state; $s_\tau$: score of its density; $v$: velocity; dots: rates in $\tau$.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2210.02747v2">Lipman et al., §4 and Appendix D; course score derivation</a></p>
 </section>
 
 <!-- ==================== 60 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p60">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>The Bridge to Diffusion</h2><p class="sub">Worked bridge: a known Gaussian path</p>
-<div class="worked-question"><p class="q">Fixed data $Y=2$, $\tau=1/2$, $x=0$. Then $p_\tau=\mathcal N(1,1/4)$. Find score and velocity.</p><ol class="opts one"><li><i>A</i><span>s=4, v=4</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>s=2, v=2</span></li><li><i>C</i><span>s=−4, v=−4</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Straight path $X_\tau=(1-\tau)\varepsilon+\tau Y$, fixed data $Y=2$, standard Gaussian noise $\varepsilon$. At $\tau=1/2$, $X_\tau\sim\N(1,1/4)$ (variance $1/4$). Find score $s$ and rate $v$ at $x=0$.</p><ol class="opts one"><li><i>A</i><span>s=4, v=4</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>s=2, v=2</span></li><li><i>C</i><span>s=−4, v=−4</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Differentiate the Gaussian log density</h3>
@@ -1656,7 +1711,7 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide has-worked-solutions" data-part="IV" id="m12p61">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>The Bridge to Diffusion</h2><p class="sub">Transfer: reverse the clock consistently</p>
-<div class="worked-question"><p class="q">At course time $\tau=1/2$, velocity is $+4$. Code time is $s=1-\tau$ and a sampling step has $\Delta s=-.1$.</p><ol class="opts one"><li><i>A</i><span>Code velocity −4, state increment +.4</span><b class="ok step" data-step="2">✓</b></li><li><i>B</i><span>Code velocity +4, state increment −.4</span></li><li><i>C</i><span>Code velocity −4, state increment −.4</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">At course time $\tau=1/2$ the rate is $+4$. Code time is $s=1-\tau$. For an Euler step $\Delta s=-.1$, find the code rate and state increment.</p><ol class="opts one"><li><i>A</i><span>Code velocity −4, state increment +.4</span><b class="ok step" data-step="2">✓</b></li><li><i>B</i><span>Code velocity +4, state increment −.4</span></li><li><i>C</i><span>Code velocity −4, state increment −.4</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
 <p class="worked-progress">Solution 1 / 1</p>
 <h3>Transform rate and increment together</h3>
@@ -1674,14 +1729,14 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p62">
 <p class="eyebrow">Definition</p>
 <h2>Vision-Language-Action Models</h2><p class="sub">An action chunk is one generated vector</p>
-<div class="cols w5050"><div class="m12copy"><p class="m12-definition">An action chunk stacks several successive action vectors into one generated vector.</p><div class="eq">$$A_k=\operatorname{vec}(a_k,\ldots,a_{k+H-1})\in\mathbb R^{Hd_a}$$</div><dl class="gloss"><dt>where</dt><dd>$k$: robot step; $H$: chunk length; $a_k\in\mathbb R^{d_a}$: one action.</dd></dl></div><figure><canvas id="m12p62c" width="560" height="320" role="img" aria-label="An action chunk is one generated vector: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p62c","chunk",62);</script></div><p class="cite"><a href="https://arxiv.org/html/2410.24164v4">π₀, §IV; Appendix A-B and A-D</a></p>
+<div class="cols w5050"><div class="m12copy"><p class="m12-definition">An action chunk stacks several successive action vectors into one generated vector.</p><div class="eq">$$A_k=\operatorname{vec}(a_k,\ldots,a_{k+H-1})\in\mathbb R^{Hd_a}$$</div><dl class="gloss"><dt>where</dt><dd>$A_k$: action chunk; $k$: robot index; $H$: chunk length; $d_a$: coordinates per action; $\operatorname{vec}$: stack into a column.</dd></dl></div><figure><canvas id="m12p62c" width="560" height="320" role="img" aria-label="An action chunk is one generated vector: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p62c","stack_actions",62);</script></div><p class="cite"><a href="https://arxiv.org/html/2410.24164v4">π₀, §IV; Appendix A-B and A-D</a></p>
 </section>
 
 <!-- ==================== 63 ==================== -->
 <section class="slide" data-part="IV" id="m12p63">
 <p class="eyebrow">Definition</p>
 <h2>Vision-Language-Action Models</h2><p class="sub">The condition describes the task now</p>
-<div class="cols w5050"><div class="m12copy"><p class="m12-definition">A condition supplies the observed information held fixed during a sampling call.</p><div class="eq">$$c_k=(I_k^{1:C},\ell_k,q_k),\qquad v_\theta(A^\tau_k,\tau,c_k)$$</div><dl class="gloss"><dt>where</dt><dd>$I^{1:C}$: camera images; $\ell$: instruction; $q$: robot state; $A^\tau$: noisy candidate.</dd></dl></div><figure><canvas id="m12p63c" width="560" height="320" role="img" aria-label="The condition describes the task now: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p63c","vla",63);</script></div><p class="cite"><a href="https://arxiv.org/html/2410.24164v4">π₀, §IV; Appendix A-B and A-D</a></p>
+<div class="cols w5050"><div class="m12copy"><p class="m12-definition">A condition supplies the observed information held fixed during a sampling call.</p><div class="eq">$$c_k=(I_k^{1:C},\ell_k,q_k),\qquad v_\theta(A^\tau_k,\tau,c_k)$$</div><dl class="gloss"><dt>where</dt><dd>$k$: robot step; $c_k$: context; $I^{1:C}$: images from $C$ cameras; $\ell$: instruction; $q$: robot state; $A^\tau$: candidate at generation time $\tau$.</dd></dl></div><figure><canvas id="m12p63c" width="560" height="320" role="img" aria-label="The condition describes the task now: mathematical illustration"></canvas></figure><script>drawFlowFigure("m12p63c","vla",63);</script></div><p class="cite"><a href="https://arxiv.org/html/2410.24164v4">π₀, §IV; Appendix A-B and A-D</a></p>
 </section>
 
 <!-- ==================== 64 ==================== -->
@@ -1695,14 +1750,14 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p65">
 <p class="eyebrow">Convention</p>
 <h2>Vision-Language-Action Models</h2><p class="sub">Official code uses the opposite clock</p>
-<div class="m12-derivation"><div class="eq">$$\begin{gathered}Z_s=(1-s)A+s\varepsilon,\quad U_s=\varepsilon-A,\quad s:1\to0 \\[6pt] Z_s=X_{1-s},\qquad\frac{dZ_s}{ds}=-\frac{dX_\tau}{d\tau} \\[6pt] \Delta s=-h,\quad U_s=-U_\tau\quad\Rightarrow\quad\Delta s\,U_s=hU_\tau\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$A$: data action chunk; $\varepsilon$: noise; $s=1-\tau$; step $\Delta s&lt;0$.</dd></dl></div><p class="cite"><a href="https://github.com/Physical-Intelligence/openpi/blob/554657524f65b2fb8bd8e7888937b792200fc46d/src/openpi/models/pi0.py">openpi 5546575: Pi0.compute_loss / sample_actions</a></p>
+<div class="m12-derivation"><div class="eq">$$\begin{gathered}Z_s=(1-s)A+s\varepsilon,\quad U_s=\varepsilon-A,\quad s:1\to0 \\[6pt] Z_s=X_{1-s},\qquad\frac{dZ_s}{ds}=-\frac{dX_\tau}{d\tau} \\[6pt] \Delta s=-h,\quad U_s=-U_\tau\Rightarrow\Delta s\,U_s=hU_\tau\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$A$: data; $\varepsilon$: noise; $Z_s,X_\tau$: code/course candidates; $U_s,U_\tau$: rates; $h$: step.</dd></dl></div><p class="cite"><a href="https://github.com/Physical-Intelligence/openpi/blob/554657524f65b2fb8bd8e7888937b792200fc46d/src/openpi/models/pi0.py">openpi 5546575: Pi0.compute_loss / sample_actions</a></p>
 </section>
 
 <!-- ==================== 66 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p66">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Vision-Language-Action Models</h2><p class="sub">A code step toward the data</p>
-<div class="worked-question"><p class="q">Action target $A=2$, noise $\varepsilon=-1$. Code clock starts $s=1$, $z=-1$; use exact target rate and $\Delta s=-1/4$.</p><ol class="opts one"><li><i>A</i><span>u=−3, new z=−.25</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>u=+3, new z=−1.75</span></li><li><i>C</i><span>u=−3, new z=−1.75</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">Target $A=2$, noise $\varepsilon=-1$. At code time $s=1$, candidate $z=-1$. Find target rate $u$ and the candidate after a step $\Delta s=-1/4$.</p><ol class="opts one"><li><i>A</i><span>u=−3, new z=−.25</span><b class="ok step" data-step="3">✓</b></li><li><i>B</i><span>u=+3, new z=−1.75</span></li><li><i>C</i><span>u=−3, new z=−1.75</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2">
 <p class="worked-progress">Solution 1 / 2</p>
 <h3>Follow the code convention</h3>
@@ -1752,14 +1807,14 @@ window.drawFlowFigure=function(id,kind,page){
 <section class="slide" data-part="IV" id="m12p69">
 <p class="eyebrow">Definition</p>
 <h2>Vision-Language-Action Models</h2><p class="sub">Discrete and continuous losses</p>
-<div class="m12-derivation"><p class="m12-definition">Token cross-entropy is the negative log probability of the correct token.</p><div class="eq">$$\begin{gathered}L=L_{\rm token}+\lambda L_{\rm flow} \\[6pt] L_{\rm token}=-\log p_\theta(y\mid\text{context}) \\[6pt] L_{\rm flow}=\E\|v_\theta(Z_s,s,c)-U_s\|^2\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$y$: token; $Z_s$: noisy action; $U_s$: rate label; $c$: condition; $\lambda&gt;0$: weight.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2504.16054v1">π₀.₅, §IV-B, Eq. (1); §IV-D</a></p>
+<div class="m12-derivation"><p class="m12-definition">Token loss is the target token’s negative log probability.</p><div class="eq">$$\begin{gathered}L=L_{\rm token}+\lambda L_{\rm flow} \\[6pt] L_{\rm token}=-\log p_\theta(y|c) \\[6pt] L_{\rm flow}=\E\|v_\theta(Z_s,s,c)-U_s\|^2\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$y$: token; $Z_s$: noisy chunk; $U_s$: target rate; $s$: time; $c$: context; $\theta$: weights; $\lambda&gt;0$: flow weight.</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/2504.16054v1">π₀.₅, §IV-B, Eq. (1); §IV-D</a></p>
 </section>
 
 <!-- ==================== 70 ==================== -->
 <section class="slide has-worked-solutions" data-part="IV" id="m12p70">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Vision-Language-Action Models</h2><p class="sub">What follows from a richer training mixture?</p>
-<div class="worked-question"><p class="q">A VLA receives additional image-language and robot examples. Its low-level action model still uses flow matching.</p><ol class="opts one"><li><i>A</i><span>The ODE becomes physical robot dynamics.</span></li><li><i>B</i><span>Representation learning changes; the flow objective can remain.</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>Generalization is guaranteed for every new home.</span></li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p class="q">A vision-language-action model receives additional image-language and robot examples. Its low-level action model still uses flow matching.</p><ol class="opts one"><li><i>A</i><span>The ODE becomes physical robot dynamics.</span></li><li><i>B</i><span>Representation learning changes; the flow objective can remain.</span><b class="ok step" data-step="2">✓</b></li><li><i>C</i><span>Generalization is guaranteed for every new home.</span></li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
 <p class="worked-progress">Solution 1 / 1</p>
 <h3>Separate the mathematical objective from evidence</h3>
@@ -1776,15 +1831,15 @@ window.drawFlowFigure=function(id,kind,page){
 <!-- ==================== 71 ==================== -->
 <section class="slide" data-part="IV" id="m12p71">
 <p class="eyebrow">Example</p>
-<h2>From Data to an Executed Action</h2><p class="sub">Integrated example: training a chunk</p>
-<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}A=(2,0)^T,\quad \varepsilon=(-2,2)^T,\quad \tau=\tfrac14 \\[6pt] A^{1/4}=\tfrac34(-2,2)^T+\tfrac14(2,0)^T=(-1,1.5)^T \\[6pt] U=(4,-2)^T,\quad V=(3,-1)^T,\quad e=V-U=(-1,1)^T \\[6pt] L=\tfrac12(e_1^2+e_2^2)=1,\qquad\nabla_VL=e\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$H=2$, $d_a=1$; fixed condition $c$; $A^\tau=(1-\tau)\varepsilon+\tau A$.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2410.24164v4">π₀, §IV and Appendix A-D; original course example</a></p>
+<h2>From Data to an Executed Action</h2><p class="sub">Train an action chunk</p>
+<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}A=(2,0)^T,\ \varepsilon=(-2,2)^T,\ \tau=1/4 \\[6pt] A^\tau=.75\varepsilon+.25A=(-1,1.5)^T \\[6pt] U=A-\varepsilon=(4,-2)^T,V=(3,-1)^T,e=V-U=(-1,1)^T \\[6pt] L=(e_1^2+e_2^2)/2=1,\ \nabla_VL=e\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$A,\varepsilon$: data/noise; $\tau$: generation time; $A^\tau$: noisy input; $U,V$: target/prediction; $e$: error; $L$: loss.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2410.24164v4">π₀, §IV and Appendix A-D; original course example</a></p>
 </section>
 
 <!-- ==================== 72 ==================== -->
 <section class="slide" data-part="IV" id="m12p72">
 <p class="eyebrow">Example</p>
 <h2>From Data to an Executed Action</h2><p class="sub">Generate a chunk; execute a prefix</p>
-<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}\varepsilon=(-2,2)^T,\quad v=(4,-2)^T,\quad h=\tfrac14 \\[6pt] x_j=(-2,2)^T+\tfrac j4(4,-2)^T \\[6pt] x_1=(-1,1.5)^T,\quad x_2=(0,1)^T,\quad x_3=(1,.5)^T,\quad x_4=(2,0)^T \\[6pt] H=2,\quad N=4,\quad H_{\rm exec}=1:\quad a_k=2\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>Toy field $v$; $N=4$ solver steps; $H=2$ actions; execute first action.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2410.24164v4">π₀, §IV and Appendix A-D; original course example</a></p>
+<div class="ex"><div class="m12-derivation"><div class="eq">$$\begin{gathered}\varepsilon=(-2,2)^T,v=(4,-2)^T,h=1/4 \\[6pt] x_j=\varepsilon+jhv \\[6pt] x_1=(-1,1.5)^T,x_2=(0,1)^T,x_3=(1,.5)^T,x_4=(2,0)^T \\[6pt] H=2,N=4,r=1:\ a_k=2\end{gathered}$$</div><dl class="gloss"><dt>where</dt><dd>$x_j$: step-$j$ candidate; $\varepsilon$: noise; $v,h$: rate, step size. $N,H,r$: step count, chunk and prefix lengths. $a_k$: action at robot step $k$.</dd></dl></div></div><p class="cite"><a href="https://arxiv.org/html/2410.24164v4">π₀, §IV and Appendix A-D; original course example</a></p>
 </section>
 
 <!-- ==================== 73 ==================== -->
