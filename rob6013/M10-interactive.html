@@ -426,9 +426,6 @@ body.print #m10break{display:none!important}
 .math-figure.compact canvas{height:140px!important}
 #m10p03 .math-figure,#m10p08 .math-figure,#m10p10 .math-figure,#m10p21 .math-figure,#m10p41 .math-figure,#m10p44 .math-figure,#m10p65 .math-figure,#m10p75 .math-figure{margin:0}
 #m10p27 .math-figure{margin:4px 0}
-#m10p54 .math-figure{margin:0}
-#m10p65 .eq{margin:4px 0}
-#m10p65 .gloss{margin:2px 0 6px}
 #m10p10 .eq,#m10p21 .eq,#m10p41 .eq{margin:8px 0}
 .slide.title .lecture-meta{font:400 20px/1.35 Georgia,serif;color:var(--dim);margin-bottom:18px}
 </style>
@@ -845,7 +842,7 @@ window.M10draw=function(cv,kind){m3anim(cv,function(g,t,k){
  }else if(kind==='mixture'||kind==='mixture_equal'){
   var ox=210,oy=180,u=38,p=kind==='mixture_equal'?.5:.75;line([ox,20],[ox,oy]);line([ox,oy],[ox+200,oy]);
   var a=[ox+2*u,oy],b=[ox,oy-4*u],out=[ox+2*u*(1-p),oy-4*u*p];line(a,b,c.rule,3);k.dot(a,6,c.in);k.dot(b,6,c.out);k.dot(out,8,c.ans);
-  tx('v1=(2,0)',a[0]+12,a[1]-10,c.in,18);tx('v2=(0,4)',b[0]+12,b[1]+5,c.out,18);tx('weight of v2 = '+p.toFixed(2),560,70,c.ink,22);tx('y = ('+(2*(1-p)).toFixed(2)+', '+(4*p).toFixed(2)+')',560,115,c.ans,22);tx('value coordinate 1',315,199,c.dim,16);tx('value coordinate 2',20,36,c.dim,16);
+  tx('v1=(2,0)',a[0]+12,a[1]-10,c.in,18);tx('v2=(0,4)',b[0]+12,b[1]+5,c.out,18);tx('weight of v2 = '+p.toFixed(2),560,70,c.ink,22);tx('y = ('+(2*(1-p)).toFixed(2)+', '+(4*p).toFixed(2)+')',560,115,c.ans,22);tx('value coordinate 1',315,199,c.dim,16);
  }else if(kind==='sharp'){
   var a=4*t,p=1/(1+Math.exp(-a));line([180,175],[700,175]);
   box(270,175-130*(1-p),100,130*(1-p),c.in);box(480,175-130*p,100,130*p,c.out);
@@ -855,15 +852,7 @@ window.M10draw=function(cv,kind){m3anim(cv,function(g,t,k){
   for(var f=0;f<2;f++){g.beginPath();for(var j=0;j<=180;j++){var x=j/10,y=f?Math.cos(x):Math.sin(x);j?g.lineTo(ox+x*ux,oy-y*uy):g.moveTo(ox+x*ux,oy-y*uy)}g.strokeStyle=f?c.out:c.in;g.lineWidth=3;g.stroke()}
   var pos=t*16;line([ox+pos*ux,25],[ox+pos*ux,190],c.rule,2);tx('sin(p), r = 0, ω₀ = 1',280,25,c.in,18);tx('cos(p)',620,25,c.out,18);tx('position p',890,200,c.dim,17);tx('+1',55,45,c.dim,16);tx('−1',55,180,c.dim,16);
  }else if(kind==='cost'){
-  var ns=[1,2,4,8],base=compact?108:170,scale=compact?1.2:2;
-  line([180,base],[900,base]);
-  for(var j=0;j<4;j++){
-   var h=ns[j]*ns[j]*scale;
-   box(220+j*170,base-h,90,h,c.in);
-   tx(String(ns[j]),250+j*170,base+20,c.dim,18);
-   tx(String(ns[j]*ns[j]),245+j*170,base-11-h,c.out,18);
-  }
-  tx('tokens T',890,base+20,c.dim,17);tx('pairs T²',40,35,c.dim,18);
+  var ns=[1,2,4,8];line([180,170],[900,170]);for(var j=0;j<4;j++){var h=ns[j]*ns[j]*2;box(220+j*170,170-h,90,h,c.in);tx(String(ns[j]),250+j*170,198,c.dim,18);tx(String(ns[j]*ns[j]),245+j*170,160-h,c.out,18)}tx('tokens T',890,198,c.dim,17);tx('pairs T²',40,35,c.dim,18);
  }else if(kind==='cache'){
   var n=2+Math.floor(5*t);for(var j=0;j<7;j++){var x=160+j*100;box(x,60,75,80,j<n?c.in:c.rule);tx(j<n?(j===n-1?'new':'cached'):'future',x+4,105,j<n?c.bg:c.dim,16);tx(String(j+1),x+28,164,c.dim,17)}tx('prefix position',20,195,c.dim,17);
  }else if(kind==='chunk'||kind==='ensemble'){
@@ -891,7 +880,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide title m3open" id="m10p01" data-part="IV">
 <p class="eyebrow">Motivation</p><p class="lecture-meta">Lecture 10 · Transformers and ACT · November 18, 2026</p>
 <h2>Transformers and ACT</h2><p class="sub">From observations to a sequence of actions</p>
-<p>Action Chunking with Transformers (ACT) predicts several robot actions together.</p><p>How can a robot combine several observations and predict a coordinated movement?</p><figure class="diagram"><svg viewBox="0 0 1080 150" role="img" aria-label="Camera features to Attention to Action chunk"><rect x="20.0" y="38" width="298.3333333333333" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="169.16666666666666" y="77" text-anchor="middle" style="font-size:20px">Camera features</text><path d="M323.3333333333333 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="353.3333333333333" y="38" width="298.3333333333333" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="502.5" y="77" text-anchor="middle" style="font-size:20px">Attention</text><path d="M656.6666666666666 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="686.6666666666666" y="38" width="298.3333333333333" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="835.8333333333333" y="77" text-anchor="middle" style="font-size:20px">Action chunk</text></svg></figure><p class="course-identity">Mathematics for Robotics · ROB-GY 6013 · NYU Tandon · Jing Zhang · Fall 2026</p><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a></p>
+<p>How can a robot combine observations and predict an action chunk: several future motor targets at once?</p><figure class="diagram"><svg viewBox="0 0 1080 150" role="img" aria-label="Camera features to Attention to Action chunk"><rect x="20.0" y="38" width="298.3333333333333" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="169.16666666666666" y="77" text-anchor="middle" style="font-size:20px">Camera features</text><path d="M323.3333333333333 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="353.3333333333333" y="38" width="298.3333333333333" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="502.5" y="77" text-anchor="middle" style="font-size:20px">Attention</text><path d="M656.6666666666666 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="686.6666666666666" y="38" width="298.3333333333333" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="835.8333333333333" y="77" text-anchor="middle" style="font-size:20px">Action chunk</text></svg></figure><p class="course-identity">Mathematics for Robotics · ROB-GY 6013 · NYU Tandon · Jing Zhang · Fall 2026</p><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a></p>
 </section>
 
 <!-- ===== 2 ===== -->
@@ -905,37 +894,37 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p03" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Tokens and projections</h2><p class="sub">A token is a feature vector</p>
-<p>A token represents one item, such as an image patch, with a feature vector.</p><div class="eq">$$X=[x_1\ \cdots\ x_T]^T\in\mathbb R^{T\times D}$$</div><dl class="gloss"><dt>$X,x_i$</dt><dd>token matrix; feature column for token i</dd><dt>$T,D$</dt><dd>token count; features per token</dd></dl><figure class="math-figure"><canvas id="m10p03c" width="1050" height="210" role="img" aria-label="Rows identify tokens; columns identify features."></canvas><figcaption>Rows identify tokens; columns identify features.</figcaption></figure><script>M10draw(document.getElementById("m10p03c"),"tokens");</script><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
+<p>A token represents one item, such as an image patch, with a feature vector.</p><div class="eq">$$X=[x_1\ \cdots\ x_T]^T\in\mathbb R^{T\times D}$$</div><dl class="gloss"><dt>$x_i$</dt><dd>column feature vector in ℝᴰ</dd><dt>$T,D$</dt><dd>tokens, features per token</dd></dl><figure class="math-figure"><canvas id="m10p03c" width="1050" height="210" role="img" aria-label="Rows identify tokens; columns identify features."></canvas><figcaption>Rows identify tokens; columns identify features.</figcaption></figure><script>M10draw(document.getElementById("m10p03c"),"tokens");</script><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
 </section>
 
 <!-- ===== 4 ===== -->
 <section class="slide" id="m10p04" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>Tokens and projections</h2><p class="sub">Column weights and row-stored tokens</p>
-<p>The learned map gives each token a query vector for comparison.</p><div class="eq">$$q_i=W_Qx_i\quad\Longrightarrow\quad q_i^T=x_i^TW_Q^T\quad\Longrightarrow\quad Q=XW_Q^T$$</div><dl class="gloss"><dt>$x_i,q_i$</dt><dd>token and query columns of widths D and dₖ</dd><dt>$X,Q$</dt><dd>T token rows and T query rows</dd><dt>$W_Q$</dt><dd>learned dₖ × D map</dd></dl><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
+<p>A query is a learned vector used to compare a token with candidate information.</p><div class="eq">$$q_i=W_Qx_i\quad\Rightarrow\quad Q=XW_Q^T$$</div><dl class="gloss"><dt>$x_i,q_i$</dt><dd>input column in ℝᴰ; query column in ℝᵈᵏ</dd><dt>$W_Q$</dt><dd>learned dₖ × D map</dd><dt>$X,Q$</dt><dd>T × D inputs; T × dₖ queries</dd></dl><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
 </section>
 
 <!-- ===== 5 ===== -->
 <section class="slide" id="m10p05" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Tokens and projections</h2><p class="sub">Three learned views of the same input</p>
-<div class="eq">$$Q=XW_Q^T,\quad K=XW_K^T,\quad V=XW_V^T$$</div><dl class="gloss"><dt>$X$</dt><dd>T token rows of width D</dd><dt>$W_Q,W_K,W_V$</dt><dd>learned maps from D to dₖ, dₖ and dᵥ</dd><dt>$Q,K,V$</dt><dd>query, key and value rows of those widths</dd></dl><p>Query–key dot products set comparison scores. The scores determine how to combine the values.</p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
+<div class="eq">$$Q=XW_Q^T,\quad K=XW_K^T,\quad V=XW_V^T$$</div><dl class="gloss"><dt>$X$</dt><dd>T × D input-token rows</dd><dt>$W_Q,W_K;W_V$</dt><dd>dₖ × D maps; dᵥ × D map</dd><dt>$Q,K;V$</dt><dd>T × dₖ queries/keys; T × dᵥ values</dd></dl><p>Queries compare with keys. The resulting weights combine values.</p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
 </section>
 
 <!-- ===== 6 ===== -->
 <section class="slide" id="m10p06" data-part="IV">
 <p class="eyebrow">Example</p>
 <h2>Tokens and projections</h2><p class="sub">A projection computed by hand</p>
-<div class="ex"><div class="eq">$$X=\begin{bmatrix}1&amp;2&amp;-1\\0&amp;1&amp;3\end{bmatrix},\quad W_Q=\begin{bmatrix}1&amp;0&amp;1\\0&amp;2&amp;-1\end{bmatrix}$$</div><dl class="gloss"><dt>$X$</dt><dd>two token rows with three features</dd><dt>$W_Q,Q$</dt><dd>query map; matrix of query rows</dd></dl><p>$Q=XW_Q^T=\begin{bmatrix}0&amp;5\\3&amp;-1\end{bmatrix}$.</p></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a> · Course example</p>
+<div class="ex"><div class="eq">$$X=\begin{bmatrix}1&amp;2&amp;-1\\0&amp;1&amp;3\end{bmatrix},\quad W_Q=\begin{bmatrix}1&amp;0&amp;1\\0&amp;2&amp;-1\end{bmatrix}$$</div><dl class="gloss"><dt>$X$</dt><dd>two tokens with three features</dd><dt>$W_Q$</dt><dd>2 × 3 map: three inputs, two outputs</dd></dl><p>$Q=XW_Q^T=\begin{bmatrix}0&amp;5\\3&amp;-1\end{bmatrix}$</p></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a> · Course example</p>
 </section>
 
 <!-- ===== 7 ===== -->
 <section class="slide has-worked-solutions" id="m10p07" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Tokens and projections</h2><p class="sub">A new token, the same learned map</p>
-<div class="worked-question"><p>Input $x=(2,-1,1)^T$. The query map is $W_Q=\begin{bmatrix}1&amp;0&amp;1\\0&amp;2&amp;-1\end{bmatrix}$. Find the query $q=W_Qx$.</p><ol class="opts one"><li><i>A</i>$(3,-3)^T$<b class="ok step" data-step="3">✓</b></li><li><i>B</i>$(1,-1)^T$</li><li><i>C</i>A three-coordinate vector</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>$x=(2,-1,1)^T$, $W_Q=\begin{bmatrix}1&amp;0&amp;1\\0&amp;2&amp;-1\end{bmatrix}$. Find $q=W_Qx$.</p><ol class="opts one"><li><i>A</i>$(3,-3)^T$<b class="ok step" data-step="3">✓</b></li><li><i>B</i>$(1,-1)^T$</li><li><i>C</i>A three-coordinate vector</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2"><p class="worked-progress">Solution 1 / 2</p><h3>Apply the two output rows</h3><p class="worked-variables">$x$: input column; $W_Q$: 2 × 3 map; $q$: output column.</p><ol class="worked-lines"><li>$q_1=1(2)+0(-1)+1(1)=3$.</li><li>$q_2=0(2)+2(-1)-1(1)=-3$.</li><li>$q=(3,-3)^T$ has two coordinates.</li></ol></div>
-<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 2"><p class="worked-progress">Solution 2 / 2</p><h3>Check the alternatives</h3><p class="worked-variables">$q$: projected token.</p><ol class="worked-lines"><li>A is correct. B drops coefficients from the map.</li><li>C keeps the input width, but the two weight rows define two outputs.</li></ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 2"><p class="worked-progress">Solution 2 / 2</p><h3>Check the alternatives</h3><p class="worked-variables">$q$: projected token.</p><ol class="worked-lines"><li>A is correct. B keeps only the last input feature’s contribution.</li><li>C keeps the input width, but the two weight rows define two outputs.</li></ol></div>
 <span class="worked-finish step" data-step="3" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a> · Course example</p>
 </section>
 
@@ -950,7 +939,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide has-worked-solutions" id="m10p09" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Scaled dot-product attention</h2><p class="sub">Alignment and length both affect the score</p>
-<div class="worked-question"><p>Query $q=(1,0)^T$; keys $k_1=(1,0)^T$, $k_2=(2,0)^T$. Their width is $d_k=2$. Which key has the larger scaled dot-product score?</p><ol class="opts one"><li><i>A</i>Key 1</li><li><i>B</i>Key 2<b class="ok step" data-step="2">✓</b></li><li><i>C</i>They must tie</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>$q=(1,0)^T$, $k_1=(1,0)^T$, $k_2=(2,0)^T$, $d_k=2$. Which key has the larger score?</p><ol class="opts one"><li><i>A</i>Key 1</li><li><i>B</i>Key 2<b class="ok step" data-step="2">✓</b></li><li><i>C</i>They must tie</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Evaluate the dot products</h3><p class="worked-variables">$q$: query; $k_1,k_2$: keys; $d_k=2$.</p><ol class="worked-lines"><li>$q^Tk_1=1$ and $q^Tk_2=2$.</li><li>$s_1=1/\sqrt2&lt;s_2=2/\sqrt2$.</li><li>B is correct. Equal directions alone do not imply equal dot products.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a> · Course example</p>
 </section>
@@ -966,7 +955,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p11" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Scaled dot-product attention</h2><p class="sub">Weights combine values</p>
-<p>Softmax turns finite scores in one query row into positive weights that add to one.</p><div class="eq">$$P_{ij}=\frac{e^{S_{ij}}}{\sum_\ell e^{S_{i\ell}}},\qquad y_i=\sum_jP_{ij}v_j$$</div><dl class="gloss"><dt>$S_{ij},P_{ij}$</dt><dd>score and weight for query i and key j</dd><dt>$\ell$</dt><dd>all keys in query row i</dd><dt>$v_j,y_i$</dt><dd>dᵥ-dimensional value and output columns</dd></dl><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
+<p>Softmax turns finite real scores into positive weights summing to one within each query row.</p><div class="eq">$$P_{ij}=\frac{e^{S_{ij}}}{\sum_{\ell=1}^{T_k} e^{S_{i\ell}}},\qquad y_i=\sum_{j=1}^{T_k}P_{ij}v_j$$</div><dl class="gloss"><dt>$S_{ij},P_{ij}$</dt><dd>scaled score; weight of key j for query i</dd><dt>$T_k$</dt><dd>number of key-value pairs</dd><dt>$v_j,y_i$</dt><dd>dᵥ-dimensional value and output columns</dd></dl><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
 </section>
 
 <!-- ===== 12 ===== -->
@@ -980,7 +969,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide has-worked-solutions" id="m10p13" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Scaled dot-product attention</h2><p class="sub">Unequal scores change the mixture</p>
-<div class="worked-question"><p>Attention scores are $s=(0,\log 3)$ and values are $v_1=(2,0)^T$, $v_2=(0,4)^T$. Find the output.</p><ol class="opts one"><li><i>A</i>$(1,2)^T$</li><li><i>B</i>$(1/2,3)^T$<b class="ok step" data-step="3">✓</b></li><li><i>C</i>$(0,4)^T$</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>$s=(0,\log 3)$, $v_1=(2,0)^T$, $v_2=(0,4)^T$. Find the output.</p><ol class="opts one"><li><i>A</i>$(1,2)^T$</li><li><i>B</i>$(1/2,3)^T$<b class="ok step" data-step="3">✓</b></li><li><i>C</i>$(0,4)^T$</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2"><p class="worked-progress">Solution 1 / 2</p><h3>Convert scores to weights</h3><p class="worked-variables">$s$: score row; $p$: its softmax weights.</p><ol class="worked-lines"><li>$e^{s}=(1,3)$; the sum is $4$.</li><li>$p=(1/4,3/4)$.</li></ol></div>
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 2"><p class="worked-progress">Solution 2 / 2</p><h3>Mix the value vectors</h3><p class="worked-variables">$v_1=(2,0)^T$, $v_2=(0,4)^T$.</p><ol class="worked-lines"><li>$y=\frac14v_1+\frac34v_2=(1/2,3)^T$.</li><li>B is correct. A treats scores as equal; C replaces soft weighting with a hard maximum.</li></ol></div>
 <span class="worked-finish step" data-step="3" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a> · Course example</p>
@@ -990,28 +979,28 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p14" data-part="IV">
 <p class="eyebrow">Motivation</p>
 <h2>Scaled dot-product attention</h2><p class="sub">Why divide by the square root?</p>
-<p>Wider query–key vectors can produce more variable dot products. A large score gap can put almost all the weight on one key.</p><figure class="math-figure"><canvas id="m10p14c" width="1050" height="210" role="img" aria-label="As the score gap grows, the larger score gets more of the total weight."></canvas><figcaption>As the score gap grows, the larger score gets more of the total weight.</figcaption></figure><script>M10draw(document.getElementById("m10p14c"),"sharp");</script><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
+<p>Wider query-key vectors can produce more variable dot products. Very unequal scores make softmax nearly one-hot.</p><figure class="math-figure"><canvas id="m10p14c" width="1050" height="210" role="img" aria-label="Scaling a fixed score gap changes the softmax weights."></canvas><figcaption>Scaling a fixed score gap changes the softmax weights.</figcaption></figure><script>M10draw(document.getElementById("m10p14c"),"sharp");</script><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
 </section>
 
 <!-- ===== 15 ===== -->
 <section class="slide" id="m10p15" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>Scaled dot-product attention</h2><p class="sub">Variance of one product</p>
-<div class="eq">$$\begin{aligned}\mathbb E[q_rk_r]&amp;=\mathbb E[q_r]\mathbb E[k_r]=0\\\operatorname{Var}(q_rk_r)&amp;=\mathbb E[q_r^2k_r^2]-(\mathbb E[q_rk_r])^2\\&amp;=\mathbb E[q_r^2]\mathbb E[k_r^2]=1\end{aligned}$$</div><dl class="gloss"><dt>$q_r,k_r$</dt><dd>independent random coordinates, each with mean 0 and variance 1</dd><dt>$r$</dt><dd>one matched feature coordinate</dd></dl><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
+<div class="eq">$$\mathbb E[q_rk_r]=0,\quad\operatorname{Var}(q_rk_r)=\mathbb E[q_r^2]\mathbb E[k_r^2]=1$$</div><dl class="gloss"><dt>$q_r,k_r$</dt><dd>independent, mean 0, variance 1</dd></dl><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
 </section>
 
 <!-- ===== 16 ===== -->
 <section class="slide" id="m10p16" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>Scaled dot-product attention</h2><p class="sub">Variance of the sum</p>
-<p>Assume all coordinates of query q and key k are independent, with mean 0 and variance 1.</p><div class="eq">$$\operatorname{Var}(q^Tk)=\sum_{r=1}^{d_k}1=d_k,\qquad \operatorname{Var}\!\left(\frac{q^Tk}{\sqrt{d_k}}\right)=\frac{1}{d_k}d_k=1$$</div><dl class="gloss"><dt>$d_k$</dt><dd>query/key width; one coordinate product for each of the dₖ coordinates</dd></dl><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
+<p>Assume all query and key coordinates are mutually independent, with mean zero and variance one.</p><div class="eq">$$\operatorname{Var}(q^Tk)=d_k,\qquad\operatorname{Var}\!\left(\frac{q^Tk}{\sqrt{d_k}}\right)=1$$</div><dl class="gloss"><dt>$q,k;d_k$</dt><dd>query/key columns; number of coordinates</dd></dl><p>This simplifying model motivates the scale.</p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
 </section>
 
 <!-- ===== 17 ===== -->
 <section class="slide has-worked-solutions" id="m10p17" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Scaled dot-product attention</h2><p class="sub">The scale is determined by the assumptions</p>
-<div class="worked-question"><p>Query and key each have $d_k=16$ independent zero-mean, unit-variance coordinates, independent across the two vectors. What is the standard deviation of their unscaled dot product?</p><ol class="opts one"><li><i>A</i>16</li><li><i>B</i>4<b class="ok step" data-step="2">✓</b></li><li><i>C</i>1</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>All coordinates of $q,k$ are mutually independent, with mean 0 and variance 1. For $u=q^Tk$ with $d_k=16$, find the unscaled standard deviation.</p><ol class="opts one"><li><i>A</i>16</li><li><i>B</i>4<b class="ok step" data-step="2">✓</b></li><li><i>C</i>1</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Separate variance from standard deviation</h3><p class="worked-variables">$u=q^Tk$; $d_k=16$.</p><ol class="worked-lines"><li>$\operatorname{Var}(u)=16$.</li><li>$\operatorname{SD}(u)=\sqrt{16}=4$.</li><li>B is correct. A confuses variance with standard deviation; C describes the scaled score.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a> · Course example</p>
 </section>
@@ -1020,7 +1009,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p18" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>Stable attention and masks</h2><p class="sub">The largest logit can be subtracted</p>
-<div class="eq">$$\frac{e^{s_j-c}}{\sum_\ell e^{s_\ell-c}}=\frac{e^{-c}e^{s_j}}{e^{-c}\sum_\ell e^{s_\ell}}=p_j$$</div><dl class="gloss"><dt>$s_j,p_j$</dt><dd>key j score and normalized weight in one row</dd><dt>$c$</dt><dd>shared finite shift; choose the maximum</dd></dl><p>For a finite row maximum, the largest shifted exponential is 1.</p><p class="cite"><a href="https://arxiv.org/abs/1909.03469">Blanchard, Higham &amp; Higham (2021), §4</a></p>
+<div class="eq">$$\frac{e^{s_j-c}}{\sum_\ell e^{s_\ell-c}}=\frac{e^{-c}e^{s_j}}{e^{-c}\sum_\ell e^{s_\ell}}=p_j$$</div><dl class="gloss"><dt>$s_j,p_j$</dt><dd>finite logit; its softmax weight</dd><dt>$c$</dt><dd>same finite shift for the whole row</dd></dl><p class="cite"><a href="https://arxiv.org/abs/1909.03469">Blanchard, Higham &amp; Higham (2021), §4</a></p>
 </section>
 
 <!-- ===== 19 ===== -->
@@ -1033,9 +1022,9 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ===== 20 ===== -->
 <section class="slide has-worked-solutions" id="m10p20" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
-<h2>Stable attention and masks</h2><p class="sub">A shift or a temperature?</p>
+<h2>Stable attention and masks</h2><p class="sub">A shared shift or a change of scale?</p>
 <div class="worked-question"><p>A score row is $s=(0,\log3)$. Which change preserves its softmax weights?</p><ol class="opts one"><li><i>A</i>Subtract 5 from both entries<b class="ok step" data-step="2">✓</b></li><li><i>B</i>Multiply both entries by 2</li><li><i>C</i>Add 5 only to the second entry</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Identify the invariance</h3><p class="worked-variables">$s$: logits; softmax normalizes their exponentials.</p><ol class="worked-lines"><li>$\operatorname{softmax}(s-5\mathbf1)=\operatorname{softmax}(s)$.</li><li>$\operatorname{softmax}(2s)=(1/10,9/10)$.</li><li>A is correct. B changes the score gap; C changes one exponential relative to the other.</li></ol></div>
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Identify the invariance</h3><p class="worked-variables">$s$: logits; softmax normalizes their exponentials.</p><ol class="worked-lines"><li>$\operatorname{softmax}(s-5\mathbf1)=\operatorname{softmax}(s)$.</li><li>$\operatorname{softmax}(2s)=(1/10,9/10)$.</li><li>A is correct. B changes the score gap; C multiplies only the second exponential by e⁵.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/abs/1909.03469">Blanchard, Higham &amp; Higham (2021), §4</a> · Course example</p>
 </section>
 
@@ -1043,14 +1032,14 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p21" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Stable attention and masks</h2><p class="sub">A causal mask forbids future keys</p>
-<p>In causal self-attention, query and key positions share the same ordered sequence.</p><div class="eq">$$M_{ij}=\begin{cases}0&amp;j\le i\\-\infty&amp;j&gt;i\end{cases},\quad P=\operatorname{softmax}_{\mathrm{row}}(S+M)$$</div><dl class="gloss"><dt>$i,j$</dt><dd>query and key positions</dd><dt>$S,M,P$</dt><dd>scores, additive mask and row weights</dd></dl><figure class="math-figure compact"><canvas id="m10p21c" width="1050" height="140" role="img" aria-label="Rows are queries; columns are keys. The upper triangle is forbidden."></canvas><figcaption>Rows are queries; columns are keys. The upper triangle is forbidden.</figcaption></figure><script>M10draw(document.getElementById("m10p21c"),"mask");</script><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
+<div class="eq">$$M_{ij}=\begin{cases}0&amp;j\le i\\-\infty&amp;j&gt;i\end{cases},\qquad P=\operatorname{softmax}_{\rm row}(S+M)$$</div><dl class="gloss"><dt>$i,j$</dt><dd>query/key positions in ordered self-attention</dd><dt>$S,M,P$</dt><dd>scaled scores; additive mask; row weights</dd></dl><figure class="math-figure"><canvas id="m10p21c" width="1050" height="210" role="img" aria-label="Rows are queries; columns are keys. The upper triangle is forbidden."></canvas><figcaption>Rows are queries; columns are keys. The upper triangle is forbidden.</figcaption></figure><script>M10draw(document.getElementById("m10p21c"),"mask");</script><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
 </section>
 
 <!-- ===== 22 ===== -->
 <section class="slide" id="m10p22" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Stable attention and masks</h2><p class="sub">Padding and causality answer different questions</p>
-<p>Padding equalizes lengths with placeholders. A key-validity mask excludes them.</p><div class="eq">$$S:[B,H,T_q,T_k],\quad V_k:[B,1,1,T_k],\quad C:[1,1,T_q,T_k]$$</div><dl class="gloss"><dt>$S,V_k,C$</dt><dd>scores, key-valid mask, causal mask</dd><dt>$B,H$</dt><dd>batch items, attention heads</dd><dt>$T_q,T_k$</dt><dd>query and key counts; True allows in either mask</dd></dl><p>Use $V_k\land C$. Exclude padded queries from loss.</p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
+<p>Padding equalizes lengths with placeholders. A key-validity mask excludes them.</p><div class="eq">$$S:[B,H,T_q,T_k],\quad V_k:[B,1,1,T_k],\quad C:[1,1,T_q,T_k]$$</div><dl class="gloss"><dt>$B,H$</dt><dd>batch items; parallel attention calculations (heads)</dd><dt>$T_q,T_k$</dt><dd>query and key counts</dd><dt>$V_k,C$</dt><dd>key-valid and causal masks; True allows</dd></dl><p>Use $V_k\land C$. Exclude padded queries from loss.</p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
 </section>
 
 <!-- ===== 23 ===== -->
@@ -1058,7 +1047,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Stable attention and masks</h2><p class="sub">Mask before normalizing</p>
 <div class="worked-question"><p>Scores are $(0,\log3)$; the second key is forbidden. Which output weights are correct?</p><ol class="opts one"><li><i>A</i>$(1,0)$<b class="ok step" data-step="3">✓</b></li><li><i>B</i>$(1/4,0)$</li><li><i>C</i>$(1/4,3/4)$</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2"><p class="worked-progress">Solution 1 / 2</p><h3>Normalize only over permitted keys</h3><p class="worked-variables">$s$: score row; $M$: additive mask; $p$: output weights.</p><ol class="worked-lines"><li>$s+M=(0,-\infty)$.</li><li>$\exp(s+M)=(1,0)$ and its sum is $1$.</li><li>$p=(1,0)$. A is correct.</li></ol></div>
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2"><p class="worked-progress">Solution 1 / 2</p><h3>Normalize only over permitted keys</h3><p class="worked-variables">$s$: score row; key 2 is unavailable.</p><ol class="worked-lines"><li>$s+M=(0,-\infty)$.</li><li>$\exp(s+M)=(1,0)$ and its sum is $1$.</li><li>$p=(1,0)$. A is correct.</li></ol></div>
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 2"><p class="worked-progress">Solution 2 / 2</p><h3>Why the other operations differ</h3><p class="worked-variables">$p$: normalized attention weights.</p><ol class="worked-lines"><li>B zeroes a probability after normalization and leaves row sum 1/4.</li><li>C ignores the mask. Renormalizing allowed probabilities could work, but masking logits is direct.</li></ol></div>
 <span class="worked-finish step" data-step="3" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a> · Course example</p>
 </section>
@@ -1067,7 +1056,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p24" data-part="IV">
 <p class="eyebrow">Counterexample</p>
 <h2>Stable attention and masks</h2><p class="sub">Every valid query needs an allowed key</p>
-<p>An all-forbidden row has masked score $s_j=-\infty$ for every key. Softmax gives $0/0$; max shifting gives $-\infty-(-\infty)$.</p><p>Valid query: require an allowed key. Padded query: skip normalization, return zero and exclude its loss.</p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
+<p>If every masked logit is $-\infty$, the softmax denominator is zero. Subtracting the row maximum also asks for $-\infty-(-\infty)$.</p><p>A valid query needs an allowed key. An invalid padded query can use zero output and no loss.</p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a></p>
 </section>
 
 <!-- ===== 25 ===== -->
@@ -1083,7 +1072,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p26" data-part="IV">
 <p class="eyebrow">Example</p>
 <h2>Stable attention and masks</h2><p class="sub">One attention query, end to end</p>
-<div class="ex"><div class="eq">$$q=(\sqrt2,0)^T,\quad K=\begin{bmatrix}0&amp;1\\\log3&amp;0\end{bmatrix},\quad V=\begin{bmatrix}2&amp;0\\0&amp;4\end{bmatrix}$$</div><dl class="gloss"><dt>$q,K,V$</dt><dd>query column; key rows; value rows</dd><dt>$k_1,k_2$</dt><dd>key columns formed from rows of K</dd><dt>$d_k=2$</dt><dd>features per query/key; both keys allowed</dd></dl><p>Dot products $(0,\sqrt2\log3)$ give scaled scores $s=(0,\log3)$.</p></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a> · Course example</p>
+<div class="ex"><div class="eq">$$q=(\sqrt2,0)^T,\quad K=\begin{bmatrix}0&amp;1\\\log3&amp;0\end{bmatrix},\quad V=\begin{bmatrix}2&amp;0\\0&amp;4\end{bmatrix}$$</div><dl class="gloss"><dt>$q;d_k=2$</dt><dd>query column; coordinates per query/key</dd><dt>$K,V;T_k=2$</dt><dd>key/value rows; two pairs, both permitted</dd></dl></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a> · Course example</p>
 </section>
 
 <!-- ===== 27 ===== -->
@@ -1097,8 +1086,8 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide has-worked-solutions" id="m10p28" data-part="IV">
 <p class="eyebrow you" data-min="1.5">Exercise</p>
 <h2>Stable attention and masks</h2><p class="sub">Transfer: change the permitted information</p>
-<div class="worked-question"><p>Query $q=(\sqrt2,0)^T$; keys $k_1=(0,1)^T$, $k_2=(\log3,0)^T$; values $v_1=(2,0)^T$, $v_2=(0,4)^T$. Feature width $d_k=2$. Only key 1 is allowed. Find the output.</p><ol class="opts one"><li><i>A</i>$(1/2,3)^T$</li><li><i>B</i>$(2,0)^T$<b class="ok step" data-step="2">✓</b></li><li><i>C</i>$(0,0)^T$</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Use the same scores with a different mask</h3><p class="worked-variables">$s$: scaled scores; $M$: additive mask; $p$: weights; $y$: output.</p><ol class="worked-lines"><li>$s=(0,\log3)$, but $s+M=(0,-\infty)$.</li><li>$p=(1,0)$, so $y=1v_1+0v_2=(2,0)^T$.</li><li>B is correct. A ignores masking; C discards a valid key.</li></ol></div>
+<div class="worked-question"><p>$d_k=2$, $q=(\sqrt2,0)^T$, $k_1=(0,1)^T$, $k_2=(\log3,0)^T$; $v_1=(2,0)^T$, $v_2=(0,4)^T$. Only key 1 is allowed. Find the output.</p><ol class="opts one"><li><i>A</i>$(1/2,3)^T$</li><li><i>B</i>$(2,0)^T$<b class="ok step" data-step="2">✓</b></li><li><i>C</i>$(0,0)^T$</li></ol></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Use the same scores with a different mask</h3><p class="worked-variables">$s$: scaled scores; $p$: allowed-key weights.</p><ol class="worked-lines"><li>$s=(0,\log3)$, but $s+M=(0,-\infty)$.</li><li>$p=(1,0)$, so $y=1v_1+0v_2=(2,0)^T$.</li><li>B is correct. A ignores masking; C discards a valid key.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS1">Vaswani et al. (2017), §3.2.1, Eq. 1</a> · Course example</p>
 </section>
 
@@ -1106,28 +1095,28 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p29" data-part="IV">
 <p class="eyebrow">Motivation</p>
 <h2>Multi-head attention</h2><p class="sub">One mixture can hide useful differences</p>
-<p>An attention head computes one learned set of comparisons and value mixtures. Multi-head attention (MHA) runs several heads, concatenates their outputs, and projects the result.</p><figure class="diagram"><svg viewBox="0 0 1080 150" role="img" aria-label="Tokens to Different comparisons to Different mixtures to Output map"><rect x="20.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="127.5" y="77" text-anchor="middle" style="font-size:20px">Tokens</text><path d="M240.0 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="270.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="377.5" y="77" text-anchor="middle" style="font-size:20px">Different comparisons</text><path d="M490.0 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="520.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="627.5" y="77" text-anchor="middle" style="font-size:20px">Different mixtures</text><path d="M740.0 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="770.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="877.5" y="77" text-anchor="middle" style="font-size:20px">Output map</text></svg></figure><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a></p>
+<p>Each attention head has its own learned query, key and value maps. Multi-head attention (MHA) keeps several mixtures per query, concatenates them, then applies an output map.</p><figure class="diagram"><svg viewBox="0 0 1080 150" role="img" aria-label="Tokens to Different comparisons to Different mixtures to Output map"><rect x="20.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="127.5" y="77" text-anchor="middle" style="font-size:20px">Tokens</text><path d="M240.0 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="270.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="377.5" y="77" text-anchor="middle" style="font-size:20px">Different comparisons</text><path d="M490.0 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="520.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="627.5" y="77" text-anchor="middle" style="font-size:20px">Different mixtures</text><path d="M740.0 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="770.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="877.5" y="77" text-anchor="middle" style="font-size:20px">Output map</text></svg></figure><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a></p>
 </section>
 
 <!-- ===== 30 ===== -->
 <section class="slide" id="m10p30" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Multi-head attention</h2><p class="sub">A feature axis can be split into heads</p>
-<div class="eq">$$Q:[B,T,D]\to[B,T,H,d_h],\qquad D=Hd_h$$</div><dl class="gloss"><dt>$Q,X,W_Q$</dt><dd>query tensor; token rows; query map (Wq in code)</dd><dt>$B,T,H,d_h,D$</dt><dd>batch, tokens, heads, features per head, packed width</dd></dl><p><code>Q = (X @ Wq.T).reshape(B,T,H,dh)</code></p><figure class="math-figure"><canvas id="m10p30c" width="1050" height="210" role="img" aria-label="A packed feature row splits into two head blocks."></canvas><figcaption>A packed feature row splits into two head blocks.</figcaption></figure><script>M10draw(document.getElementById("m10p30c"),"heads");</script><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a></p>
+<div class="eq">$$Q^{\rm pack}:[B,T,D]\to Q^{\rm split}:[B,T,H,d_h],\quad D=Hd_h$$</div><dl class="gloss"><dt>$B,T,D$</dt><dd>batch size; tokens; packed feature width</dd><dt>$H,d_h$</dt><dd>heads; common query/key/value width $d_k=d_v=d_h$</dd></dl><p><code>Qsplit = Qpack.reshape(B,T,H,dh)</code></p><figure class="math-figure"><canvas id="m10p30c" width="1050" height="210" role="img" aria-label="A packed feature row splits into two head blocks."></canvas><figcaption>A packed feature row splits into two head blocks.</figcaption></figure><script>M10draw(document.getElementById("m10p30c"),"heads");</script><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a></p>
 </section>
 
 <!-- ===== 31 ===== -->
 <section class="slide" id="m10p31" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>Multi-head attention</h2><p class="sub">Transpose puts matrix axes last</p>
-<div class="eq">$$Q,K:[B,T,H,d_h]\longrightarrow[B,H,T,d_h],\qquad QK^{\mathsf T_{\mathrm{last}}}:[B,H,T,T]$$</div><dl class="gloss"><dt>$Q,K$</dt><dd>query and key tensors</dd><dt>$B,H$</dt><dd>batch items and heads</dd><dt>$T,d_h$</dt><dd>tokens and features per head</dd></dl><p>Transpose the last two axes of K only for the product. The score axes end in query and key.</p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a></p>
+<div class="eq">$$Q^{\rm split}:[B,T,H,d_h]\to Q:[B,H,T,d_h],\quad S:[B,H,T,T]$$</div><dl class="gloss"><dt>$B,H$</dt><dd>batch items; heads</dd><dt>$T,d_h$</dt><dd>tokens; coordinates within a head</dd></dl><p>Apply the same token/head axis swap to $K$ and $V$.</p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a></p>
 </section>
 
 <!-- ===== 32 ===== -->
 <section class="slide has-worked-solutions" id="m10p32" data-part="IV">
 <p class="eyebrow you" data-min="1.5">Exercise</p>
 <h2>Multi-head attention</h2><p class="sub">Trace a tensor through the heads</p>
-<div class="worked-question"><p>Self-attention starts with queries $Q$ in batch, token, feature order. Batch $B=2$, tokens $T=3$, width $D=8$, heads $H=2$. Find query and score ($S$) shapes after splitting and transposing.</p><ol class="opts one"><li><i>A</i>Q [2,2,3,4]; S [2,2,3,3]<b class="ok step" data-step="3">✓</b></li><li><i>B</i>Q [2,3,2,4]; S [2,3,2,2]</li><li><i>C</i>Q [2,2,3,8]; S [2,2,8,8]</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>For self-attention, $B=2$, $T=3$, $D=8$, $H=2$. Find the query shape $Q$ after splitting and transposing, and the score shape $S$.</p><ol class="opts one"><li><i>A</i>Q [2,2,3,4]; S [2,2,3,3]<b class="ok step" data-step="3">✓</b></li><li><i>B</i>Q [2,3,2,4]; S [2,3,2,2]</li><li><i>C</i>Q [2,2,3,8]; S [2,2,8,8]</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2"><p class="worked-progress">Solution 1 / 2</p><h3>Name each axis</h3><p class="worked-variables">$B$: batch; $T$: tokens; $H$: heads; $d_h=D/H$.</p><ol class="worked-lines"><li>$d_h=8/2=4$.</li><li>$Q:[B,H,T,d_h]=[2,2,3,4]$.</li><li>$S:[B,H,T,T]=[2,2,3,3]$.</li></ol></div>
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 2"><p class="worked-progress">Solution 2 / 2</p><h3>Check the alternatives</h3><p class="worked-variables">$S$: query-by-key scores in each head.</p><ol class="worked-lines"><li>A is correct. B omits the token/head transpose.</li><li>C fails to split the width and confuses features with token counts.</li></ol></div>
 <span class="worked-finish step" data-step="3" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a> · Course example</p>
@@ -1137,21 +1126,21 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p33" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Multi-head attention</h2><p class="sub">Concatenate, then mix across heads</p>
-<div class="eq">$$C=\operatorname{Concat}(Y^{(1)},\ldots,Y^{(H)}),\quad Y=CW_O^T$$</div><dl class="gloss"><dt>$Y^{(h)}$</dt><dd>head h output for one item, T tokens × dᵥ value features</dd><dt>$H,D$</dt><dd>head count; output width</dd><dt>$C,Y$</dt><dd>concatenated and projected outputs</dd><dt>$W_O$</dt><dd>D × Hdᵥ learned output map</dd></dl><p><code>C = heads.transpose(1,2).reshape(B,T,H*dv)</code><br><code>out = C @ Wo.T</code></p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a></p>
+<p>For one sequence, use equal key/value width $d_k=d_v=d_h$ in each of H heads.</p><div class="eq">$$C=\operatorname{Concat}(Y^{(1)},\ldots,Y^{(H)}),\quad Y=CW_O^T$$</div><dl class="gloss"><dt>$C,W_O,Y$</dt><dd>T × Hdₕ joined heads; D × Hdₕ learned map; T × D output</dd></dl><p><code>heads: [B,H,T,dh]</code><br><code>C = heads.transpose(1,2).reshape(B,T,H*dh)</code><br><code>out = C @ Wo.T</code></p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a></p>
 </section>
 
 <!-- ===== 34 ===== -->
 <section class="slide" id="m10p34" data-part="IV">
 <p class="eyebrow">Example</p>
 <h2>Multi-head attention</h2><p class="sub">Two heads, one explicit output map</p>
-<div class="ex"><div class="eq">$$c=(1,2,3,-1)^T,\quad W_O=\begin{bmatrix}1&amp;0&amp;1&amp;0\\0&amp;1&amp;0&amp;1\end{bmatrix}$$</div><dl class="gloss"><dt>$c$</dt><dd>head 1: (1,2), head 2: (3,−1)</dd><dt>$W_O$</dt><dd>learned output map</dd></dl><p>$W_Oc=(1+3,2-1)^T=(4,1)^T$.</p></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a> · Course example</p>
+<div class="ex"><div class="eq">$$c=(1,2,3,-1)^T,\quad W_O=\begin{bmatrix}1&amp;0&amp;1&amp;0\\0&amp;1&amp;0&amp;1\end{bmatrix}$$</div><dl class="gloss"><dt>$c$</dt><dd>joined head columns: (1,2) and (3,−1)</dd><dt>$W_O$</dt><dd>2 × 4 output map</dd></dl><p>$W_Oc=(1+3,2-1)^T=(4,1)^T$.</p></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a> · Course example</p>
 </section>
 
 <!-- ===== 35 ===== -->
 <section class="slide has-worked-solutions" id="m10p35" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Multi-head attention</h2><p class="sub">Transfer: a different output map</p>
-<div class="worked-question"><p>Concatenated heads $c=(1,2,3,-1)^T$. The output map is $W_O=\begin{bmatrix}0&amp;0&amp;1&amp;0\\1&amp;0&amp;0&amp;-1\end{bmatrix}$. Find $W_Oc$.</p><ol class="opts one"><li><i>A</i>$(3,2)^T$<b class="ok step" data-step="2">✓</b></li><li><i>B</i>$(4,1)^T$</li><li><i>C</i>$(1,2,3,-1)^T$</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>The joined head vector is $c=(1,2,3,-1)^T$. The output map is $W_O=\begin{bmatrix}0&amp;0&amp;1&amp;0\\1&amp;0&amp;0&amp;-1\end{bmatrix}$. Find $W_Oc$.</p><ol class="opts one"><li><i>A</i>$(3,2)^T$<b class="ok step" data-step="2">✓</b></li><li><i>B</i>$(4,1)^T$</li><li><i>C</i>$(1,2,3,-1)^T$</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Read the new map</h3><p class="worked-variables">$c$: concatenated heads; $W_O$: two output rows.</p><ol class="worked-lines"><li>First output: $0+0+3+0=3$.</li><li>Second output: $1+0+0-(-1)=2$.</li><li>A is correct. B reuses the earlier map; C stops before projection.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a> · Course example</p>
 </section>
@@ -1159,15 +1148,15 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ===== 36 ===== -->
 <section class="slide" id="m10p36" data-part="IV">
 <p class="eyebrow">Implementation</p>
-<h2>Multi-head attention</h2><p class="sub">The forward pass follows the equations</p>
-<p><code>Q,K,V: [B,H,T,dh]</code><br><code>S = Q @ K.transpose(-2,-1) / sqrt(dh)</code><br><code>P = masked_softmax(S, allowed, query_valid)</code><br><code>head_outputs = P @ V</code></p><p>Query/key/value axes: batch, head, token, feature. S: scores. P: weights.</p><p>A valid query needs an allowed key. Normalize over those keys. Padded queries get zero weights.</p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a></p>
+<h2>Multi-head attention</h2><p class="sub">The attention core follows the equations</p>
+<p>Pseudocode for valid queries:<br><code>Q,K,V: [B,H,T,dh]</code>; equal key/value width dₕ.<br><code>S = Q @ K.transpose(-2,-1) / sqrt(dh)</code><br><code>S = masked_fill(S, forbidden, -inf)</code><br><code>P = softmax(S, dim=-1)</code><br><code>heads = P @ V</code></p><p>True in <code>forbidden</code> blocks a key. Every valid query needs a key. Handle padded query rows separately: zero their outputs and omit their loss.</p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a></p>
 </section>
 
 <!-- ===== 37 ===== -->
 <section class="slide has-worked-solutions" id="m10p37" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Multi-head attention</h2><p class="sub">Correct shapes can hide a wrong normalization</p>
-<div class="worked-question"><p>Score tensor S has axes [B,H,Tq,Tk]: batch, head, query, key. A programmer uses <code>softmax(S,dim=-2)</code>. What is normalized?</p><ol class="opts one"><li><i>A</i>Keys for each query</li><li><i>B</i>Queries for each key<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Features of each token</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>Scores have shape [B,H,Tq,Tk]: batch, heads, queries, keys. A programmer uses <code>softmax(S,dim=-2)</code>. What is normalized?</p><ol class="opts one"><li><i>A</i>Keys for each query</li><li><i>B</i>Queries for each key<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Features of each token</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Read the axis labels</h3><p class="worked-variables">$S_{b,h,i,j}$ compares query i with key j.</p><ol class="worked-lines"><li>The second-last axis is i, the query index.</li><li>dim=−2 makes columns sum to one across queries.</li><li>B describes the bug. Correct attention uses dim=−1 for key normalization.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a> · Course example</p>
 </section>
@@ -1176,8 +1165,8 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide has-worked-solutions" id="m10p38" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Multi-head attention</h2><p class="sub">Transfer: broadcast a key-validity mask</p>
-<div class="worked-question"><p>Scores have shape [2,3,4,5]: batch, heads, queries, keys. Key validity has shape [2,5]. Which reshape shares the key rule across every head and query?</p><ol class="opts one"><li><i>A</i>[2,1,1,5]<b class="ok step" data-step="2">✓</b></li><li><i>B</i>[2,5,1,1]</li><li><i>C</i>[1,1,2,5]</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Align the batch and key axes</h3><p class="worked-variables">$B=2$, $H=3$, $T_q=4$, $T_k=5$.</p><ol class="worked-lines"><li>Use singleton head and query axes: [2,1,1,5].</li><li>Broadcast those singleton axes to [2,3,4,5].</li><li>A is correct. B places validity on the head axis; C moves batch into the query axis.</li></ol></div>
+<div class="worked-question"><p>Scores have shape [2,3,4,5]: batch, heads, queries, keys. Key validity has shape [2,5], with True for allowed keys. Which reshape shares this key rule across every head and query?</p><ol class="opts one"><li><i>A</i>[2,1,1,5]<b class="ok step" data-step="2">✓</b></li><li><i>B</i>[2,5,1,1]</li><li><i>C</i>[1,1,2,5]</li></ol></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Align the batch and key axes</h3><p class="worked-variables">$B=2$, $H=3$, $T_q=4$, $T_k=5$.</p><ol class="worked-lines"><li>Use singleton head and query axes: [2,1,1,5].</li><li>Broadcast those axes to [2,3,4,5]; A is correct.</li><li>B cannot broadcast: head extent 5 differs from 3. C cannot broadcast: query extent 2 differs from 4.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a> · Course example</p>
 </section>
 
@@ -1185,7 +1174,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p39" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>Position and order</h2><p class="sub">Content-only attention follows a permutation</p>
-<p>Permutation equivariance means that reordering input tokens reorders their output vectors in the same way.</p><div class="eq">$$\operatorname{Attn}(\Pi X)=\Pi\operatorname{Attn}(X)$$</div><dl class="gloss"><dt>$\Pi,X$</dt><dd>token permutation; token rows</dd><dt>$\operatorname{Attn}$</dt><dd>attention with no position terms or fixed mask</dd></dl><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS5">Vaswani et al. (2017), §3.5</a></p>
+<p>Permutation equivariance: reordering input tokens reorders the output vectors the same way.</p><div class="eq">$$\operatorname{Attn}(\Pi X)=\Pi\operatorname{Attn}(X)$$</div><dl class="gloss"><dt>$X,\Pi$</dt><dd>T × D token rows; T × T row-permutation matrix</dd></dl><p>Shared projections, no position features, no fixed mask, and dropout disabled.</p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS5">Vaswani et al. (2017), §3.5</a></p>
 </section>
 
 <!-- ===== 40 ===== -->
@@ -1193,7 +1182,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Position and order</h2><p class="sub">What does content alone fail to identify?</p>
 <div class="worked-question"><p>The same two feature vectors are presented in opposite orders to unmasked attention with no position features.</p><ol class="opts one"><li><i>A</i>Dot products recover their original order</li><li><i>B</i>Outputs move with the input permutation<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Every output becomes zero</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Apply the stated symmetry</h3><p class="worked-variables">$\Pi$: swap of token positions; $X,Y$: input and output token rows.</p><ol class="worked-lines"><li>$X\mapsto\Pi X$ implies $Y\mapsto\Pi Y$.</li><li>B is correct: relationships are preserved without an original-position label.</li><li>A invents missing information; C does not follow from equivariance.</li></ol></div>
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Apply the stated symmetry</h3><p class="worked-variables">$X,Y$: input/output token rows; $\Pi$: swap of the two rows.</p><ol class="worked-lines"><li>$X\mapsto\Pi X$ implies $Y\mapsto\Pi Y$.</li><li>B is correct: relationships are preserved without an original-position label.</li><li>A invents missing information; C does not follow from equivariance.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS5">Vaswani et al. (2017), §3.5</a> · Course example</p>
 </section>
 
@@ -1201,21 +1190,21 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p41" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Position and order</h2><p class="sub">Sinusoids give each position a pattern</p>
-<p>A positional encoding is a vector that identifies a token position. Add it to the token features before projection.</p><div class="eq">$$\mathrm{PE}_{p,2r}=\sin(p\omega_r),\quad\mathrm{PE}_{p,2r+1}=\cos(p\omega_r)$$</div><dl class="gloss"><dt>$p$</dt><dd>token position</dd><dt>$\omega_r=10000^{-2r/D}$</dt><dd>frequency; even width D, r=0,…,D/2−1</dd></dl><figure class="math-figure"><canvas id="m10p41c" width="1050" height="210" role="img" aria-label="One sine/cosine pair across token positions."></canvas><figcaption>One sine/cosine pair across token positions.</figcaption></figure><script>M10draw(document.getElementById("m10p41c"),"sin");</script><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS5">Vaswani et al. (2017), §3.5</a></p>
+<p>For token features $x_p$, add the position vector: $\widetilde x_p=x_p+\mathrm{PE}_p$.</p><div class="eq">$$\mathrm{PE}_{p,2r}=\sin(p\omega_r),\quad\mathrm{PE}_{p,2r+1}=\cos(p\omega_r)$$</div><dl class="gloss"><dt>$p,r,D$</dt><dd>position; coordinate-pair index 0,…,D/2−1; even width</dd><dt>$\omega_r=10000^{-2r/D}$</dt><dd>frequency of pair r</dd></dl><figure class="math-figure"><canvas id="m10p41c" width="1050" height="210" role="img" aria-label="One sine/cosine pair across token positions."></canvas><figcaption>One sine/cosine pair across token positions.</figcaption></figure><script>M10draw(document.getElementById("m10p41c"),"sin");</script><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS5">Vaswani et al. (2017), §3.5</a></p>
 </section>
 
 <!-- ===== 42 ===== -->
 <section class="slide" id="m10p42" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>Position and order</h2><p class="sub">A shift follows angle-addition identities</p>
-<div class="eq">$$\begin{bmatrix}\sin((p+\Delta)\omega)\\\cos((p+\Delta)\omega)\end{bmatrix}=\begin{bmatrix}\cos(\Delta\omega)&amp;\sin(\Delta\omega)\\-\sin(\Delta\omega)&amp;\cos(\Delta\omega)\end{bmatrix}\begin{bmatrix}\sin(p\omega)\\\cos(p\omega)\end{bmatrix}$$</div><dl class="gloss"><dt>$p,\Delta,\omega$</dt><dd>position, offset, one frequency</dd></dl><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS5">Vaswani et al. (2017), §3.5</a></p>
+<div class="eq">$$\begin{bmatrix}\sin((p+\Delta)\omega)\\\cos((p+\Delta)\omega)\end{bmatrix}=\begin{bmatrix}\cos(\Delta\omega)&amp;\sin(\Delta\omega)\\-\sin(\Delta\omega)&amp;\cos(\Delta\omega)\end{bmatrix}\begin{bmatrix}\sin(p\omega)\\\cos(p\omega)\end{bmatrix}$$</div><dl class="gloss"><dt>$p,\Delta,\omega$</dt><dd>starting position, position shift, one fixed pair frequency</dd></dl><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS5">Vaswani et al. (2017), §3.5</a></p>
 </section>
 
 <!-- ===== 43 ===== -->
 <section class="slide has-worked-solutions" id="m10p43" data-part="IV">
 <p class="eyebrow you" data-min="1.0">Exercise</p>
 <h2>Position and order</h2><p class="sub">Transfer: one sinusoidal pair at a new position</p>
-<div class="worked-question"><p>One positional pair is $(\sin(p\omega),\cos(p\omega))$. The angle per position is $\omega=\pi/2$. Move from position $p=0$ to $p=1$. What is the new pair?</p><ol class="opts one"><li><i>A</i>(1,0)<b class="ok step" data-step="2">✓</b></li><li><i>B</i>(0,1)</li><li><i>C</i>(−1,0)</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>One position pair is $(\sin(p\omega),\cos(p\omega))$. For this illustrative frequency $\omega=\pi/2$, move from position p=0 to p=1.</p><ol class="opts one"><li><i>A</i>(1,0)<b class="ok step" data-step="2">✓</b></li><li><i>B</i>(0,1)</li><li><i>C</i>(−1,0)</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Evaluate in the stated coordinate order</h3><p class="worked-variables">$\omega=\pi/2$; the pair is sine first, cosine second.</p><ol class="worked-lines"><li>At $p=0$: $(\sin0,\cos0)=(0,1)$.</li><li>At $p=1$: $(\sin(\pi/2),\cos(\pi/2))=(1,0)$.</li><li>A is correct. B keeps the old position; C uses the wrong sine sign.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS5">Vaswani et al. (2017), §3.5</a> · Course example</p>
 </section>
@@ -1224,29 +1213,29 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p44" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Position and order</h2><p class="sub">Rotary embeddings act inside the comparison</p>
-<p>Rotary position embedding (RoPE) rotates feature pairs by position.</p><div class="eq">$$R(\theta)=\begin{bmatrix}\cos\theta&amp;-\sin\theta\\\sin\theta&amp;\cos\theta\end{bmatrix}$$</div><dl class="gloss"><dt>$\theta,\omega$</dt><dd>rotation angle; angle per position</dd><dt>$q_p,k_s$</dt><dd>query/key at positions p and s</dd></dl><p>Query/key rotation angles: $p\omega,s\omega$.</p><figure class="math-figure compact"><canvas id="m10p44c" width="1050" height="140" role="img" aria-label="A query pair rotates with position while keeping its length."></canvas><figcaption>A query pair rotates with position while keeping its length.</figcaption></figure><script>M10draw(document.getElementById("m10p44c"),"rotation");</script><p class="cite"><a href="https://arxiv.org/abs/2104.09864">Su et al., RoFormer (2021), §3.2</a></p>
+<p>Rotary position embedding (RoPE)</p><div class="eq">$$R(\theta)=\begin{bmatrix}\cos\theta&amp;-\sin\theta\\\sin\theta&amp;\cos\theta\end{bmatrix}$$</div><dl class="gloss"><dt>$R(\theta)$</dt><dd>2×2 counterclockwise rotation</dd></dl><p>$\widetilde q_p=R(p\omega)q_p$, $\widetilde k_s=R(s\omega)k_s$. q,k: query/key pairs; p,s: positions; ω: frequency.</p><figure class="math-figure compact"><canvas id="m10p44c" width="1050" height="140" role="img" aria-label="A query pair rotates with position while keeping its length."></canvas><figcaption>A query pair rotates with position while keeping its length.</figcaption></figure><script>M10draw(document.getElementById("m10p44c"),"rotation");</script><p class="cite"><a href="https://arxiv.org/abs/2104.09864">Su et al., RoFormer (2021), §3.2</a></p>
 </section>
 
 <!-- ===== 45 ===== -->
 <section class="slide" id="m10p45" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>Position and order</h2><p class="sub">Relative positions appear in the dot product</p>
-<div class="eq">$$\widetilde q_p^T\widetilde k_s=q_p^TR(p\omega)^TR(s\omega)k_s=q_p^TR((s-p)\omega)k_s$$</div><dl class="gloss"><dt>$q_p,k_s$</dt><dd>original query/key pairs at positions p and s</dd><dt>$\widetilde q_p,\widetilde k_s$</dt><dd>rotated query/key pairs</dd><dt>$R(\theta),\omega$</dt><dd>two-coordinate rotation; angle per position</dd></dl><p class="cite"><a href="https://arxiv.org/abs/2104.09864">Su et al., RoFormer (2021), §3.2</a></p>
+<div class="eq">$$\widetilde q_p^T\widetilde k_s=q_p^TR(p\omega)^TR(s\omega)k_s=q_p^TR((s-p)\omega)k_s$$</div><dl class="gloss"><dt>$q_p,k_s$</dt><dd>unrotated two-coordinate query/key columns at positions p,s</dd><dt>$R,\omega,\widetilde q_p,\widetilde k_s$</dt><dd>rotation; fixed frequency; position-rotated pairs</dd><dt>$s-p$</dt><dd>key position relative to the query</dd></dl><p class="cite"><a href="https://arxiv.org/abs/2104.09864">Su et al., RoFormer (2021), §3.2</a></p>
 </section>
 
 <!-- ===== 46 ===== -->
 <section class="slide" id="m10p46" data-part="IV">
 <p class="eyebrow">Example</p>
 <h2>Position and order</h2><p class="sub">A quarter-turn example</p>
-<div class="ex"><div class="eq">$$q=k=(1,0)^T,\quad p=0,\quad s=1,\quad\omega=\pi/2$$</div><dl class="gloss"><dt>$q,k$</dt><dd>original query and key</dd><dt>$p,s$</dt><dd>their positions</dd><dt>$\omega$</dt><dd>angle per position</dd></dl><p>After position rotations, $\widetilde q=(1,0)^T$ and $\widetilde k=(0,1)^T$. Their dot product is $0$.</p></div><p class="cite"><a href="https://arxiv.org/abs/2104.09864">Su et al., RoFormer (2021), §3.2</a> · Course example</p>
+<div class="ex"><div class="eq">$$q=k=(1,0)^T,\quad p=0,\quad s=1,\quad\omega=\pi/2$$</div><dl class="gloss"><dt>$q,k$</dt><dd>unrotated query/key coordinate pairs</dd><dt>$p,s,\omega$</dt><dd>query/key positions; illustrative frequency</dd></dl><p>After rotation: $\widetilde q=(1,0)^T$, $\widetilde k=(0,1)^T$. Their dot product is $0$.</p></div><p class="cite"><a href="https://arxiv.org/abs/2104.09864">Su et al., RoFormer (2021), §3.2</a> · Course example</p>
 </section>
 
 <!-- ===== 47 ===== -->
 <section class="slide has-worked-solutions" id="m10p47" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Position and order</h2><p class="sub">Transfer: shift both positions</p>
-<div class="worked-question"><p>Query and key are $q=k=(1,0)^T$. A tilde rotates each vector counterclockwise by its position times $\omega=\pi/2$. Move $(p,s)$ from $(0,1)$ to $(2,3)$. Find $\widetilde q_p^T\widetilde k_s$.</p><ol class="opts one"><li><i>A</i>0<b class="ok step" data-step="2">✓</b></li><li><i>B</i>1</li><li><i>C</i>−1</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Use the relative angle</h3><p class="worked-variables">$p,s$: query/key positions; $R$: counterclockwise rotation.</p><ol class="worked-lines"><li>$(s-p)\omega=(3-2)\pi/2=\pi/2$.</li><li>$q^TR(\pi/2)k=0$.</li><li>A is correct. B uses zero offset; C uses a half-turn.</li></ol></div>
+<div class="worked-question"><p>Unrotated pairs: $q=k=(1,0)^T$; frequency $\omega=\pi/2$. Change query/key positions $(p,s)$ from $(0,1)$ to $(2,3)$. Find the rotated query–key dot product before attention scaling.</p><ol class="opts one"><li><i>A</i>0<b class="ok step" data-step="2">✓</b></li><li><i>B</i>1</li><li><i>C</i>−1</li></ol></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Use the relative angle</h3><p class="worked-variables">$p,s$: query/key positions; content unchanged.</p><ol class="worked-lines"><li>$(s-p)\omega=(3-2)\pi/2=\pi/2$.</li><li>$q^TR(\pi/2)k=0$.</li><li>A is correct. B uses zero offset; C uses a half-turn.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/abs/2104.09864">Su et al., RoFormer (2021), §3.2</a> · Course example</p>
 </section>
 
@@ -1261,14 +1250,14 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p49" data-part="IV">
 <p class="eyebrow">Recall</p>
 <h2>Transformer blocks</h2><p class="sub">LayerNorm uses the token feature axis</p>
-<div class="eq">$$\widehat x_r=\frac{x_r-\mu}{\sqrt{v+\epsilon}},\quad\mu=\frac1D\sum_rx_r,\quad v=\frac1D\sum_r(x_r-\mu)^2$$</div><dl class="gloss"><dt>$x_r,D$</dt><dd>feature r of one token; feature count</dd><dt>$\mu,v,\epsilon&gt;0$</dt><dd>feature mean, variance, stability constant</dd><dt>$\widehat x$</dt><dd>normalized features</dd></dl><p>Output: $\gamma\odot\widehat x+\beta$. Learned scale $\gamma$ acts elementwise; $\beta$ is the learned shift.</p><p class="cite"><a href="https://arxiv.org/html/2002.04745v2">Xiong et al. (2020), §3.1, Table 1</a></p>
+<div class="eq">$$\widehat x_r=\frac{x_r-\mu}{\sqrt{v+\epsilon}},\quad\mu=\frac1D\sum_{r=1}^Dx_r,\quad v=\frac1D\sum_{r=1}^D(x_r-\mu)^2$$</div><dl class="gloss"><dt>$x,r,D$</dt><dd>one token; feature index; feature count</dd><dt>$\mu,v$</dt><dd>feature mean; mean squared deviation</dd><dt>$\epsilon&gt;0$</dt><dd>stability constant</dd></dl><p>Output: $\gamma\odot\widehat x+\beta$. Learned scale γ and shift β each have D coordinates; ⊙ acts coordinatewise.</p><p class="cite"><a href="https://arxiv.org/html/2002.04745v2">Xiong et al. (2020), §3.1, Table 1</a></p>
 </section>
 
 <!-- ===== 50 ===== -->
 <section class="slide has-worked-solutions" id="m10p50" data-part="IV">
 <p class="eyebrow you" data-min="1.5">Exercise</p>
 <h2>Transformer blocks</h2><p class="sub">Transfer: normalize one token</p>
-<div class="worked-question"><p>Apply LayerNorm to the features of one token $x=(1,3)$. Use scale $\gamma=(1,1)$, shift $\beta=(0,0)$ and stability constant $\epsilon=0$ for this nonconstant example. Find the output.</p><ol class="opts one"><li><i>A</i>(−1,1)<b class="ok step" data-step="3">✓</b></li><li><i>B</i>(−1/√2, 1/√2)</li><li><i>C</i>(1,3)</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>One token is $x=(1,3)$. Use $\gamma=(1,1)$, $\beta=(0,0)$ and $\epsilon=0$ for this nonconstant numerical example.</p><ol class="opts one"><li><i>A</i>(−1,1)<b class="ok step" data-step="3">✓</b></li><li><i>B</i>(−1/√2, 1/√2)</li><li><i>C</i>(1,3)</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2"><p class="worked-progress">Solution 1 / 2</p><h3>Use the feature mean and mean squared deviation</h3><p class="worked-variables">$D=2$ features; no batch or token averaging.</p><ol class="worked-lines"><li>$\mu=(1+3)/2=2$; $x-\mu=(-1,1)$.</li><li>$v=[(-1)^2+1^2]/2=1$.</li><li>$\widehat x=(-1,1)/\sqrt1=(-1,1)$. A is correct.</li></ol></div>
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 2"><p class="worked-progress">Solution 2 / 2</p><h3>Diagnose the alternative statistics</h3><p class="worked-variables">$\gamma=1$ and $\beta=0$ preserve the normalized values.</p><ol class="worked-lines"><li>B uses the sample-variance divisor D−1; LayerNorm uses D.</li><li>C omits centering and scaling. In real implementations keep positive epsilon.</li></ol></div>
 <span class="worked-finish step" data-step="3" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/2002.04745v2">Xiong et al. (2020), §3.1, Table 1</a> · Course example</p>
@@ -1278,14 +1267,14 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p51" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Transformer blocks</h2><p class="sub">The feed-forward branch transforms each token</p>
-<p>A positionwise feed-forward network applies the same nonlinear feature map independently to every token.</p><div class="eq">$$f(x)=W_2\phi(W_1x+b_1)+b_2$$</div><dl class="gloss"><dt>$x,D,F$</dt><dd>token features, input width, hidden width</dd><dt>$W_1,W_2$</dt><dd>F × D and D × F maps</dd><dt>$\phi,b_1,b_2$</dt><dd>elementwise nonlinearity; F- and D-coordinate biases</dd></dl><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS3">Vaswani et al. (2017), §3.3</a></p>
+<p>A positionwise feed-forward network uses the same nonlinear feature map separately on each token.</p><div class="eq">$$f(x)=W_2\phi(W_1x+b_1)+b_2$$</div><dl class="gloss"><dt>$x,W_1,W_2$</dt><dd>D-feature token; F × D and D × F maps</dd><dt>$\phi,b_1,b_2$</dt><dd>coordinatewise nonlinearity; F- and D-coordinate biases</dd></dl><p>F is the hidden width, usually larger than D.</p><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS3">Vaswani et al. (2017), §3.3</a></p>
 </section>
 
 <!-- ===== 52 ===== -->
 <section class="slide has-worked-solutions" id="m10p52" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Transformer blocks</h2><p class="sub">A residual connection constrains the shape</p>
-<div class="worked-question"><p>$X$ has shape [2,5,12], while the attention branch returns [2,5,8]. Can they be directly added?</p><ol class="opts one"><li><i>A</i>Yes, ordinary broadcasting repairs it</li><li><i>B</i>No, the branch must return width 12<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Yes, because both have five tokens</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>The residual input $X$ has shape [2,5,12]: batch, tokens, features. Its attention branch returns [2,5,8]. Can they be directly added?</p><ol class="opts one"><li><i>A</i>Yes, ordinary broadcasting repairs it</li><li><i>B</i>No, the branch must return width 12<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Yes, because both have five tokens</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Compare corresponding coordinates</h3><p class="worked-variables">$X$: residual input; branch: learned update.</p><ol class="worked-lines"><li>Feature widths 12 and 8 differ and neither is one.</li><li>Ordinary broadcasting cannot align these feature coordinates.</li><li>B is correct: use the output projection to return width 12.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/2002.04745v2">Xiong et al. (2020), §3.1, Table 1</a> · Course example</p>
 </section>
@@ -1294,8 +1283,8 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide has-worked-solutions" id="m10p53" data-part="IV">
 <p class="eyebrow you" data-min="1.5">Exercise</p>
 <h2>Transformer blocks</h2><p class="sub">Transfer: a missing path changes the architecture</p>
-<div class="worked-question"><p>A proposed block is $Y=X+\mathrm{FFN}(\mathrm{MHA}(X))$. $X,Y$ are input/output representations, MHA is multi-head attention, and FFN is a feed-forward network. What is missing for pre-layer normalization (pre-LN)?</p><ol class="opts one"><li><i>A</i>Only position information</li><li><i>B</i>Both normalizations and the intermediate residual<b class="ok step" data-step="2">✓</b></li><li><i>C</i>A final softmax only</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Compare the computation graph</h3><p class="worked-variables">$U$: intermediate residual; LN: layer normalization.</p><ol class="worked-lines"><li>$U=X+MHA(LN(X))$.</li><li>$Y=U+FFN(LN(U))$.</li><li>B is correct. Position features or final softmax do not restore these missing paths.</li></ol></div>
+<div class="worked-question"><p>$Y=X+FFN(MHA(X))$ is described as the pre-LN block. Here MHA is multi-head attention and FFN is the tokenwise feed-forward network. What is missing?</p><ol class="opts one"><li><i>A</i>Only position information</li><li><i>B</i>Both normalizations and the intermediate residual<b class="ok step" data-step="2">✓</b></li><li><i>C</i>A final softmax only</li></ol></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Compare the computation graph</h3><p class="worked-variables">$U$: intermediate residual representation.</p><ol class="worked-lines"><li>$U=X+MHA(LN(X))$.</li><li>$Y=U+FFN(LN(U))$.</li><li>B is correct. Position features or final softmax do not restore these missing paths.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/2002.04745v2">Xiong et al. (2020), §3.1, Table 1</a> · Course example</p>
 </section>
 
@@ -1303,21 +1292,21 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p54" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>Cost and the KV cache</h2><p class="sub">Pairwise comparison creates quadratic work</p>
-<p>Dense self-attention, one item, equal query/key/value head widths.</p><div class="eq">$$QK^T:O(T^2d_h),\quad PV:O(T^2d_h),\quad Hd_h=D$$</div><dl class="gloss"><dt>$Q,K,P,V$</dt><dd>queries, keys, weights, values</dd><dt>$T,D$</dt><dd>token count, total width</dd><dt>$H,d_h$</dt><dd>head count, width per head</dd></dl><p>Mixing across heads costs $O(T^2D)$. Dense projections cost $O(TD^2)$.</p><figure class="math-figure compact"><canvas id="m10p54c" width="1050" height="140" role="img" aria-label="Query-key pair counts grow quadratically with token length."></canvas><figcaption>Query-key pair counts grow quadratically with token length.</figcaption></figure><script>M10draw(document.getElementById("m10p54c"),"cost");</script><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a></p>
+<div class="eq">$$QK^T:O(T^2d_h),\quad PV:O(T^2d_h),\quad Hd_h=D$$</div><dl class="gloss"><dt>$Q,K,V,P$</dt><dd>queries, keys, values, row-softmax weights</dd><dt>$T,H,d_h,D$</dt><dd>tokens, heads, equal key/value head width, total width</dd></dl><p>Per sequence/layer: mixing $O(T^2D)$; projections $O(TD^2)$.</p><figure class="math-figure"><canvas id="m10p54c" width="1050" height="210" role="img" aria-label="Query-key pair counts grow quadratically with token length."></canvas><figcaption>Query-key pair counts grow quadratically with token length.</figcaption></figure><script>M10draw(document.getElementById("m10p54c"),"cost");</script><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a></p>
 </section>
 
 <!-- ===== 55 ===== -->
 <section class="slide" id="m10p55" data-part="IV">
 <p class="eyebrow">Example</p>
 <h2>Cost and the KV cache</h2><p class="sub">Memory follows the score shape</p>
-<div class="ex"><div class="eq">$$B=1,\ H=8,\ T=1024:\quad BHT^2=8{,}388{,}608$$</div><dl class="gloss"><dt>$B,H,T$</dt><dd>batch, heads, tokens</dd></dl><p>At 2 bytes per entry: 16 MiB for one materialized score tensor.</p></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a> · Course example</p>
+<div class="ex"><div class="eq">$$B=1,\ H=8,\ T=1024:\quad BHT^2=8{,}388{,}608$$</div><dl class="gloss"><dt>$B,H,T$</dt><dd>batch items, heads, query/key tokens</dd></dl><p>At 2 bytes per entry: 16 MiB for one materialized score tensor. 1 MiB = 2²⁰ bytes. Other tensors are excluded.</p></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a> · Course example</p>
 </section>
 
 <!-- ===== 56 ===== -->
 <section class="slide has-worked-solutions" id="m10p56" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Cost and the KV cache</h2><p class="sub">Transfer: a longer sequence</p>
-<div class="worked-question"><p>Keep batch size B, head count H and datatype fixed. Double sequence length T. How does the memory for a materialized score tensor of shape [B,H,T,T] change?</p><ol class="opts one"><li><i>A</i>×2</li><li><i>B</i>×4<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Unchanged</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>The materialized score tensor has shape [B,H,T,T]: batch, heads, queries, keys. Keep B, H and bytes per entry fixed. Double T. How does its memory change?</p><ol class="opts one"><li><i>A</i>×2</li><li><i>B</i>×4<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Unchanged</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Count both token axes</h3><p class="worked-variables">$S$ has shape [B,H,T,T].</p><ol class="worked-lines"><li>$BH(2T)^2=4BHT^2$.</li><li>B is correct. A counts only the extra queries and forgets the extra keys.</li><li>C confuses fixed feature width with a fixed pair count.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2">Vaswani et al. (2017), §3.2.2</a> · Course example</p>
 </section>
@@ -1326,14 +1315,14 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p57" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Cost and the KV cache</h2><p class="sub">Unchanged causal prefixes permit reuse</p>
-<p>Autoregressive decoding adds one token at a time. A key-value (KV) cache stores earlier keys and values for reuse.</p><p>Earlier causal states cannot read appended tokens. The cache remains exact if earlier inputs, positions and parameters stay fixed.</p><figure class="math-figure"><canvas id="m10p57c" width="1050" height="210" role="img" aria-label="An unchanged prefix stays cached while one new row is appended."></canvas><figcaption>An unchanged prefix stays cached while one new row is appended.</figcaption></figure><script>M10draw(document.getElementById("m10p57c"),"cache");</script><p class="cite"><a href="https://arxiv.org/html/1911.02150v1">Shazeer (2019), §2.4–2.4.1</a></p>
+<p>Autoregressive decoding appends one token at a time. A key-value (KV) cache stores earlier key/value projections.</p><p>Exact reuse needs causal dependencies, fixed earlier inputs/positions/parameters, and deterministic inference with dropout disabled.</p><figure class="math-figure"><canvas id="m10p57c" width="1050" height="210" role="img" aria-label="An unchanged prefix stays cached while one new row is appended."></canvas><figcaption>An unchanged prefix stays cached while one new row is appended.</figcaption></figure><script>M10draw(document.getElementById("m10p57c"),"cache");</script><p class="cite"><a href="https://arxiv.org/html/1911.02150v1">Shazeer (2019), §2.4–2.4.1</a></p>
 </section>
 
 <!-- ===== 58 ===== -->
 <section class="slide" id="m10p58" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>Cost and the KV cache</h2><p class="sub">One new query reads all cached keys</p>
-<div class="eq">$$q_t^TK_{1:t}^T: [1,d_h][d_h,t]=[1,t]$$</div><dl class="gloss"><dt>$q_t,d_h$</dt><dd>new query column and head width</dd><dt>$K_{1:t},V_{1:t}$</dt><dd>all t key and value rows, including the appended rows</dd></dl><p>Softmax over t scores, then multiply by $V_{1:t}$. Across heads of total width $D$, time and cache storage are $O(tD)$ per layer and batch item.</p><p class="cite"><a href="https://arxiv.org/html/1911.02150v1">Shazeer (2019), §2.4–2.4.1</a></p>
+<div class="eq">$$q_t^TK_{1:t}^T:\ [1,d_h][d_h,t]=[1,t]$$</div><dl class="gloss"><dt>$q_t,K_{1:t}$</dt><dd>new query column; t key rows including the new key</dd><dt>$d_h,D$</dt><dd>equal key/value head width; total width</dd></dl><p>Mixing $O(tD)$ per step; KV storage $O(tD)$ per layer and batch item.</p><p><code>K = concat([Kold, knew], axis=-2)</code><br><code>V = concat([Vold, vnew], axis=-2)</code></p><p class="cite"><a href="https://arxiv.org/html/1911.02150v1">Shazeer (2019), §2.4–2.4.1</a></p>
 </section>
 
 <!-- ===== 59 ===== -->
@@ -1341,7 +1330,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Cost and the KV cache</h2><p class="sub">Transfer: can this memory be reused?</p>
 <div class="worked-question"><p>Camera tokens are replaced by a new frame. Can their old cross-attention keys and values serve as exact representations of the new frame?</p><ol class="opts one"><li><i>A</i>Yes, when shapes match</li><li><i>B</i>No, recompute the changed memory<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Yes, if action horizon is fixed</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Trace projections back to their inputs</h3><p class="worked-variables">$E$: encoded camera tokens; $W_K,W_V$: key and value maps; $K,V$: projected keys and values.</p><ol class="worked-lines"><li>$K=EW_K^T$, $V=EW_V^T$.</li><li>A new frame can change E and both projections.</li><li>B is correct. Matching shape or horizon does not imply matching values.</li></ol></div>
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Trace projections back to their inputs</h3><p class="worked-variables">$E$: encoded camera tokens; K,V are their projections.</p><ol class="worked-lines"><li>$K=EW_K^T$, $V=EW_V^T$.</li><li>A new frame can change E and both projections.</li><li>B is correct. Matching shape or horizon does not imply matching values.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1911.02150v1">Shazeer (2019), §2.4–2.4.1</a> · Course example</p>
 </section>
 
@@ -1349,15 +1338,15 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p60" data-part="IV">
 <p class="eyebrow">Example</p>
 <h2>Cost and the KV cache</h2><p class="sub">Cache validity and cumulative decoding cost</p>
-<div class="ex"><div class="eq">$$\sum_{t=1}^Tt=\frac{T(T+1)}2,\quad\sum_{t=1}^Tt^2=\frac{T(T+1)(2T+1)}6$$</div><dl class="gloss"><dt>$t,T$</dt><dd>current and final prefix length</dd><dt>$D$</dt><dd>total width across heads</dd></dl><p>Cached mixing costs $O(T^2D)$. Dense reruns score $t^2$ pairs before masking: $O(T^3D)$.</p></div><p class="cite"><a href="https://arxiv.org/html/1911.02150v1">Shazeer (2019), §2.4–2.4.1</a> · Course example</p>
+<div class="ex"><div class="eq">$$\sum_{t=1}^Tt=\frac{T(T+1)}2,\quad\sum_{t=1}^Tt^2=\frac{T(T+1)(2T+1)}6$$</div><dl class="gloss"><dt>$t,T$</dt><dd>current/final prefix length</dd></dl><p>Dense score dot products before masking: cached decoding sums t; full-prefix reruns sum t². Mixing costs: $O(T^2D)$ versus $O(T^3D)$.</p></div><p class="cite"><a href="https://arxiv.org/html/1911.02150v1">Shazeer (2019), §2.4–2.4.1</a> · Course example</p>
 </section>
 
 <!-- ===== 61 ===== -->
 <section class="slide has-worked-solutions" id="m10p61" data-part="IV">
 <p class="eyebrow you" data-min="1.5">Exercise</p>
 <h2>Cost and the KV cache</h2><p class="sub">Transfer: count incremental comparisons</p>
-<div class="worked-question"><p>Generate four tokens from an empty prefix. Count one head’s score dot products, including the current token. The dense full-prefix baseline scores every pair before applying its causal mask. Compare with cached decoding.</p><ol class="opts one"><li><i>A</i>Cached 10; recomputed 30<b class="ok step" data-step="2">✓</b></li><li><i>B</i>Cached 4; recomputed 16</li><li><i>C</i>Cached 16; recomputed 16</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Add work over all four decoding steps</h3><p class="worked-variables">$t=1,2,3,4$; one new query uses t keys.</p><ol class="worked-lines"><li>Cached: $1+2+3+4=10$.</li><li>Full-prefix reruns: $1^2+2^2+3^2+4^2=30$.</li><li>A is correct. B drops past keys and repeated passes; C counts only one final full-sequence pass.</li></ol></div>
+<div class="worked-question"><p>Generate four tokens from an empty prefix, one head. Count dense query–key dot products before masking, including each current token. Compare cached decoding with a full t × t score matrix recomputed at every step.</p><ol class="opts one"><li><i>A</i>Cached 10; recomputed 30<b class="ok step" data-step="2">✓</b></li><li><i>B</i>Cached 4; recomputed 16</li><li><i>C</i>Cached 16; recomputed 16</li></ol></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Count dense scores over four decoding steps</h3><p class="worked-variables">$t=1,2,3,4$; count dot products before causal masking.</p><ol class="worked-lines"><li>Cached: $1+2+3+4=10$.</li><li>Full-prefix dense reruns: $1^2+2^2+3^2+4^2=30$.</li><li>A is correct. B drops past keys and repeated passes; C counts only one final full-sequence pass.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1911.02150v1">Shazeer (2019), §2.4–2.4.1</a> · Course example</p>
 </section>
 
@@ -1365,22 +1354,22 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p62" data-part="IV">
 <p class="eyebrow">Motivation</p>
 <h2>Action chunking</h2><p class="sub">A coordinated movement spans several decisions</p>
-<p>Action chunking predicts several consecutive future motor targets together from the current observation.</p><p>The robot can execute a prefix, gather new observations, and predict again.</p><figure class="math-figure"><canvas id="m10p62c" width="1050" height="210" role="img" aria-label="Each row is a chunk prediction; columns are target action times."></canvas><figcaption>Each row is a chunk prediction; columns are target action times.</figcaption></figure><script>M10draw(document.getElementById("m10p62c"),"chunk");</script><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS1">Zhao et al. (2023), §IV-A</a></p>
+<p>Action chunking predicts several consecutive future motor targets together from the current observation.</p><p>The robot may execute a prefix, observe again, and replan. $o_t$: observation now; K: predicted chunk length.</p><figure class="math-figure"><canvas id="m10p62c" width="1050" height="210" role="img" aria-label="Each row is a chunk prediction; columns are target action times."></canvas><figcaption>Each row is a chunk prediction; columns are target action times.</figcaption></figure><script>M10draw(document.getElementById("m10p62c"),"chunk");</script><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS1">Zhao et al. (2023), §IV-A</a></p>
 </section>
 
 <!-- ===== 63 ===== -->
 <section class="slide" id="m10p63" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Action chunking</h2><p class="sub">Prediction time and target time are different indices</p>
-<div class="eq">$$\widehat A_t\in\mathbb R^{K\times d_a},\quad\widehat A_t[j,:]=\hat a_{t+j|t}^T,\quad0\le j&lt;K$$</div><dl class="gloss"><dt>$\widehat A_t,t$</dt><dd>predicted chunk; observation and prediction time</dd><dt>$K,d_a$</dt><dd>chunk length, action dimension</dd><dt>$j,\hat a_{t+j|t}$</dt><dd>row offset; column predicting target t+j from time t</dd></dl><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS1">Zhao et al. (2023), §IV-A</a></p>
+<div class="eq">$$\widehat A_t\in\mathbb R^{K\times d_a},\quad\widehat A_t[j,:]=\hat a_{t+j|t}^T,\quad0\le j&lt;K$$</div><dl class="gloss"><dt>$t,j,K,d_a$</dt><dd>prediction time; row offset; chunk length; action dimension</dd><dt>$\hat a_{t+j|t},\widehat A_t$</dt><dd>action column for target t+j predicted at t; row-stored chunk</dd></dl><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS1">Zhao et al. (2023), §IV-A</a></p>
 </section>
 
 <!-- ===== 64 ===== -->
 <section class="slide has-worked-solutions" id="m10p64" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Action chunking</h2><p class="sub">Chunk length is not execution length</p>
-<div class="worked-question"><p>At prediction time $t$, a policy predicts $K=6$ motor targets starting at time $t$. It executes the first $E=2$ before observing again. Which target times are executed?</p><ol class="opts one"><li><i>A</i>Times t through t+5</li><li><i>B</i>Times t and t+1<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Only time t+5</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Separate prediction and execution</h3><p class="worked-variables">$t$: first target time; $K=6$: predicted count; $E=2$: executed count.</p><ol class="worked-lines"><li>The chunk covers target times t,…,t+5.</li><li>Its first two rows target t and t+1.</li><li>B is correct. A confuses K with E; C chooses the last row rather than the prefix.</li></ol></div>
+<div class="worked-question"><p>At prediction time t, a policy predicts K=6 actions and executes the first E=2 before observing again. K is chunk length; E is execution-prefix length. Which target times from this chunk are executed?</p><ol class="opts one"><li><i>A</i>Times t through t+5</li><li><i>B</i>Times t and t+1<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Only time t+5</li></ol></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Separate prediction and execution</h3><p class="worked-variables">$K=6$: predicted rows; $E=2$: executed prefix length.</p><ol class="worked-lines"><li>The chunk covers target times t,…,t+5.</li><li>Its first two rows target t and t+1.</li><li>B is correct. A confuses K with E; C chooses the last row rather than the prefix.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS1">Zhao et al. (2023), §IV-A</a> · Course example</p>
 </section>
 
@@ -1388,22 +1377,22 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p65" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Temporal ensembling</h2><p class="sub">Overlapping chunks predict the same target</p>
-<p>Average candidates for target time s.</p><div class="eq">$$\bar a_s=\frac{\sum_{j=0}^{J-1}w_j\hat a_{s|r_j}}{\sum_{j=0}^{J-1}w_j},\qquad w_j=e^{-mj}$$</div><dl class="gloss"><dt>$j,r_j$</dt><dd>oldest-first index; chunk prediction time</dd><dt>$J,\hat a_{s|r_j},\bar a_s$</dt><dd>chunk count; candidate; ensemble action</dd><dt>$w_j,m\ge0$</dt><dd>weight and decay rate</dd></dl><figure class="math-figure compact"><canvas id="m10p65c" width="1050" height="140" role="img" aria-label="Combine one target-time column across overlapping chunks."></canvas><figcaption>Combine one target-time column across overlapping chunks.</figcaption></figure><script>M10draw(document.getElementById("m10p65c"),"ensemble");</script><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS1">Zhao et al. (2023), §IV-A</a></p>
+<p>Chunks cover target $s$: $r_j\le s&lt;r_j+K$.</p><div class="eq">$$\bar a_s=\frac{\sum_{j=0}^{J-1}w_j\hat a_{s|r_j}}{\sum_{j=0}^{J-1}w_j},\qquad w_j=e^{-mj}$$</div><dl class="gloss"><dt>$s,r_j$</dt><dd>target, prediction times</dd><dt>$J,K,w_j,m$</dt><dd>chunks, oldest first; actions/chunk; weight; decay $m\ge0$</dd><dt>$\hat a_{s|r_j},\bar a_s$</dt><dd>predicted/combined action</dd></dl><figure class="math-figure compact"><canvas id="m10p65c" width="1050" height="140" role="img" aria-label="Combine one target-time column across overlapping chunks."></canvas><figcaption>One target column across overlapping chunks.</figcaption></figure><script>M10draw(document.getElementById("m10p65c"),"ensemble");</script><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS1">Zhao et al. (2023), §IV-A</a></p>
 </section>
 
 <!-- ===== 66 ===== -->
 <section class="slide" id="m10p66" data-part="IV">
 <p class="eyebrow">Example</p>
 <h2>Temporal ensembling</h2><p class="sub">One target, two predictions</p>
-<div class="ex"><div class="eq">$$\hat a_{s|r_0}=2,\quad\hat a_{s|r_1}=4,\quad w_j=e^{-mj},\quad m=\log2$$</div><dl class="gloss"><dt>$s$</dt><dd>common target time</dd><dt>$r_0,r_1$</dt><dd>oldest and newest prediction times</dd><dt>$\hat a_{s|r_j},\bar a_s$</dt><dd>candidate from chunk j; ensemble action</dd></dl><p>$w=(1,1/2)$, so $\bar a_s=(2+2)/(3/2)=8/3$.</p></div><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS1">Zhao et al. (2023), §IV-A</a> · Course example</p>
+<div class="ex"><div class="eq">$$\hat a_{s|r_0}=2,\quad\hat a_{s|r_1}=4,\quad m=\log2$$</div><dl class="gloss"><dt>$r_0&lt;r_1,s$</dt><dd>oldest/newest prediction times; common target time</dd><dt>$\hat a_{s|r_j},w_j$</dt><dd>scalar action prediction; weight $e^{-mj}$</dd><dt>$m,\bar a_s$</dt><dd>decay parameter; combined action for target $s$</dd></dl><p>$w=(1,1/2)$, so $\bar a_s=(2+2)/(3/2)=8/3$.</p></div><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS1">Zhao et al. (2023), §IV-A</a> · Course example</p>
 </section>
 
 <!-- ===== 67 ===== -->
 <section class="slide has-worked-solutions" id="m10p67" data-part="IV">
 <p class="eyebrow you" data-min="1.5">Exercise</p>
 <h2>Temporal ensembling</h2><p class="sub">Transfer: three estimates for one target</p>
-<div class="worked-question"><p>Oldest-to-newest predictions for target $s$ are 1, 3, 5. Use $w_j=e^{-mj}$ for $j=0,1,2$, with $m=\log2$. Find the normalized weighted average.</p><ol class="opts one"><li><i>A</i>3</li><li><i>B</i>15/7<b class="ok step" data-step="3">✓</b></li><li><i>C</i>27/7</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2"><p class="worked-progress">Solution 1 / 2</p><h3>Weight, sum, normalize</h3><p class="worked-variables">$j$: oldest-first index; $w_j$: weights; $s$: shared target time.</p><ol class="worked-lines"><li>$w=(1,1/2,1/4)$, with sum $7/4$.</li><li>Weighted sum $=1+3/2+5/4=15/4$.</li><li>$\bar a_s=(15/4)/(7/4)=15/7$.</li></ol></div>
+<div class="worked-question"><p>Oldest-to-newest scalar predictions for the same target $s$ are $1,3,5$. Use $w_j=e^{-mj}$ with $j=0,1,2$ and $m=\log2$. Find the normalized ensemble.</p><ol class="opts one"><li><i>A</i>3</li><li><i>B</i>15/7<b class="ok step" data-step="3">✓</b></li><li><i>C</i>27/7</li></ol></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2"><p class="worked-progress">Solution 1 / 2</p><h3>Weight, sum, normalize</h3><p class="worked-variables">$j=0,1,2$: oldest-to-newest; all predictions target s.</p><ol class="worked-lines"><li>$w=(1,1/2,1/4)$, with sum $7/4$.</li><li>Weighted sum $=1+3/2+5/4=15/4$.</li><li>$\bar a_s=(15/4)/(7/4)=15/7$.</li></ol></div>
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 2"><p class="worked-progress">Solution 2 / 2</p><h3>Interpret the result</h3><p class="worked-variables">$\bar a_s$: ensemble action.</p><ol class="worked-lines"><li>B is correct. A uses equal weights.</li><li>C reverses the weights and favors the newest prediction.</li></ol></div>
 <span class="worked-finish step" data-step="3" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS1">Zhao et al. (2023), §IV-A</a> · Course example</p>
 </section>
@@ -1419,21 +1408,21 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p69" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>ACT: observations to actions</h2><p class="sub">ACT combines observation tokens with action queries</p>
-<p>Action Chunking with Transformers (ACT) predicts $K$ motor targets of width $d_a$ from observation tokens. A latent variable $z$ is an unobserved input representing variation among demonstrations.</p><figure class="diagram"><svg viewBox="0 0 1080 170" role="img" aria-label="Images, joints and latent enter the observation encoder. Encoded memory and ordered action query positions enter the decoder as separate inputs; the decoder predicts action targets."><g class="a-stroke" fill="none" stroke-width="2"><rect x="10" y="18" width="250" height="50" rx="8"/><rect x="330" y="18" width="220" height="50" rx="8"/><rect x="330" y="102" width="220" height="50" rx="8"/><rect x="630" y="54" width="190" height="60" rx="8"/><rect x="890" y="54" width="170" height="60" rx="8"/><path d="M260 43h70l-7-5m7 5l-7 5M550 43h40v27h40l-7-5m7 5l-7 5M550 127h40V99h40l-7-5m7 5l-7 5M820 84h70l-7-5m7 5l-7 5"/></g><g text-anchor="middle" style="font-size:20px"><text x="135" y="49">Images + joints + z</text><text x="440" y="49">Encoded memory</text><text x="440" y="133">Action query positions</text><text x="725" y="91">Decoder</text><text x="975" y="91">K × dₐ targets</text></g></svg></figure><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS3">Zhao et al. (2023), §IV-C and Algorithm 1</a></p>
+<p>Action Chunking with Transformers (ACT) predicts K motor targets.</p><dl class="gloss"><dt>$o_t,z$</dt><dd>current images/joints; latent input for demonstration variation</dd><dt>$E_t$</dt><dd>encoded observation memory</dd><dt>$K,d_a,\widehat A_t$</dt><dd>chunk length; action width; predicted $K\times d_a$ chunk</dd></dl><figure class="diagram"><svg viewBox="0 0 1080 170" role="img" aria-label="Images, joints and latent enter the observation encoder. Encoded memory and ordered action query positions enter the decoder as separate inputs; the decoder predicts action targets."><g class="a-stroke" fill="none" stroke-width="2"><rect x="10" y="18" width="250" height="50" rx="8"/><rect x="330" y="18" width="220" height="50" rx="8"/><rect x="330" y="102" width="220" height="50" rx="8"/><rect x="630" y="54" width="190" height="60" rx="8"/><rect x="890" y="54" width="170" height="60" rx="8"/><path d="M260 43h70l-7-5m7 5l-7 5M550 43h40v27h40l-7-5m7 5l-7 5M550 127h40V99h40l-7-5m7 5l-7 5M820 84h70l-7-5m7 5l-7 5"/></g><g text-anchor="middle" style="font-size:20px"><text x="135" y="49">Images + joints + z</text><text x="440" y="49">Encoded memory</text><text x="440" y="133">Action query positions</text><text x="725" y="91">Decoder</text><text x="975" y="91">K × dₐ targets</text></g></svg></figure><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a></p>
 </section>
 
 <!-- ===== 70 ===== -->
 <section class="slide" id="m10p70" data-part="IV">
 <p class="eyebrow">Example</p>
 <h2>ACT: observations to actions</h2><p class="sub">A concrete observation-token count</p>
-<div class="ex"><div class="eq">$$4(15\cdot20)+2=1202$$</div><dl class="gloss"><dt>$4$</dt><dd>camera views in the ACT paper</dd><dt>$15\times20$</dt><dd>feature grid per view</dd><dt>$+2$</dt><dd>joint-state and latent tokens</dd></dl><p>Each token has 512 features in the reported model. Spatial positions accompany image features.</p></div><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS3">Zhao et al. (2023), §IV-C and Algorithm 1</a> · Course example</p>
+<div class="ex"><div class="eq">$$4(15\cdot20)+2=1202$$</div><dl class="gloss"><dt>$4$</dt><dd>camera views in the ACT paper</dd><dt>$15\times20$</dt><dd>feature grid per view</dd><dt>$+2$</dt><dd>joint-state and latent tokens</dd></dl><p>Each token has 512 features in the reported model. Spatial positions accompany image features.</p></div><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a> · Course example</p>
 </section>
 
 <!-- ===== 71 ===== -->
 <section class="slide" id="m10p71" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>ACT: observations to actions</h2><p class="sub">Action queries use cross-attention</p>
-<div class="eq">$$S_a=\frac{Q_aK_o^T}{\sqrt{d_k}}\in\mathbb R^{K\times T_o}$$</div><dl class="gloss"><dt>$S_a$</dt><dd>action-by-observation raw scores</dd><dt>$Q_a,K_o$</dt><dd>action query rows; observation key rows</dd><dt>$K,T_o,d_k$</dt><dd>action slots; observation tokens; shared feature width</dd></dl><p>Softmax of each score row gives the weights used to mix observation values.</p><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS3">Zhao et al. (2023), §IV-C and Algorithm 1</a></p>
+<div class="eq">$$S_a=\frac{Q_aK_o^T}{\sqrt{d_k}}\in\mathbb R^{K\times T_o}$$</div><dl class="gloss"><dt>$Q_a\in\mathbb R^{K\times d_k}$</dt><dd>one head’s projected action queries</dd><dt>$K_o\in\mathbb R^{T_o\times d_k}$</dt><dd>projected observation keys</dd><dt>$K,T_o,d_k$</dt><dd>action slots; observation tokens; query/key width</dd><dt>$S_a$</dt><dd>action-to-observation scores before softmax</dd></dl><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a></p>
 </section>
 
 <!-- ===== 72 ===== -->
@@ -1441,36 +1430,36 @@ document.addEventListener('DOMContentLoaded',function(){
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>ACT: observations to actions</h2><p class="sub">Transfer: encoder tokens and action slots</p>
 <div class="worked-question"><p>A model has 20 observation tokens and predicts a chunk of 6 actions. Each action query reads every observation token. What is one head’s cross-attention score shape?</p><ol class="opts one"><li><i>A</i>20 × 20</li><li><i>B</i>6 × 20<b class="ok step" data-step="2">✓</b></li><li><i>C</i>6 × 6</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Identify query and key collections</h3><p class="worked-variables">$K=6$ action queries; $T_o=20$ observation keys; $d_k$ shared query/key feature width.</p><ol class="worked-lines"><li>$Q_a:[6,d_k]$, $K_o^T:[d_k,20]$.</li><li>$Q_aK_o^T:[6,20]$.</li><li>B is correct. A and C replace cross-attention with self-attention on one collection.</li></ol></div>
-<span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS3">Zhao et al. (2023), §IV-C and Algorithm 1</a> · Course example</p>
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Identify query and key collections</h3><p class="worked-variables">$K=6$: action queries; $T_o=20$: observation keys.</p><ol class="worked-lines"><li>$Q_a:[6,d_k]$, $K_o^T:[d_k,20]$.</li><li>$Q_aK_o^T:[6,20]$.</li><li>B is correct. A and C replace cross-attention with self-attention on one collection.</li></ol></div>
+<span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a> · Course example</p>
 </section>
 
 <!-- ===== 73 ===== -->
 <section class="slide" id="m10p73" data-part="IV">
 <p class="eyebrow">Motivation</p>
 <h2>ACT: latent-variable training</h2><p class="sub">Demonstrations can differ at the same observation</p>
-<p>A latent variable z is an unobserved input that represents variation among demonstrated chunks. A conditional variational autoencoder (CVAE) learns an encoder distribution for z and a decoder conditioned on observations.</p><figure class="diagram"><svg viewBox="0 0 1080 150" role="img" aria-label="Demonstration + joints to Latent distribution to Sample z to Decode with current input"><rect x="20.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="127.5" y="77" text-anchor="middle" style="font-size:20px">Demonstration + joints</text><path d="M240.0 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="270.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="377.5" y="77" text-anchor="middle" style="font-size:20px">Latent distribution</text><path d="M490.0 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="520.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="627.5" y="77" text-anchor="middle" style="font-size:20px">Sample z</text><path d="M740.0 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="770.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="877.5" y="77" text-anchor="middle" style="font-size:20px">Decode with current input</text></svg></figure><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a></p>
+<p>Conditional variational autoencoder (CVAE)</p><div class="eq">$$q_\phi(z\mid A_t,r_t),\qquad p_\theta(A_t\mid o_t,z)$$</div><dl class="gloss"><dt>$A_t,r_t,o_t$</dt><dd>demonstrated chunk; observed joints; images and joints</dd><dt>$z,\phi,\theta$</dt><dd>latent vector; encoder and decoder parameters</dd></dl><figure class="diagram"><svg viewBox="0 0 1080 150" role="img" aria-label="Demo chunk + joints to Latent distribution to Observation + latent to Predicted chunk"><rect x="20.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="127.5" y="77" text-anchor="middle" style="font-size:20px">Demo chunk + joints</text><path d="M240.0 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="270.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="377.5" y="77" text-anchor="middle" style="font-size:20px">Latent distribution</text><path d="M490.0 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="520.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="627.5" y="77" text-anchor="middle" style="font-size:20px">Observation + latent</text><path d="M740.0 70h25l-7-5m7 5l-7 5" class="stroke" fill="none" stroke-width="2"/><rect x="770.0" y="38" width="215.0" height="64" rx="9" class="a-stroke" fill="none" stroke-width="2"/><text x="877.5" y="77" text-anchor="middle" style="font-size:20px">Predicted chunk</text></svg></figure><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a></p>
 </section>
 
 <!-- ===== 74 ===== -->
 <section class="slide" id="m10p74" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>ACT: latent-variable training</h2><p class="sub">The encoder predicts a diagonal Gaussian</p>
-<p>Diagonal Gaussian covariance gives independent coordinates.</p><div class="eq">$$q_\phi(z\mid A_t,r_t)=\mathcal N(\mu,\operatorname{diag}(\sigma^2)),\quad p(z)=\mathcal N(0,I_L)$$</div><dl class="gloss"><dt>$z,\mu,\sigma$</dt><dd>latent; means; positive scales</dd><dt>$A_t,r_t$</dt><dd>demonstrated chunk; observed joints at time t</dd><dt>$q_\phi,p,I_L$</dt><dd>encoder; prior; identity for L latent coordinates</dd></dl><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
+<div class="eq">$$q_\phi(z\mid A_t,r_t)=\N(\mu,\mathrm{diag}(\sigma^2)),\quad p(z)=\N(0,I)$$</div><dl class="gloss"><dt>z, μ, σ</dt><dd>sample, mean, positive standard deviations</dd><dt>L, j</dt><dd>latent dimension; coordinate index</dd><dt>qφ, p</dt><dd>encoder density; standard-normal prior</dd><dt>Aₜ, rₜ, φ</dt><dd>target chunk, joints; encoder parameters</dd></dl><p>diag(σ²): L×L covariance. Output $\ell_j=\log\sigma_j^2$; $\sigma_j=e^{\ell_j/2}$.</p><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
 </section>
 
 <!-- ===== 75 ===== -->
 <section class="slide" id="m10p75" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>ACT: latent-variable training</h2><p class="sub">Reparameterization exposes a differentiable path</p>
-<p>Reparameterization separates noise from learned parameters.</p><div class="eq">$$\epsilon\sim\mathcal N(0,I_L),\quad z=\mu+\sigma\odot\epsilon$$</div><dl class="gloss"><dt>$\epsilon,I_L$</dt><dd>Gaussian noise; latent identity of size L</dd><dt>$\mu,\sigma$</dt><dd>means and positive scales; ⊙ multiplies elementwise</dd><dt>$z$</dt><dd>latent sample</dd></dl><figure class="math-figure compact"><canvas id="m10p75c" width="1050" height="140" role="img" aria-label="Changing the mean shifts a Gaussian without changing its width."></canvas><figcaption>Changing the mean shifts a Gaussian without changing its width.</figcaption></figure><script>M10draw(document.getElementById("m10p75c"),"latent");</script><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
+<p>Draw ε independently of encoder parameters.</p><div class="eq">$$\epsilon\sim\mathcal N(0,I),\qquad z=\mu+\sigma\odot\epsilon$$</div><dl class="gloss"><dt>$z,\epsilon\in\mathbb R^L$</dt><dd>sample; standard-normal noise</dd><dt>$\mu,\sigma\in\mathbb R^L$</dt><dd>mean; positive standard deviations</dd><dt>$\odot$</dt><dd>coordinatewise multiplication</dd></dl><figure class="math-figure compact"><canvas id="m10p75c" width="1050" height="140" role="img" aria-label="Changing the mean shifts a Gaussian without changing its width."></canvas><figcaption>Changing the mean shifts a Gaussian without changing its width.</figcaption></figure><script>M10draw(document.getElementById("m10p75c"),"latent");</script><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
 </section>
 
 <!-- ===== 76 ===== -->
 <section class="slide has-worked-solutions" id="m10p76" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>ACT: latent-variable training</h2><p class="sub">Log-variance is not the standard deviation</p>
-<div class="worked-question"><p>For one latent coordinate, mean $\mu=1$, log-variance $\ell=\log\sigma^2=\log4$, and noise $\epsilon=-1$. Find the sample $z=\mu+\sigma\epsilon$ using standard deviation $\sigma$.</p><ol class="opts one"><li><i>A</i>−3</li><li><i>B</i>−1<b class="ok step" data-step="2">✓</b></li><li><i>C</i>1</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>One latent coordinate has $\mu=1$, $\ell=\log\sigma^2=\log4$, and $\epsilon=-1$. Use $z=\mu+\sigma\epsilon$. Find $z$.</p><ol class="opts one"><li><i>A</i>−3</li><li><i>B</i>−1<b class="ok step" data-step="2">✓</b></li><li><i>C</i>1</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Convert the parameter before sampling</h3><p class="worked-variables">$\ell$: log-variance; $\sigma$: standard deviation.</p><ol class="worked-lines"><li>$\sigma^2=e^\ell=4$, so $\sigma=e^{\ell/2}=2$.</li><li>$z=\mu+\sigma\epsilon=1+2(-1)=-1$.</li><li>B is correct. A uses variance as scale; C ignores the sampled noise.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a> · Course example</p>
 </section>
@@ -1479,21 +1468,21 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p77" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>ACT: latent-variable training</h2><p class="sub">A bound makes the latent objective tractable</p>
-<div class="eq">$$\begin{aligned}p(A,z|o)&amp;=p(A|o)P(z)\\\mathbb E_q\log[p(A,z|o)/q(z)]&amp;=\log p(A|o)-D_{KL}(q\|P)\end{aligned}$$</div><dl class="gloss"><dt>$A,o,z$</dt><dd>demonstrated chunk; fixed observation; latent</dd><dt>$q,P$</dt><dd>encoder; true posterior given A and o</dd><dt>$D_{KL}$</dt><dd>Kullback–Leibler divergence; average log ratio under q</dd></dl><p>Assume positive finite evidence and finite posterior KL.</p><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
+<div class="eq">$$\begin{aligned}p(A|o)&amp;=\int p(A,z|o)dz\\\E_q\log\frac{p(A,z|o)}{q(z)}&amp;=\log p(A|o)-D_{KL}(q\|p(z|A,o))\end{aligned}$$</div><dl class="gloss"><dt>A, o, z</dt><dd>chunk, observation, latent</dd><dt>p≡pθ; q</dt><dd>fixed trained model; encoder qφ(z|A,r), φ weights</dd><dt>r, E_q</dt><dd>joints; average over z∼q</dd></dl><p>$D_{KL}(q\|p_*)=\E_q\log(q/p_*)$; $p_*$: density. Positive densities; finite expectations.</p><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
 </section>
 
 <!-- ===== 78 ===== -->
 <section class="slide" id="m10p78" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>ACT: latent-variable training</h2><p class="sub">Nonnegative KL gives the evidence lower bound</p>
-<div class="eq">$$\begin{aligned}\mathcal L&amp;=\mathbb E_q\log[p(A|o,z)p(z)/q(z)]\\&amp;=\mathbb E_q\log p(A|o,z)-D_{KL}(q\|p)\le\log p(A|o)\end{aligned}$$</div><dl class="gloss"><dt>$\mathcal L$</dt><dd>evidence lower bound (ELBO)</dd><dt>$A,o,z$</dt><dd>chunk, observation, latent</dd><dt>$q,p$</dt><dd>encoder, prior</dd><dt>$p(A|o,z),p(A|o)$</dt><dd>likelihood, evidence</dd></dl><p>Posterior KL is the nonnegative gap.</p><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
+<div class="eq">$$\begin{aligned}\mathcal L_{ELBO}&amp;=\E_q\log\frac{p(A|o,z)p(z)}{q(z)}\\&amp;=\E_q\log p(A|o,z)-D_{KL}(q\|p)\\&amp;\le\log p(A|o)\end{aligned}$$</div><dl class="gloss"><dt>L_ELBO</dt><dd>evidence lower bound; maximize</dd><dt>A, o, z</dt><dd>chunk, observation, latent</dd><dt>q; p(z)</dt><dd>encoder qφ(z|A,r); independent prior</dd><dt>p≡pθ; p(A|o,z)</dt><dd>fixed trained model; decoder density; φ weights, r joints</dd></dl><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
 </section>
 
 <!-- ===== 79 ===== -->
 <section class="slide has-worked-solutions" id="m10p79" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>ACT: latent-variable training</h2><p class="sub">Transfer: which divergence creates the gap?</p>
-<div class="worked-question"><p>For chunk $A$, observation $o$ and latent $z$, $q$ is the encoder, $p_\theta(z\mid A,o)$ the true posterior and $p(z)$ the prior. Which gap $G$ makes $\log p_\theta(A\mid o)=\mathcal L_{\rm ELBO}+G$ exact? ELBO means evidence lower bound.</p><ol class="opts one"><li><i>A</i>$D_{KL}(q\Vert p_\theta(z\mid A,o))$<b class="ok step" data-step="2">✓</b></li><li><i>B</i>$-D_{KL}(q\Vert p(z))$</li><li><i>C</i>The action prediction error alone</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>For a fixed chunk $A$ and observation $o$, let $q(z)$ be the encoder density. The exact identity is $\log p_\theta(A\mid o)=\mathcal L_{ELBO}+G$. Which $G$ is the gap?</p><ol class="opts one"><li><i>A</i>$D_{KL}(q\Vert p_\theta(z\mid A,o))$<b class="ok step" data-step="2">✓</b></li><li><i>B</i>$-D_{KL}(q\Vert p(z))$</li><li><i>C</i>The action prediction error alone</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Distinguish two different distributions</h3><p class="worked-variables">$q$: encoder; posterior: conditioned on the observed target.</p><ol class="worked-lines"><li>$G=D_{KL}(q\Vert\text{true posterior})\ge0$.</li><li>The prior KL is already inside $\mathcal L_{ELBO}$ with a minus sign.</li><li>A is correct. B confuses regularization with the posterior approximation gap.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a> · Course example</p>
 </section>
@@ -1502,37 +1491,37 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p80" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>ACT: latent-variable training</h2><p class="sub">ACT balances reconstruction and latent regularization</p>
-<div class="eq">$$\mathcal L=\frac1{Kd_a}\sum_{j=0}^{K-1}\sum_{r=1}^{d_a}|\widehat A_{jr}-A_{jr}|+\beta D_{KL}(q_\phi\Vert\mathcal N(0,I))$$</div><dl class="gloss"><dt>$A,\widehat A$</dt><dd>target/predicted chunks; all rows valid</dd><dt>$K,d_a$</dt><dd>chunk length; action width</dd><dt>$j,r$</dt><dd>row, feature</dd><dt>$\mathcal L,\beta\ge0$</dt><dd>loss, KL weight</dd><dt>$q_\phi,\mathcal N(0,I)$</dt><dd>encoder; standard Gaussian prior</dd></dl><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS3">Zhao et al. (2023), §IV-C and Algorithm 1</a></p>
+<div class="eq">$$\mathcal L_{train}=\frac1{Kd_a}\sum_{j=0}^{K-1}\sum_{c=1}^{d_a}|\widehat A_{jc}-A_{jc}|+\beta D_{KL}(q_\phi\Vert\mathcal N(0,I))$$</div><dl class="gloss"><dt>$A,\widehat A\in\mathbb R^{K\times d_a}$</dt><dd>target/predicted chunks; all valid</dd><dt>$K,d_a;\ j,c$</dt><dd>chunk length, action width; row/coordinate indices</dd><dt>$q_\phi,\beta$</dt><dd>encoder latent density; KL weight $\beta\ge0$</dd></dl><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a></p>
 </section>
 
 <!-- ===== 81 ===== -->
 <section class="slide" id="m10p81" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>ACT: latent-variable training</h2><p class="sub">Gaussian KL follows from a log-density ratio</p>
-<div class="eq">$$\log\frac{q_j(z_j)}{p_j(z_j)}=-\log\sigma_j-\frac{(z_j-\mu_j)^2}{2\sigma_j^2}+\frac{z_j^2}{2}$$</div><dl class="gloss"><dt>$q_j,p_j$</dt><dd>encoder N(μⱼ,σⱼ²), prior N(0,1)</dd><dt>$z_j,\mu_j,\sigma_j$</dt><dd>sample, mean, positive scale</dd><dt>$\mathbb E_q$</dt><dd>average under encoder</dd></dl><p>$\mathbb E_q[(z_j-\mu_j)^2]=\sigma_j^2$; $\mathbb E_q[z_j^2]=\mu_j^2+\sigma_j^2$.</p><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
+<div class="eq">$$\log\frac{q_j(z_j)}{p_j(z_j)}=-\log\sigma_j-\frac{(z_j-\mu_j)^2}{2\sigma_j^2}+\frac{z_j^2}{2}$$</div><dl class="gloss"><dt>$q_j,p_j$</dt><dd>$\mathcal N(\mu_j,\sigma_j^2)$ and $\mathcal N(0,1)$ densities</dd><dt>$z_j,\mu_j$</dt><dd>latent coordinate and its mean</dd><dt>$\sigma_j&gt;0$</dt><dd>standard deviation</dd></dl><p>Use $\mathbb E_q[(z_j-\mu_j)^2]=\sigma_j^2$ and $\mathbb E_q[z_j^2]=\mu_j^2+\sigma_j^2$.</p><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
 </section>
 
 <!-- ===== 82 ===== -->
 <section class="slide" id="m10p82" data-part="IV">
 <p class="eyebrow">Derivation</p>
 <h2>ACT: latent-variable training</h2><p class="sub">The diagonal-Gaussian KL is explicit</p>
-<div class="eq">$$\begin{aligned}D_{KL}(q\|p)&amp;=\sum_{j=1}^L\mathbb E_q\log(q_j/p_j)\\&amp;=\tfrac12\sum_{j=1}^L(\mu_j^2+\sigma_j^2-1-\log\sigma_j^2)\end{aligned}$$</div><dl class="gloss"><dt>$q,p$</dt><dd>diagonal encoder Gaussian; standard Gaussian prior</dd><dt>$q_j,p_j,\mu_j,\sigma_j$</dt><dd>coordinate densities; encoder mean; positive scale</dd><dt>$j,L$</dt><dd>latent index and width</dd></dl><p>Independence makes the log ratios add.</p><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
+<div class="eq">$$\begin{aligned}\mathbb E_q\log(q_j/p_j)&amp;=-\log\sigma_j-\frac12+\frac12(\mu_j^2+\sigma_j^2)\\D_{KL}(q\Vert p)&amp;=\frac12\sum_{j=1}^L(\mu_j^2+\sigma_j^2-1-\log\sigma_j^2)\end{aligned}$$</div><dl class="gloss"><dt>$q,p$</dt><dd>diagonal-Gaussian encoder; $\mathcal N(0,I)$ prior</dd><dt>$L,j$</dt><dd>latent dimension; coordinate index</dd><dt>$\mu_j,\sigma_j^2$</dt><dd>coordinate mean and positive variance</dd></dl><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
 </section>
 
 <!-- ===== 83 ===== -->
 <section class="slide" id="m10p83" data-part="IV">
 <p class="eyebrow">Example</p>
 <h2>ACT: latent-variable training</h2><p class="sub">A latent penalty calculated by hand</p>
-<div class="ex"><div class="eq">$$\mu=(1,0)^T,\quad\sigma^2=(1,4)^T$$</div><dl class="gloss"><dt>$\mu,\sigma^2$</dt><dd>coordinate means and variances of a diagonal Gaussian encoder</dd><dt>$\mathcal N(0,I_2)$</dt><dd>standard two-dimensional Gaussian prior</dd></dl><p>KL to the prior: $D_{KL}=\frac12[1+(4-1-\log4)]=2-\log2\approx1.3069$.</p></div><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a> · Course example</p>
+<div class="ex"><p>Compare a two-coordinate Gaussian encoder with the prior $p=\mathcal N(0,I)$.</p><div class="eq">$$\mu=(1,0)^T,\quad\sigma^2=(1,4)^T$$</div><dl class="gloss"><dt>$\mu,\sigma^2$</dt><dd>encoder means and coordinate variances</dd></dl><p>$D_{KL}(q\Vert p)=\frac12[1+(4-1-\log4)]=2-\log2\approx1.3069$.</p></div><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a> · Course example</p>
 </section>
 
 <!-- ===== 84 ===== -->
 <section class="slide has-worked-solutions" id="m10p84" data-part="IV">
 <p class="eyebrow you" data-min="2.0">Exercise</p>
 <h2>ACT: latent-variable training</h2><p class="sub">Transfer: combine the two loss terms</p>
-<div class="worked-question"><p>Four action errors are $1,-1,0,2$. Gaussian encoder mean $\mu=1$, variance $\sigma^2=1$. Find the mean absolute error plus $\beta=2$ times the KL from the encoder to the standard normal prior $\mathcal N(0,1)$.</p><ol class="opts one"><li><i>A</i>1</li><li><i>B</i>2<b class="ok step" data-step="3">✓</b></li><li><i>C</i>5</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2"><p class="worked-progress">Solution 1 / 2</p><h3>Reconstruct with the stated reduction</h3><p class="worked-variables">Four action coordinates. Errors are prediction minus target. KL is to the standard normal prior.</p><ol class="worked-lines"><li>$\mathcal L_{rec}=(|1|+|-1|+|0|+|2|)/4=1$.</li><li>$D_{KL}=\frac12(1+1-1-\log1)=1/2$.</li></ol></div>
-<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 2"><p class="worked-progress">Solution 2 / 2</p><h3>Combine without changing the reduction</h3><p class="worked-variables">$\beta=2$: KL weight; $\mathcal L$: total loss.</p><ol class="worked-lines"><li>$\mathcal L=1+2(1/2)=2$.</li><li>B is correct. A drops the KL term; C uses summed rather than mean L1.</li></ol></div>
+<div class="worked-question"><p>Four valid action-coordinate errors are $1,-1,0,2$. A scalar Gaussian encoder has $\mu=1$, $\sigma^2=1$; its prior is $\mathcal N(0,1)$. Use mean L1 and $\beta=2$. Find $\mathcal L_{train}$.</p><ol class="opts one"><li><i>A</i>1</li><li><i>B</i>2<b class="ok step" data-step="3">✓</b></li><li><i>C</i>5</li></ol></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2"><p class="worked-progress">Solution 1 / 2</p><h3>Reconstruct with the stated reduction</h3><p class="worked-variables">$K d_a=4$ action coordinates; errors are prediction minus target.</p><ol class="worked-lines"><li>$\mathcal L_{rec}=(|1|+|-1|+|0|+|2|)/4=1$.</li><li>$D_{KL}=\frac12(1+1-1-\log1)=1/2$.</li></ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 2"><p class="worked-progress">Solution 2 / 2</p><h3>Combine without changing the reduction</h3><p class="worked-variables">$\beta=2$; mean reconstruction error equals 1.</p><ol class="worked-lines"><li>$\mathcal L_{train}=1+2(1/2)=2$.</li><li>B is correct. A drops the KL term; C uses summed rather than mean L1.</li></ol></div>
 <span class="worked-finish step" data-step="3" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a> · Course example</p>
 </section>
 
@@ -1540,32 +1529,32 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p85" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>ACT: deployment</h2><p class="sub">The deployed ACT policy fixes the latent to zero</p>
-<div class="eq">$$\widehat A_t=f_\theta(o_t,z=0)$$</div><dl class="gloss"><dt>$\widehat A_t,o_t$</dt><dd>predicted action chunk; images and joints at time t</dd><dt>$f_\theta$</dt><dd>trained observation encoder and action decoder</dd><dt>$z=0$</dt><dd>latent fixed at the standard Gaussian prior mean</dd></dl><p>The demonstration-conditioned latent encoder is used during training.</p><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a></p>
+<div class="eq">$$\widehat A_t=f_\theta(o_t,z=0)$$</div><dl class="gloss"><dt>$o_t,\theta$</dt><dd>current images/joints; learned policy parameters</dd><dt>$z=0$</dt><dd>zero vector, the standard-Gaussian prior mean</dd><dt>$f_\theta$</dt><dd>learned chunk-prediction policy</dd><dt>$\widehat A_t$</dt><dd>predicted action chunk</dd></dl><p>The demonstration-conditioned latent encoder is discarded at inference.</p><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a></p>
 </section>
 
 <!-- ===== 86 ===== -->
 <section class="slide has-worked-solutions" id="m10p86" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>ACT: deployment</h2><p class="sub">Training and inference use different information</p>
-<div class="worked-question"><p>The latent input is $z$. Which input route matches the reported ACT inference procedure?</p><ol class="opts one"><li><i>A</i>Encode the unknown future target chunk</li><li><i>B</i>Current observations plus z=0<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Draw z from the demonstration posterior</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Identify what is available now</h3><p class="worked-variables">$o_t$: current images and joints; $z$: latent input.</p><ol class="worked-lines"><li>Discard the demonstration-conditioned latent encoder.</li><li>Set z to zero. Run the observation encoder and action decoder.</li><li>B is correct. A and C require future target information.</li></ol></div>
+<div class="worked-question"><p>The robot receives current images and joint measurements. Which input route matches the reported ACT inference procedure?</p><ol class="opts one"><li><i>A</i>Encode the unknown future target chunk</li><li><i>B</i>Current observations plus z=0<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Draw z from the demonstration posterior</li></ol></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Identify what is available now</h3><p class="worked-variables">$o_t$: current observations; the future demonstration is unavailable.</p><ol class="worked-lines"><li>Discard the demonstration-conditioned latent encoder.</li><li>Set z to the standard-prior mean, zero, and run the decoder.</li><li>B is correct. A and C require future target information.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a> · Course example</p>
 </section>
 
 <!-- ===== 87 ===== -->
 <section class="slide" id="m10p87" data-part="IV">
 <p class="eyebrow">Synthesis</p>
-<h2>ACT: deployment</h2><p class="sub">One target from observation to execution</p>
-<p>Query $1$, keys $(0,\log3)$, values $(0,4)$, identity readout. Older candidate: $1$ for target $s$.</p><div class="eq">$$(0,\log3)\xrightarrow{\text{softmax}}(1/4,3/4)\longrightarrow\hat a_{s|s}=3$$</div><dl class="gloss"><dt>$\hat a_{s|s}$</dt><dd>new candidate at s</dd><dt>$\bar a_s$</dt><dd>executed ensemble target</dd></dl><p>Oldest-first weights $(1,1/2)$ give $\bar a_s=(1+(1/2)3)/(1+1/2)=5/3$.</p><p>Observe and replan with latent zero.</p><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a></p>
+<h2>ACT: deployment</h2><p class="sub">The complete robot-policy loop</p>
+<p>Observe, encode, predict a chunk, combine predictions for the current target, execute, then observe again.</p><figure class="math-figure"><canvas id="m10p87c" width="1050" height="210" role="img" aria-label="Replanning updates future chunks as fresh observations arrive."></canvas><figcaption>Replanning updates future chunks as fresh observations arrive.</figcaption></figure><script>M10draw(document.getElementById("m10p87c"),"chunk");</script><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a></p>
 </section>
 
 <!-- ===== 88 ===== -->
 <section class="slide has-worked-solutions" id="m10p88" data-part="IV">
 <p class="eyebrow you" data-min="2.0">Exercise</p>
 <h2>ACT: deployment</h2><p class="sub">Transfer: trace the live policy loop</p>
-<div class="worked-question"><p>At target time $s$, two chunks predict actions 2 and 5, oldest first. Use $w_j=e^{-mj}$ with $m=\log2$ and $j=0,1$. A fresh image arrives after execution. Find the executed target and next computation.</p><ol class="opts one"><li><i>A</i>Execute 3; encode the fresh observation<b class="ok step" data-step="3">✓</b></li><li><i>B</i>Execute 7/2; change the KL weight</li><li><i>C</i>Execute 5; reuse all old image features</li></ol></div><div class="worked-solutions">
-<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2"><p class="worked-progress">Solution 1 / 2</p><h3>Compute the same-time ensemble</h3><p class="worked-variables">$r_0&lt;r_1$: prediction times; $\bar a_s$: ensemble action for target s.</p><ol class="worked-lines"><li>$w=(1,1/2)$; normalize to $(2/3,1/3)$.</li><li>$\bar a_s=(2/3)2+(1/3)5=3$.</li></ol></div>
-<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 2"><p class="worked-progress">Solution 2 / 2</p><h3>Close the feedback loop</h3><p class="worked-variables">$o_{s+1}$: fresh observation; $f_\theta$: trained policy; $\widehat A_{s+1}$: next chunk.</p><ol class="worked-lines"><li>Encode $o_{s+1}$ and predict $\widehat A_{s+1}=f_\theta(o_{s+1},0)$.</li><li>A is correct. B changes the ensemble and a training coefficient. C discards the stated weighting and fresh evidence.</li></ol></div>
+<div class="worked-question"><p>At target time $s$, two chunks predict scalar actions $2$ and $4$, oldest first. Use $w_j=e^{-mj}$ with $m=\log2$. A fresh observation arrives after execution. What target is executed, and what computation follows?</p><ol class="opts one"><li><i>A</i>Execute 8/3; encode the fresh observation<b class="ok step" data-step="3">✓</b></li><li><i>B</i>Execute 3; change β</li><li><i>C</i>Execute 4; reuse all old image features</li></ol></div><div class="worked-solutions">
+<div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 2"><p class="worked-progress">Solution 1 / 2</p><h3>Compute the same-time ensemble</h3><p class="worked-variables">$r_0&lt;r_1$; both predictions target s.</p><ol class="worked-lines"><li>$w=(1,1/2)$; normalize to $(2/3,1/3)$.</li><li>$\bar a_s=(2/3)2+(1/3)4=8/3$.</li></ol></div>
+<div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 2"><p class="worked-progress">Solution 2 / 2</p><h3>Close the feedback loop</h3><p class="worked-variables">$o_{s+1}$: fresh observations; inference latent remains zero.</p><ol class="worked-lines"><li>Encode $o_{s+1}$ and predict $\widehat A_{s+1}=f_\theta(o_{s+1},0)$.</li><li>A is correct. B changes the ensemble and a training coefficient. C discards the stated weighting and fresh evidence.</li></ol></div>
 <span class="worked-finish step" data-step="3" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a> · Course example</p>
 </section>
 
@@ -1573,7 +1562,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide has-worked-solutions" id="m10p89" data-part="IV">
 <p class="eyebrow you" data-min="1.5">Exercise</p>
 <h2>ACT: deployment</h2><p class="sub">Transfer: a changed scene after prediction</p>
-<div class="worked-question"><p>A chunk predicts six actions. After one executed action, a fresh observation shows that the object moved. Which response uses the new observation?</p><ol class="opts one"><li><i>A</i>Keep executing all old targets without recomputing</li><li><i>B</i>Encode the new observation and predict a new chunk<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Change the KL coefficient at inference</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>A chunk predicts six actions. After one executed action, the object moves. Which response uses the new observation?</p><ol class="opts one"><li><i>A</i>Keep executing all old targets without recomputing</li><li><i>B</i>Encode the new observation and predict a new chunk<b class="ok step" data-step="2">✓</b></li><li><i>C</i>Change the KL coefficient at inference</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Locate the input that changed</h3><p class="worked-variables">$o$: observation; learned model parameters remain fixed.</p><ol class="worked-lines"><li>Object motion changes the current observation.</li><li>Re-encoding it can change attention memory and future predicted actions.</li><li>B uses that new evidence. A is open-loop; C changes a training parameter rather than reading the scene.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/2304.13705v1#S4.SS2">Zhao et al. (2023), §IV-B–C, Appendix C</a> · Course example</p>
 </section>
@@ -1589,14 +1578,14 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p91" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Discrete tokens and continuous actions</h2><p class="sub">Top-p restricts a categorical sampling set</p>
-<p>A categorical distribution gives probabilities to discrete choices.</p><div class="eq">$$\sum_{j=1}^{k-1}p_{(j)}&lt;\rho\le\sum_{j=1}^kp_{(j)}$$</div><dl class="gloss"><dt>$p_{(1)}\ge p_{(2)}\ge\cdots$</dt><dd>sorted category probabilities</dd><dt>$\rho\in(0,1]$</dt><dd>cumulative mass threshold</dd><dt>$k$</dt><dd>smallest retained prefix size</dd></dl><p>Renormalize over the retained categories, then sample one.</p><p class="cite"><a href="https://arxiv.org/html/1904.09751v2#S3.SS1">Holtzman et al. (2020), §3.1</a></p>
+<p>Top-p keeps the smallest sorted prefix reaching mass $\rho$.</p><div class="eq">$$\sum_{j=1}^{k-1}p_{(j)}&lt;\rho\le\sum_{j=1}^{k}p_{(j)}$$</div><dl class="gloss"><dt>$p_{(1)}\ge p_{(2)}\ge\cdots$</dt><dd>category probabilities sorted largest first</dd><dt>$\rho\in(0,1],k$</dt><dd>mass threshold; smallest sufficient prefix length; $j$ is sorted rank</dd></dl><p>Zero excluded mass, renormalize, then sample.</p><p class="cite"><a href="https://arxiv.org/html/1904.09751v2#S3.SS1">Holtzman et al. (2020), §3.1</a></p>
 </section>
 
 <!-- ===== 92 ===== -->
 <section class="slide has-worked-solutions" id="m10p92" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Discrete tokens and continuous actions</h2><p class="sub">Transfer: the retained set depends on mass</p>
-<div class="worked-question"><p>Sorted probabilities are $(0.5,0.3,0.2)$. Keep the smallest prefix whose sum reaches threshold $\rho=0.7$, then renormalize. Which distribution is sampled?</p><ol class="opts one"><li><i>A</i>$(0.5,0.3,0.2)$</li><li><i>B</i>$(0.625,0.375,0)$<b class="ok step" data-step="2">✓</b></li><li><i>C</i>$(1,0,0)$</li></ol></div><div class="worked-solutions">
+<div class="worked-question"><p>Sorted token probabilities are $(0.5,0.3,0.2)$ and the top-p threshold is $\rho=0.7$. Retain the smallest prefix reaching $\rho$, then renormalize. Which distribution is sampled?</p><ol class="opts one"><li><i>A</i>$(0.5,0.3,0.2)$</li><li><i>B</i>$(0.625,0.375,0)$<b class="ok step" data-step="2">✓</b></li><li><i>C</i>$(1,0,0)$</li></ol></div><div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1"><p class="worked-progress">Solution 1 / 1</p><h3>Find the smallest sufficient prefix</h3><p class="worked-variables">$\rho=0.7$: cumulative-mass threshold.</p><ol class="worked-lines"><li>$0.5&lt;0.7$, while $0.5+0.3=0.8\ge0.7$.</li><li>Retain two tokens and divide by $0.8$: $(5/8,3/8,0)$.</li><li>B is correct. A omits truncation; C stops before reaching the threshold.</li></ol></div>
 <span class="worked-finish step" data-step="2" data-handout="hide"></span></div><p class="cite"><a href="https://arxiv.org/html/1904.09751v2#S3.SS1">Holtzman et al. (2020), §3.1</a> · Course example</p>
 </section>
