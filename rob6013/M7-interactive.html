@@ -907,7 +907,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
   var input=page===10?['1','2']:page===11?['q','2']:['q','v'];
   var output=page===10?['2','.5']:page===11?['2','−1.5']:['v','a'];
   [70,270].forEach(function(z){k.seg([z,85],[z,205],c.dim,2);k.seg([z,85],[z+12,85],c.dim,2);k.seg([z,205],[z+12,205],c.dim,2);k.seg([z+70,85],[z+70,205],c.dim,2);k.seg([z+58,85],[z+70,85],c.dim,2);k.seg([z+58,205],[z+70,205],c.dim,2);});
-  input.forEach((s,i)=>label(s,94,119+65*i,c.in,27));output.forEach((s,i)=>label(s,290,119+65*i,c.out,27));
+  input.forEach((s,i)=>k.text(s,[105,119+65*i],c.in,{size:27,align:'center'}));
+  output.forEach((s,i)=>k.text(s,[305,119+65*i],c.out,{size:27,align:'center'}));
   k.arrow([155,145],[250,145],c.dim,2);label('f',195,127,c.ink,22);
   label('position rate = velocity',45,250,c.ink,19);label('velocity rate = acceleration',45,280,c.ink,19);return;
  }
@@ -937,15 +938,18 @@ window.drawM7=function(g,t,k,type,page,isActivity){
   label('x₁ = x₀ + h k₂; blue: exact solution',32,305,c.out,15);return;
  }
  if(page===37){
-  ['rates: −2, −1.6, −1.68, −1.328',
-   'weighted rate = (k₁+2k₂+2k₃+k₄)/6',
-   'change = h × (−1.648) = −0.3296',
-   'next state = 1 − 0.3296 = 0.6704'].forEach(function(s,i){
-   g.fillStyle=c.panel;g.fillRect(18,30+68*i,W-36,49);
-   label(s,28,59+68*i,i===0?c.in:i===3?c.out:c.ink,17);
-   if(i<3)k.arrow([W/2,82+68*i],[W/2,95+68*i],c.dim,2);
+  label('trial state → rate, with f(x) = −2x',24,22,c.ink,18);
+  ['x₀ = 1 → k₁ = f(1) = −2',
+   'z₂ = 1 + .1k₁ = .8 → k₂ = −1.6',
+   'z₃ = 1 + .1k₂ = .84 → k₃ = −1.68',
+   'z₄ = 1 + .2k₃ = .664 → k₄ = −1.328'].forEach(function(s,i){
+   g.fillStyle=c.panel;g.fillRect(18,36+42*i,W-36,34);
+   label(s,26,58+42*i,i===0?c.in:c.ink,17);
   });
-  label('one time interval: 0 to h = 0.2',52,311,c.dim,16);return;
+  label('k₁ + 2k₂ + 2k₃ + k₄ = −9.888',24,225,c.ink,18);
+  label('average rate = −9.888 / 6 = −1.648',24,253,c.ink,17);
+  label('x₁ = 1 + .2(−1.648) = .6704',24,282,c.out,19);
+  label('next state at t = 0.2; trials are temporary',24,309,c.dim,15);return;
  }
  if(page===36){
   label('trial state, time → rate',52,28,c.ink,20);
@@ -1096,7 +1100,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">A trajectory and its stored samples</p>
 <div class="cols w6040"><div>
 <div class="eq">$$t_k=t_0+kh,\qquad x_k\approx x(t_k)$$</div>
-<dl class="gloss"><dt>h, k</dt><dd>step size and sample index</dd><dt>x(t), xₖ</dt><dd>exact state and numerical sample</dd></dl>
+<dl class="gloss"><dt>t₀, tₖ</dt><dd>start time and sample time</dd><dt>h&gt;0, k</dt><dd>step size; index k=0,1,2,…</dd><dt>x(t), xₖ</dt><dd>exact state and numerical sample</dd></dl>
 <div class="concept-route" role="img" aria-label="Initial state and rate model lead through an exact solution or numerical integration to a trajectory. Accuracy and stability check the numerical calculation; solver verification compares exact or refined solutions, and model validation compares measurements."><div class="map-node">Initial state + rate model</div><div class="map-edge">↓ exact solution / numerical integration</div><div class="map-node">Trajectory at requested times</div><div class="map-check">Accuracy: error · Stability: repeated steps</div><div class="map-check">Solver verification: exact / refined solution</div><div class="map-check">Model validation: measurements</div></div></div><figure><canvas id="m7p02a" width="440" height="320" aria-label="A trajectory and its stored samples"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p02a"),function(g,t,k){drawM7(g,t,k,"decay",2,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Exact solution; numerical solution</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a> · Course map</p>
@@ -1110,7 +1114,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=f(x,t)\in\mathbb R^d$$</div>
 <dl class="gloss"><dt>x</dt><dd>d-component state column</dd><dt>f(x,t)</dt><dd>d-component state rate</dd><dt>t</dt><dd>time held fixed in a field picture</dd></dl>
-<div class="teaching-point"><p>Illustration: x=(q,v)ᵀ and f=(v,−sin q)ᵀ. Arrow lengths are scaled.</p></div>
+<div class="teaching-point"><p>Normalized pendulum: q is angle, v=q̇ is angular velocity; x=(q,v)ᵀ, f=(v,−sin q)ᵀ. Arrows are scaled.</p></div>
 </div><figure><canvas id="m7p03a" width="440" height="320" aria-label="An arrow gives a rate, not a destination"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p03a"),function(g,t,k){drawM7(g,t,k,"field",3,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Vector field; phase portrait</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a> · Course illustration</p>
@@ -1136,9 +1140,9 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Vector Fields</h2>
 <p class="sub">Verify an exact decay solution</p>
 <div class="cols w6040"><div>
-<div class="eq">$$x(t)=e^{-2t}\quad\Longrightarrow\quad\dot x=-2x$$</div>
-<dl class="gloss"><dt>x(0)</dt><dd>one</dd><dt>−2</dt><dd>decay rate in inverse time</dd><dt>t</dt><dd>elapsed time</dd></dl>
-<div class="ex"><p>Worked example: x(0.1) = 0.8187307531.</p></div>
+<div class="eq">$$\begin{aligned}x(t)&amp;=e^{-2t},\quad x(0)=e^0=1\\\dot x(t)&amp;=e^{-2t}(-2)=-2x(t)\\x(0.1)&amp;=e^{-0.2}\approx0.8187307531\end{aligned}$$</div>
+<dl class="gloss"><dt>x(t)</dt><dd>state at time t</dd><dt>−2</dt><dd>decay rate in inverse time</dd></dl>
+<div class="ex"><p>Differentiate with the chain rule; check the initial value separately.</p></div>
 </div><figure><canvas id="m7p05a" width="440" height="320" aria-label="Verify an exact decay solution"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p05a"),function(g,t,k){drawM7(g,t,k,"decay",5,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Exponential decay</span> — <a href="https://fncbook.com/basics/">[4] FNC §6.1</a> · Course example</p>
@@ -1215,7 +1219,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">The manipulator equation is a force balance</p>
 <div class="cols w6040"><div>
 <div class="eq">$$M(q)\ddot q+C(q,v)v+g(q)=\tau$$</div>
-<dl class="gloss"><dt>M</dt><dd>n×n inertia; zᵀMz&gt;0 for every z≠0</dd><dt>Cv</dt><dd>velocity-dependent generalized forces</dd><dt>g, τ</dt><dd>gravity and applied generalized forces</dd><dt>q,v</dt><dd>positions and velocities</dd></dl>
+<dl class="gloss"><dt>M</dt><dd>symmetric n×n inertia; zᵀMz&gt;0 for every nonzero z∈ℝⁿ</dd><dt>Cv</dt><dd>velocity-dependent generalized forces</dd><dt>g, τ</dt><dd>gravity and applied generalized forces</dd><dt>q,v</dt><dd>positions and velocities</dd></dl>
 <div class="teaching-point"><p>The model balances inertial, velocity-dependent and gravitational terms.</p></div>
 </div><figure><canvas id="m7p08a" width="440" height="320" aria-label="The manipulator equation is a force balance"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p08a"),function(g,t,k){drawM7(g,t,k,"forces",8,false);},{rest:0.4,seconds:5});</script>
@@ -1229,8 +1233,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">Rewrite the mechanics as a first-order ODE</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=\begin{bmatrix}v\\M(q)^{-1}[\tau-C(q,v)v-g(q)]\end{bmatrix}$$</div>
-<dl class="gloss"><dt>x</dt><dd>[q;v], a 2n-column</dd><dt>τ</dt><dd>applied generalized force</dd><dt>M⁻¹</dt><dd>exists for positive-definite inertia</dd></dl>
-<div class="teaching-point"><p>First order: only ẋ appears. Solve M a = τ − Cv − g for acceleration.</p></div>
+<dl class="gloss"><dt>x=[q;v]</dt><dd>2n-state: positions q, velocities v</dd><dt>a=v̇</dt><dd>acceleration</dd><dt>M, C</dt><dd>inertia and velocity-force matrices</dd><dt>g, τ</dt><dd>gravity and applied forces</dd></dl>
+<div class="teaching-point"><p>Positive-definite M is invertible. In code, solve Ma=τ−Cv−g.</p></div>
 </div><figure><canvas id="m7p09a" width="440" height="320" aria-label="Rewrite the mechanics as a first-order ODE"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p09a"),function(g,t,k){drawM7(g,t,k,"state",9,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>First-order system; forward dynamics</span> — <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/chapter-8-1-lagrangian-formulation-of-dynamics-part-1-of-2/">[2] Modern Robotics §8.1</a> · <a href="https://fncbook.com/systems/">[4] FNC §6.3</a></p>
@@ -1242,9 +1246,9 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Robot State</h2>
 <p class="sub">A one-joint calculation</p>
 <div class="cols w6040"><div>
-<div class="eq">$$a=\frac{5-0.5(2)-3}{2}=0.5,\qquad\dot x=\begin{bmatrix}2\\0.5\end{bmatrix}$$</div>
-<dl class="gloss"><dt>M,C</dt><dd>2 and 0.5 at this state</dd><dt>g,τ</dt><dd>3 and 5</dd><dt>q,v</dt><dd>1 and 2</dd></dl>
-<div class="ex"><p>Worked example: solve acceleration, then assemble the full derivative.</p></div>
+<div class="eq">$$\begin{aligned}Ma&amp;=\tau-Cv-g,\quad Cv=0.5(2)=1\\a&amp;=(5-1-3)/2=0.5\\\dot x&amp;=(v,a)^T=(2,0.5)^T\end{aligned}$$</div>
+<dl class="gloss"><dt>x=(q,v)ᵀ</dt><dd>position q=1; velocity v=2</dd><dt>a=v̇</dt><dd>acceleration</dd><dt>M,C</dt><dd>inertia 2; velocity-force coefficient 0.5</dd><dt>g,τ</dt><dd>gravity 3; applied force 5</dd></dl>
+<div class="ex"><p>Solve force balance, then stack both rates.</p></div>
 </div><figure><canvas id="m7p10a" width="440" height="320" aria-label="A one-joint calculation"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p10a"),function(g,t,k){drawM7(g,t,k,"state",10,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Forward dynamics</span> — <a href="https://modernrobotics.northwestern.edu/nu-gm-book-resource/chapter-8-1-lagrangian-formulation-of-dynamics-part-1-of-2/">[2] Modern Robotics §8.1</a> · Course example</p>
@@ -1357,7 +1361,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$c_i(t)=e^{\lambda_i t}c_i(0)$$</div>
 <dl class="gloss"><dt>λᵢ</dt><dd>rate of mode i</dd><dt>cᵢ(0)</dt><dd>initial amount of that mode</dd><dt>t</dt><dd>time measured from zero</dd></dl>
-<div class="teaching-point"><p>Negative rates decay; positive rates grow if the mode is present.</p></div>
+<div class="teaching-point"><p>For real eigenvalues: negative rates decay; positive rates grow if the mode is present.</p></div>
 </div><figure><canvas id="m7p15a" width="440" height="320" aria-label="Each eigenvalue is a continuous growth rate"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p15a"),function(g,t,k){drawM7(g,t,k,"modes",15,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Eigenvalues; exponential growth and decay</span> — <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-23-differential-equations-and-exp-at/">[3] Strang, lecture 23</a> · Course example</p>
@@ -1427,7 +1431,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">The matrix exponential always exists</p>
 <div class="cols w6040"><div>
 <div class="eq">$$e^{At}=\sum_{j=0}^{\infty}\frac{(At)^j}{j!},\qquad x(t)=e^{At}x_0$$</div>
-<dl class="gloss"><dt>A</dt><dd>any square constant matrix</dd><dt>j</dt><dd>series index; A⁰=I</dd><dt>x₀</dt><dd>initial state</dd></dl>
+<dl class="gloss"><dt>A</dt><dd>any square constant matrix</dd><dt>j</dt><dd>series index; A⁰=I</dd><dt>x₀=x(0)</dt><dd>initial state at time zero</dd></dl>
 <div class="teaching-point"><p>Diagonalization is one way to evaluate the solution, not an existence requirement.</p></div>
 </div><figure><canvas id="m7p17a" width="440" height="320" aria-label="The matrix exponential always exists"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p17a"),function(g,t,k){drawM7(g,t,k,"matrix",17,false);},{rest:0.4,seconds:5});</script>
@@ -1474,7 +1478,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
 <p class="worked-progress">Solution 4 / 5</p>
 <h3>4 · Interpret the solution</h3>
-<p class="worked-variables">A: given constant state matrix · x(t),x₀: candidate trajectory and required initial state · t: continuous time · v: eigenvector · I: identity matrix</p>
+<p class="worked-variables">A: state matrix · x(t),x₀: trajectory and initial state · t: time · λ: eigenvalue · v: eigenvector, v₂ its second entry · c≠0: scalar · I: identity</p>
 <ol class="worked-lines">
 <li>Here λ=−1 is repeated. Its eigenvectors have only one independent direction. $$(A+I)v=0\ \Rightarrow\ v_2=0\ \Rightarrow\ v=c(1,0)^T,\quad c\ne0.$$</li>
 <li>The exponential eventually dominates t. The matrix exponential gives the solution even without an eigenbasis. $$\lim_{t\to\infty}te^{-t}=0,\qquad x(t)=e^{At}x_0.$$</li>
@@ -1663,7 +1667,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$\begin{aligned}x(t+h)&amp;=x+h\dot x+\tfrac12h^2\ddot x+O(h^3)\\\ddot x&amp;=f_t+J_f f\end{aligned}$$</div>
 <dl class="gloss"><dt>x, f</dt><dd>evaluated on the exact path at time t</dd><dt>fₜ, Jf</dt><dd>time derivative; (Jf)ᵢⱼ=∂fᵢ/∂xⱼ</dd></dl>
-<div class="teaching-point"><p>C²: continuous derivatives through order 2. O(hᵖ): size ≤ C hᵖ for small h. Local state error = h × normalized local truncation error.</p></div>
+<div class="teaching-point"><p>f has bounded continuous derivatives through order 2 near the path. Fixed interval: local state error O(h²); global error O(h). O(hᵖ): ≤Chᵖ for small h.</p></div>
 </div><figure><canvas id="m7p25a" width="440" height="320" aria-label="Local error and accumulated error differ"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p25a"),function(g,t,k){drawM7(g,t,k,"error",25,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Local error; global error</span> — <a href="https://fncbook.com/euler/">[4] FNC §6.2</a></p>
@@ -1817,9 +1821,9 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Numerical Stability</h2>
 <p class="sub">Euler adds energy to an oscillator</p>
 <div class="cols w6040"><div>
-<div class="eq">$$\begin{gathered}\dot x=Ax,\quad A=\begin{bmatrix}0&amp;-1\\1&amp;0\end{bmatrix}\\|1+ih|=\sqrt{1+h^2}&gt;1\quad(h&gt;0)\end{gathered}$$</div>
-<dl class="gloss"><dt>±i</dt><dd>eigenvalues of A</dd><dt>h</dt><dd>positive Euler step</dd></dl>
-<div class="teaching-point"><p>A bounded exact orbit can produce an outward numerical spiral.</p></div>
+<div class="eq">$$\begin{gathered}\dot x=Ax,\quad A=\begin{bmatrix}0&amp;-1\\1&amp;0\end{bmatrix}\\E_k=\tfrac12\|x_k\|_2^2\\E_{k+1}=(1+h^2)E_k\end{gathered}$$</div>
+<dl class="gloss"><dt>x, xₖ</dt><dd>exact state; Euler state after k steps</dd><dt>Eₖ</dt><dd>normalized oscillator energy</dd><dt>h&gt;0</dt><dd>Euler step size</dd></dl>
+<div class="teaching-point"><p>Exact energy is constant. Euler increases it for every nonzero state.</p></div>
 </div><figure><canvas id="m7p30a" width="440" height="320" aria-label="Euler adds energy to an oscillator"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p30a"),function(g,t,k){drawM7(g,t,k,"spiral",30,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Absolute stability; harmonic oscillator</span> — <a href="https://fncbook.com/absstab-diffusion/">[4] FNC §11.3</a></p>
@@ -1959,8 +1963,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">Combine the four rates</p>
 <div class="cols w6040"><div>
 <div class="eq">$$x_{k+1}=x_k+\frac h6(k_1+2k_2+2k_3+k_4)$$</div>
-<dl class="gloss"><dt>k₁…k₄</dt><dd>RK4 rates</dd><dt>1,2,2,1</dt><dd>weights before division by six</dd><dt>h</dt><dd>full step length</dd></dl>
-<div class="ex"><p>ẋ=−2x, x₀=1, h=.2: rates (−2,−1.6,−1.68,−1.328) give x₁=.6704.</p></div>
+<dl class="gloss"><dt>xₖ, tₖ</dt><dd>state and time at the start of a step</dd><dt>k₁…k₄</dt><dd>RK4 rates; z₂,z₃,z₄ are temporary states</dd><dt>x₀=1, h=.2</dt><dd>initial state at t₀=0; step length</dd></dl>
+<div class="ex"><p>For f(x)=−2x, evaluate each rate at its trial state before weighting the rates.</p></div>
 </div><figure><canvas id="m7p37a" width="440" height="320" aria-label="Combine the four rates"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p37a"),function(g,t,k){drawM7(g,t,k,"rk4",37,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Classical RK4; weighted stage sum</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · Course diagram</p>
@@ -2023,8 +2027,8 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="sub">Accuracy improves at a computational price</p>
 <div class="cols w6040"><div>
 <div class="eq">$$\varepsilon_{\rm Euler}=O(h),\quad\varepsilon_{\rm midpoint}=O(h^2),\quad\varepsilon_{\rm RK4}=O(h^4)$$</div>
-<dl class="gloss"><dt>ε</dt><dd>norm of state error at a fixed final time</dd><dt>h</dt><dd>step tending to zero</dd><dt>assumptions</dt><dd>bounded derivatives; field locally Lipschitz near solution</dd></dl>
-<div class="teaching-point"><p>Absolute-stability region: hλ values with bounded repeated updates on ẋ=λx. A large RK4 step can fail.</p></div>
+<dl class="gloss"><dt>ε</dt><dd>norm of state error at a fixed final time</dd><dt>h</dt><dd>step tending to zero</dd><dt>assumptions</dt><dd>bounded derivatives; field locally Lipschitz near solution</dd><dt>λ</dt><dd>constant rate in ẋ=λx</dd></dl>
+<div class="teaching-point"><p>Stability region: hλ values giving bounded repeats on ẋ=λx. Large RK4 steps can fail.</p></div>
 </div><figure><canvas id="m7p39a" width="440" height="320" aria-label="Accuracy improves at a computational price"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p39a"),function(g,t,k){drawM7(g,t,k,"order",39,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Order of accuracy; absolute stability</span> — <a href="https://fncbook.com/rk/">[4] FNC §6.4</a> · <a href="https://fncbook.com/absstab-diffusion/">[4] FNC §11.3</a></p>
@@ -2064,9 +2068,9 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h2>Pendulum Simulation</h2>
 <p class="sub">The exact dynamics conserve energy</p>
 <div class="cols w6040"><div>
-<div class="eq">$$\begin{aligned}E&amp;=\tfrac12m\ell^2v^2+mg_0\ell(1-\cos q)\\\dot E&amp;=m\ell^2v\dot v+mg_0\ell\sin q\,\dot q=0\end{aligned}$$</div>
-<dl class="gloss"><dt>q̇=v</dt><dd>kinematic identity</dd><dt>v̇</dt><dd>−(g₀/ℓ)sin q</dd><dt>Ė</dt><dd>rate of mechanical energy</dd></dl>
-<div class="teaching-point"><p>The two terms cancel only for the stated unforced, undamped model.</p></div>
+<div class="eq">$$\begin{aligned}E&amp;=\tfrac12m\ell^2v^2+mg_0\ell(1-\cos q)\\\dot E&amp;=m\ell^2v[-(g_0/\ell)\sin q]+mg_0\ell\sin q\,v\\&amp;=-mg_0\ell v\sin q+mg_0\ell v\sin q=0\end{aligned}$$</div>
+<dl class="gloss"><dt>q, v=q̇</dt><dd>angle and angular velocity</dd><dt>m, ℓ, g₀</dt><dd>positive mass, length, gravity</dd><dt>E, Ė</dt><dd>mechanical energy and its time derivative</dd></dl>
+<div class="teaching-point"><p>Unforced, undamped: v̇=−(g₀/ℓ)sin q.</p></div>
 </div><figure><canvas id="m7p42a" width="440" height="320" aria-label="The exact dynamics conserve energy"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p42a"),function(g,t,k){drawM7(g,t,k,"energy",42,false);},{rest:0.4,seconds:5});</script>
 <p class="cite page-source"><span>Conservation of mechanical energy</span> — <a href="https://underactuated.mit.edu/pend.html">[1] Tedrake, ch.2</a></p>
@@ -2076,7 +2080,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <section class="slide has-worked-solutions" data-part="III">
 <p class="eyebrow you" data-min="1">Your turn</p>
 <h2>Integrated Pendulum Problem</h2>
-<p class="sub">Choose the state and the check first</p>
+<p class="sub">Choose the state and field first</p>
 <div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$\ddot q=-\sin q,\quad q_0=1,\quad v_0=0$$</div>
@@ -2084,7 +2088,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <p class="q">Which state and field give a first-order ODE for this model?</p>
 <ol class="mc-options" type="A"><li>x=q; f=−sin q</li><li>x=(q,v)ᵀ; f=(v,−sin q)ᵀ</li><li>x=(q,v)ᵀ; f=(−sin q,v)ᵀ</li></ol><div class="step answer" data-step="5"><b class="ok step" data-step="5">✓</b>
 <p>Correct B. Keep state/rate order.</p></div>
-</div><figure><canvas id="m7p43a" width="440" height="320" aria-label="Choose the state and the check first"></canvas></figure></div>
+</div><figure><canvas id="m7p43a" width="440" height="320" aria-label="Choose the state and field first"></canvas></figure></div>
 <script>m3anim(document.getElementById("m7p43a"),function(g,t,k){drawM7(g,t,k,"pendulum",43,true);},{rest:0.4,seconds:5});</script>
 </div>
 <div class="worked-solutions">
@@ -2175,24 +2179,24 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 </ol></div>
 <div class="worked-panel step" data-step="6" data-solution-page="6" aria-label="Solution 6 of 12">
 <p class="worked-progress">Solution 6 / 12</p>
-<h3>6 · RK4 first two stages</h3>
+<h3>6 · RK4 first rate and second trial</h3>
 <p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
 <ol class="worked-lines">
-<li>For RK4, define a new set of stage rates k₁,…,k₄. Each z is an internal trial state. $$k_1\approx(0,-0.8414709848)^T,\quad z_2=x_0+0.05k_1\approx(1,-0.04207354924)^T.$$</li>
+<li>For RK4, define stage rates k₁,…,k₄ and temporary states z₂,z₃,z₄. $$\begin{aligned}k_1&amp;\approx(0,-0.8414709848)^T,\\z_2&amp;=x_0+0.05k_1\approx(1,-0.04207354924)^T.\end{aligned}$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="7" data-solution-page="7" aria-label="Solution 7 of 12">
 <p class="worked-progress">Solution 7 / 12</p>
-<h3>7 · RK4 second and third rates</h3>
+<h3>7 · RK4 second rate and third trial</h3>
 <p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
 <ol class="worked-lines">
-<li>Evaluate the same field at each trial state. $$k_2=f(z_2)\approx(-0.04207354924,-0.8414709848)^T.\quad z_3=x_0+0.05k_2\approx(0.9978963225,-0.04207354924)^T.$$</li>
+<li>Evaluate the field at z₂, then build z₃ from the original state. $$\begin{aligned}k_2=f(z_2)&amp;\approx(-0.04207354924,-0.8414709848)^T,\\z_3=x_0+0.05k_2&amp;\approx(0.9978963225,-0.04207354924)^T.\end{aligned}$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="8" data-solution-page="8" aria-label="Solution 8 of 12">
 <p class="worked-progress">Solution 8 / 12</p>
 <h3>8 · RK4 final trial</h3>
 <p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
 <ol class="worked-lines">
-<li>Use the third rate to build the full-step trial. $$k_3=f(z_3)\approx(-0.04207354924,-0.8403325019)^T,\quad z_4=x_0+0.1k_3\approx(0.9957926451,-0.08403325019)^T.$$</li>
+<li>Use the third rate to build the full-step trial. $$\begin{aligned}k_3=f(z_3)&amp;\approx(-0.04207354924,-0.8403325019)^T,\\z_4=x_0+0.1k_3&amp;\approx(0.9957926451,-0.08403325019)^T.\end{aligned}$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="9" data-solution-page="9" aria-label="Solution 9 of 12">
 <p class="worked-progress">Solution 9 / 12</p>
@@ -2206,7 +2210,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h3>10 · Weight the four rates</h3>
 <p class="worked-variables">q,v: angle and angular velocity · x₀,h: initial state (1,0)ᵀ and full step 0.1 · kᵢ: model rate at stage i · xmid,zᵢ: midpoint and RK4 trial states</p>
 <ol class="worked-lines">
-<li>The two midpoint rates each receive weight two. $$k_1+2k_2+2k_3+k_4\approx(-0.2523274472,-5.044268259)^T.$$</li>
+<li>The two midpoint rates each receive weight two. $$k_1+2k_2+2k_3+k_4\approx(-0.2523274472,-5.044268258)^T.$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="11" data-solution-page="11" aria-label="Solution 11 of 12">
 <p class="worked-progress">Solution 11 / 12</p>
@@ -2236,7 +2240,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="worked-question">
 <div class="cols w6040"><div>
 <div class="eq">$$\dot x=(v,-\sin q)^T,\quad x(0)=(1,0)^T,\quad T=10$$</div>
-<dl class="gloss"><dt>N</dt><dd>step count</dd><dt>E</dt><dd>v²/2+1−cos q</dd><dt>ΔE</dt><dd>E at T minus E at 0</dd></dl>
+<dl class="gloss"><dt>x=(q,v)ᵀ</dt><dd>angle q and angular velocity v</dd><dt>h, N, T</dt><dd>step size, step count, final time</dd><dt>E</dt><dd>v²/2+1−cos q</dd><dt>ΔE</dt><dd>E at T minus E at 0</dd></dl>
 <p class="q">Halve h: how do we still end at time T=10?</p>
 <ol class="mc-options" type="A"><li>Keep N.</li><li>Stop at equal E.</li><li>Double N.</li></ol><div class="step answer" data-step="9"><b class="ok step" data-step="9">✓</b>
 <p>Correct C: keep Nh=T.</p></div>
@@ -2372,7 +2376,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="cols w6040"><div>
 <div class="eq">$$q_0=\pi,\quad v_0=1,\quad h=.1,\quad m=\ell=g_0=1$$</div>
 <dl class="gloss"><dt>q₀,v₀</dt><dd>initial angle and angular velocity</dd><dt>f(q,v)</dt><dd>(v,−sin q)ᵀ</dd><dt>E(q,v)</dt><dd>v²/2+1−cos q</dd></dl>
-<p class="q">One call: which method and energy claim is correct?</p>
+<p class="q">One model evaluation per step: choose the method and energy claim.</p>
 <ol class="mc-options" type="A"><li>Euler; this step decreases energy.</li><li>Midpoint; one call is enough.</li><li>Euler; every step increases energy.</li></ol><div class="step answer" data-step="7"><b class="ok step" data-step="7">✓</b>
 <p>Correct A. Potential falls; kinetic energy is unchanged.</p></div>
 </div><figure><canvas id="m7p47a" width="440" height="320" aria-label="Transfer: a moving pendulum near the top"></canvas></figure></div>
@@ -2384,7 +2388,7 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <h3>1 · Select the affordable method</h3>
 <p class="worked-variables">q₀,v₀: initial angle π and angular velocity 1 · h: step size 0.1 · E,ΔE: total energy and its change · x₀,x₁: initial and accepted state</p>
 <ol class="worked-lines">
-<li>Euler uses one model call; midpoint uses two; RK4 uses four. Only Euler fits this budget. $$1\le1,\qquad2&gt;1,\qquad4&gt;1.$$</li>
+<li>Among Euler, explicit midpoint and classical RK4, the costs are one, two and four model evaluations per step. Only Euler meets a one-evaluation budget. $$1\le1,\qquad2&gt;1,\qquad4&gt;1.$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 6">
 <p class="worked-progress">Solution 2 / 6</p>
@@ -2446,35 +2450,35 @@ window.drawM7=function(g,t,k,type,page,isActivity){
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 5">
 <p class="worked-progress">Solution 1 / 5</p>
 <h3>1 · Choose a complete state</h3>
-<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=kh</p>
+<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=t₀+kh, starting at t₀</p>
 <ol class="worked-lines">
 <li>Angle alone omits velocity; the same angle can lead to different future motion. $$x=(q,v)^T,\qquad f(x)=(v,-\sin q)^T.$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="2" data-solution-page="2" aria-label="Solution 2 of 5">
 <p class="worked-progress">Solution 2 / 5</p>
 <h3>2 · Integrate the rate</h3>
-<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=kh</p>
+<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=t₀+kh, starting at t₀</p>
 <ol class="worked-lines">
 <li>For example, Euler integrates the current rate over one step: multiply the rate by h, then add it to the old state. $$x_{k+1}=x_k+hf(x_k,t_k).$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="3" data-solution-page="3" aria-label="Solution 3 of 5">
 <p class="worked-progress">Solution 3 / 5</p>
 <h3>3 · Compare states at common times</h3>
-<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=kh</p>
+<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=t₀+kh, starting at t₀</p>
 <ol class="worked-lines">
-<li>Reduce the step and compare against an exact solution or a suitably refined calculation. A smooth curve alone is not an accuracy test. $$t_k=kh=2k(h/2).$$</li>
+<li>Reduce the step and compare against an exact solution or a suitably refined calculation. A smooth curve alone is not an accuracy test. $$t_k=t_0+kh=t_0+2k(h/2).$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="4" data-solution-page="4" aria-label="Solution 4 of 5">
 <p class="worked-progress">Solution 4 / 5</p>
 <h3>4 · Use a complementary invariant check</h3>
-<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=kh</p>
+<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=t₀+kh, starting at t₀</p>
 <ol class="worked-lines">
 <li>For this undamped, unforced model, exact energy stays constant. Also inspect the full state: equal energy need not imply equal state. $$E(q,v)=v^2/2+1-\cos q,\qquad\Delta E_k=E(x_k)-E(x_0).$$</li>
 </ol></div>
 <div class="worked-panel step" data-step="5" data-solution-page="5" aria-label="Solution 5 of 5">
 <p class="worked-progress">Solution 5 / 5</p>
 <h3>Answer · C</h3>
-<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=kh</p>
+<p class="worked-variables">x=(q,v)ᵀ: complete pendulum state · f,h: model rate and numerical step size · E: energy used alongside state comparisons · k,tₖ: step index and time tₖ=t₀+kh, starting at t₀</p>
 <ol class="worked-lines">
 <li>A omits velocity, which a smaller step cannot repair.</li>
 <li>B confuses rates with states and energy with full accuracy.</li>
