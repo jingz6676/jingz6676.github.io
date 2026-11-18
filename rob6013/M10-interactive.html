@@ -1403,7 +1403,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p82" data-source-id="original-75" data-part="IV" data-classroom-page="64" data-original-page="82">
 <p class="eyebrow">Derivation</p>
 <h2>ACT: latent-variable training</h2><p class="sub">Reparameterization makes sampling differentiable</p>
-<p>Draw parameter-independent noise ε. Scale and shift it to sample z.</p><div class="eq">$$\epsilon\sim\N(0,I),\quad z=\mu+\sigma\odot\epsilon$$</div><dl class="gloss"><dt>$z,\epsilon,\mu,\sigma\in\R^L$</dt><dd>sample; noise; mean; standard deviations σ>0</dd><dt>$\odot$</dt><dd>elementwise product</dd><dt>$L,I$</dt><dd>latent dimension; $L\times L$ identity covariance</dd></dl><figure class="math-figure compact"><canvas id="m10p82c" width="1050" height="140" role="img" aria-label="Changing the mean shifts a Gaussian without changing its width."></canvas><figcaption>Changing the mean shifts the curve at fixed width.</figcaption></figure><script>M10draw(document.getElementById("m10p82c"),"latent");</script><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
+<p>Draw parameter-independent noise ε. Scale and shift it to sample z.</p><div class="eq">$$\epsilon\sim\N(0,I),\quad z=\mu+\sigma\odot\epsilon$$</div><dl class="gloss"><dt>$z,\epsilon,\mu,\sigma\in\R^L$</dt><dd>sample; noise; mean; standard deviations σ>0</dd><dt>$\odot$</dt><dd>elementwise product</dd><dt>$L,I$</dt><dd>latent dimension; $L\times L$ identity covariance</dd></dl><figure class="math-figure compact"><canvas id="m10p82c" width="1050" height="140" role="img" aria-label="Changing the mean shifts a Gaussian without changing its width."></canvas><figcaption>Horizontal: z. Height: density. μ shifts the curve.</figcaption></figure><script>M10draw(document.getElementById("m10p82c"),"latent");</script><p class="cite"><a href="https://arxiv.org/abs/1312.6114">Kingma &amp; Welling (2014), §2, Appendix B</a></p>
 </section>
 
 <section class="slide has-worked-solutions" id="m10p83" data-source-id="original-76" data-part="IV" data-classroom-page="65" data-original-page="83">
@@ -1461,7 +1461,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <section class="slide" id="m10p91" data-source-id="original-80" data-part="IV" data-classroom-page="73" data-original-page="91">
 <p class="eyebrow">Definition</p>
 <h2>ACT: latent-variable training</h2><p class="sub">The ACT training loss</p>
-<div class="eq">$$\mathcal L_{train}=\frac1{Kd_a}\sum_{j=0}^{K-1}\sum_{c=1}^{d_a}|\hat A_{jc}-A_{jc}|+\beta D_{KL}(q_\phi\Vert p)$$</div><dl class="gloss"><dt>$A,\hat A$</dt><dd>valid K×dₐ target/prediction</dd><dt>$K,d_a;j,c$</dt><dd>length, action width; row, coordinate</dd><dt>$q_\phi,\phi,\beta$</dt><dd>encoder density, weights; KL weight $\beta\ge0$</dd><dt>$p=\N(0,I)$</dt><dd>standard normal; I: identity</dd></dl><p>Absolute error: §IV-C. Squared error: Alg. 1.</p><p class="cite"><a href="https://www.roboticsproceedings.org/rss19/p016.pdf">Zhao et al. (2023), §IV-B–C, Alg. 1</a></p>
+<div class="eq">$$\mathcal L_{train}=\frac1{Kd_a}\sum_{j=0}^{K-1}\sum_{c=1}^{d_a}|\hat A_{jc}-A_{jc}|+\beta D_{KL}(q_\phi\Vert p)$$</div><dl class="gloss"><dt>$A,\hat A$</dt><dd>valid K×dₐ target/prediction</dd><dt>$K,d_a;j,c$</dt><dd>length, action width; row, coordinate</dd><dt>$q_\phi,\phi,\beta$</dt><dd>encoder density, weights; KL weight $\beta\ge0$</dd><dt>$p=\N(0,I)$</dt><dd>standard normal; I: identity</dd></dl><p>One latent draw $z\sim q_\phi$. L1: §IV-C; L2: Alg. 1.</p><p class="cite"><a href="https://www.roboticsproceedings.org/rss19/p016.pdf">Zhao et al. (2023), §IV-B–C, Alg. 1</a></p>
 </section>
 
 <section class="slide" id="m10p92" data-source-id="original-81" data-part="IV" data-classroom-page="74" data-original-page="92">
@@ -1555,8 +1555,13 @@ document.addEventListener('DOMContentLoaded',function(){
      works from file:// as well as from a server (no shared origin is needed). The audience
      window pushes back if someone navigates there. */
   var mode = '';   /* local copy: presenter and audience are off */
-  var peer = null;
+  /* Classroom audience readiness handshake: the opener owns the initial state.
+     A newly loaded audience must not send its default step zero back, and applying
+     a peer state must not echo show()'s temporary step zero during a page change. */
+  var peer = null, applyingSync = false;
+  var awaitingPresenter = mode === 'audience' && !!window.opener;
   function sync() {
+    if (applyingSync || awaitingPresenter) return;
     var msg = { deck: 'sync', i: i, step: step };
     if (mode === 'presenter' && peer && !peer.closed) peer.postMessage(msg, '*');
     if (mode === 'audience' && window.opener) window.opener.postMessage(msg, '*');
@@ -1564,7 +1569,9 @@ document.addEventListener('DOMContentLoaded',function(){
   function openAudience() {
     var url = location.href.replace(/[?&]presenter/, function (m) { return m[0] + 'audience'; }).split('#')[0] + '#' + (i + 1);
     peer = window.open(url, 'deck-audience');
-    setTimeout(sync, 800);
+    /* An existing audience can receive this now; a new document requests state
+       once its listener, slides and initial rendering are ready. */
+    sync();
   }
   var t0 = Date.now();
   function clock() {
@@ -1983,10 +1990,26 @@ document.addEventListener('DOMContentLoaded',function(){
       setInterval(clock, 1000); clock();
     }
     window.addEventListener('message', function (e) {
+      var source = mode === 'presenter' ? peer : mode === 'audience' ? window.opener
+                 : window.parent !== window ? window.parent : null;
       var d = e.data;
-      if (!d || d.deck !== 'sync') return;
-      if (d.i !== i) show(d.i);
-      if (d.step !== step) { step = d.step; paintSteps(); paintPresenter(); }
+      /* Window identity also works for file://, where origin is normally null.
+         A plain embedded deck may be controlled by its actual guide parent. */
+      if (!source || e.source !== source || !d) return;
+      if (d.deck === 'ready' && mode === 'presenter') { sync(); return; }
+      if (d.deck !== 'sync' || typeof d.i !== 'number' || d.i % 1 !== 0 ||
+          d.i < 0 || d.i >= slides.length || typeof d.step !== 'number' ||
+          d.step % 1 !== 0 || d.step < 0) return;
+      applyingSync = true;
+      try {
+        if (d.i !== i) show(d.i);
+        step = Math.min(d.step, stepVals.length);
+        paintSteps();
+        paintPresenter();
+        if (mode === 'audience') awaitingPresenter = false;
+      } finally {
+        applyingSync = false;
+      }
     });
     ytFacades();
     buildOverview();
@@ -2034,6 +2057,9 @@ document.addEventListener('DOMContentLoaded',function(){
       var sk = /[?&]step=(\d+)/.exec(location.search);
       if (sk) { step = Math.min(stepVals.length, +sk[1]); paintSteps(); paintPresenter(); }
       if (/[?&]print/.test(location.search)) toPrint(true);
+      if (mode === 'audience' && window.opener) {
+        window.opener.postMessage({ deck: 'ready' }, '*');
+      }
     }
 
     /* math first, then measure — KaTeX changes heights */
