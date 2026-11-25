@@ -945,7 +945,8 @@ function m11figure(el,kind,opt,activity){
    ln(x0,y0,x1,y0,c.dim);ln(x0,y0,x0,y1,c.dim);
    const X=x=>x0+(x-xmin)/(xmax-xmin)*(x1-x0),Y=y=>y0-y/ymax*(y0-y1);
    for(let x=Math.ceil(xmin);x<=xmax;x++){let z=X(x);ln(z,y0,z,y0+4,c.dim,1);txt(String(x),z-4,y0+21,c.dim,15)}
-   txt(xlabel,x1-10,y0+25,c.dim,16);txt(ylabel,x0+8,20,c.dim,16);
+   // Keep the axis name clear of the rightmost numeric tick label.
+   txt(xlabel,x1-90,y0+25,c.dim,16);txt(ylabel,x0+8,20,c.dim,16);
    return [X,Y];
   }
   const norm=(x,m,v)=>Math.exp(-(x-m)*(x-m)/(2*v))/Math.sqrt(2*Math.PI*v);
@@ -995,9 +996,9 @@ function m11figure(el,kind,opt,activity){
    txt('Separate direct samples sharing ε; not successive Markov steps.',35,179,c.dim,15);return;
   }
   if(kind==='variance_sum'){
-   box('a₂ β₁',70,80,250,65,c.dat);
+   box('α₂ β₁',70,80,250,65,c.dat);
    box('β₂',415,80,250,65,c.in);
-   box('1 − a₁a₂',790,80,260,65,c.out);
+   box('1 − α₁α₂',790,80,260,65,c.out);
    txt('+',350,122,c.ink,30);txt('=',710,122,c.ink,30);
    txt('independent centered noises: add covariances',280,195,c.dim,20);return;
   }
@@ -1879,7 +1880,7 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Derivation</p>
 <h2>Learning to denoise</h2>
 <p class="sub">One clean example has an accessible conditional score</p>
-<p class="q">For fixed x₀, qₖ is Gaussian with mean αₖx₀ and covariance σₖ²I.</p>
+<p class="q">For fixed x₀, qₖ is Gaussian with mean √ᾱₖ x₀ and covariance (1−ᾱₖ)I.</p>
 <div class="eq">$$\nabla_{x_k}\log q_k(x_k\mid x_0)=-\frac{x_k-\sqrt{\bar\alpha_k}x_0}{1-\bar\alpha_k}=-\frac{\epsilon}{\sqrt{1-\bar\alpha_k}}$$</div>
 <dl class="gloss"><dt>$x_k=\sqrt{\bar\alpha_k}x_0+\sqrt{1-\bar\alpha_k}\epsilon$</dt><dd>realized corruption</dd><dt>$x_0,k$</dt><dd>fixed; 0 &lt; bar alpha &lt; 1</dd></dl>
 <p class="cite page-source">Vincent (2011) §4.2, Eq.4.4; Gaussian score derivation · <a href="https://doi.org/10.1162/NECO_a_00142">Vincent (2011)</a></p>
@@ -1926,7 +1927,7 @@ function m11figure(el,kind,opt,activity){
 <h2>Learning to denoise</h2>
 <p class="sub">Noise prediction gives a score estimate</p>
 <div class="worked-question">
-<p class="q">Explain the minus sign and the factor 1/σ_k.</p>
+<p class="q">Explain the minus sign and the factor 1/√(1−ᾱₖ).</p>
 <div class="eq">$$s_k(x)=-\frac{\mathbb E[\epsilon\mid x_k=x,k]}{\sqrt{1-\bar\alpha_k}}\approx-\frac{\epsilon_\theta(x,k)}{\sqrt{1-\bar\alpha_k}}$$</div>
 <dl class="gloss"><dt>$s_k(x)$</dt><dd>true marginal noisy-data score</dd><dt>$\epsilon_\theta(x,k)$</dt><dd>learned conditional mean-noise prediction</dd><dt>$\sqrt{1-\bar\alpha_k}&gt;0$</dt><dd>fixed noise standard deviation at level k</dd></dl>
 <figure class="math-figure" style="height:250px"><canvas id="m11p37c" width="1120" height="250" style="height:250px" role="img" aria-label="mixture score: course mathematical illustration"></canvas></figure>
@@ -2047,7 +2048,7 @@ function m11figure(el,kind,opt,activity){
 <h2>Learning to denoise</h2>
 <p class="sub">How does predictor error reach the clean estimate?</p>
 <div class="worked-question">
-<p class="q">Let Δx̂₀ = imperfect estimate − optimal estimate. Find it; compare α=.8 and .1 with σ²=1−α².</p>
+<p class="q">Let Δx̂₀ = imperfect estimate − optimal estimate. Find it; compare signal scales √ᾱₖ = 0.8 and 0.1.</p>
 <div class="eq">$$\hat x_0=\frac{x-\sqrt{1-\bar\alpha_k}\,\hat\epsilon}{\sqrt{\bar\alpha_k}},\quad\hat\epsilon=\epsilon^*+\delta$$</div>
 <dl class="gloss"><dt>$\epsilon^*$</dt><dd>optimal conditional mean-noise prediction</dd><dt>$\delta$</dt><dd>prediction error at the same noisy input</dd><dt>$\bar\alpha_k&gt;0$</dt><dd>cumulative retention; fixes signal/noise scales</dd></dl>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> $\Delta\hat x_0=-(\sqrt{1-\bar\alpha_k}/\sqrt{\bar\alpha_k})\delta$.</p></div>
