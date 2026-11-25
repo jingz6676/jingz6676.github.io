@@ -2601,20 +2601,20 @@ function m11figure(el,kind,opt,activity){
 <section class="slide has-worked-solutions" data-part="IV">
 <p class="eyebrow you" data-min="1.5">Exercise</p>
 <h2>Diffusion Policy</h2>
-<p class="sub">A low denoising loss is not a deployment certificate</p>
+<p class="sub">Training loss versus robot success</p>
 <div class="worked-question">
-<p class="q">Training metric: noise-prediction error.<br>Deployment question: does the closed-loop task succeed?<br>Give two missing checks.</p>
+<p class="q">A diffusion model has low noise-prediction error on held-out Push-T demonstrations. The clip shows one rollout, but the policy fails in a new scene. Give one observation-side test and one execution-side test. What would each reveal?</p>
 <figure class="official-media official-pusht_rollout"><video controls playsinline preload="metadata" aria-label="Official Diffusion Policy Push-T rollout"><source src="https://diffusion-policy.cs.columbia.edu/videos/highlight_pusht_process.mp4" type="video/mp4">Video unavailable. <a href="https://diffusion-policy.cs.columbia.edu/">Open the official project page</a>.</video><figcaption>Official Push-T rollout (9 s). The video shows execution; it does not reveal the sampler’s internal denoising steps or establish robustness. <a href="https://diffusion-policy.cs.columbia.edu/" target="_blank" rel="noopener">Original source ↗</a></figcaption></figure>
-<p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> Validate the entire observation-to-action loop.</p></div>
+<p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> Test observation shift and action execution; report repeated closed-loop success.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
 <p class="worked-progress">Solution 1 / 1</p>
-<h3>Trace the gap to the physical task</h3>
-<p class="worked-variables">Noise loss is a surrogate measured on a specified data distribution.</p>
+<h3>Test the input and the physical loop</h3>
+<p class="worked-variables">Held-out noise error measures prediction on demonstration chunks, not task success.</p>
 <ol class="worked-lines">
-<li>For distribution shift, test held-out scenes and compare observation coverage.</li>
-<li>For units or alignment, check logged physical targets and timestamps against demonstrations.</li>
-<li>For latency or tracking, measure wall-clock delays and controller error; repeat closed-loop task trials.</li>
+<li>Observation side: run repeated trials in held-out scenes and compare their observations with training coverage; a success drop under changed views supports shift.</li>
+<li>Execution side: log normalized samples, physical target units, timestamps and controller tracking; a wrong conversion or delay supports an execution fault.</li>
+<li>Report closed-loop task success over those trials; one rollout is not a success rate.</li>
 </ol></div>
 <span class="worked-finish step" data-step="2" aria-hidden="true"></span>
 </div>
