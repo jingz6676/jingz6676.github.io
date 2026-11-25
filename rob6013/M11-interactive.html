@@ -2385,7 +2385,7 @@ function m11figure(el,kind,opt,activity){
 <h2>Reverse sampling</h2>
 <p class="sub">A generalized step allocates fresh randomness</p>
 <div class="eq">$$x_j=\sqrt{\bar\alpha_j}\hat x_0+\sqrt{1-\bar\alpha_j-\rho_{k,j}^2}\,\hat\epsilon+\rho_{k,j}z$$</div>
-<dl class="gloss"><dt>$j&lt;k,\ \bar\alpha_j$</dt><dd>cleaner level and its cumulative retention</dd><dt>$z\sim\mathcal N(0,I)$</dt><dd>fresh standard Gaussian draw</dd><dt>$0\le\rho_{k,j}\le\sqrt{1-\bar\alpha_j}$</dt><dd>fresh-noise standard deviation</dd><dt>$\hat x_0,\hat\epsilon$</dt><dd>fixed estimates for the current input</dd></dl>
+<dl class="gloss"><dt>$j&lt;k,\ \bar\alpha_j$</dt><dd>cleaner level and its cumulative retention</dd><dt>$z\sim\mathcal N(0,I)$</dt><dd>new independent standard Gaussian noise sample</dd><dt>$0\le\rho_{k,j}\le\sqrt{1-\bar\alpha_j}$</dt><dd>fresh-noise standard deviation</dd><dt>$\hat x_0,\hat\epsilon$</dt><dd>fixed estimates for the current input</dd></dl>
 <figure class="math-figure" style="height:250px"><canvas id="m11p58c" width="1120" height="250" style="height:250px" role="img" aria-label="paths: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p58c'),"paths",{},false);</script>
 <p class="cite page-source">DDIM §4.1, Eq.12; §4.2 and Appendix C.1 · <a href="https://arxiv.org/html/2010.02502v4">Song, Meng &amp; Ermon (2021)</a></p>
