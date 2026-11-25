@@ -2612,9 +2612,9 @@ function m11figure(el,kind,opt,activity){
 <h3>Test the input and the physical loop</h3>
 <p class="worked-variables">Held-out noise error measures prediction on demonstration chunks, not task success.</p>
 <ol class="worked-lines">
-<li>Observation side: run repeated trials in held-out scenes and compare their observations with training coverage; a success drop under changed views supports shift.</li>
-<li>Execution side: log normalized samples, physical target units, timestamps and controller tracking; a wrong conversion or delay supports an execution fault.</li>
-<li>Report closed-loop task success over those trials; one rollout is not a success rate.</li>
+<li>Observation: test success in unseen scenes and compare input coverage. A drop with changed views supports shift.</li>
+<li>Execution: log physical targets, timestamps and tracking. Wrong units or delays support an execution fault.</li>
+<li>Report success over repeated closed-loop trials; one clip is not a success rate.</li>
 </ol></div>
 <span class="worked-finish step" data-step="2" aria-hidden="true"></span>
 </div>
