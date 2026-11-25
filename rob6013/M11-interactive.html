@@ -447,11 +447,11 @@ body.print .worked-pdf-check .math-figure{display:none!important}
 .slide .ex{margin:0;padding:0;background:none;border:0}
 .slide .ex .lbl{font-size:14px;margin:0}
 .slide .official-media{flex:none;margin:8px 0 0;max-width:100%;align-self:center;text-align:center}
-.slide .official-media img{display:block;max-width:100%;max-height:258px;object-fit:contain;margin:auto}
+.slide .official-media img{display:block;max-width:100%;max-height:390px;object-fit:contain;margin:auto}
 .slide .official-media video{display:block;max-width:100%;height:255px;aspect-ratio:3/2;object-fit:contain;margin:auto;background:#111}
 .slide .official-media figcaption{max-width:1020px;font:16px/1.3 Georgia,serif;color:var(--dim);margin:5px auto 0}
 .slide .official-media figcaption a{color:inherit;text-decoration:underline;white-space:nowrap}
-.slide .official-policy_overview img{width:950px}
+.slide .official-policy_overview img{width:1130px}
 .slide .official-pusht_rollout video{width:383px}
 @media print{.slide .official-media video{display:none}.slide .official-media figcaption{color:var(--ink)}}
 </style>
@@ -912,6 +912,21 @@ window.M11 = (function () {
   // Figure arithmetic is defined below in m11figure.
   return M;
 }());
+</script>
+<script>
+// A paused exercise solution or a new slide should not leave the clip playing.
+document.addEventListener('play',function(ev){
+  var v=ev.target;
+  if(!v.matches || !v.matches('.official-media video'))return;
+  clearInterval(v._visibilityGuard);
+  v._visibilityGuard=setInterval(function(){if(!v.getClientRects().length)v.pause()},200);
+},true);
+document.addEventListener('pause',function(ev){
+  var v=ev.target;if(v._visibilityGuard){clearInterval(v._visibilityGuard);v._visibilityGuard=null}
+},true);
+document.addEventListener('ended',function(ev){
+  var v=ev.target;if(v._visibilityGuard){clearInterval(v._visibilityGuard);v._visibilityGuard=null}
+},true);
 </script>
 <script>
 function m11figure(el,kind,opt,activity){
@@ -2427,14 +2442,23 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Model</p>
 <h2>Diffusion Policy</h2>
 <p class="sub">An action chunk is the vector being generated</p>
-<p class="q">Observed context conditions the whole normalized action chunk; only a prefix is executed.</p>
+<p class="q">The clean normalized action chunk stacks future robot commands.</p>
 <div class="eq">$$A_r^{(0)}=\begin{bmatrix}a_r^T\\\vdots\\a_{r+H_p-1}^T\end{bmatrix}\in\mathbb R^{H_p\times d_a}$$</div>
 <dl class="gloss"><dt>$r,\ a_r\in\mathbb R^{d_a}$</dt><dd>physical time and normalized action column</dd><dt>$H_p,d_a$</dt><dd>prediction horizon and action dimension</dd><dt>$(0)$</dt><dd>clean diffusion level, not physical time</dd></dl>
+<p class="cite page-source">Diffusion Policy §2.3 · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
+</section>
+
+<!-- ===== 67 ===== -->
+<section class="slide" data-part="IV">
+<p class="eyebrow">Interpretation</p>
+<h2>Diffusion Policy</h2>
+<p class="sub">Read the original Diffusion Policy diagram</p>
+<p class="q">Left: observations condition a sequence of actions. Right: CNN-FiLM and Transformer are alternative networks.</p>
 <figure class="official-media official-policy_overview"><a href="https://arxiv.org/html/2303.04137v5" target="_blank" rel="noopener"><img src="https://arxiv.org/html/2303.04137v5/policy_input_output.png" alt="Diffusion Policy overview: observations condition a noisy action sequence refined into a clean sequence; only the first actions are executed before replanning." loading="eager" decoding="async"></a><figcaption>Chi et al. (2024), Fig. 2. Paper Tₒ/Tₚ/Tₐ (observation/prediction/execution horizons) = our Hₒ/Hₚ/Hₐ; paper t = physical r, while k = denoising level. <a href="https://arxiv.org/html/2303.04137v5" target="_blank" rel="noopener">Original source ↗</a></figcaption></figure>
 <p class="cite page-source">Diffusion Policy (Chi et al., 2024), Fig. 2; course notation · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
-<!-- ===== 67 ===== -->
+<!-- ===== 68 ===== -->
 <section class="slide has-worked-solutions" data-part="IV">
 <p class="eyebrow you" data-min="1.25">Exercise</p>
 <h2>Diffusion Policy</h2>
@@ -2443,8 +2467,8 @@ function m11figure(el,kind,opt,activity){
 <p class="q">Count observations, predicted scalars, and executed steps.</p>
 <div class="eq">$$H_o=2,\quad H_p=4,\quad H_a=2,\quad d_a=2$$</div>
 <dl class="gloss"><dt>$H_o$</dt><dd>number of observations supplied</dd><dt>$H_p$</dt><dd>number of actions predicted</dd><dt>$H_a$</dt><dd>actions executed before replanning</dd><dt>$d_a=2$</dt><dd>scalar components per action</dd></dl>
-<figure class="math-figure"><canvas id="m11p67c" width="1120" height="250" role="img" aria-label="chunk: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p67c'),"chunk",{},true);</script>
+<figure class="math-figure"><canvas id="m11p68c" width="1120" height="250" role="img" aria-label="chunk: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p68c'),"chunk",{},true);</script>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> 2 observations; 8 predicted scalars; execute 2 steps.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -2461,7 +2485,7 @@ function m11figure(el,kind,opt,activity){
 <p class="cite page-source">Diffusion Policy §2.3; course exercise · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
-<!-- ===== 68 ===== -->
+<!-- ===== 69 ===== -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Definition</p>
 <h2>Diffusion Policy</h2>
@@ -2472,15 +2496,15 @@ function m11figure(el,kind,opt,activity){
 <p class="cite page-source">Diffusion Policy §2.3, Eq.5; DDPM Eq.14 · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a> · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
-<!-- ===== 69 ===== -->
+<!-- ===== 70 ===== -->
 <section class="slide has-worked-solutions" data-part="IV">
 <p class="eyebrow you" data-min="1">Exercise</p>
 <h2>Diffusion Policy</h2>
 <p class="sub">A receding horizon closes the feedback loop</p>
 <div class="worked-question">
 <p class="q">Receding horizon: predict a chunk, execute its first H_a actions, then replan from fresh observations. What happens to the unused suffix?</p>
-<figure class="math-figure"><canvas id="m11p69c" width="1120" height="250" role="img" aria-label="loop: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p69c'),"loop",{},true);</script>
+<figure class="math-figure"><canvas id="m11p70c" width="1120" height="250" role="img" aria-label="loop: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p70c'),"loop",{},true);</script>
 <p class="reveal step" data-step="2"><b class="ok step" data-step="2">Check</b> Replan using fresh observations; do not blindly replay the old suffix.</p></div>
 <div class="worked-solutions">
 <div class="worked-panel step" data-step="1" data-solution-page="1" aria-label="Solution 1 of 1">
@@ -2497,7 +2521,7 @@ function m11figure(el,kind,opt,activity){
 <p class="cite page-source">Diffusion Policy §2.3 · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
-<!-- ===== 70 ===== -->
+<!-- ===== 71 ===== -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Example</p>
 <h2>Diffusion Policy</h2>
@@ -2506,12 +2530,12 @@ function m11figure(el,kind,opt,activity){
 <p class="q">Recover two targets in meters; execute the first.</p>
 <div class="eq">$$x_1=\begin{bmatrix}1.3\\-0.2\end{bmatrix},\quad\hat\epsilon=\begin{bmatrix}-0.5\\1\end{bmatrix},\quad\alpha_1=0.8,\ \sigma_1=0.6$$</div>
 <dl class="gloss"><dt>$x_1,\hat\epsilon\in\mathbb R^2$</dt><dd>noisy chunk; predicted noise</dd><dt>$a(x)=(.4+.1x)\,\mathrm m$</dt><dd>target meters; x dimensionless</dd><dt>$H_p=2,\ H_a=1$</dt><dd>predict two; execute one</dd></dl>
-<figure class="math-figure"><canvas id="m11p70c" width="1120" height="250" role="img" aria-label="chunk2: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p70c'),"chunk2",{},false);</script>
+<figure class="math-figure"><canvas id="m11p71c" width="1120" height="250" role="img" aria-label="chunk2: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p71c'),"chunk2",{},false);</script>
 <p class="cite page-source">Diffusion Policy §§2.3,A.1; course example · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
-<!-- ===== 71 ===== -->
+<!-- ===== 72 ===== -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Example</p>
 <h2>Diffusion Policy</h2>
@@ -2519,12 +2543,12 @@ function m11figure(el,kind,opt,activity){
 <div class="ex"><p class="lbl">Example</p></div>
 <div class="eq">$$\hat x_0=\frac{x_1-0.6\hat\epsilon}{0.8}=\begin{bmatrix}2\\-1\end{bmatrix}$$</div>
 <dl class="gloss"><dt>$x_1=(1.3,-0.2)^T,\ \hat\epsilon=(-0.5,1)^T$</dt><dd>noisy chunk and predicted noise</dd><dt>$\alpha_1=0.8,\ \sigma_1=0.6$</dt><dd>signal amplitude and noise standard deviation</dd><dt>$\hat x_0$</dt><dd>clean normalized two-action estimate</dd></dl>
-<figure class="math-figure"><canvas id="m11p71c" width="1120" height="250" role="img" aria-label="vector: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p71c'),"vector",{"labels": ["noisy chunk", "subtract \u03c3 \u03b5\u0302", "divide by \u03b1"], "caption": "recover the clean normalized chunk before restoring units"},false);</script>
+<figure class="math-figure"><canvas id="m11p72c" width="1120" height="250" role="img" aria-label="vector: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p72c'),"vector",{"labels": ["noisy chunk", "subtract \u03c3 \u03b5\u0302", "divide by \u03b1"], "caption": "recover the clean normalized chunk before restoring units"},false);</script>
 <p class="cite page-source">DDPM Eq.11; DDIM Eq.12; course example · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a> · <a href="https://arxiv.org/html/2010.02502v4">Song, Meng &amp; Ermon (2021)</a></p>
 </section>
 
-<!-- ===== 72 ===== -->
+<!-- ===== 73 ===== -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Example</p>
 <h2>Diffusion Policy</h2>
@@ -2532,12 +2556,12 @@ function m11figure(el,kind,opt,activity){
 <div class="ex"><p class="lbl">Example</p></div>
 <div class="eq">$$a(x)=(0.4+0.1x)\,\mathrm m,\quad x=\begin{bmatrix}2\\-1\end{bmatrix}\quad\Rightarrow\quad A_r^{\mathrm{phys}}=\begin{bmatrix}0.6\\0.3\end{bmatrix}\mathrm m$$</div>
 <dl class="gloss"><dt>$x=(2,-1)^T$</dt><dd>clean normalized coordinates</dd><dt>$H_p=2,\ H_a=1$</dt><dd>predict two targets; execute the first</dd><dt>$a(x),A_r^{\mathrm{phys}}$</dt><dd>target position and two physical targets</dd></dl>
-<figure class="math-figure"><canvas id="m11p72c" width="1120" height="250" role="img" aria-label="chunk2: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p72c'),"chunk2",{},false);</script>
+<figure class="math-figure"><canvas id="m11p73c" width="1120" height="250" role="img" aria-label="chunk2: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p73c'),"chunk2",{},false);</script>
 <p class="cite page-source">Diffusion Policy §2.3; course example · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
-<!-- ===== 73 ===== -->
+<!-- ===== 74 ===== -->
 <section class="slide has-worked-solutions" data-part="IV">
 <p class="eyebrow you" data-min="1.5">Exercise</p>
 <h2>Diffusion Policy</h2>
@@ -2560,18 +2584,18 @@ function m11figure(el,kind,opt,activity){
 <p class="cite page-source">Diffusion Policy §2.3; course exercise · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
-<!-- ===== 74 ===== -->
+<!-- ===== 75 ===== -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Interpretation</p>
 <h2>Diffusion Policy</h2>
 <p class="sub">ACT and diffusion share a chunked control interface</p>
 <p class="q">Action Chunking with Transformers (ACT) and diffusion policies both predict observation-conditioned action sequences.</p>
-<figure class="math-figure"><canvas id="m11p74c" width="1120" height="250" role="img" aria-label="comparison: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p74c'),"comparison",{},false);</script>
+<figure class="math-figure"><canvas id="m11p75c" width="1120" height="250" role="img" aria-label="comparison: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p75c'),"comparison",{},false);</script>
 <p class="cite page-source">ACT §§IV-B–IV-C, Fig.3, Algorithms 1–2; Diffusion Policy §§2–3 · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a> · <a href="https://arxiv.org/abs/2304.13705">Zhao et al. (2023)</a></p>
 </section>
 
-<!-- ===== 75 ===== -->
+<!-- ===== 76 ===== -->
 <section class="slide has-worked-solutions" data-part="IV">
 <p class="eyebrow you" data-min="1.5">Exercise</p>
 <h2>Diffusion Policy</h2>
@@ -2595,17 +2619,17 @@ function m11figure(el,kind,opt,activity){
 <p class="cite page-source">Diffusion Policy project video; Diffusion Policy §§5,9; course exercise · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
-<!-- ===== 76 ===== -->
+<!-- ===== 77 ===== -->
 <section class="slide" data-part="IV">
 <p class="eyebrow">Recap</p>
 <h2>Diffusion and Diffusion Policy</h2>
 <p class="sub">The complete mathematical chain</p>
-<figure class="math-figure"><canvas id="m11p76c" width="1120" height="250" role="img" aria-label="map: course mathematical illustration"></canvas></figure>
-<script>m11figure(document.getElementById('m11p76c'),"map",{},false);</script>
+<figure class="math-figure"><canvas id="m11p77c" width="1120" height="250" role="img" aria-label="map: course mathematical illustration"></canvas></figure>
+<script>m11figure(document.getElementById('m11p77c'),"map",{},false);</script>
 <p class="cite page-source">DDPM §§2–3; Diffusion Policy §2.3 · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a> · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
-<!-- ===== 77 ===== -->
+<!-- ===== 78 ===== -->
 <section class="slide nofoot refs" data-part="IV">
 <p class="eyebrow">References</p>
 <h2>References</h2>
@@ -2614,7 +2638,7 @@ function m11figure(el,kind,opt,activity){
 <p class="cite">Course diagrams and exercises; original paper figure and project video credited on their respective pages.</p>
 </section>
 
-<!-- ===== 78 ===== -->
+<!-- ===== 79 ===== -->
 <section class="slide nofoot refs" data-part="IV">
 <p class="eyebrow">References</p>
 <h2>References</h2>
