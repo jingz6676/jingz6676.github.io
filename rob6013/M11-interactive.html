@@ -2349,7 +2349,7 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Result</p>
 <h2>Reverse sampling</h2>
 <p class="sub">A deterministic DDIM step keeps the predicted direction</p>
-<div class="eq">$$\hat x_0=\frac{x_k-\sqrt{1-\bar\alpha_k}\hat\epsilon}{\sqrt{\bar\alpha_k}},\qquadx_j=\sqrt{\bar\alpha_j}\hat x_0+\sqrt{1-\bar\alpha_j}\hat\epsilon$$</div>
+<div class="eq">$$\hat x_0=\frac{x_k-\sqrt{1-\bar\alpha_k}\hat\epsilon}{\sqrt{\bar\alpha_k}},\qquad x_j=\sqrt{\bar\alpha_j}\hat x_0+\sqrt{1-\bar\alpha_j}\hat\epsilon$$</div>
 <dl class="gloss"><dt>$x_k$</dt><dd>current noisy state at diffusion level k</dd><dt>$\hat x_0$</dt><dd>clean estimate computed from the current state and predicted noise</dd><dt>$j&lt;k,\ 0&lt;\bar\alpha_k&lt;\bar\alpha_j\le1$</dt><dd>selected cleaner level</dd><dt>$\hat\epsilon=\epsilon_\theta(x_k,k)$</dt><dd>current predicted noise</dd><dt>$\bar\alpha_i+(1-\bar\alpha_i)=1$</dt><dd>variance-preserving coefficient squares</dd></dl>
 <figure class="math-figure" style="height:250px"><canvas id="m11p55c" width="1120" height="250" style="height:250px" role="img" aria-label="paths: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p55c'),"paths",{},false);</script>
