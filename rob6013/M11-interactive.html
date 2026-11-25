@@ -1184,6 +1184,14 @@ function m11figure(el,kind,opt,activity){
    for(let y of [49,119,189])arrow(245,y,435,120,c.in);arrow(675,123,835,123,c.out);return;
   }
   if(kind==='guidance'){
+   if(H<200){
+    box('same xₖ and k',35,51,230,52,c.in);
+    box('null context',410,4,230,45,c.dim);
+    box('context o',410,97,230,45,c.dat);
+    box('weighted difference',800,51,270,52,c.out);
+    arrow(270,75,405,28,c.in);arrow(270,80,405,119,c.in);
+    arrow(645,27,795,73,c.dim);arrow(645,119,795,81,c.dat);return;
+   }
    box('same xₖ and k',35,90,230,60,c.in);box('null context',410,30,230,50,c.dim);box('context o',410,160,230,50,c.dat);box('weighted difference',800,90,270,60,c.out);
    arrow(270,117,405,56,c.in);arrow(270,122,405,183,c.in);arrow(645,55,795,112,c.dim);arrow(645,185,795,128,c.dat);return;
   }
@@ -1600,8 +1608,8 @@ function m11figure(el,kind,opt,activity){
 <p class="sub">The terminal Gaussian is a schedule approximation</p>
 <p class="q">On the training-data scale, choose the final level so the residual clean contribution is negligible.</p>
 <div class="eq">$$\begin{aligned}X_K&amp;=\sqrt{\bar\alpha_K}X_0+\sqrt{1-\bar\alpha_K}\,\epsilon\\\sqrt{\bar\alpha_K}X_0&amp;\approx0,\quad\bar\alpha_K\approx0\quad\Longrightarrow\quad X_K\approx\mathcal N(0,I)\end{aligned}$$</div>
-<dl class="gloss"><dt>$K,\bar\alpha_K$</dt><dd>final diffusion level and its small cumulative retention</dd><dt>$X_0$</dt><dd>clean data whose residual signal is negligible at its typical scale</dd><dt>$\epsilon\sim\mathcal N(0,I)$</dt><dd>independent standard Gaussian noise</dd><dt>$X_K$</dt><dd>terminal noisy vector; Gaussian claim is approximate</dd></dl>
-<figure class="math-figure" style="height:250px"><canvas id="m11p21c" width="1120" height="250" style="height:250px" role="img" aria-label="noise: course mathematical illustration"></canvas></figure>
+<dl class="gloss"><dt>$K,\bar\alpha_K$</dt><dd>final diffusion level and its small cumulative retention</dd><dt>$X_0$</dt><dd>clean data; residual negligible on its typical scale</dd><dt>$\epsilon\sim\mathcal N(0,I)$</dt><dd>independent standard Gaussian noise</dd><dt>$X_K$</dt><dd>terminal noisy vector; Gaussian claim is approximate</dd></dl>
+<figure class="math-figure" style="height:175px"><canvas id="m11p21c" width="1120" height="175" style="height:175px" role="img" aria-label="noise: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p21c'),"noise",{"signal_scale": 0.08},false);</script>
 <p class="cite page-source">DDPM §4, terminal prior · <a href="https://arxiv.org/html/2006.11239v2">Ho, Jain &amp; Abbeel (2020)</a></p>
 </section>
@@ -2469,7 +2477,7 @@ function m11figure(el,kind,opt,activity){
 <p class="q">At fixed k: this density interpretation assumes exact scores and a normalizable power product.</p>
 <div class="eq">$$s_g=(1-w)s_u+ws_c=\nabla_x\log\!\left[p_k(x)^{1-w}p_k(x\mid o)^w\right]$$</div>
 <dl class="gloss"><dt>$x\in\mathbb R^d$</dt><dd>noisy action vector at fixed diffusion level k</dd><dt>$o$</dt><dd>fixed observation context</dd><dt>$s_u,s_c$</dt><dd>unconditional and observation-conditioned scores</dd><dt>$p_k(x),p_k(x\mid o)$</dt><dd>unconditional and conditioned densities</dd><dt>$w$</dt><dd>guidance scale; the power product must be normalizable</dd></dl>
-<figure class="math-figure" style="height:250px"><canvas id="m11p64c" width="1120" height="250" style="height:250px" role="img" aria-label="guidance: course mathematical illustration"></canvas></figure>
+<figure class="math-figure" style="height:150px"><canvas id="m11p64c" width="1120" height="150" style="height:150px" role="img" aria-label="guidance: course mathematical illustration"></canvas></figure>
 <script>m11figure(document.getElementById('m11p64c'),"guidance",{},false);</script>
 <p class="reveal step" data-step="3">At this fixed level, exact scores yield the field $s_g=\nabla_x\log[p_k(x)^{1-w}p_k(x\mid o)^w]$ when the product is normalizable.</p></div>
 <div class="worked-solutions">
