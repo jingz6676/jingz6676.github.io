@@ -452,6 +452,8 @@ body.print .worked-pdf-check .math-figure{display:none!important}
 .slide .official-media figcaption{max-width:1020px;font:16px/1.3 Georgia,serif;color:var(--dim);margin:5px auto 0}
 .slide .official-media figcaption a{color:inherit;text-decoration:underline;white-space:nowrap}
 .slide .official-policy_overview img{width:1130px}
+.slide:has(.official-policy_overview) .sub{margin-bottom:8px}
+.slide:has(.official-policy_overview) .q{font-size:20px;line-height:1.22}
 .slide .official-pusht_rollout video{width:383px}
 @media print{.slide .official-media video{display:none}.slide .official-media figcaption{color:var(--ink)}}
 </style>
@@ -2453,8 +2455,8 @@ function m11figure(el,kind,opt,activity){
 <p class="eyebrow">Interpretation</p>
 <h2>Diffusion Policy</h2>
 <p class="sub">Read the original Diffusion Policy diagram</p>
-<p class="q">Left: observations condition a sequence of actions. Right: CNN-FiLM and Transformer are alternative networks.</p>
-<figure class="official-media official-policy_overview"><a href="https://arxiv.org/html/2303.04137v5" target="_blank" rel="noopener"><img src="https://arxiv.org/html/2303.04137v5/policy_input_output.png" alt="Diffusion Policy overview: observations condition a noisy action sequence refined into a clean sequence; only the first actions are executed before replanning." loading="eager" decoding="async"></a><figcaption>Chi et al. (2024), Fig. 2. Paper Tₒ/Tₚ/Tₐ (observation/prediction/execution horizons) = our Hₒ/Hₚ/Hₐ; paper t = physical r, while k = denoising level. <a href="https://arxiv.org/html/2303.04137v5" target="_blank" rel="noopener">Original source ↗</a></figcaption></figure>
+<p class="q">In the figure, Oₜ = observation history; Aₜᴷ → Aₜ⁰ = noisy → clean action sequence after K denoising steps; εθ predicts noise.</p>
+<figure class="official-media official-policy_overview"><a href="https://arxiv.org/html/2303.04137v5" target="_blank" rel="noopener"><img src="https://arxiv.org/html/2303.04137v5/policy_input_output.png" alt="Diffusion Policy overview: observations condition a noisy action sequence refined into a clean sequence; only the first actions are executed before replanning." loading="eager" decoding="async"></a><figcaption>Chi et al. (2024), Fig. 2. Right: CNN (convolutional neural network) with FiLM (feature-wise linear modulation), or Transformer; ∇E(A) = action-energy gradient. Paper Tₒ/Tₚ/Tₐ (observation/prediction/execution horizons) = our Hₒ/Hₚ/Hₐ; t = physical r, k = denoising level. <a href="https://arxiv.org/html/2303.04137v5" target="_blank" rel="noopener">Original source ↗</a></figcaption></figure>
 <p class="cite page-source">Diffusion Policy (Chi et al., 2024), Fig. 2; course notation · <a href="https://arxiv.org/html/2303.04137v5">Chi et al. (2023/2024)</a></p>
 </section>
 
